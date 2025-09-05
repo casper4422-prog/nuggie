@@ -433,7 +433,7 @@ function renderCreatureImage(creature, className = '') {
   }
 }
 
-function loadSpeciesPage() {
+async function loadSpeciesPage() {
 	// Render the species page with search and filters and a species grid
 	document.getElementById('appMainContent').innerHTML = `
 		<section class="species-section">
@@ -486,6 +486,16 @@ function loadSpeciesPage() {
 	});
 
 	// Initial population
+	// If the species DB is empty, wait briefly for it to resolve then populate
+	try {
+		const initialCount = Object.keys(getSpeciesDB() || {}).length;
+		if (initialCount === 0) {
+			const grid = document.getElementById('speciesGrid');
+			if (grid) grid.innerHTML = '<div class="no-species-found">Species database loading...</div>';
+			await waitForSpeciesDB(3000, 50);
+			console.log('[SPA] species DB probe complete, re-rendering species list');
+		}
+	} catch (e) { console.warn('[SPA] error while waiting for species DB', e); }
 	filterSpecies();
 }
 

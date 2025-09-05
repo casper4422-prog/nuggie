@@ -1,4 +1,3 @@
-// Aggressive cleanup removed — it caused visible side-effects and broke debugging.
 // Keep a minimal readiness marker for the CSS guard so the page isn't hidden.
 try { document.documentElement.setAttribute('data-ready', 'true'); } catch (e) {}
 
@@ -578,19 +577,23 @@ try {
 }
 window.appState = appState;
 
-// --- SPECIES_DATABASE wiring ---
-// The full species data is provided by species-database.js which sets `window.SPECIES_DATABASE`.
-// If that file is unavailable, fall back to an empty object to avoid runtime errors.
-if (typeof window !== 'undefined' && window.SPECIES_DATABASE) {
-	// Use the species DB defined in the separate file
-	window.__SPECIES_DB = window.SPECIES_DATABASE;
-} else {
-	console.error('[SPA] species-database.js not loaded or SPECIES_DATABASE missing; functionality will be limited.');
-	window.__SPECIES_DB = {};
+// --- SPECIES_DATABASE wiring (non-destructive) ---
+// The external `species-database.js` may set `window.SPECIES_DATABASE` early.
+// We must not clobber a SPECIES_DATABASE already initialized by our startup probe.
+if (typeof window !== 'undefined') {
+	if (window.SPECIES_DATABASE && Object.keys(window.SPECIES_DATABASE || {}).length > 0) {
+		// Use the species DB defined in the separate file
+		window.__SPECIES_DB = window.SPECIES_DATABASE;
+	} else {
+		// If nothing is present yet, ensure window.__SPECIES_DB exists so other code can read it.
+		window.__SPECIES_DB = window.__SPECIES_DB || {};
+	}
 }
 
-// Local alias used throughout main.js (assign into existing var)
-SPECIES_DATABASE = window.__SPECIES_DB || {};
+// Only assign the local alias if it hasn't been resolved by the startup probe.
+if (!SPECIES_DATABASE || Object.keys(SPECIES_DATABASE || {}).length === 0) {
+	SPECIES_DATABASE = window.__SPECIES_DB || {};
+}
 
 // saveCreature: accepts either a full creature object or a wrapper from creatures.js
 function saveCreature(payload) {

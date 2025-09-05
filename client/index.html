@@ -1190,214 +1190,133 @@
     </style>
 </head>
 <body>
-  <!-- Auth-required content wrapper -->
-  <div id="authRequiredContent" style="display:none;">
-    <!-- Place your main app content here. Example: -->
-    <div class="main-content">
-      <h2>Welcome, <span id="userEmailDisplay"></span>!</h2>
-      <div id="creatureCardSection">
-        <!-- Creature card UI goes here -->
-        <button class="btn btn-primary" onclick="saveCreatureCard()">Save Creature Card</button>
-        <button class="btn btn-secondary" onclick="loadCreatureCards()">Load My Creature Cards</button>
-        <div id="creatureCardsList"></div>
-      </div>
-    </div>
-  </div>
-  <!-- Not logged in prompt -->
-  <div id="notLoggedInPrompt" style="display:none;text-align:center;margin-top:60px;">
-    <h2>Please log in or register to use Dino Nuggie Expand!</h2>
-    <button class="btn btn-primary" onclick="showLoginModal()">Login</button>
-    <button class="btn btn-secondary" onclick="showRegisterModal()">Register</button>
-  </div>
-  <!-- Login Modal -->
-  <div class="modal" id="loginModal" style="display:none;">
+  <!-- Tribe Settings Modal (kept) -->
+  <div class="modal" id="tribeModal">
     <div class="modal-content">
       <div class="modal-header">
-        <h2 class="modal-title">🔐 Login</h2>
-        <button class="close-btn" onclick="closeLoginModal()">&times;</button>
+        <h2 class="modal-title">🏛️ Tribe Settings</h2>
+        <button class="close-btn" onclick="closeTribeModal()">&times;</button>
       </div>
       <div class="modal-body">
-        <form id="loginForm" onsubmit="return handleLogin(event)">
+        <div class="section-title">🏛️ Tribe Setup</div>
+        <p style="margin-bottom: 24px; color: #94a3b8;">Let's personalize your breeding database! This information will be saved and can be updated anytime.</p>
+        <div class="form-row cols-1">
           <div class="form-group">
-            <label for="loginEmail">Email</label>
-            <input type="email" id="loginEmail" required autocomplete="username" />
+            <label class="form-label">Tribe Leader *</label>
+            <input type="text" class="form-control" id="tribeLeader" placeholder="Your username">
           </div>
-          <div class="form-group">
-            <label for="loginPassword">Password</label>
-            <input type="password" id="loginPassword" required autocomplete="current-password" />
-          </div>
-          <button type="submit" class="btn btn-primary" style="width:100%;margin-top:16px;">Login</button>
-        </form>
-        <div style="margin-top:12px;text-align:center;">
-          <span>Don't have an account? <a href="#" onclick="showRegisterModal()">Register</a></span>
         </div>
-        <div id="loginError" style="color:#ef4444;margin-top:8px;display:none;"></div>
+        <div class="form-row cols-2">
+          <div class="form-group">
+            <label class="form-label">Server Type</label>
+            <select class="form-control" id="serverType">
+              <option value="Official">Official</option>
+              <option value="Unofficial">Unofficial</option>
+              <option value="Single Player">Single Player</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Primary Map</label>
+            <select class="form-control" id="primaryMap">
+              <option value="The Island">The Island</option>
+              <option value="The Center">The Center</option>
+              <option value="Scorched Earth">Scorched Earth</option>
+              <option value="Ragnarok">Ragnarok</option>
+              <option value="Aberration">Aberration</option>
+              <option value="Extinction">Extinction</option>
+              <option value="Valguero">Valguero</option>
+              <option value="Genesis 1">Genesis 1</option>
+              <option value="Crystal Isles">Crystal Isles</option>
+              <option value="Genesis 2">Genesis 2</option>
+              <option value="Lost Island">Lost Island</option>
+              <option value="Fjordur">Fjordur</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row cols-1">
+          <div class="form-group">
+            <label class="form-label">Breeding Goals (Optional)</label>
+            <textarea class="form-control" id="breedingGoals" placeholder="What are your main breeding objectives? (e.g., Boss fights, PvP, mutations, specific stats)" rows="3"></textarea>
+          </div>
+        </div>
+        <div class="form-row cols-2">
+          <div class="form-group">
+            <label class="form-label">Tribe Name (Optional)</label>
+            <input type="text" class="form-control" id="tribeName" placeholder="Your tribe name">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Favorite Creature (Optional)</label>
+            <input type="text" class="form-control" id="favoriteCreature" placeholder="Your favorite dino">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" onclick="saveTribeSettings()">Save Settings</button>
       </div>
     </div>
   </div>
 
-  <!-- Register Modal -->
-  <div class="modal" id="registerModal" style="display:none;">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2 class="modal-title">📝 Register</h2>
-        <button class="close-btn" onclick="closeRegisterModal()">&times;</button>
-      </div>
-      <div class="modal-body">
-        <form id="registerForm" onsubmit="return handleRegister(event)">
-          <div class="form-group">
-            <label for="registerEmail">Email</label>
-            <input type="email" id="registerEmail" required autocomplete="username" />
-          </div>
-          <div class="form-group">
-            <label for="registerPassword">Password</label>
-            <input type="password" id="registerPassword" required autocomplete="new-password" />
-          </div>
-          <button type="submit" class="btn btn-primary" style="width:100%;margin-top:16px;">Register</button>
-        </form>
-        <div style="margin-top:12px;text-align:center;">
-          <span>Already have an account? <a href="#" onclick="showLoginModal()">Login</a></span>
+  <!-- Landing/Login Page -->
+  <div id="landingPage" style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+    <div style="background:rgba(15,23,42,0.95);padding:40px 32px;border-radius:16px;box-shadow:0 4px 32px #0003;max-width:400px;width:100%;">
+      <h1 style="text-align:center;color:#3b82f6;margin-bottom:24px;">Dino Nuggie Manager</h1>
+      <form id="loginForm" onsubmit="return handleLogin(event)">
+        <div class="form-group">
+          <label for="loginEmail">Email</label>
+          <input type="email" id="loginEmail" required autocomplete="username" />
         </div>
-        <div id="registerError" style="color:#ef4444;margin-top:8px;display:none;"></div>
+        <div class="form-group">
+          <label for="loginPassword">Password</label>
+          <input type="password" id="loginPassword" required autocomplete="current-password" />
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%;margin-top:16px;">Login</button>
+      </form>
+      <div style="margin-top:12px;text-align:center;">
+        <span>Don't have an account? <a href="#" onclick="showRegisterPage()">Register</a></span>
       </div>
+      <div id="loginError" style="color:#ef4444;margin-top:8px;display:none;"></div>
     </div>
   </div>
-    <!-- Tribe Settings Modal -->
-    <div class="modal" id="tribeModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title">🏛️ Tribe Settings</h2>
-                <button class="close-btn" onclick="closeTribeModal()">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="section-title">🏛️ Tribe Setup</div>
-                <p style="margin-bottom: 24px; color: #94a3b8;">Let's personalize your breeding database! This information will be saved and can be updated anytime.</p>
-                
-                <div class="form-row cols-1">
-                    <div class="form-group">
-                        <label class="form-label">Tribe Leader *</label>
-                        <input type="text" class="form-control" id="tribeLeader" placeholder="Your username">
-                    </div>
-                </div>
-                
-                <div class="form-row cols-2">
-                    <div class="form-group">
-                        <label class="form-label">Server Type</label>
-                        <select class="form-control" id="serverType">
-                            <option value="Official">Official</option>
-                            <option value="Unofficial">Unofficial</option>
-                            <option value="Single Player">Single Player</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Primary Map</label>
-                        <select class="form-control" id="primaryMap">
-                            <option value="The Island">The Island</option>
-                            <option value="The Center">The Center</option>
-                            <option value="Scorched Earth">Scorched Earth</option>
-                            <option value="Ragnarok">Ragnarok</option>
-                            <option value="Aberration">Aberration</option>
-                            <option value="Extinction">Extinction</option>
-                            <option value="Valguero">Valguero</option>
-                            <option value="Genesis 1">Genesis 1</option>
-                            <option value="Crystal Isles">Crystal Isles</option>
-                            <option value="Genesis 2">Genesis 2</option>
-                            <option value="Lost Island">Lost Island</option>
-                            <option value="Fjordur">Fjordur</option>
-                        </select>
-                    </div>
-                </div>
-                
-                <div class="form-row cols-1">
-                    <div class="form-group">
-                        <label class="form-label">Breeding Goals (Optional)</label>
-                        <textarea class="form-control" id="breedingGoals" placeholder="What are your main breeding objectives? (e.g., Boss fights, PvP, mutations, specific stats)" rows="3"></textarea>
-                    </div>
-                </div>
-                
-                <div class="form-row cols-2">
-                    <div class="form-group">
-                        <label class="form-label">Tribe Name (Optional)</label>
-                        <input type="text" class="form-control" id="tribeName" placeholder="Your tribe name">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Favorite Creature (Optional)</label>
-                        <input type="text" class="form-control" id="favoriteCreature" placeholder="Your favorite dino">
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-primary" onclick="saveTribeSettings()">Save Settings</button>
-            </div>
+  <!-- Register Page -->
+  <div id="registerPage" style="display:none;min-height:100vh;flex-direction:column;align-items:center;justify-content:center;">
+    <div style="background:rgba(15,23,42,0.95);padding:40px 32px;border-radius:16px;box-shadow:0 4px 32px #0003;max-width:400px;width:100%;margin:auto;">
+      <h1 style="text-align:center;color:#3b82f6;margin-bottom:24px;">Register</h1>
+      <form id="registerForm" onsubmit="return handleRegister(event)">
+        <div class="form-group">
+          <label for="registerEmail">Email</label>
+          <input type="email" id="registerEmail" required autocomplete="username" />
         </div>
+        <div class="form-group">
+          <label for="registerPassword">Password</label>
+          <input type="password" id="registerPassword" required autocomplete="new-password" />
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%;margin-top:16px;">Register</button>
+      </form>
+      <div style="margin-top:12px;text-align:center;">
+        <span>Already have an account? <a href="#" onclick="showLoginPage()">Login</a></span>
+      </div>
+      <div id="registerError" style="color:#ef4444;margin-top:8px;display:none;"></div>
     </div>
-
-    <!-- Main Container -->
-    <div id="mainContainer">
-        <!-- Header -->
-        <header class="header">
-            <div class="header-content">
-                <div class="header-top">
-                    <div class="logo">
-                        <div class="logo-icon">🦕</div>
-                        DINO NUGGIES
-                    </div>
-                    <div class="header-actions">
-            <button class="btn btn-secondary" onclick="openTribeModal()">
-              🏛️ Tribe Settings
-            </button>
-            <button id="authBtn" class="btn btn-primary" onclick="handleAuthClick()">
-              Login
-            </button>
-                    </div>
-                </div>
-                <div class="header-subtitle">
-                    Ark Creature Management System Brought to You By Casper4422. Grow Your Armies Here!
-                </div>
-                <div class="header-status">
-                    Work in Progress, please report any issues or bugs to casper.4422
-                </div>
-            </div>
-        </header>
-
-        <!-- Species Page (Landing Page) -->
-        <div id="speciesPage">
-            <!-- Stats Dashboard -->
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-number" id="totalCreatures">0</div>
-                    <div class="stat-label">Total Creatures</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" id="speciesTracked">0</div>
-                    <div class="stat-label">Species Tracked</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" id="bossReadySpecies">0</div>
-                    <div class="stat-label">Boss Ready Species</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" id="prizedBloodlines">0</div>
-                    <div class="stat-label">Prized Bloodlines</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" id="highestLevel">1</div>
-                    <div class="stat-label">Highest Level</div>
-                </div>
-            </div>
-
-            <!-- Main Content -->
-            <div class="main-content">
-                <!-- Species Controls -->
-                <div class="species-controls">
-                    <div class="search-box">
-                        <span class="search-icon">🔍</span>
-                        <input type="text" class="search-input" id="searchInput" placeholder="Search species by name or type..." oninput="filterSpecies()">
-                    </div>
-                    <select class="filter-select" id="categoryFilter" onchange="filterSpecies()">
-                        <option value="">All Categories</option>
-                        <option value="carnivore">Carnivore</option>
-                        <option value="herbivore">Herbivore</option>
+  </div>
+  <!-- Main App Content (only visible if logged in) -->
+  <div id="mainApp" style="display:none;">
+    <header class="header">
+      <div class="header-content">
+        <div class="header-top">
+          <div class="tribe-header" id="tribeHeader" style="font-size:28px;font-weight:700;color:#3b82f6;">My Tribe</div>
+          <div class="header-actions">
+            <button class="btn btn-secondary" onclick="openTribeModal()">🏛️ Tribe Settings</button>
+            <button class="btn btn-secondary" onclick="goToCreatures()">🦖 Creatures</button>
+            <button class="btn btn-secondary" onclick="goToMyNuggies()">🍗 My Nuggies</button>
+            <button id="authBtn" class="btn btn-primary" onclick="handleAuthClick()">Sign Out</button>
+          </div>
+        </div>
+      </div>
+    </header>
+    <main id="appMainContent">
+      <!-- Dynamic content will be loaded here -->
+    </main>
+  </div>
                         <option value="omnivore">Omnivore</option>
                         <option value="flyer">Flyer</option>
                         <option value="combat">Combat</option>

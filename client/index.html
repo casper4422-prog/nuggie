@@ -6,158 +6,59 @@
         <title>🦕 Dino Nuggie Manager</title>
         <link rel="stylesheet" href="main.css">
         <link rel="stylesheet" href="main-additional.css">
-    </head>
-    <body>
-        <!-- Tribe Settings Modal -->
-        function loadSpeciesGrid() {
-            console.log('Loading species grid...');
-            
-            // Clear any existing filters and show all species
-            const searchInput = document.getElementById('searchInput');
-            const categoryFilter = document.getElementById('categoryFilter');
-            const rarityFilter = document.getElementById('rarityFilter');
-            
-            if (searchInput) searchInput.value = '';
-            if (categoryFilter) categoryFilter.value = '';
-            if (rarityFilter) rarityFilter.value = '';
-            
-            // Use the filter function to display all species
-            filterSpecies();
-        }
-
-        function createSpeciesCard(species, creatureCount) {
-            if (!species) {
-                console.error('Species is null or undefined');
-                return null;
-            }
-            
-            if (!species.name || !species.icon || !species.rarity || !species.category) {
-                console.error('Species missing required fields:', species);
-                return null;
-            }
-            
-            try {
-                const card = document.createElement('div');
-                card.className = 'species-card';
-                card.onclick = () => openCreaturePage(species.name);
-
-                // Get creatures for this species to calculate badges and stats
-                const speciesCreatures = appState.creatures.filter(c => c.species === species.name);
-                
-                // Generate badges for this species
-                let badgesHTML = '';
-                let highestStatsHTML = '';
-                
-                if (speciesCreatures.length > 0) {
-                    // Get highest stats for badge display
-                    const highestStats = calculateHighestBaseStats(speciesCreatures);
-                    
-                    // Generate badges for creatures with achievements
-                    const achievementCreatures = speciesCreatures.filter(creature => {
-                        const badges = BadgeSystem.generateBadgeHTML(creature);
-                        return badges && badges.trim() !== '';
-                    });
-                    
-                    if (achievementCreatures.length > 0) {
-                        badgesHTML = `
-                            <div class="species-badges">
-                                ${achievementCreatures.slice(0, 3).map(creature => 
-                                    BadgeSystem.generateBadgeHTML(creature)
-                                ).join('')}
-                                ${achievementCreatures.length > 3 ? `<span class="badge-more">+${achievementCreatures.length - 3}</span>` : ''}
-                            </div>
-                        `;
-                    }
-                    
-                    // Display highest stats for this species
-                    highestStatsHTML = `
-                        <div class="species-stats">
-                            <div class="stat-row">
-                                <span class="stat-icon">❤️</span>
-                                <span class="stat-label">Health</span>
-                                <span class="stat-value">${highestStats.Health?.value || 0}</span>
-                            </div>
-                            <div class="stat-row">
-                                <span class="stat-icon">🏃</span>
-                                <span class="stat-label">Stamina</span>
-                                <span class="stat-value">${highestStats.Stamina?.value || 0}</span>
-                            </div>
-                            <div class="stat-row">
-                                <span class="stat-icon">💨</span>
-                                <span class="stat-label">Oxygen</span>
-                                <span class="stat-value">${highestStats.Oxygen?.value || 0}</span>
-                            </div>
-                            <div class="stat-row">
-                                <span class="stat-icon">🍖</span>
-                                <span class="stat-label">Food</span>
-                                <span class="stat-value">${highestStats.Food?.value || 0}</span>
-                            </div>
-                            <div class="stat-row">
-                                <span class="stat-icon">⚖️</span>
-                                <span class="stat-label">Weight</span>
-                                <span class="stat-value">${highestStats.Weight?.value || 0}</span>
-                            </div>
-                            <div class="stat-row">
-                                <span class="stat-icon">⚔️</span>
-                                <span class="stat-label">Melee</span>
-                                <span class="stat-value">${highestStats.Melee?.value || 0}</span>
-                            </div>
+    <!doctype html>
+    <html lang="en">
+        <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width,initial-scale=1">
+            <title>🦕 Dino Nuggie Manager</title>
+            <link rel="stylesheet" href="main.css">
+            <link rel="stylesheet" href="main-additional.css">
+        </head>
+        <body>
+            <!-- App Shell (no inline JS) -->
+            <div id="landingPage" class="landing-page" role="main">
+                <div class="landing-container">
+                    <h1 class="landing-title">Dino Nuggie Manager</h1>
+                    <form id="loginForm">
+                        <div class="form-group">
+                            <label class="form-label" for="loginEmail">Email</label>
+                            <input class="form-control" id="loginEmail" type="email" required autocomplete="username">
                         </div>
-                    `;
-                }
-
-                card.innerHTML = `
-                    <div class="species-header">
-                        <div class="species-icon">${species.icon}</div>
-                        <div class="rarity-badge rarity-${species.rarity}">${species.rarity}</div>
-                        <div class="creature-count">
-                            <span>🦴</span>
-                            <span>${creatureCount} creatures</span>
+                        <div class="form-group">
+                            <label class="form-label" for="loginPassword">Password</label>
+                            <input class="form-control" id="loginPassword" type="password" required autocomplete="current-password">
                         </div>
+                        <button type="submit" class="btn btn-primary login-btn">Login</button>
+                    </form>
+                    <div class="login-link">Don't have an account? <a href="#" id="showRegisterLink">Register</a></div>
+                    <div id="loginError" class="login-error" role="status" aria-live="polite"></div>
+                </div>
+            </div>
+
+            <div id="registerPage" class="register-page hidden" aria-hidden="true"></div>
+            <div id="mainApp" class="hidden" aria-hidden="true">
+                <header class="header"><div class="header-content"><div class="header-top">
+                    <div class="tribe-header" id="tribeHeader">My Tribe</div>
+                    <div class="header-actions">
+                        <button class="btn btn-secondary" id="openTribeBtn">🏛️ Tribe Settings</button>
+                        <button class="btn btn-secondary" id="goToCreaturesBtn">� Creatures</button>
+                        <button class="btn btn-secondary" id="goToMyNuggiesBtn">🍗 My Nuggies</button>
+                        <button id="authBtn" class="btn btn-primary">Sign Out</button>
                     </div>
-                    <div class="species-content">
-                        <div class="species-name">${species.name}</div>
-                        <div class="species-category">${species.category}</div>
-                        ${badgesHTML}
-                        ${highestStatsHTML}
-                        <div class="species-description">${species.description || 'No description available'}</div>
-                    </div>
-                `;
+                </div></div></header>
+                <main id="appMainContent" role="main"></main>
+            </div>
 
-                return card;
-            } catch (error) {
-                console.error('Error creating species card for', species.name, ':', error);
-                return null;
-            }
-        }
+            <!-- Creature modals placeholders -->
+            <div class="modal" id="creatureModal" aria-hidden="true"></div>
+            <div class="modal" id="creatureDetailModal" aria-hidden="true"></div>
 
-        function filterSpecies() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            const categoryFilter = document.getElementById('categoryFilter').value.toLowerCase();
-            const rarityFilter = document.getElementById('rarityFilter').value.toLowerCase();
-            
-            const grid = document.getElementById('speciesGrid');
-            
-            if (!grid) {
-                console.error('Species grid element not found');
-                return;
-            }
-            
-            if (!SPECIES_DATABASE) {
-                console.error('Species database not found');
-                return;
-            }
-            
-            grid.innerHTML = '';
-            console.log('Filtering species with:', { searchTerm, categoryFilter, rarityFilter });
-
-            let filteredCount = 0;
-            Object.values(SPECIES_DATABASE).forEach(species => {
-                if (!species || !species.name) {
-                    return;
-                }
-                
-                // Apply search filter
+            <!-- Load species database first, then main app logic -->
+            <script src="species-database.js"></script>
+            <script src="main.js"></script>
+        </body>
+    </html>
                 const matchesSearch = !searchTerm || 
                     species.name.toLowerCase().includes(searchTerm) ||
                     (species.category && species.category.toLowerCase().includes(searchTerm)) ||

@@ -82,6 +82,7 @@ function handleAuthClick() {
 	if (isLoggedIn()) {
 		localStorage.removeItem('token');
 		showLoginPage();
+		try { updateAuthUI(); } catch (e) {}
 	}
 }
 window.handleAuthClick = handleAuthClick;
@@ -90,6 +91,20 @@ function updateTribeHeader() {
 	// Replace with actual tribe name from user profile if available
 	const tribeName = localStorage.getItem('tribeName') || 'My Tribe';
 	document.getElementById('tribeHeader').textContent = tribeName;
+}
+
+function updateAuthUI() {
+	const authBtn = document.getElementById('authBtn');
+	if (!authBtn) return;
+	if (isLoggedIn()) {
+		authBtn.textContent = 'Sign Out';
+		authBtn.classList.remove('btn-primary');
+		authBtn.classList.add('btn-danger');
+	} else {
+		authBtn.textContent = 'Sign In';
+		authBtn.classList.remove('btn-danger');
+		authBtn.classList.add('btn-primary');
+	}
 }
 function goToCreatures() {
 	loadSpeciesPage();
@@ -198,8 +213,9 @@ async function handleLogin(event) {
 			showMainApp();
 			updateTribeHeader();
 			loadSpeciesPage();
-			// Refresh stats after login
+			// Refresh stats and auth UI after login
 			try { updateStatsDashboard(); } catch (e) {}
+			try { updateAuthUI(); } catch (e) {}
 		} else {
 			errorDiv.textContent = data.error || 'Login failed.';
 			errorDiv.style.display = 'block';

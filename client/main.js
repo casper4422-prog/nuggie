@@ -581,21 +581,12 @@ function createSpeciesCard(species, creatureCount) {
 	const badgesHTML = (speciesCreatures.length > 0 && window.BadgeSystem) ?
 		speciesCreatures.slice(0,3).map(c => BadgeSystem.generateBadgeHTML(c)).join('') : '';
 
-	const statsHTML = `
-		<div class="species-stats-compact">
-			<div class="stat-row"><span class="stat-icon">❤️</span><span class="stat-value">${highestStats.Health?.value || 0}</span></div>
-			<div class="stat-row"><span class="stat-icon">🏃</span><span class="stat-value">${highestStats.Stamina?.value || 0}</span></div>
-			<div class="stat-row"><span class="stat-icon">💨</span><span class="stat-value">${highestStats.Oxygen?.value || 0}</span></div>
-		</div>
-	`;
-
 	card.innerHTML = `
 		<div class="species-card-header">
 			<div class="species-icon">${species.icon || '🦖'}</div>
 			<div class="species-info">
 				<div class="species-name">${species.name}</div>
 				<div class="species-meta">${species.category || ''} • ${species.rarity || ''}</div>
-				${statsHTML}
 			</div>
 			<div class="species-count">${creatureCount}</div>
 		</div>

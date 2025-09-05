@@ -141,6 +141,14 @@ document.addEventListener('DOMContentLoaded', () => {
 		document.documentElement.style.visibility = '';
 	} catch (e) { /* noop */ }
 
+	// Inject exact theme and header from Old Nugget.html
+	try {
+		var script = document.createElement('script');
+		script.src = 'ui-inject.js';
+		script.onload = function(){ console.log('[SPA] ui-inject.js loaded'); };
+		document.body.appendChild(script);
+	} catch (e) { console.warn('[SPA] failed to inject ui-inject.js', e); }
+
 	// Dynamically load enhanced theme (keeps index.html small and avoids merge conflicts)
 	try {
 		const link = document.createElement('link');
@@ -152,16 +160,6 @@ document.addEventListener('DOMContentLoaded', () => {
 		// apply marker class to enable theme rules
 		document.documentElement.classList.add('theme-expanded');
 	} catch (e) { console.warn('[SPA] theme injection failed', e); }
-
-	// Load the exact UI injector (Old Nugget) to recreate the original DOM pieces
-	try {
-		const s = document.createElement('script');
-		s.src = 'ui-exact.js';
-		s.defer = true;
-		s.onload = () => { console.log('[SPA] ui-exact.js loaded'); };
-		s.onerror = () => { console.warn('[SPA] failed to load ui-exact.js'); };
-		document.body.appendChild(s);
-	} catch (e) { console.warn('[SPA] ui-exact loader failed', e); }
 	try {
 		// Attach UI wiring
 		// Ensure register form markup exists so its handlers can be attached when needed

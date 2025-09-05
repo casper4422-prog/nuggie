@@ -533,17 +533,26 @@ function filterSpecies() {
 			(species.description && species.description.toLowerCase().includes(searchTerm))
 		);
 
+		// Category matching: accept contains/includes (handles multi-value categories or tags),
+		// and special-case 'flyer' to detect flying species via speeds or category/tag mentions.
 		let matchesCategory = true;
 		if (categoryFilter) {
-			if (categoryFilter === 'flyer') {
-				matchesCategory = species.speeds && species.speeds.flying && species.speeds.flying > 0;
-			} else {
-				matchesCategory = (species.category && species.category.toLowerCase() === categoryFilter) ||
-								  (species.diet && species.diet.toLowerCase() === categoryFilter);
-			}
+			try {
+				const cat = (species.category || '') + '';
+				const diet = (species.diet || '') + '';
+				const tags = (species.tags && Array.isArray(species.tags)) ? species.tags.join(' ') : '';
+				const hay = (cat + ' ' + diet + ' ' + tags).toLowerCase();
+				if (categoryFilter === 'flyer') {
+					const flying = (species.speeds && (Number(species.speeds.flying) || 0)) || 0;
+					matchesCategory = flying > 0 || hay.includes('fly') || hay.includes('flying') || hay.includes('wing');
+				} else {
+					matchesCategory = hay.includes(categoryFilter);
+				}
+			} catch (e) { matchesCategory = true; }
 		}
 
-		const matchesRarity = !rarityFilter || (species.rarity && species.rarity.toLowerCase() === rarityFilter);
+		// Rarity matching: use includes to be resilient to 'Very Rare' vs 'very rare' and similar variations
+		const matchesRarity = !rarityFilter || (species.rarity && (species.rarity + '').toLowerCase().includes(rarityFilter));
 
 		if (matchesSearch && matchesCategory && matchesRarity) {
 			const creatureCount = (appState.creatures || []).filter(c => c.species === species.name).length;

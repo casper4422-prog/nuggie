@@ -239,9 +239,15 @@
     const backBtn = document.getElementById('backToSpeciesBtn');
     if (backBtn) backBtn.onclick = () => { if (typeof window.loadSpeciesPage === 'function') window.loadSpeciesPage(); };
 
-    // Wire tabs
+    // Wire tabs (use event.currentTarget for robustness and prevent default)
     const tabButtons = document.querySelectorAll('.tab-button');
-    tabButtons.forEach(b => b.addEventListener('click', (e) => { const target = b.getAttribute('data-target'); switchTab(target); }));
+    tabButtons.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        try { e.preventDefault(); } catch (ex) {}
+        const target = (e.currentTarget && e.currentTarget.getAttribute('data-target')) || btn.getAttribute('data-target');
+        if (target) switchTab(target);
+      });
+    });
 
     // Populate creatures list area
     const creaturesGrid = document.getElementById('creaturesGrid');

@@ -32,3 +32,32 @@
 .theme-exact .species-card { background: rgba(30, 41, 59, 0.8); border-radius: 16px; overflow: hidden; border: 1px solid rgba(59, 130, 246, 0.1); transition: all 0.3s ease; cursor: pointer; position: relative; }
 .theme-exact .species-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4); border-color: rgba(59, 130, 246, 0.3); }
 /* ...all other rules from Old Nugget.html, all under .theme-exact... */
+
+/* Tabs and creature page layout (minimal subset from Old Nugget to restore functionality) */
+.theme-exact .tab-navigation { display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:12px; }
+.theme-exact .tab-button { background: rgba(30,41,59,0.6); color: #cbd5e1; padding: 8px 12px; border-radius: 8px; border: 1px solid rgba(59,130,246,0.06); cursor: pointer; font-weight:600; font-size:14px; }
+.theme-exact .tab-button:hover { background: rgba(59,130,246,0.08); }
+.theme-exact .tab-button.active { background: linear-gradient(90deg,#3b82f6,#8b5cf6); color: #fff; box-shadow: 0 6px 18px rgba(59,130,246,0.12); }
+
+.theme-exact .tab-content { display: none; padding: 12px 0; }
+.theme-exact .tab-content.active { display: block; }
+
+.theme-exact .info-section { margin-bottom: 14px; }
+.theme-exact .info-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(200px,1fr)); gap: 12px; }
+.theme-exact .info-item { background: transparent; padding: 6px 8px; }
+.theme-exact .info-label { font-size: 12px; color: #94a3b8; text-transform: uppercase; margin-bottom: 4px; }
+.theme-exact .info-value { color: #e6eef8; font-size: 14px; }
+
+.theme-exact .creature-page { padding: 18px 0 40px; }
+.theme-exact .creature-page-header { display:flex; gap:12px; align-items:center; justify-content:space-between; margin-bottom: 18px; }
+.theme-exact .creature-page-icon { font-size: 48px; width:56px; height:56px; display:flex; align-items:center; justify-content:center; border-radius:10px; background: rgba(255,255,255,0.02); }
+.theme-exact .creature-page-info h1 { font-size: 28px; margin-bottom:6px; color:#fff; }
+.theme-exact .creature-page-meta { color:#94a3b8; font-size:13px; }
+.theme-exact .creature-page-actions .btn { margin-left:8px; }
+
+.theme-exact .creatures-section-header { display:flex; align-items:center; justify-content:space-between; margin-top:18px; }
+.theme-exact .creatures-grid { display:grid; grid-template-columns: repeat(auto-fill,minmax(220px,1fr)); gap:12px; margin-top:12px; }
+.theme-exact .creature-card { background: rgba(30,41,59,0.7); border-radius:10px; padding:10px; border:1px solid rgba(59,130,246,0.06); }
+.theme-exact .creature-card .creature-image { width:100%; height:auto; border-radius:8px; }
+.theme-exact .no-creatures, .theme-exact .no-species-found { color:#94a3b8; padding:16px; }
+

@@ -6,400 +6,6 @@
   <title>🦕 Dino Nuggies Nursery</title>
   <link rel="stylesheet" href="main.css">
   <link rel="stylesheet" href="main-additional.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-            color: #e2e8f0;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-
-        /* Header Styles */
-        .header {
-            background: rgba(15, 23, 42, 0.95);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(59, 130, 246, 0.2);
-            padding: 20px;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .header-content {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .header-top {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 20px;
-            margin-bottom: 12px;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 28px;
-            font-weight: 700;
-            color: #3b82f6;
-        }
-        
-        /* Test emoji visibility */
-        .emoji-test {
-            color: #fff;
-            font-size: 20px;
-        }
-
-        .logo-icon {
-            width: 48px;
-            height: 48px;
-            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-        }
-
-        .header-actions {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            padding: 10px 20px;
-            border-radius: 8px;
-            border: none;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            text-decoration: none;
-        }
-
-        .btn-primary {
-            background: #3b82f6;
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: #2563eb;
-        }
-
-        .btn-secondary {
-            background: rgba(59, 130, 246, 0.1);
-            color: #3b82f6;
-            border: 1px solid rgba(59, 130, 246, 0.2);
-        }
-
-        .btn-secondary:hover {
-            background: rgba(59, 130, 246, 0.2);
-        }
-
-        .btn-danger {
-            background: rgba(239, 68, 68, 0.1);
-            color: #ef4444;
-            border: 1px solid rgba(239, 68, 68, 0.2);
-        }
-
-        .btn-danger:hover {
-            background: rgba(239, 68, 68, 0.2);
-        }
-
-        .header-subtitle {
-            font-size: 14px;
-            color: #64748b;
-            margin-bottom: 4px;
-        }
-
-        .header-status {
-            font-size: 12px;
-            color: #64748b;
-        }
-
-        /* Stats Dashboard */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 24px 20px;
-        }
-
-        .stat-card {
-            background: rgba(30, 41, 59, 0.8);
-            border-radius: 12px;
-            padding: 24px;
-            text-align: center;
-            border: 1px solid rgba(59, 130, 246, 0.1);
-            transition: all 0.3s ease;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-2px);
-            border-color: rgba(59, 130, 246, 0.3);
-        }
-
-        .stat-number {
-            font-size: 32px;
-            font-weight: 700;
-            color: #3b82f6;
-            margin-bottom: 8px;
-        }
-
-        .stat-label {
-            font-size: 14px;
-            color: #94a3b8;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        /* Main Content */
-        .main-content {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        /* Species Controls */
-        .species-controls {
-            display: flex;
-            gap: 16px;
-            margin-bottom: 24px;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-
-        .search-box {
-            flex: 1;
-            min-width: 300px;
-            position: relative;
-        }
-
-        .search-input {
-            width: 100%;
-            padding: 12px 16px 12px 44px;
-            background: rgba(30, 41, 59, 0.8);
-            border: 1px solid rgba(59, 130, 246, 0.2);
-            border-radius: 8px;
-            color: #e2e8f0;
-            font-size: 14px;
-        }
-
-        .search-input::placeholder {
-            color: #64748b;
-        }
-
-        .search-icon {
-            position: absolute;
-            left: 16px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #64748b;
-        }
-
-        .filter-select {
-            padding: 12px 16px;
-            background: rgba(30, 41, 59, 0.8);
-            border: 1px solid rgba(59, 130, 246, 0.2);
-            border-radius: 8px;
-            color: #e2e8f0;
-            cursor: pointer;
-        }
-
-        /* Species Grid */
-        .species-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 24px;
-            margin-bottom: 40px;
-        }
-
-        .species-card {
-            background: rgba(30, 41, 59, 0.8);
-            border-radius: 16px;
-            overflow: hidden;
-            border: 1px solid rgba(59, 130, 246, 0.1);
-            transition: all 0.3s ease;
-            cursor: pointer;
-            position: relative;
-        }
-
-        .species-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
-            border-color: rgba(59, 130, 246, 0.3);
-        }
-
-        .species-header {
-            position: relative;
-            height: 140px;
-            background: linear-gradient(135deg, #1e293b, #334155);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-
-        .species-icon {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: rgba(59, 130, 246, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3rem;
-            border: 3px solid rgba(59, 130, 246, 0.2);
-        }
-
-        .rarity-badge {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            padding: 6px 12px;
-            border-radius: 12px;
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .rarity-legendary { 
-            background: linear-gradient(135deg, #f59e0b, #d97706); 
-            color: #fff;
-            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
-        }
-
-        .creature-count {
-            position: absolute;
-            top: 12px;
-            left: 12px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            background: rgba(0, 0, 0, 0.6);
-            padding: 6px 12px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        .species-content {
-            padding: 20px;
-        }
-
-        .species-name {
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 8px;
-            color: #e2e8f0;
-        }
-
-        .species-category {
-            display: inline-block;
-            padding: 4px 12px;
-            background: rgba(59, 130, 246, 0.2);
-            color: #3b82f6;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 600;
-            text-transform: uppercase;
-            margin-bottom: 12px;
-        }
-
-        .species-description {
-            color: #94a3b8;
-            font-size: 14px;
-            line-height: 1.5;
-        }
-
-        /* Species Badges */
-        .species-badges {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 4px;
-            margin: 12px 0;
-            justify-content: flex-start;
-        }
-
-        .badge-more {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            min-width: 20px;
-            height: 20px;
-            background: rgba(59, 130, 246, 0.2);
-            color: #3b82f6;
-            border-radius: 10px;
-            font-size: 10px;
-            font-weight: 600;
-            padding: 2px 6px;
-        }
-
-        /* Species Stats */
-        .species-stats {
-            margin: 16px 0;
-            padding: 12px;
-            background: rgba(15, 23, 42, 0.6);
-            border-radius: 8px;
-            border: 1px solid rgba(59, 130, 246, 0.1);
-        }
-
-        .stat-row {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 4px 0;
-            border-bottom: 1px solid rgba(59, 130, 246, 0.05);
-        }
-
-        .stat-row:last-child {
-            border-bottom: none;
-        }
-
-        .stat-icon {
-            font-size: 14px;
-            width: 20px;
-            text-align: center;
-        }
-
-        .stat-label {
-            flex: 1;
-            font-size: 12px;
-            color: #94a3b8;
-            font-weight: 500;
-        }
-
-        .stat-value {
-            font-size: 13px;
-            color: #e2e8f0;
-            font-weight: 600;
-            min-width: 40px;
-            text-align: right;
-            padding: 2px 6px;
-            background: rgba(59, 130, 246, 0.1);
-            border-radius: 4px;
-            border: 1px solid rgba(59, 130, 246, 0.2);
-        }
-
-        /* Modal Styles */
         .modal {
             display: none;
             position: fixed;
@@ -1211,7 +817,7 @@
         <div class="form-row cols-2">
           <div class="form-group">
             <label class="form-label">Server Type</label>
-            <select class="form-control" id="serverType">
+            <select class="form-control" id="serverType" title="Select server type">
               <option value="Official">Official</option>
               <option value="Unofficial">Unofficial</option>
               <option value="Single Player">Single Player</option>
@@ -1219,7 +825,7 @@
           </div>
           <div class="form-group">
             <label class="form-label">Primary Map</label>
-            <select class="form-control" id="primaryMap">
+            <select class="form-control" id="primaryMap" title="Select primary map">
               <option value="The Island">The Island</option>
               <option value="The Center">The Center</option>
               <option value="Scorched Earth">Scorched Earth</option>
@@ -1280,7 +886,7 @@
     </div>
   </div>
   <!-- Register Page -->
-  <div id="registerPage" class="register-page" style="display:none;">
+  <div id="registerPage" class="register-page hidden">
     <div class="register-container">
       <h1 class="register-title">Register</h1>
       <form id="registerForm" onsubmit="return handleRegister(event)">
@@ -1336,7 +942,7 @@
                         </div>
                         <div class="form-group">
                             <label class="form-label">Gender</label>
-                            <select class="form-control" id="creatureGender">
+                            <select class="form-control" id="creatureGender" title="Select creature gender">
                                 <option value="Male">Male</option>
                                 <option value="Female">Female</option>
                             </select>
@@ -1350,10 +956,11 @@
                         <div class="form-group">
                             <label class="form-label">Creature Image</label>
                             <div class="image-upload">
-                                <input type="file" id="creatureImage" accept="image/*" onchange="handleImageUpload(this)">
+                                <label for="creatureImage" class="visually-hidden">Upload Creature Image</label>
+                                <input type="file" id="creatureImage" accept="image/*" onchange="handleImageUpload(this)" title="Upload creature image" placeholder="Upload creature image">
                                 <div class="image-upload-placeholder" id="imagePreview">
                                     <div>📷</div>
-                                    <div style="font-size: 12px;">Upload Image</div>
+                                    <div class="upload-image-label">Upload Image</div>
                                 </div>
                             </div>
                         </div>
@@ -1363,7 +970,7 @@
                 <!-- Base Stats -->
                 <div class="form-section">
                     <div class="section-title">📊 Base Stats (Wild Points)</div>
-                    <p style="margin-bottom: 16px; color: #94a3b8; font-size: 14px;">Enter the stat points for each stat (used for Prized Bloodline badges)</p>
+                    <p class="stat-info">Enter the stat points for each stat (used for Prized Bloodline badges)</p>
                     <div class="form-row cols-3">
                         <div class="form-group">
                             <label class="form-label">Health Points</label>
@@ -1397,7 +1004,7 @@
                 <!-- Mutations -->
                 <div class="form-section">
                     <div class="section-title">🧬 Mutations</div>
-                    <p style="margin-bottom: 16px; color: #94a3b8; font-size: 14px;">Enter mutation points (remember: 1 mutation = 2 levels)</p>
+                    <p class="stat-info">Enter mutation points (remember: 1 mutation = 2 levels)</p>
                     <div class="form-row cols-3">
                         <div class="form-group">
                             <label class="form-label">Health Mutations</label>
@@ -1431,7 +1038,7 @@
                 <!-- Domestic Levels -->
                 <div class="form-section">
                     <div class="section-title">📈 Domestic Level Distribution</div>
-                    <p style="margin-bottom: 16px; color: #94a3b8; font-size: 14px;">Track how many levels you've allocated to each stat after taming</p>
+                    <p class="stat-info">Track how many levels you've allocated to each stat after taming</p>
                     <div class="form-row cols-3">
                         <div class="form-group">
                             <label class="form-label">Health Levels</label>

@@ -56,3 +56,26 @@
 #creaturePage {
     display: none;
 }
+
+/* Safari/iOS support for backdrop-filter */
+.header {
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+}
+.modal {
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+}
+
+/* Utility classes */
+.hidden {
+    display: none !important;
+}
+.upload-image-label {
+    font-size: 12px;
+}
+.stat-info {
+    margin-bottom: 16px;
+    color: #94a3b8;
+    font-size: 14px;
+}

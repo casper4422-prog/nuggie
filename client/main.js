@@ -58,8 +58,8 @@
 
 		if (removedCount) console.log(`[SPA] aggressive cleanup removed ${removedCount} suspicious nodes`);
 
-		// Unhide the document after a short delay so CSS/JS can initialize.
-		// Also ensure we always unhide after 1500ms even if something fails.
+		// Mark document ready so index.html CSS shows it. Also restore previous visibility as a fallback.
+		try { document.documentElement.setAttribute('data-ready', 'true'); } catch (e) {}
 		const restore = () => { try { document.documentElement.style.visibility = prevVis || ''; } catch (e){} };
 		setTimeout(restore, 250);
 		setTimeout(restore, 1500);

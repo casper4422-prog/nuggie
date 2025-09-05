@@ -52,7 +52,25 @@ window.showRegisterPage = showRegisterPage;
 
 function isLoggedIn() {
 	const token = localStorage.getItem('token');
-	return typeof token === 'string' && token.trim().length > 0;
+	if (!token || typeof token !== 'string') return false;
+	// Allow forcing the login page via URL param for debugging
+	try {
+		const params = new URLSearchParams(window.location.search);
+		if (params.get('forceLogin') === '1') {
+			console.log('[SPA] forceLogin param detected; treating as logged out');
+			return false;
+		}
+	} catch (e) {
+		// ignore
+	}
+	// Basic JWT format check (three dot-separated parts). If it doesn't look like a JWT, treat as logged out.
+	const parts = token.split('.');
+	if (parts.length !== 3) {
+		console.warn('[SPA] token present but not a valid JWT, treating as logged out', token);
+		return false;
+	}
+	// token looks like a JWT; treat as logged in (we could validate with server if desired)
+	return true;
 }
 function handleAuthClick() {
 	if (isLoggedIn()) {

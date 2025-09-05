@@ -156,7 +156,15 @@ document.addEventListener('DOMContentLoaded', () => {
 // --- SPECIES_DATABASE startup helper ---
 // Wait for the external species-database.js to set window.SPECIES_DATABASE.
 // Avoid TDZ and race conditions by polling with a short timeout.
-let SPECIES_DATABASE = {};
+// Do NOT redeclare SPECIES_DATABASE if the external file already declares it (const).
+if (typeof SPECIES_DATABASE === 'undefined') {
+	// ensure a fallback storage object exists
+	window.__SPECIES_DB = window.__SPECIES_DB || {};
+	var SPECIES_DATABASE = window.__SPECIES_DB; // var so it attaches to global if absent
+} else {
+	// external file already declared SPECIES_DATABASE (likely const). Mirror into __SPECIES_DB
+	try { window.__SPECIES_DB = window.__SPECIES_DB || SPECIES_DATABASE; } catch (e) {}
+}
 function waitForSpeciesDB(timeoutMs = 2000, intervalMs = 50) {
 	return new Promise((resolve) => {
 		const start = Date.now();
@@ -180,9 +188,13 @@ function waitForSpeciesDB(timeoutMs = 2000, intervalMs = 50) {
 (async function initSpeciesDBProbe() {
 	try {
 		const db = await waitForSpeciesDB(2000, 40);
-		SPECIES_DATABASE = db || {};
+		// Update fallback storage without overwriting an existing SPECIES_DATABASE const.
+		try { window.__SPECIES_DB = db || window.__SPECIES_DB || {}; } catch (e) {}
+		if (typeof SPECIES_DATABASE === 'undefined') {
+			try { var SPECIES_DATABASE = window.__SPECIES_DB; } catch (e) {}
+		}
 		// ensure global reflects resolved DB so other modules can access it
-		try { window.SPECIES_DATABASE = window.SPECIES_DATABASE || SPECIES_DATABASE; } catch (e) {}
+		try { window.SPECIES_DATABASE = window.SPECIES_DATABASE || window.__SPECIES_DB; } catch (e) {}
 		const count = Object.keys(SPECIES_DATABASE || {}).length;
 		console.log(`[SPA] species DB resolved: ${count} species`);
 		if (count === 0) console.warn('[SPA] species database appears empty or failed to load before timeout');

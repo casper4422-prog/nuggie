@@ -1,3 +1,39 @@
+// Defensive guard: remove stray large text nodes or elements that contain inline JS
+// (some deployments accidentally render recovered inline JS as visible text).
+function _removeStrayInlineJsText() {
+	try {
+		const body = document && document.body;
+		if (!body) return;
+		const suspicious = ['function openCreatureModal', 'SPECIES_DATABASE', 'const isHighestStat', 'BadgeSystem', 'document.getElementById('];
+		const nodes = Array.from(body.childNodes);
+		let removed = 0;
+		nodes.forEach(node => {
+			if (!node) return;
+			// Remove very large text nodes that likely are code
+			if (node.nodeType === Node.TEXT_NODE) {
+				const txt = (node.textContent || '').trim();
+				if (txt.length > 300 && suspicious.some(p => txt.includes(p))) {
+					node.remove();
+					removed++;
+				}
+			}
+			// If an element contains raw code as its innerText, remove it
+			if (node.nodeType === Node.ELEMENT_NODE) {
+				const inner = (node.innerText || '').trim();
+				if (inner.length > 300 && suspicious.some(p => inner.includes(p))) {
+					node.remove();
+					removed++;
+				}
+			}
+		});
+		if (removed) console.log(`[SPA] removed ${removed} stray inline text node(s) from body`);
+	} catch (e) {
+		console.warn('[SPA] _removeStrayInlineJsText error', e);
+	}
+}
+// Run early so it removes visible garbage before the SPA shows UI
+_removeStrayInlineJsText();
+
 // --- SPA Logic and Event Handlers (migrated from index.html) ---
 function showLoginPage() {
 	console.log('[SPA] showLoginPage called');

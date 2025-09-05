@@ -66240,7 +66240,8 @@ window.showLoginPage = showLoginPage;
 window.showRegisterPage = showRegisterPage;
 
 function isLoggedIn() {
-  return !!localStorage.getItem('token');
+  const token = localStorage.getItem('token');
+  return typeof token === 'string' && token.trim().length > 0;
 }
 function handleAuthClick() {
   if (isLoggedIn()) {

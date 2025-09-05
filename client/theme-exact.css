@@ -61,3 +61,33 @@
 .theme-exact .creature-card .creature-image { width:100%; height:auto; border-radius:8px; }
 .theme-exact .no-creatures, .theme-exact .no-species-found { color:#94a3b8; padding:16px; }
 
+/* Modal styles (overlay, centered content) */
+.theme-exact .modal { position: fixed; inset: 0; display: none; align-items: center; justify-content: center; background: rgba(2,6,23,0.6); z-index: 1200; padding: 24px; }
+.theme-exact .modal.active { display: flex; }
+.theme-exact .modal-content { background: rgba(15,23,42,0.98); border-radius: 12px; width: 100%; max-width: 960px; box-shadow: 0 12px 48px rgba(2,6,23,0.6); color: #e2e8f0; overflow: hidden; }
+.theme-exact .modal-header { display:flex; align-items:center; justify-content:space-between; padding:16px 20px; border-bottom: 1px solid rgba(59,130,246,0.04); }
+.theme-exact .modal-title { font-size:18px; font-weight:700; color:#fff; }
+.theme-exact .close-btn { background: transparent; border: none; font-size:22px; color:#94a3b8; cursor: pointer; padding:6px; border-radius:6px; }
+.theme-exact .close-btn:hover { color:#fff; background: rgba(255,255,255,0.02); }
+.theme-exact .modal-body { padding: 18px 20px; max-height: 70vh; overflow: auto; }
+.theme-exact .modal-footer { display:flex; gap:8px; justify-content:flex-end; padding: 12px 20px; border-top: 1px solid rgba(59,130,246,0.04); }
+
+/* Form layout helpers used by modal */
+.theme-exact .form-section { margin-bottom: 16px; }
+.theme-exact .section-title { font-weight:700; color:#e2e8f0; margin-bottom:8px; }
+.theme-exact .form-row { display:flex; gap:12px; margin-bottom:12px; }
+.theme-exact .form-row.cols-2 .form-group { flex:1; }
+.theme-exact .form-row.cols-3 .form-group { flex:1; }
+.theme-exact .form-group { display:flex; flex-direction:column; gap:6px; }
+.theme-exact .form-label { font-size:13px; color:#94a3b8; }
+.theme-exact .form-control { padding:8px 10px; border-radius:8px; background: rgba(30,41,59,0.6); border: 1px solid rgba(59,130,246,0.06); color:#e2e8f0; }
+
+/* Image upload preview */
+.theme-exact .image-upload { display:flex; align-items:center; gap:12px; }
+.theme-exact .image-upload input[type="file"] { display:block; }
+.theme-exact .image-upload-placeholder { display:flex; align-items:center; justify-content:center; gap:8px; width:120px; height:80px; border-radius:8px; background: rgba(30,41,59,0.5); border:1px dashed rgba(59,130,246,0.06); color:#94a3b8; }
+.theme-exact .image-upload-preview { width:120px; height:80px; object-fit:cover; border-radius:8px; }
+
+/* Badge preview */
+.theme-exact .badge-preview-content { padding:12px; background: rgba(15,23,42,0.6); border-radius:8px; border:1px solid rgba(59,130,246,0.06); color:#94a3b8; }
+

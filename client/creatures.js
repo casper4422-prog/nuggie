@@ -1,5 +1,24 @@
 // Creature modal and persistence helpers (moved out of main.js for clarity)
 (function(){
+  // Ensure modal containers exist at document root so injected HTML becomes overlayed, not appended inline
+  try {
+    if (typeof document !== 'undefined') {
+      if (!document.getElementById('creatureModal')) {
+        const m = document.createElement('div');
+        m.id = 'creatureModal';
+        m.className = 'modal';
+        m.setAttribute('aria-hidden', 'true');
+        document.body.appendChild(m);
+      }
+      if (!document.getElementById('creatureDetailModal')) {
+        const d = document.createElement('div');
+        d.id = 'creatureDetailModal';
+        d.className = 'modal';
+        d.setAttribute('aria-hidden', 'true');
+        document.body.appendChild(d);
+      }
+    }
+  } catch (e) { /* non-browser context */ }
   // Create or update a creature modal form inside #creatureModal (full Old Nugget UI)
   function openCreatureModal(creature = null) {
   if (!window.appState) window.appState = { creatures: [] };

@@ -66801,52 +66801,6 @@ const SPECIES_DATABASE = {
         }
 
         // Initialize Application
-        function initializeApp() {
-            console.log('Initializing app...');
-            
-            // Check if required elements exist
-            const speciesPage = document.getElementById('speciesPage');
-            const creaturePage = document.getElementById('creaturePage');
-            const speciesGrid = document.getElementById('speciesGrid');
-            const tribeModal = document.getElementById('tribeModal');
-            
-            if (!speciesPage) {
-                console.error('speciesPage element not found');
-                return;
-            }
-            if (!creaturePage) {
-                console.error('creaturePage element not found');
-                return;
-            }
-            if (!speciesGrid) {
-                console.error('speciesGrid element not found');
-                return;
-            }
-            if (!tribeModal) {
-                console.error('tribeModal element not found');
-                return;
-            }
-            
-            // Ensure the species page is visible and creature page is hidden
-            speciesPage.style.display = 'block';
-            creaturePage.style.display = 'none';
-            
-            console.log('Pages visibility set');
-            
-            updateHeaderInfo();
-            loadSpeciesGrid();
-            updateStatsDashboard();
-            
-            console.log('Initial functions called');
-            
-            // Check if tribe settings exist, if not show modal
-            if (!appState.tribeSettings.leader) {
-                console.log('No tribe leader found, will show modal');
-                setTimeout(() => openTribeModal(), 500);
-            }
-            
-            console.log('App initialization complete');
-        }
 
         // Tribe Settings Management
         function openTribeModal() {
@@ -67793,7 +67747,7 @@ const SPECIES_DATABASE = {
         }
 
         // Initialize the application
-        document.addEventListener('DOMContentLoaded', initializeApp);
+  // Only use new SPA navigation logic
     </script>
 </script>
 <script>

@@ -156,14 +156,11 @@ document.addEventListener('DOMContentLoaded', () => {
 // --- SPECIES_DATABASE startup helper ---
 // Wait for the external species-database.js to set window.SPECIES_DATABASE.
 // Avoid TDZ and race conditions by polling with a short timeout.
-// Do NOT redeclare SPECIES_DATABASE if the external file already declares it (const).
-if (typeof SPECIES_DATABASE === 'undefined') {
-	// ensure a fallback storage object exists
-	window.__SPECIES_DB = window.__SPECIES_DB || {};
-	var SPECIES_DATABASE = window.__SPECIES_DB; // var so it attaches to global if absent
-} else {
-	// external file already declared SPECIES_DATABASE (likely const). Mirror into __SPECIES_DB
-	try { window.__SPECIES_DB = window.__SPECIES_DB || SPECIES_DATABASE; } catch (e) {}
+// NOTE: do NOT declare a variable named SPECIES_DATABASE here because the
+// external file may declare it (as const). Use a safe accessor instead.
+window.__SPECIES_DB = window.__SPECIES_DB || {};
+function getSpeciesDB() {
+	return (typeof window !== 'undefined') ? (window.SPECIES_DATABASE || window.__SPECIES_DB || {}) : (window.__SPECIES_DB || {});
 }
 function waitForSpeciesDB(timeoutMs = 2000, intervalMs = 50) {
 	return new Promise((resolve) => {
@@ -184,18 +181,19 @@ function waitForSpeciesDB(timeoutMs = 2000, intervalMs = 50) {
 	});
 }
 
+function speciesValues() {
+	try { return Object.values(getSpeciesDB() || {}); } catch (e) { return []; }
+}
+
 // Kick off async probe but don't block the rest of the script sync execution.
 (async function initSpeciesDBProbe() {
 	try {
 		const db = await waitForSpeciesDB(2000, 40);
 		// Update fallback storage without overwriting an existing SPECIES_DATABASE const.
 		try { window.__SPECIES_DB = db || window.__SPECIES_DB || {}; } catch (e) {}
-		if (typeof SPECIES_DATABASE === 'undefined') {
-			try { var SPECIES_DATABASE = window.__SPECIES_DB; } catch (e) {}
-		}
-		// ensure global reflects resolved DB so other modules can access it
+		// ensure global reflects resolved DB so other modules can access it (do not redeclare const)
 		try { window.SPECIES_DATABASE = window.SPECIES_DATABASE || window.__SPECIES_DB; } catch (e) {}
-		const count = Object.keys(SPECIES_DATABASE || {}).length;
+		const count = Object.keys(getSpeciesDB() || {}).length;
 		console.log(`[SPA] species DB resolved: ${count} species`);
 		if (count === 0) console.warn('[SPA] species database appears empty or failed to load before timeout');
 		// If the app is already showing the main app, refresh the species list
@@ -360,7 +358,7 @@ function filterSpecies() {
 
 	const grid = document.getElementById('speciesGrid');
 	if (!grid) return;
-	if (!SPECIES_DATABASE) {
+	if (!Object.keys(getSpeciesDB() || {}).length) {
 		grid.innerHTML = '<div class="no-species-found">Species database unavailable.</div>';
 		return;
 	}
@@ -368,7 +366,7 @@ function filterSpecies() {
 	grid.innerHTML = '';
 	let filteredCount = 0;
 
-	Object.values(SPECIES_DATABASE).forEach(species => {
+	speciesValues().forEach(species => {
 		if (!species || !species.name) return;
 
 		const matchesSearch = !searchTerm || (
@@ -590,21 +588,13 @@ try {
 window.appState = appState;
 
 // --- SPECIES_DATABASE wiring (non-destructive) ---
-// The external `species-database.js` may set `window.SPECIES_DATABASE` early.
-// We must not clobber a SPECIES_DATABASE already initialized by our startup probe.
+// Ensure fallback storage exists; avoid touching any variable named SPECIES_DATABASE
 if (typeof window !== 'undefined') {
 	if (window.SPECIES_DATABASE && Object.keys(window.SPECIES_DATABASE || {}).length > 0) {
-		// Use the species DB defined in the separate file
 		window.__SPECIES_DB = window.SPECIES_DATABASE;
 	} else {
-		// If nothing is present yet, ensure window.__SPECIES_DB exists so other code can read it.
 		window.__SPECIES_DB = window.__SPECIES_DB || {};
 	}
-}
-
-// Only assign the local alias if it hasn't been resolved by the startup probe.
-if (!SPECIES_DATABASE || Object.keys(SPECIES_DATABASE || {}).length === 0) {
-	SPECIES_DATABASE = window.__SPECIES_DB || {};
 }
 
 // saveCreature: accepts either a full creature object or a wrapper from creatures.js

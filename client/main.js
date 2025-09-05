@@ -13,9 +13,15 @@ function showLoginPage() {
 	}
 	landing.style.display = '';
 	landing.classList.remove('hidden');
+	try { landing.setAttribute('aria-hidden', 'false'); } catch (e) {}
+
 	register.style.display = 'none';
 	register.classList.add('hidden');
+	try { register.setAttribute('aria-hidden', 'true'); } catch (e) {}
+
 	mainApp.style.display = 'none';
+	mainApp.classList.add('hidden');
+	try { mainApp.setAttribute('aria-hidden', 'true'); } catch (e) {}
 	console.log('[SPA] Login page should now be visible');
 }
 function showRegisterPage() {
@@ -29,9 +35,15 @@ function showRegisterPage() {
 	}
 	landing.style.display = 'none';
 	landing.classList.add('hidden');
+	try { landing.setAttribute('aria-hidden', 'true'); } catch (e) {}
+
 	register.style.display = '';
 	register.classList.remove('hidden');
+	try { register.setAttribute('aria-hidden', 'false'); } catch (e) {}
+
 	mainApp.style.display = 'none';
+	mainApp.classList.add('hidden');
+	try { mainApp.setAttribute('aria-hidden', 'true'); } catch (e) {}
 	// Ensure the register form is rendered and wired when the page is shown
 	renderRegisterForm();
 	console.log('[SPA] Register page should now be visible');
@@ -47,9 +59,15 @@ function showMainApp() {
 	}
 	landing.style.display = 'none';
 	landing.classList.add('hidden');
+	try { landing.setAttribute('aria-hidden', 'true'); } catch (e) {}
+
 	register.style.display = 'none';
 	register.classList.add('hidden');
+	try { register.setAttribute('aria-hidden', 'true'); } catch (e) {}
+
 	mainApp.style.display = '';
+	mainApp.classList.remove('hidden');
+	try { mainApp.setAttribute('aria-hidden', 'false'); } catch (e) {}
 	console.log('[SPA] Main app should now be visible');
 }
 window.showLoginPage = showLoginPage;
@@ -116,6 +134,12 @@ window.goToMyNuggies = goToMyNuggies;
 
 document.addEventListener('DOMContentLoaded', () => {
 	console.log('[SPA] DOMContentLoaded fired');
+	// Mark document ready ASAP so CSS hide-until-ready doesn't leave users staring
+	try {
+		document.documentElement.setAttribute('data-ready', 'true');
+		// also clear any inline visibility style to be safe
+		document.documentElement.style.visibility = '';
+	} catch (e) { /* noop */ }
 	try {
 		// Attach UI wiring
 		// Ensure register form markup exists so its handlers can be attached when needed
@@ -240,6 +264,8 @@ async function handleLogin(event) {
 		const data = await readBody(res);
 		if (res.ok && data && data.token) {
 			localStorage.setItem('token', data.token);
+			// Ensure the document is visible and the main app is shown
+			try { document.documentElement.setAttribute('data-ready', 'true'); } catch (e) {}
 			showMainApp();
 			updateTribeHeader();
 			loadSpeciesPage();

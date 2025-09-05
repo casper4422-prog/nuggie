@@ -193,17 +193,74 @@
   function openCreatureDetailModal(creature) {
     const modal = document.getElementById('creatureDetailModal');
     if (!modal) return console.warn('creatureDetailModal missing');
-    modal.innerHTML = `
-      <div class="modal-inner">
-        <h3 id="creatureDetailTitle">${creature.name}</h3>
-        <div id="creatureDetailContent">${creature.notes || ''}</div>
-        <div class="modal-actions">
-          <button id="closeCreatureDetailBtn" class="btn btn-secondary">Close</button>
+      // build a richer detail view including all six stats, mutations and domestic levels
+      const created = creature.createdAt ? new Date(creature.createdAt).toLocaleString() : '';
+      const updated = creature.updatedAt ? new Date(creature.updatedAt).toLocaleString() : '';
+      const stats = creature.baseStats || {};
+      const muts = creature.mutations || {};
+      const levels = creature.domesticLevels || {};
+      modal.innerHTML = `
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3 class="modal-title" id="creatureDetailTitle">${creature.name}</h3>
+            <button class="close-btn" id="closeCreatureDetailBtn">&times;</button>
+          </div>
+          <div class="modal-body">
+            <div class="creature-detail-header">
+              <div class="creature-detail-image-col">${creature.image ? `<img src="${creature.image}" class="creature-detail-image">` : `<div class="creature-detail-image-placeholder">${(SPECIES_DATABASE && SPECIES_DATABASE[creature.species]?.icon) || '🦖'}</div>`}</div>
+              <div class="creature-detail-content-col">
+                <div class="creature-detail-title-row">
+                  <h2 class="creature-detail-title">${creature.name}</h2>
+                  <div class="creature-gender-badge">${creature.gender || ''}</div>
+                </div>
+                <div class="creature-detail-badges-row">${(window.BadgeSystem ? (BadgeSystem.generateBadgeHTML ? (BadgeSystem.generateBadgeHTML(creature) || '') : '') : '')}</div>
+                <div class="creature-detail-meta">Level ${creature.level || 1} • ${creature.species || ''}</div>
+                <div class="creature-detail-notes">${creature.notes || ''}</div>
+              </div>
+            </div>
+
+            <div class="creature-detail-stats-grid">
+              <div>
+                <div class="creature-detail-stats-title">Base Stats</div>
+                <div class="stat-table-grid">
+                  <div class="stat-table-cell"><div class="stat-table-label">Health</div><div class="stat-table-value">${stats.Health || 0}</div></div>
+                  <div class="stat-table-cell"><div class="stat-table-label">Stamina</div><div class="stat-table-value">${stats.Stamina || 0}</div></div>
+                  <div class="stat-table-cell"><div class="stat-table-label">Oxygen</div><div class="stat-table-value">${stats.Oxygen || 0}</div></div>
+                  <div class="stat-table-cell"><div class="stat-table-label">Food</div><div class="stat-table-value">${stats.Food || 0}</div></div>
+                  <div class="stat-table-cell"><div class="stat-table-label">Weight</div><div class="stat-table-value">${stats.Weight || 0}</div></div>
+                  <div class="stat-table-cell"><div class="stat-table-label">Melee</div><div class="stat-table-value">${stats.Melee || 0}</div></div>
+                </div>
+              </div>
+              <div>
+                <div class="creature-detail-stats-title">Mutations & Domestic</div>
+                <div class="stat-table-grid">
+                  <div class="stat-table-cell"><div class="stat-table-label">Health Mut</div><div class="stat-table-value">${muts.Health || 0}</div></div>
+                  <div class="stat-table-cell"><div class="stat-table-label">Stamina Mut</div><div class="stat-table-value">${muts.Stamina || 0}</div></div>
+                  <div class="stat-table-cell"><div class="stat-table-label">Oxygen Mut</div><div class="stat-table-value">${muts.Oxygen || 0}</div></div>
+                  <div class="stat-table-cell"><div class="stat-table-label">Food Mut</div><div class="stat-table-value">${muts.Food || 0}</div></div>
+                  <div class="stat-table-cell"><div class="stat-table-label">Weight Mut</div><div class="stat-table-value">${muts.Weight || 0}</div></div>
+                  <div class="stat-table-cell"><div class="stat-table-label">Melee Mut</div><div class="stat-table-value">${muts.Melee || 0}</div></div>
+                </div>
+                <div style="margin-top:12px;">Domestic levels: H ${levels.Health || 0} • S ${levels.Stamina || 0} • O ${levels.Oxygen || 0} • F ${levels.Food || 0} • W ${levels.Weight || 0} • M ${levels.Melee || 0}</div>
+              </div>
+            </div>
+
+            <div style="margin-top:12px; color:#94a3b8; font-size:12px;">Created: ${created} • Updated: ${updated}</div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" id="closeCreatureDetailBtnFoot">Close</button>
+            <button class="btn btn-primary" id="editCreatureFromDetail">Edit</button>
+          </div>
         </div>
-      </div>
-    `;
+      `;
     const closeBtn = document.getElementById('closeCreatureDetailBtn');
-    if (closeBtn) closeBtn.onclick = () => closeCreatureDetailModal();
+      // wire both close buttons
+      const closeBtnHeader = document.getElementById('closeCreatureDetailBtn');
+      const closeBtnFoot = document.getElementById('closeCreatureDetailBtnFoot');
+      if (closeBtnHeader) closeBtnHeader.onclick = () => closeCreatureDetailModal();
+      if (closeBtnFoot) closeBtnFoot.onclick = () => closeCreatureDetailModal();
+      const editBtn = document.getElementById('editCreatureFromDetail');
+      if (editBtn) editBtn.onclick = () => { closeCreatureDetailModal(); openCreatureModal(creature); };
     modal.classList.add('active');
     modal.setAttribute('aria-hidden', 'false');
   }
@@ -520,31 +577,58 @@ function loadCreaturesGrid(speciesName) {
     grid.innerHTML = '<div class="no-creatures">No creatures saved for this species.</div>';
     return;
   }
-
   creatures.forEach(creature => {
+    const isList = grid.classList.contains('list-view');
     const card = document.createElement('div');
-    card.className = 'creature-card';
+    card.className = 'creature-card' + (isList ? ' list-row' : '');
     card.tabIndex = 0;
+
+    const stats = creature.baseStats || {};
+    const muts = creature.mutations || {};
+
     card.innerHTML = `
       <div class="creature-card-header">
-        ${creature.image ? `<img class="creature-image" src="${creature.image}" alt="${creature.name}">` : `<div class="creature-image-placeholder">${(SPECIES_DATABASE && SPECIES_DATABASE[creature.species]?.icon) || '🦖'}</div>`}
-      </div>
-      <div class="creature-card-content">
-        <div class="creature-name">${creature.name}</div>
-        <div class="creature-meta"><span>Level ${creature.level || 1}</span> <span>${creature.gender || 'Unknown'}</span></div>
-        <div class="creature-stats">
-          <div class="stat-item"><div class="stat-label"><span class="stat-icon">❤️</span> Health</div><div class="stat-value">${creature.baseStats?.Health || 0}</div></div>
-          <div class="stat-item"><div class="stat-label"><span class="stat-icon">🏃</span> Stamina</div><div class="stat-value">${creature.baseStats?.Stamina || 0}</div></div>
-          <div class="stat-item"><div class="stat-label"><span class="stat-icon">💨</span> Oxygen</div><div class="stat-value">${creature.baseStats?.Oxygen || 0}</div></div>
+        ${creature.image ? `<img class="creature-image" src="${creature.image}" alt="${creature.name}">` : `<div class="creature-image-placeholder">${(typeof SPECIES_DATABASE !== 'undefined' && SPECIES_DATABASE[creature.species]?.icon) || '🦖'}</div>`}
+        <div class="creature-card-main">
+          <div class="creature-name">${creature.name}</div>
+          <div class="creature-meta">Level ${creature.level || 1} • ${creature.gender || ''} • ${creature.species || ''}</div>
+          <div class="creature-stats">
+            <div class="stat-item"><div class="stat-label">❤️</div><div class="stat-value">${stats.Health || 0}</div></div>
+            <div class="stat-item"><div class="stat-label">🏃</div><div class="stat-value">${stats.Stamina || 0}</div></div>
+            <div class="stat-item"><div class="stat-label">💨</div><div class="stat-value">${stats.Oxygen || 0}</div></div>
+            <div class="stat-item"><div class="stat-label">🍖</div><div class="stat-value">${stats.Food || 0}</div></div>
+            <div class="stat-item"><div class="stat-label">⚖️</div><div class="stat-value">${stats.Weight || 0}</div></div>
+            <div class="stat-item"><div class="stat-label">🗡️</div><div class="stat-value">${stats.Melee || 0}</div></div>
+          </div>
+        </div>
+        <div class="creature-card-actions">
+          <button class="btn btn-secondary edit-creature" data-id="${creature.id}">Edit</button>
+          <button class="btn btn-danger delete-creature" data-id="${creature.id}">Delete</button>
         </div>
       </div>
     `;
+
+    // Edit and delete buttons
+    card.querySelectorAll('.edit-creature').forEach(b => b.addEventListener('click', (e) => { e.stopPropagation(); openCreatureModal(creature); }));
+    card.querySelectorAll('.delete-creature').forEach(b => b.addEventListener('click', (e) => { e.stopPropagation(); deleteCreature(creature.id); }));
 
     card.addEventListener('click', () => openCreatureDetailModal(creature));
     grid.appendChild(card);
   });
 }
 window.loadCreaturesGrid = loadCreaturesGrid;
+
+function deleteCreature(id) {
+  if (!id) return;
+  const idx = appState.creatures.findIndex(c => c.id === id);
+  if (idx === -1) return;
+  if (!confirm('Delete this creature?')) return;
+  appState.creatures.splice(idx,1);
+  try { localStorage.setItem('arkCreatures', JSON.stringify(appState.creatures || [])); } catch (e) {}
+  try { loadCreaturesGrid(appState.currentSpecies); } catch (e) {}
+  try { updateStatsDashboard(); } catch (e) {}
+}
+window.deleteCreature = deleteCreature;
 
 // Toggle between card/list views (based on Old Nugget UI)
 function setCreatureView(view) {

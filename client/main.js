@@ -1,5 +1,5 @@
-// Keep a minimal readiness marker for the CSS guard so the page isn't hidden.
-try { document.documentElement.setAttribute('data-ready', 'true'); } catch (e) {}
+// We'll set the readiness marker only after our exact theme CSS is loaded
+// to avoid the original UI flashing and then being overlapped by the injected UI.
 
 // --- SPA Logic and Event Handlers (migrated from index.html) ---
 function showLoginPage() {
@@ -134,32 +134,73 @@ window.goToMyNuggies = goToMyNuggies;
 
 document.addEventListener('DOMContentLoaded', () => {
 	console.log('[SPA] DOMContentLoaded fired');
-	// Mark document ready ASAP so CSS hide-until-ready doesn't leave users staring
-	try {
-		document.documentElement.setAttribute('data-ready', 'true');
-		// also clear any inline visibility style to be safe
-		document.documentElement.style.visibility = '';
-	} catch (e) { /* noop */ }
 
-	// Inject exact theme and header from Old Nugget.html
-	try {
-		var script = document.createElement('script');
-		script.src = 'ui-inject.js';
-		script.onload = function(){ console.log('[SPA] ui-inject.js loaded'); };
-		document.body.appendChild(script);
-	} catch (e) { console.warn('[SPA] failed to inject ui-inject.js', e); }
+	// Helper: resolve base path for assets relative to this script
+	function resolveBasePath() {
+		try {
+			var cur = document.currentScript && document.currentScript.src;
+			if (!cur) {
+				var scripts = document.getElementsByTagName('script');
+				cur = scripts[scripts.length-1] && scripts[scripts.length-1].src;
+			}
+			if (!cur) return './';
+			return cur.replace(/\/[^/]*$/, '/');
+		} catch (e) { return './'; }
+	}
 
-	// Dynamically load enhanced theme (keeps index.html small and avoids merge conflicts)
-	try {
-		const link = document.createElement('link');
-		link.rel = 'stylesheet';
-		link.href = 'theme-enhanced.css';
-		link.onload = () => { console.log('[SPA] theme-enhanced.css loaded'); };
-		link.onerror = () => { console.warn('[SPA] failed to load theme-enhanced.css'); };
-		document.head.appendChild(link);
-		// apply marker class to enable theme rules
-		document.documentElement.classList.add('theme-expanded');
-	} catch (e) { console.warn('[SPA] theme injection failed', e); }
+	// Load a stylesheet and return a promise resolved on load or after timeout
+	function loadStylesheet(href, timeoutMs = 2000) {
+		return new Promise((resolve) => {
+			try {
+				var link = document.createElement('link');
+				link.rel = 'stylesheet';
+				link.href = href;
+				var done = false;
+				link.onload = function() { if (!done) { done = true; resolve(true); } };
+				link.onerror = function() { if (!done) { done = true; resolve(false); } };
+				document.head.appendChild(link);
+				setTimeout(() => { if (!done) { done = true; resolve(false); } }, timeoutMs);
+			} catch (e) { resolve(false); }
+		});
+	}
+
+	// Inject the exact header markup into the main app area (replace existing header)
+	function injectExactHeader() {
+		var mainApp = document.getElementById('mainApp') || document.getElementById('mainContainer') || document.body;
+		if (!mainApp) return;
+		var oldHeader = mainApp.querySelector('.header');
+		if (oldHeader) oldHeader.remove();
+		var header = document.createElement('header');
+		header.className = 'header';
+		header.innerHTML = '<div class="header-content">' +
+			'<div class="header-top">' +
+				'<div class="logo"><div class="logo-icon">🦕</div>DINO NUGGIES</div>' +
+				'<div class="header-actions">' +
+					'<button class="btn btn-secondary" id="openTribeBtn">🏛️ Tribe Settings</button>' +
+				'</div>' +
+			'</div>' +
+			'<div class="header-subtitle">Ark Creature Management System Brought to You By Casper4422. Grow Your Armies Here!</div>' +
+			'<div class="header-status">Work in Progress, please report any issues or bugs to casper.4422</div>' +
+		'</div>';
+		if (mainApp.firstChild) mainApp.insertBefore(header, mainApp.firstChild);
+		else mainApp.appendChild(header);
+	}
+
+	// Compute base and load the exact theme CSS before revealing UI to avoid overlap
+	(async function prepareTheme() {
+		const base = resolveBasePath();
+		const cssHref = base + 'theme-exact.css';
+		console.log('[SPA] loading exact theme from', cssHref);
+		const ok = await loadStylesheet(cssHref, 2500);
+		if (!ok) console.warn('[SPA] theme-exact.css failed to load or timed out:', cssHref);
+		// Apply class that scopes the exact theme
+		try { document.documentElement.classList.add('theme-exact'); } catch (e) {}
+		// Inject header now that stylesheet is present
+		try { injectExactHeader(); } catch (e) { console.warn('[SPA] injectExactHeader failed', e); }
+		// Now mark the document ready so CSS guard un-hides content with new styling
+		try { document.documentElement.setAttribute('data-ready', 'true'); } catch (e) {}
+		try { document.documentElement.style.visibility = ''; } catch (e) {}
+	})();
 	try {
 		// Attach UI wiring
 		// Ensure register form markup exists so its handlers can be attached when needed

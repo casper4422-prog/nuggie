@@ -1,0 +1,10 @@
+/* Additional extracted styles for inline elements */
+
+.tribe-setup-desc {
+    margin-bottom: 24px;
+    color: #94a3b8;
+}
+
+.creature-page-hidden {
+    display: none;
+}

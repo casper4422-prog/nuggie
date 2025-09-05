@@ -1,0 +1,58 @@
+/* Dino Nuggie Manager - Main Stylesheet (extracted from inline styles)
+   Place this file in the same directory as index.html and link it in the <head>.
+*/
+
+/* Layout for landing/login/register pages */
+#landingPage, #registerPage {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.landing-container, .register-container {
+    background: rgba(15,23,42,0.95);
+    padding: 40px 32px;
+    border-radius: 16px;
+    box-shadow: 0 4px 32px #0003;
+    max-width: 400px;
+    width: 100%;
+    margin: auto;
+}
+
+.landing-title, .register-title {
+    text-align: center;
+    color: #3b82f6;
+    margin-bottom: 24px;
+}
+
+.login-btn, .register-btn {
+    width: 100%;
+    margin-top: 16px;
+}
+
+.login-link, .register-link {
+    margin-top: 12px;
+    text-align: center;
+}
+
+.login-error, .register-error {
+    color: #ef4444;
+    margin-top: 8px;
+    display: none;
+}
+
+#mainApp {
+    display: none;
+}
+
+.tribe-header {
+    font-size: 28px;
+    font-weight: 700;
+    color: #3b82f6;
+}
+
+#creaturePage {
+    display: none;
+}

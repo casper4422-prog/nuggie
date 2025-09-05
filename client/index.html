@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🦕 Dino Nuggies Nursery</title>
+  <title>🦕 Dino Nuggies Nursery</title>
+  <link rel="stylesheet" href="main.css">
+  <link rel="stylesheet" href="main-additional.css">
     <style>
         * {
             margin: 0;
@@ -1199,7 +1201,7 @@
       </div>
       <div class="modal-body">
         <div class="section-title">🏛️ Tribe Setup</div>
-        <p style="margin-bottom: 24px; color: #94a3b8;">Let's personalize your breeding database! This information will be saved and can be updated anytime.</p>
+  <p class="tribe-setup-desc">Let's personalize your breeding database! This information will be saved and can be updated anytime.</p>
         <div class="form-row cols-1">
           <div class="form-group">
             <label class="form-label">Tribe Leader *</label>
@@ -1257,9 +1259,9 @@
   </div>
 
   <!-- Landing/Login Page -->
-  <div id="landingPage" style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;">
-    <div style="background:rgba(15,23,42,0.95);padding:40px 32px;border-radius:16px;box-shadow:0 4px 32px #0003;max-width:400px;width:100%;">
-      <h1 style="text-align:center;color:#3b82f6;margin-bottom:24px;">Dino Nuggie Manager</h1>
+  <div id="landingPage" class="landing-page">
+    <div class="landing-container">
+      <h1 class="landing-title">Dino Nuggie Manager</h1>
       <form id="loginForm" onsubmit="return handleLogin(event)">
         <div class="form-group">
           <label for="loginEmail">Email</label>
@@ -1269,18 +1271,18 @@
           <label for="loginPassword">Password</label>
           <input type="password" id="loginPassword" required autocomplete="current-password" />
         </div>
-        <button type="submit" class="btn btn-primary" style="width:100%;margin-top:16px;">Login</button>
+        <button type="submit" class="btn btn-primary login-btn">Login</button>
       </form>
-      <div style="margin-top:12px;text-align:center;">
+      <div class="login-link">
         <span>Don't have an account? <a href="#" onclick="showRegisterPage()">Register</a></span>
       </div>
-      <div id="loginError" style="color:#ef4444;margin-top:8px;display:none;"></div>
+      <div id="loginError" class="login-error"></div>
     </div>
   </div>
   <!-- Register Page -->
-  <div id="registerPage" style="display:none;min-height:100vh;flex-direction:column;align-items:center;justify-content:center;">
-    <div style="background:rgba(15,23,42,0.95);padding:40px 32px;border-radius:16px;box-shadow:0 4px 32px #0003;max-width:400px;width:100%;margin:auto;">
-      <h1 style="text-align:center;color:#3b82f6;margin-bottom:24px;">Register</h1>
+  <div id="registerPage" class="register-page" style="display:none;">
+    <div class="register-container">
+      <h1 class="register-title">Register</h1>
       <form id="registerForm" onsubmit="return handleRegister(event)">
         <div class="form-group">
           <label for="registerEmail">Email</label>
@@ -1290,20 +1292,20 @@
           <label for="registerPassword">Password</label>
           <input type="password" id="registerPassword" required autocomplete="new-password" />
         </div>
-        <button type="submit" class="btn btn-primary" style="width:100%;margin-top:16px;">Register</button>
+        <button type="submit" class="btn btn-primary register-btn">Register</button>
       </form>
-      <div style="margin-top:12px;text-align:center;">
+      <div class="register-link">
         <span>Already have an account? <a href="#" onclick="showLoginPage()">Login</a></span>
       </div>
-      <div id="registerError" style="color:#ef4444;margin-top:8px;display:none;"></div>
+      <div id="registerError" class="register-error"></div>
     </div>
   </div>
   <!-- Main App Content (only visible if logged in) -->
-  <div id="mainApp" style="display:none;">
+  <div id="mainApp">
     <header class="header">
       <div class="header-content">
         <div class="header-top">
-          <div class="tribe-header" id="tribeHeader" style="font-size:28px;font-weight:700;color:#3b82f6;">My Tribe</div>
+          <div class="tribe-header" id="tribeHeader">My Tribe</div>
           <div class="header-actions">
             <button class="btn btn-secondary" onclick="openTribeModal()">🏛️ Tribe Settings</button>
             <button class="btn btn-secondary" onclick="goToCreatures()">🦖 Creatures</button>
@@ -1345,7 +1347,7 @@
         </div>
 
         <!-- Creature Page -->
-        <div id="creaturePage" style="display: none;">
+  <div id="creaturePage" class="creature-page-hidden">
             <div class="main-content">
                 <div class="creature-page-header">
                     <div class="creature-page-icon" id="creaturePageIcon">🦖</div>
@@ -67794,46 +67796,59 @@ const SPECIES_DATABASE = {
     </script>
 </script>
 <script>
-// --- Auth Modal Logic ---
-function showLoginModal() {
-  document.getElementById('loginModal').style.display = 'block';
-  document.getElementById('registerModal').style.display = 'none';
+// --- New Login/Register and Navigation Logic ---
+function showLoginPage() {
+  document.getElementById('landingPage').style.display = '';
+  document.getElementById('registerPage').style.display = 'none';
+  document.getElementById('mainApp').style.display = 'none';
 }
-function closeLoginModal() {
-  document.getElementById('loginModal').style.display = 'none';
+function showRegisterPage() {
+  document.getElementById('landingPage').style.display = 'none';
+  document.getElementById('registerPage').style.display = '';
+  document.getElementById('mainApp').style.display = 'none';
 }
-function showRegisterModal() {
-  document.getElementById('registerModal').style.display = 'block';
-  document.getElementById('loginModal').style.display = 'none';
+function showMainApp() {
+  document.getElementById('landingPage').style.display = 'none';
+  document.getElementById('registerPage').style.display = 'none';
+  document.getElementById('mainApp').style.display = '';
 }
-function closeRegisterModal() {
-  document.getElementById('registerModal').style.display = 'none';
-}
+window.showLoginPage = showLoginPage;
+window.showRegisterPage = showRegisterPage;
 
-// --- Auth State ---
 function isLoggedIn() {
   return !!localStorage.getItem('token');
 }
-function setAuthButton() {
-  const btn = document.getElementById('authBtn');
-  if (!btn) return;
-  if (isLoggedIn()) {
-    btn.textContent = 'Sign Out';
-  } else {
-    btn.textContent = 'Login';
-  }
-}
 function handleAuthClick() {
   if (isLoggedIn()) {
-    // Sign out
     localStorage.removeItem('token');
-    setAuthButton();
-    alert('Signed out!');
-  } else {
-    showLoginModal();
+    showLoginPage();
   }
 }
-document.addEventListener('DOMContentLoaded', setAuthButton);
+window.handleAuthClick = handleAuthClick;
+
+function updateTribeHeader() {
+  // Replace with actual tribe name from user profile if available
+  const tribeName = localStorage.getItem('tribeName') || 'My Tribe';
+  document.getElementById('tribeHeader').textContent = tribeName;
+}
+function goToCreatures() {
+  loadSpeciesPage();
+}
+function goToMyNuggies() {
+  loadMyNuggiesPage();
+}
+window.goToCreatures = goToCreatures;
+window.goToMyNuggies = goToMyNuggies;
+
+document.addEventListener('DOMContentLoaded', () => {
+  if (isLoggedIn()) {
+    showMainApp();
+    updateTribeHeader();
+    loadSpeciesPage(); // Default page after login
+  } else {
+    showLoginPage();
+  }
+});
 
 // --- Login/Register Handlers (API calls) ---
 async function handleLogin(event) {
@@ -67851,8 +67866,9 @@ async function handleLogin(event) {
     const data = await res.json();
     if (res.ok && data.token) {
       localStorage.setItem('token', data.token);
-      closeLoginModal();
-      setAuthButton();
+      showMainApp();
+      updateTribeHeader();
+      loadSpeciesPage();
     } else {
       errorDiv.textContent = data.error || 'Login failed.';
       errorDiv.style.display = 'block';
@@ -67863,6 +67879,8 @@ async function handleLogin(event) {
   }
   return false;
 }
+window.handleLogin = handleLogin;
+
 async function handleRegister(event) {
   event.preventDefault();
   const email = document.getElementById('registerEmail').value;
@@ -67877,8 +67895,7 @@ async function handleRegister(event) {
     });
     const data = await res.json();
     if (res.ok && data.success) {
-      closeRegisterModal();
-      showLoginModal();
+      showLoginPage();
     } else {
       errorDiv.textContent = data.error || 'Registration failed.';
       errorDiv.style.display = 'block';
@@ -67889,68 +67906,15 @@ async function handleRegister(event) {
   }
   return false;
 }
-// --- Auth-required content logic ---
-function updateAuthContent() {
-  const isAuth = isLoggedIn();
-  document.getElementById('authRequiredContent').style.display = isAuth ? '' : 'none';
-  document.getElementById('notLoggedInPrompt').style.display = isAuth ? 'none' : '';
-  if (isAuth) {
-    // Optionally show user email (decode JWT if needed)
-    const token = localStorage.getItem('token');
-    let email = '';
-    try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      email = payload.email || '';
-    } catch {}
-    document.getElementById('userEmailDisplay').textContent = email;
-  }
-}
-document.addEventListener('DOMContentLoaded', updateAuthContent);
-// Also update on login/logout
-function setAuthButton() {
-  const btn = document.getElementById('authBtn');
-  if (!btn) return;
-  if (isLoggedIn()) {
-    btn.textContent = 'Sign Out';
-  } else {
-    btn.textContent = 'Login';
-  }
-  updateAuthContent();
-}
+window.handleRegister = handleRegister;
 
-// --- Creature Card API Example ---
-async function saveCreatureCard() {
-  const token = localStorage.getItem('token');
-  if (!token) return alert('You must be logged in.');
-  // Example card data (replace with your actual form/UI)
-  const data = { name: 'Example Dino', species: 'Rex', level: 100 };
-  const res = await fetch('https://nuggie.onrender.com/api/creature', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
-    body: JSON.stringify({ data })
-  });
-  if (res.ok) {
-    alert('Creature card saved!');
-  } else {
-    alert('Failed to save card.');
-  }
+// --- Navigation/Page Loading ---
+function loadSpeciesPage() {
+  document.getElementById('appMainContent').innerHTML = '<h2>Species Page</h2><p>List of all Ark species goes here.</p>';
 }
-async function loadCreatureCards() {
-  const token = localStorage.getItem('token');
-  if (!token) return alert('You must be logged in.');
-  const res = await fetch('https://nuggie.onrender.com/api/creature', {
-    headers: { 'Authorization': 'Bearer ' + token }
-  });
-  const cards = await res.json();
-  const list = document.getElementById('creatureCardsList');
-  list.innerHTML = '';
-  if (Array.isArray(cards)) {
-    cards.forEach(card => {
-      const div = document.createElement('div');
-      div.textContent = JSON.stringify(card);
-      list.appendChild(div);
-    });
-  }
+function loadMyNuggiesPage() {
+  document.getElementById('appMainContent').innerHTML = '<h2>My Nuggies</h2><p>Your saved creature cards will appear here. (Sorting/filtering UI coming soon!)</p>';
+  // TODO: Fetch and display user creature cards from backend
 }
 </script>
 </body>

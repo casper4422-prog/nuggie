@@ -168,6 +168,24 @@ window.goToMyNuggies = goToMyNuggies;
 document.addEventListener('DOMContentLoaded', () => {
 	console.log('[SPA] DOMContentLoaded fired');
 	try {
+		// Attach UI wiring
+		try {
+			const loginForm = document.getElementById('loginForm');
+			if (loginForm) loginForm.addEventListener('submit', handleLogin);
+			const showReg = document.getElementById('showRegisterLink');
+			if (showReg) showReg.addEventListener('click', (e) => { e.preventDefault(); showRegisterPage(); });
+			const authBtn = document.getElementById('authBtn');
+			if (authBtn) authBtn.addEventListener('click', handleAuthClick);
+			const openTribeBtn = document.getElementById('openTribeBtn');
+			if (openTribeBtn) openTribeBtn.addEventListener('click', () => {/* open tribe settings - placeholder */ console.log('openTribeBtn clicked')});
+			const goToCreaturesBtn = document.getElementById('goToCreaturesBtn');
+			if (goToCreaturesBtn) goToCreaturesBtn.addEventListener('click', goToCreatures);
+			const goToMyNuggiesBtn = document.getElementById('goToMyNuggiesBtn');
+			if (goToMyNuggiesBtn) goToMyNuggiesBtn.addEventListener('click', goToMyNuggies);
+		} catch (wireErr) {
+			console.warn('[SPA] UI wiring failed', wireErr);
+		}
+
 		if (isLoggedIn()) {
 			console.log('[SPA] User is logged in');
 			showMainApp();
@@ -387,6 +405,12 @@ function filterSpecies() {
 			const creatureCount = (appState.creatures || []).filter(c => c.species === species.name).length;
 			const card = createSpeciesCard(species, creatureCount);
 			if (card) {
+				// Guard click handlers that may reference functions defined in creatures.js
+				if (typeof openCreaturePage === 'function') {
+					card.onclick = () => openCreaturePage(species.name);
+				} else {
+					card.onclick = () => { console.warn('openCreaturePage not available'); };
+				}
 				grid.appendChild(card);
 				filteredCount++;
 			}
@@ -496,3 +520,81 @@ if (typeof window !== 'undefined' && window.SPECIES_DATABASE) {
 
 // Local alias used throughout main.js (assign into existing var)
 SPECIES_DATABASE = window.__SPECIES_DB || {};
+
+// saveCreature: accepts either a full creature object or a wrapper from creatures.js
+function saveCreature(payload) {
+	try {
+		// payload may be { species, editing } (from creatures.js) or a full creature object
+		if (!payload) return console.warn('saveCreature called with no payload');
+
+		// If payload contains a full creature object
+		if (payload && payload.id && payload.name) {
+			// direct save
+			const existingIndex = appState.creatures.findIndex(c => c.id === payload.id);
+			if (existingIndex >= 0) appState.creatures[existingIndex] = payload;
+			else appState.creatures.push(payload);
+		} else if (payload && payload.species) {
+			// creatures.js will dispatch an event; expect main.js to read fields from the modal
+			const name = document.getElementById('creatureName')?.value?.trim();
+			if (!name) { alert('Please enter a creature name'); return; }
+			const creature = {
+				id: payload.editing || ('creature_' + Date.now() + '_' + Math.random().toString(36).substr(2,9)),
+				name,
+				species: payload.species,
+				gender: document.getElementById('creatureGender')?.value || '',
+				level: parseInt(document.getElementById('creatureLevel')?.value) || 1,
+				baseStats: {},
+				mutations: {},
+				domesticLevels: {},
+				notes: document.getElementById('creatureNotes')?.value || '',
+				createdAt: new Date().toISOString(),
+				updatedAt: new Date().toISOString()
+			};
+			// If editing, replace
+			const idx = appState.creatures.findIndex(c => c.id === creature.id);
+			if (idx >= 0) appState.creatures[idx] = creature; else appState.creatures.push(creature);
+		}
+
+		// Persist and refresh UI
+		localStorage.setItem('arkCreatures', JSON.stringify(appState.creatures || []));
+		// Close modal if open
+		try { if (typeof closeCreatureModal === 'function') closeCreatureModal(); } catch (e) {}
+		try { loadSpeciesPage(); } catch (e) {}
+		try { updateStatsDashboard(); } catch (e) {}
+	} catch (err) {
+		console.error('saveCreature failed', err);
+	}
+}
+window.saveCreature = saveCreature;
+
+// Resilient startup fallback: if the page remains hidden or the login UI
+// wasn't shown (due to an earlier error), force the app shell visible and
+// show the login page after a short timeout. This avoids leaving users with
+// a blank screen if any early init step throws.
+setTimeout(() => {
+	try {
+		const docEl = document.documentElement;
+		// If data-ready wasn't set by the aggressive cleanup, set it now.
+		if (docEl.getAttribute('data-ready') !== 'true') {
+			console.warn('[SPA] startup fallback: forcing data-ready=true');
+			try { docEl.setAttribute('data-ready', 'true'); } catch (e) {}
+		}
+
+		// Ensure visibility style isn't accidentally hiding the page
+		try { docEl.style.visibility = ''; } catch (e) {}
+
+		// If landing page is present but still hidden, explicitly show it
+		const landing = document.getElementById('landingPage');
+		const register = document.getElementById('registerPage');
+		const mainApp = document.getElementById('mainApp');
+		if (landing && getComputedStyle(landing).display === 'none') {
+			if (typeof isLoggedIn === 'function' && isLoggedIn()) {
+				try { showMainApp(); } catch (e) { console.warn('[SPA] showMainApp failed', e); }
+			} else {
+				try { showLoginPage(); } catch (e) { console.warn('[SPA] showLoginPage failed', e); }
+			}
+		}
+	} catch (err) {
+		console.warn('[SPA] startup fallback encountered an error', err);
+	}
+}, 700);

@@ -192,45 +192,178 @@ function renderCreatureImage(creature, className = '') {
 }
 
 function loadSpeciesPage() {
+	// Render the species page with search and filters and a species grid
 	document.getElementById('appMainContent').innerHTML = `
-		<section class="dashboard-section">
-			<h2 class="dashboard-title">Welcome to Dino Nuggie Manager!</h2>
-			<div class="dashboard-cards">
-				<div class="dashboard-card">
-					<h3>Tribe Info</h3>
-					<div id="tribeInfo">
-						<strong>Leader:</strong> <span id="tribeLeaderInfo"></span><br>
-						<strong>Server:</strong> <span id="tribeServerInfo"></span><br>
-						<strong>Map:</strong> <span id="tribeMapInfo"></span><br>
-						<strong>Goals:</strong> <span id="tribeGoalsInfo"></span>
-					</div>
+		<section class="species-section">
+			<div class="species-header-controls">
+				<div class="species-search">
+					<input id="searchInput" class="form-control" placeholder="Search species by name, category or diet">
 				</div>
-				<div class="dashboard-card">
-					<h3>Species Grid</h3>
-					<div id="speciesGrid">
-						<!-- Species grid will be rendered here by JS -->
-					</div>
+				<div class="species-filters">
+					<select id="categoryFilter" class="form-control">
+						<option value="">All Categories</option>
+						<option value="herbivore">Herbivore</option>
+						<option value="carnivore">Carnivore</option>
+						<option value="aquatic">Aquatic</option>
+						<option value="flyer">Flyer</option>
+					</select>
+					<select id="rarityFilter" class="form-control">
+						<option value="">All Rarities</option>
+						<option value="common">Common</option>
+						<option value="uncommon">Uncommon</option>
+						<option value="rare">Rare</option>
+						<option value="very rare">Very Rare</option>
+						<option value="extinct">Extinct</option>
+					</select>
+					<button id="clearFiltersBtn" class="btn btn-secondary">Clear</button>
 				</div>
 			</div>
+
+			<div id="speciesGrid" class="species-grid" aria-live="polite"></div>
 		</section>
 	`;
-	document.getElementById('tribeLeaderInfo').textContent = appState.tribeSettings.leader || 'N/A';
-	document.getElementById('tribeServerInfo').textContent = appState.tribeSettings.serverType || 'N/A';
-	document.getElementById('tribeMapInfo').textContent = appState.tribeSettings.primaryMap || 'N/A';
-	document.getElementById('tribeGoalsInfo').textContent = appState.tribeSettings.breedingGoals || 'N/A';
 
-	// Example: Render a static species grid (replace with dynamic if needed)
+	// Fill tribe info in case other parts rely on it
+	const leaderEl = document.getElementById('tribeLeaderInfo');
+	if (leaderEl) leaderEl.textContent = appState.tribeSettings.leader || 'N/A';
+
+	// Wire events
+	const searchInput = document.getElementById('searchInput');
+	const categoryFilter = document.getElementById('categoryFilter');
+	const rarityFilter = document.getElementById('rarityFilter');
+	const clearBtn = document.getElementById('clearFiltersBtn');
+
+	if (searchInput) searchInput.addEventListener('input', debounce(filterSpecies, 180));
+	if (categoryFilter) categoryFilter.addEventListener('change', filterSpecies);
+	if (rarityFilter) rarityFilter.addEventListener('change', filterSpecies);
+	if (clearBtn) clearBtn.addEventListener('click', () => {
+		if (searchInput) searchInput.value = '';
+		if (categoryFilter) categoryFilter.value = '';
+		if (rarityFilter) rarityFilter.value = '';
+		filterSpecies();
+	});
+
+	// Initial population
+	filterSpecies();
+}
+
+// Debounce helper
+function debounce(fn, ms) {
+	let t;
+	return (...args) => {
+		clearTimeout(t);
+		t = setTimeout(() => fn.apply(null, args), ms);
+	};
+}
+
+function filterSpecies() {
+	const searchTerm = (document.getElementById('searchInput')?.value || '').toLowerCase();
+	const categoryFilter = (document.getElementById('categoryFilter')?.value || '').toLowerCase();
+	const rarityFilter = (document.getElementById('rarityFilter')?.value || '').toLowerCase();
+
 	const grid = document.getElementById('speciesGrid');
-	if (grid) {
-		const creatures = appState.creatures || [];
-		if (creatures.length === 0) {
-			grid.innerHTML = '<div class="no-creatures-yet">No creatures added yet.</div>';
-		} else {
-			grid.innerHTML = creatures.map(c => `
-				<div class="creature-image-list">${renderCreatureImage(c, 'creature-image-list')}</div>
-			`).join('');
-		}
+	if (!grid) return;
+	if (!SPECIES_DATABASE) {
+		grid.innerHTML = '<div class="no-species-found">Species database unavailable.</div>';
+		return;
 	}
+
+	grid.innerHTML = '';
+	let filteredCount = 0;
+
+	Object.values(SPECIES_DATABASE).forEach(species => {
+		if (!species || !species.name) return;
+
+		const matchesSearch = !searchTerm || (
+			(species.name && species.name.toLowerCase().includes(searchTerm)) ||
+			(species.category && species.category.toLowerCase().includes(searchTerm)) ||
+			(species.diet && species.diet.toLowerCase().includes(searchTerm)) ||
+			(species.description && species.description.toLowerCase().includes(searchTerm))
+		);
+
+		let matchesCategory = true;
+		if (categoryFilter) {
+			if (categoryFilter === 'flyer') {
+				matchesCategory = species.speeds && species.speeds.flying && species.speeds.flying > 0;
+			} else {
+				matchesCategory = (species.category && species.category.toLowerCase() === categoryFilter) ||
+								  (species.diet && species.diet.toLowerCase() === categoryFilter);
+			}
+		}
+
+		const matchesRarity = !rarityFilter || (species.rarity && species.rarity.toLowerCase() === rarityFilter);
+
+		if (matchesSearch && matchesCategory && matchesRarity) {
+			const creatureCount = (appState.creatures || []).filter(c => c.species === species.name).length;
+			const card = createSpeciesCard(species, creatureCount);
+			if (card) {
+				grid.appendChild(card);
+				filteredCount++;
+			}
+		}
+	});
+
+	if (filteredCount === 0) {
+		grid.innerHTML = '<div class="no-species-found">No species found.</div>';
+	}
+}
+
+function createSpeciesCard(species, creatureCount) {
+	if (!species || !species.name) return null;
+	const card = document.createElement('div');
+	card.className = 'species-card';
+	card.tabIndex = 0;
+	card.setAttribute('role', 'button');
+	card.onclick = () => openCreaturePage(species.name);
+
+	// compute highest stats for species creatures
+	const speciesCreatures = (appState.creatures || []).filter(c => c.species === species.name);
+	const highestStats = calculateHighestBaseStats(speciesCreatures);
+
+	const badgesHTML = (speciesCreatures.length > 0 && window.BadgeSystem) ?
+		speciesCreatures.slice(0,3).map(c => BadgeSystem.generateBadgeHTML(c)).join('') : '';
+
+	const statsHTML = `
+		<div class="species-stats">
+			<div class="stat-row"><span class="stat-icon">❤️</span><span class="stat-value">${highestStats.Health?.value || 0}</span></div>
+			<div class="stat-row"><span class="stat-icon">🏃</span><span class="stat-value">${highestStats.Stamina?.value || 0}</span></div>
+			<div class="stat-row"><span class="stat-icon">💨</span><span class="stat-value">${highestStats.Oxygen?.value || 0}</span></div>
+		</div>
+	`;
+
+	card.innerHTML = `
+		<div class="species-card-header">
+			<div class="species-icon">${species.icon || '🦖'}</div>
+			<div class="species-info">
+				<div class="species-name">${species.name}</div>
+				<div class="species-meta">${species.category || ''} • ${species.rarity || ''}</div>
+			</div>
+			<div class="species-count">${creatureCount} owned</div>
+		</div>
+		<div class="species-card-body">
+			${statsHTML}
+			<div class="species-desc">${species.description || ''}</div>
+			<div class="species-badges">${badgesHTML}</div>
+		</div>
+	`;
+
+	return card;
+}
+
+function calculateHighestBaseStats(creatures) {
+	const stats = ['Health', 'Stamina', 'Oxygen', 'Food', 'Weight', 'Melee'];
+	const highest = {};
+	if (!creatures || creatures.length === 0) return highest;
+	stats.forEach(stat => {
+		let maxValue = 0;
+		let maxId = null;
+		creatures.forEach(c => {
+			const v = c.baseStats?.[stat] || 0;
+			if (v > maxValue) { maxValue = v; maxId = c.id; }
+		});
+		highest[stat] = { value: maxValue, creatureId: maxId };
+	});
+	return highest;
 }
 function loadMyNuggiesPage() {
 	document.getElementById('appMainContent').innerHTML = '<h2>My Nuggies</h2><p>Your saved creature cards will appear here. (Sorting/filtering UI coming soon!)</p>';
@@ -260,7 +393,16 @@ try {
 }
 window.appState = appState;
 
-// --- SPECIES_DATABASE ---
-const SPECIES_DATABASE = {
-// ...existing species data...
-};
+// --- SPECIES_DATABASE wiring ---
+// The full species data is provided by species-database.js which sets `window.SPECIES_DATABASE`.
+// If that file is unavailable, fall back to an empty object to avoid runtime errors.
+if (typeof window !== 'undefined' && window.SPECIES_DATABASE) {
+	// Use the species DB defined in the separate file
+	window.__SPECIES_DB = window.SPECIES_DATABASE;
+} else {
+	console.error('[SPA] species-database.js not loaded or SPECIES_DATABASE missing; functionality will be limited.');
+	window.__SPECIES_DB = {};
+}
+
+// Local alias used throughout main.js
+const SPECIES_DATABASE = window.__SPECIES_DB;

@@ -140,6 +140,18 @@ document.addEventListener('DOMContentLoaded', () => {
 		// also clear any inline visibility style to be safe
 		document.documentElement.style.visibility = '';
 	} catch (e) { /* noop */ }
+
+	// Dynamically load enhanced theme (keeps index.html small and avoids merge conflicts)
+	try {
+		const link = document.createElement('link');
+		link.rel = 'stylesheet';
+		link.href = 'theme-enhanced.css';
+		link.onload = () => { console.log('[SPA] theme-enhanced.css loaded'); };
+		link.onerror = () => { console.warn('[SPA] failed to load theme-enhanced.css'); };
+		document.head.appendChild(link);
+		// apply marker class to enable theme rules
+		document.documentElement.classList.add('theme-expanded');
+	} catch (e) { console.warn('[SPA] theme injection failed', e); }
 	try {
 		// Attach UI wiring
 		// Ensure register form markup exists so its handlers can be attached when needed

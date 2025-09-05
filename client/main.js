@@ -551,8 +551,30 @@ function filterSpecies() {
 			} catch (e) { matchesCategory = true; }
 		}
 
-		// Rarity matching: use includes to be resilient to 'Very Rare' vs 'very rare' and similar variations
-		const matchesRarity = !rarityFilter || (species.rarity && (species.rarity + '').toLowerCase().includes(rarityFilter));
+		// Rarity matching: the DB uses values like 'common', 'uncommon', 'rare', 'legendary'.
+		// Allow UI options like 'very rare' or 'extinct' by mapping them to DB equivalents.
+		const rarityMap = {
+			'very rare': ['legendary'],
+			'extinct': ['legendary'],
+			'veryrare': ['legendary'],
+			'legendary': ['legendary'],
+			'rare': ['rare'],
+			'uncommon': ['uncommon'],
+			'common': ['common']
+		};
+		let matchesRarity = true;
+		if (rarityFilter) {
+			try {
+				const key = rarityFilter.replace(/\s+/g,'').toLowerCase();
+				// try direct map first
+				const mapped = rarityMap[rarityFilter] || rarityMap[key] || null;
+				if (mapped && Array.isArray(mapped)) {
+					matchesRarity = mapped.includes((species.rarity||'').toLowerCase());
+				} else {
+					matchesRarity = (species.rarity || '').toLowerCase().includes(rarityFilter);
+				}
+			} catch (e) { matchesRarity = true; }
+		}
 
 		if (matchesSearch && matchesCategory && matchesRarity) {
 			const creatureCount = (appState.creatures || []).filter(c => c.species === species.name).length;

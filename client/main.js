@@ -1,24 +1,51 @@
 // --- SPA Logic and Event Handlers (migrated from index.html) ---
 function showLoginPage() {
-	document.getElementById('landingPage').style.display = '';
-	document.getElementById('landingPage').classList.remove('hidden');
-	document.getElementById('registerPage').style.display = 'none';
-	document.getElementById('registerPage').classList.add('hidden');
-	document.getElementById('mainApp').style.display = 'none';
+	console.log('[SPA] showLoginPage called');
+	const landing = document.getElementById('landingPage');
+	const register = document.getElementById('registerPage');
+	const mainApp = document.getElementById('mainApp');
+	if (!landing || !register || !mainApp) {
+		console.error('[SPA] One or more main containers missing:', { landing, register, mainApp });
+		return;
+	}
+	landing.style.display = '';
+	landing.classList.remove('hidden');
+	register.style.display = 'none';
+	register.classList.add('hidden');
+	mainApp.style.display = 'none';
+	console.log('[SPA] Login page should now be visible');
 }
 function showRegisterPage() {
-	document.getElementById('landingPage').style.display = 'none';
-	document.getElementById('landingPage').classList.add('hidden');
-	document.getElementById('registerPage').style.display = '';
-	document.getElementById('registerPage').classList.remove('hidden');
-	document.getElementById('mainApp').style.display = 'none';
+	console.log('[SPA] showRegisterPage called');
+	const landing = document.getElementById('landingPage');
+	const register = document.getElementById('registerPage');
+	const mainApp = document.getElementById('mainApp');
+	if (!landing || !register || !mainApp) {
+		console.error('[SPA] One or more main containers missing:', { landing, register, mainApp });
+		return;
+	}
+	landing.style.display = 'none';
+	landing.classList.add('hidden');
+	register.style.display = '';
+	register.classList.remove('hidden');
+	mainApp.style.display = 'none';
+	console.log('[SPA] Register page should now be visible');
 }
 function showMainApp() {
-	document.getElementById('landingPage').style.display = 'none';
-	document.getElementById('landingPage').classList.add('hidden');
-	document.getElementById('registerPage').style.display = 'none';
-	document.getElementById('registerPage').classList.add('hidden');
-	document.getElementById('mainApp').style.display = '';
+	console.log('[SPA] showMainApp called');
+	const landing = document.getElementById('landingPage');
+	const register = document.getElementById('registerPage');
+	const mainApp = document.getElementById('mainApp');
+	if (!landing || !register || !mainApp) {
+		console.error('[SPA] One or more main containers missing:', { landing, register, mainApp });
+		return;
+	}
+	landing.style.display = 'none';
+	landing.classList.add('hidden');
+	register.style.display = 'none';
+	register.classList.add('hidden');
+	mainApp.style.display = '';
+	console.log('[SPA] Main app should now be visible');
 }
 window.showLoginPage = showLoginPage;
 window.showRegisterPage = showRegisterPage;
@@ -50,12 +77,19 @@ window.goToCreatures = goToCreatures;
 window.goToMyNuggies = goToMyNuggies;
 
 document.addEventListener('DOMContentLoaded', () => {
-	if (isLoggedIn()) {
-		showMainApp();
-		updateTribeHeader();
-		loadSpeciesPage(); // Default page after login
-	} else {
-		showLoginPage();
+	console.log('[SPA] DOMContentLoaded fired');
+	try {
+		if (isLoggedIn()) {
+			console.log('[SPA] User is logged in');
+			showMainApp();
+			updateTribeHeader();
+			loadSpeciesPage(); // Default page after login
+		} else {
+			console.log('[SPA] User is NOT logged in');
+			showLoginPage();
+		}
+	} catch (e) {
+		console.error('[SPA] Error during DOMContentLoaded init:', e);
 	}
 });
 

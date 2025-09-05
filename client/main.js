@@ -206,18 +206,39 @@ function speciesValues() {
 // --- Login/Register Handlers (API calls) ---
 async function handleLogin(event) {
 	event.preventDefault();
-	const email = document.getElementById('loginEmail').value;
-	const password = document.getElementById('loginPassword').value;
+	const email = (document.getElementById('loginEmail')?.value || '').trim();
+	const password = (document.getElementById('loginPassword')?.value || '').trim();
 	const errorDiv = document.getElementById('loginError');
 	errorDiv.style.display = 'none';
+
+	// Basic client-side validation
+	if (!email || !password) {
+		errorDiv.textContent = 'Please provide email and password.';
+		errorDiv.style.display = 'block';
+		return false;
+	}
+	if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+		errorDiv.textContent = 'Please enter a valid email address.';
+		errorDiv.style.display = 'block';
+		return false;
+	}
 	try {
 		const res = await fetch('https://nuggie.onrender.com/api/login', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({ email, password })
 		});
-		const data = await res.json();
-		if (res.ok && data.token) {
+		// helper to read JSON or text body for better diagnostics
+		async function readBody(resp) {
+			const ct = resp.headers.get('content-type') || '';
+			try {
+				if (ct.includes('application/json')) return await resp.json();
+				return await resp.text();
+			} catch (e) { return await resp.text().catch(() => null); }
+		}
+
+		const data = await readBody(res);
+		if (res.ok && data && data.token) {
 			localStorage.setItem('token', data.token);
 			showMainApp();
 			updateTribeHeader();
@@ -226,7 +247,15 @@ async function handleLogin(event) {
 			try { updateStatsDashboard(); } catch (e) {}
 			try { updateAuthUI(); } catch (e) {}
 		} else {
-			errorDiv.textContent = data.error || 'Login failed.';
+			// Show helpful diagnostic including status and any server-provided body
+			console.warn('[SPA] login failed', { status: res.status, body: data });
+			let msg = 'Login failed.';
+			if (data) {
+				if (typeof data === 'string') msg = data;
+				else if (data.error) msg = data.error;
+				else msg = JSON.stringify(data);
+			}
+			errorDiv.textContent = `${res.status} ${res.statusText}: ${msg}`;
 			errorDiv.style.display = 'block';
 		}
 	} catch (e) {
@@ -239,13 +268,30 @@ window.handleLogin = handleLogin;
 
 async function handleRegister(event) {
 	event.preventDefault();
-	const email = document.getElementById('registerEmail').value;
-	const password = document.getElementById('registerPassword').value;
-	const confirmPassword = document.getElementById('registerConfirmPassword').value;
+	const email = (document.getElementById('registerEmail')?.value || '').trim();
+	const password = (document.getElementById('registerPassword')?.value || '').trim();
+	const confirmPassword = (document.getElementById('registerConfirmPassword')?.value || '').trim();
 	const errorDiv = document.getElementById('registerError');
 	errorDiv.style.display = 'none';
+
+	// Basic validation
+	if (!email || !password || !confirmPassword) {
+		errorDiv.textContent = 'Please complete all fields.';
+		errorDiv.style.display = 'block';
+		return false;
+	}
+	if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+		errorDiv.textContent = 'Please enter a valid email address.';
+		errorDiv.style.display = 'block';
+		return false;
+	}
 	if (password !== confirmPassword) {
 		errorDiv.textContent = 'Passwords do not match.';
+		errorDiv.style.display = 'block';
+		return false;
+	}
+	if (password.length < 6) {
+		errorDiv.textContent = 'Password must be at least 6 characters.';
 		errorDiv.style.display = 'block';
 		return false;
 	}
@@ -255,11 +301,25 @@ async function handleRegister(event) {
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({ email, password })
 		});
-		const data = await res.json();
-		if (res.ok && data.success) {
+		async function readBody(resp) {
+			const ct = resp.headers.get('content-type') || '';
+			try {
+				if (ct.includes('application/json')) return await resp.json();
+				return await resp.text();
+			} catch (e) { return await resp.text().catch(() => null); }
+		}
+		const data = await readBody(res);
+		if (res.ok && (data === true || (data && data.success))) {
 			showLoginPage();
 		} else {
-			errorDiv.textContent = data.error || 'Registration failed.';
+			console.warn('[SPA] register failed', { status: res.status, body: data });
+			let msg = 'Registration failed.';
+			if (data) {
+				if (typeof data === 'string') msg = data;
+				else if (data.error) msg = data.error;
+				else msg = JSON.stringify(data);
+			}
+			errorDiv.textContent = `${res.status} ${res.statusText}: ${msg}`;
 			errorDiv.style.display = 'block';
 		}
 	} catch (e) {

@@ -6,398 +6,51 @@
         <title>🦕 Dino Nuggie Manager</title>
         <link rel="stylesheet" href="main.css">
         <link rel="stylesheet" href="main-additional.css">
-    <!doctype html>
-    <html lang="en">
-        <head>
-            <meta charset="utf-8">
-            <meta name="viewport" content="width=device-width,initial-scale=1">
-            <title>🦕 Dino Nuggie Manager</title>
-            <link rel="stylesheet" href="main.css">
-            <link rel="stylesheet" href="main-additional.css">
-        </head>
-        <body>
-            <!-- App Shell (no inline JS) -->
-            <div id="landingPage" class="landing-page" role="main">
-                <div class="landing-container">
-                    <h1 class="landing-title">Dino Nuggie Manager</h1>
-                    <form id="loginForm">
-                        <div class="form-group">
-                            <label class="form-label" for="loginEmail">Email</label>
-                            <input class="form-control" id="loginEmail" type="email" required autocomplete="username">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label" for="loginPassword">Password</label>
-                            <input class="form-control" id="loginPassword" type="password" required autocomplete="current-password">
-                        </div>
-                        <button type="submit" class="btn btn-primary login-btn">Login</button>
-                    </form>
-                    <div class="login-link">Don't have an account? <a href="#" id="showRegisterLink">Register</a></div>
-                    <div id="loginError" class="login-error" role="status" aria-live="polite"></div>
+    </head>
+    <body>
+        <!-- App Shell (no inline JS) -->
+        <div id="landingPage" class="landing-page" role="main">
+            <div class="landing-container">
+                <h1 class="landing-title">Dino Nuggie Manager</h1>
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label class="form-label" for="loginEmail">Email</label>
+                        <input class="form-control" id="loginEmail" type="email" required autocomplete="username">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="loginPassword">Password</label>
+                        <input class="form-control" id="loginPassword" type="password" required autocomplete="current-password">
+                    </div>
+                    <button type="submit" class="btn btn-primary login-btn">Login</button>
+                </form>
+                <div class="login-link">Don't have an account? <a href="#" id="showRegisterLink">Register</a></div>
+                <div id="loginError" class="login-error" role="status" aria-live="polite"></div>
+            </div>
+        </div>
+
+        <div id="registerPage" class="register-page hidden" aria-hidden="true"></div>
+        <div id="mainApp" class="hidden" aria-hidden="true">
+            <header class="header"><div class="header-content"><div class="header-top">
+                <div class="tribe-header" id="tribeHeader">My Tribe</div>
+                <div class="header-actions">
+                    <button class="btn btn-secondary" id="openTribeBtn">🏛️ Tribe Settings</button>
+                    <button class="btn btn-secondary" id="goToCreaturesBtn">🦖 Creatures</button>
+                    <button class="btn btn-secondary" id="goToMyNuggiesBtn">🍗 My Nuggies</button>
+                    <button id="authBtn" class="btn btn-primary">Sign Out</button>
                 </div>
-            </div>
+            </div></div></header>
+            <main id="appMainContent" role="main"></main>
+        </div>
 
-            <div id="registerPage" class="register-page hidden" aria-hidden="true"></div>
-            <div id="mainApp" class="hidden" aria-hidden="true">
-                <header class="header"><div class="header-content"><div class="header-top">
-                    <div class="tribe-header" id="tribeHeader">My Tribe</div>
-                    <div class="header-actions">
-                        <button class="btn btn-secondary" id="openTribeBtn">🏛️ Tribe Settings</button>
-                        <button class="btn btn-secondary" id="goToCreaturesBtn">� Creatures</button>
-                        <button class="btn btn-secondary" id="goToMyNuggiesBtn">🍗 My Nuggies</button>
-                        <button id="authBtn" class="btn btn-primary">Sign Out</button>
-                    </div>
-                </div></div></header>
-                <main id="appMainContent" role="main"></main>
-            </div>
+        <!-- Creature modals placeholders -->
+        <div class="modal" id="creatureModal" aria-hidden="true"></div>
+        <div class="modal" id="creatureDetailModal" aria-hidden="true"></div>
 
-            <!-- Creature modals placeholders -->
-            <div class="modal" id="creatureModal" aria-hidden="true"></div>
-            <div class="modal" id="creatureDetailModal" aria-hidden="true"></div>
-
-            <!-- Load species database first, then main app logic -->
-            <script src="species-database.js"></script>
-            <script src="main.js"></script>
-        </body>
-    </html>
-                const matchesSearch = !searchTerm || 
-                    species.name.toLowerCase().includes(searchTerm) ||
-                    (species.category && species.category.toLowerCase().includes(searchTerm)) ||
-                    (species.diet && species.diet.toLowerCase().includes(searchTerm)) ||
-                    (species.description && species.description.toLowerCase().includes(searchTerm));
-                
-                // Apply category filter
-                let matchesCategory = false;
-                if (!categoryFilter) {
-                    matchesCategory = true;
-                } else if (categoryFilter === 'flyer') {
-                    matchesCategory = species.speeds && species.speeds.flying && species.speeds.flying > 0;
-                    if (matchesCategory) {
-                        console.log('Found flyer:', species.name, 'flying speed:', species.speeds.flying);
-                    }
-                } else {
-                    matchesCategory = (species.category && species.category.toLowerCase() === categoryFilter) ||
-                                    (species.diet && species.diet.toLowerCase() === categoryFilter);
-                }
-                
-                // Apply rarity filter
-                const matchesRarity = !rarityFilter || 
-                    (species.rarity && species.rarity.toLowerCase() === rarityFilter);
-                
-                // Show species if it matches all filters
-                if (matchesSearch && matchesCategory && matchesRarity) {
-                    const creatureCount = appState.creatures.filter(c => c.species === species.name).length;
-                    const card = createSpeciesCard(species, creatureCount);
-                    if (card) {
-                        grid.appendChild(card);
-                        filteredCount++;
-                    }
-                }
-            });
-
-            console.log(`Filtered species: showing ${filteredCount} species`);
-            
-            if (filteredCount === 0) {
-                grid.innerHTML = '<p class="no-species-found">No species found matching your filters.</p>';
-            }
-        }
-
-        // Creature Page Management
-        function openCreaturePage(speciesName) {
-            appState.currentSpecies = speciesName;
-            const species = SPECIES_DATABASE[speciesName];
-            
-            document.getElementById('creaturePageIcon').textContent = species.icon;
-            document.getElementById('creaturePageTitle').textContent = species.name;
-            
-            const creatures = appState.creatures.filter(c => c.species === speciesName);
-            document.getElementById('creaturePageMeta').textContent = `${creatures.length} creatures`;
-            
-            // Populate species information
-            populateSpeciesInfo(species);
-            
-            // Initialize view preference
-            const savedViewType = localStorage.getItem('creatureViewType') || 'card';
-            switchCreatureView(savedViewType);
-            
-            document.getElementById('speciesPage').style.display = 'none';
-            document.getElementById('creaturePage').style.display = 'block';
-        }
-
-        // Tab Management
-        function switchTab(tabId) {
-            // Hide all tab contents
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            
-            // Remove active class from all tab buttons
-            document.querySelectorAll('.tab-button').forEach(button => {
-                button.classList.remove('active');
-            });
-            
-            // Show selected tab content
-            document.getElementById(tabId).classList.add('active');
-            
-            // Add active class to clicked button
-            event.target.classList.add('active');
-        }
-
-        // Populate Species Information
-        function populateSpeciesInfo(species) {
-            // Basic Info Tab
-            document.getElementById('species-dossier').textContent = species.dossierText || 'No dossier available.';
-            document.getElementById('species-temperament').textContent = species.temperament || 'Unknown';
-            document.getElementById('species-diet').textContent = species.diet || 'Unknown';
-            document.getElementById('species-habitat').textContent = species.habitat || 'Unknown';
-            document.getElementById('species-basis').textContent = species.realWorldBasis || 'Unknown';
-            document.getElementById('species-rarity').textContent = species.rarity || 'Unknown';
-            document.getElementById('species-source').textContent = species.source || 'Unknown';
-            
-            // Stats & Combat Tab
-            populateBaseStats(species.baseStats);
-            document.getElementById('species-attacks').textContent = species.attackTypes ? species.attackTypes.join(', ') : 'None';
-            document.getElementById('species-abilities').textContent = species.specialAbilities ? species.specialAbilities.join(', ') : 'None';
-            
-            if (species.speeds) {
-                document.getElementById('species-land-speed').textContent = species.speeds.land || 'N/A';
-                document.getElementById('species-flying-speed').textContent = species.speeds.flying || 'N/A';
-                document.getElementById('species-swimming-speed').textContent = species.speeds.swimming || 'N/A';
-            }
-            
-            // Taming Info Tab
-            document.getElementById('species-taming-method').textContent = species.tamingMethod || 'Unknown';
-            document.getElementById('species-kibble').textContent = species.preferredKibble || 'Unknown';
-            document.getElementById('species-food').textContent = species.favoriteFood || 'Unknown';
-            document.getElementById('species-taming-speed').textContent = species.tamingSpeed || 'Unknown';
-            document.getElementById('species-torpor').textContent = species.torpor?.baseValue || 'Unknown';
-            document.getElementById('species-requirements').textContent = species.specialRequirements || 'None';
-            
-            // Utility & Roles Tab
-            document.getElementById('species-primary-role').textContent = species.primaryRole || 'Unknown';
-            document.getElementById('species-secondary-roles').textContent = species.secondaryRoles ? species.secondaryRoles.join(', ') : 'None';
-            
-            populateResourceList(species.gatheringResources);
-            populateAbilitiesList(species.specialAbilities);
-            document.getElementById('species-workstation').textContent = species.workstation || 'None';
-            
-            // Environment Tab
-            document.getElementById('species-biomes').textContent = species.preferredBiome || 'Unknown';
-            
-            if (species.temperatureRange) {
-                document.getElementById('species-temperature').textContent = `${species.temperatureRange.min}°C - ${species.temperatureRange.max}°C`;
-            } else {
-                document.getElementById('species-temperature').textContent = 'Unknown';
-            }
-            
-            document.getElementById('species-resistances').textContent = species.environmentalResistances ? species.environmentalResistances.join(', ') : 'None';
-            
-            // Management Tab
-            document.getElementById('species-difficulty').textContent = species.difficultyRating || 'Unknown';
-            document.getElementById('species-beginner').textContent = species.beginnerFriendly ? 'Yes' : 'No';
-            document.getElementById('species-investment').textContent = species.resourceInvestment || 'Unknown';
-            document.getElementById('species-maintenance').textContent = species.maintenanceLevel || 'Unknown';
-            document.getElementById('species-boss-capable').textContent = species.bossFightCapable ? 'Yes' : 'No';
-            document.getElementById('species-endgame').textContent = species.endGameViable ? 'Yes' : 'No';
-        }
-
-        function populateBaseStats(baseStats) {
-            const statsContainer = document.getElementById('species-base-stats');
-            statsContainer.innerHTML = '';
-            
-            if (!baseStats) {
-                statsContainer.innerHTML = '<div class="stat-no-data">No stats available</div>';
-                return;
-            }
-            
-            const statNames = {
-                health: 'Health',
-                stamina: 'Stamina',
-                oxygen: 'Oxygen',
-                food: 'Food',
-                weight: 'Weight',
-                melee: 'Melee',
-                speed: 'Speed',
-                torpor: 'Torpor'
-            };
-            
-            Object.entries(baseStats).forEach(([key, value]) => {
-                if (statNames[key]) {
-                    const statElement = document.createElement('div');
-                    statElement.className = 'stat-item';
-                    statElement.innerHTML = `
-                        <div class="stat-name">${statNames[key]}</div>
-                        <div class="stat-value">${value}</div>
-                    `;
-                    statsContainer.appendChild(statElement);
-                }
-            });
-        }
-
-        function populateResourceList(resources) {
-            const container = document.getElementById('species-resources');
-            container.innerHTML = '';
-            
-            if (!resources || resources.length === 0) {
-                container.innerHTML = '<div class="stat-no-data">No special resource gathering</div>';
-                return;
-            }
-            
-            resources.forEach(resource => {
-                const tag = document.createElement('div');
-                tag.className = 'resource-tag';
-                tag.textContent = resource;
-                container.appendChild(tag);
-            });
-        }
-
-        function populateAbilitiesList(abilities) {
-            const container = document.getElementById('species-special-abilities');
-            container.innerHTML = '';
-            
-            if (!abilities || abilities.length === 0) {
-                container.innerHTML = '<div class="stat-no-data">No special abilities</div>';
-                return;
-            }
-            
-            abilities.forEach(ability => {
-                const tag = document.createElement('div');
-                tag.className = 'ability-tag';
-                tag.textContent = ability;
-                container.appendChild(tag);
-            });
-        }
-
-        function goBackToSpecies() {
-            appState.currentSpecies = null;
-            document.getElementById('creaturePage').style.display = 'none';
-            document.getElementById('speciesPage').style.display = 'block';
-            loadSpeciesGrid();
-        }
-
-        // View switching functionality
-        function switchCreatureView(viewType) {
-            const grid = document.getElementById('creaturesGrid');
-            const cardBtn = document.getElementById('cardViewBtn');
-            const listBtn = document.getElementById('listViewBtn');
-            
-            // Update button states
-            cardBtn.classList.toggle('active', viewType === 'card');
-            listBtn.classList.toggle('active', viewType === 'list');
-            
-            // Update grid class
-            if (viewType === 'list') {
-                grid.classList.add('list-view');
-            } else {
-                grid.classList.remove('list-view');
-            }
-            
-            // Save preference
-            localStorage.setItem('creatureViewType', viewType);
-            
-            // Reload creatures with new view
-            loadCreaturesGrid();
-        }
-
-        function loadCreaturesGrid() {
-            const grid = document.getElementById('creaturesGrid');
-            const creatures = appState.creatures.filter(c => c.species === appState.currentSpecies);
-            
-            if (creatures.length === 0) {
-                grid.innerHTML = `
-                    <div class="no-creatures">
-                        <div class="no-creatures-icon">🦴</div>
-                        <div class="no-creatures-yet">No creatures yet</div>
-                        <div>Add your first creature to start tracking this species!</div>
-                    </div>
-                `;
-                return;
-            }
-
-            // Calculate highest base stats for this species
-            const highestStats = calculateHighestBaseStats(creatures);
-            
-            grid.innerHTML = '';
-            creatures.forEach(creature => {
-                const card = createCreatureCard(creature, highestStats);
-                grid.appendChild(card);
-            });
-        }
-
-        function calculateHighestBaseStats(creatures) {
-            const stats = ['Health', 'Stamina', 'Oxygen', 'Food', 'Weight', 'Melee'];
-            const highest = {};
-            
-            // Ensure we have valid creatures array
-            if (!creatures || creatures.length === 0) {
-                return highest;
-            }
-            
-            stats.forEach(stat => {
-                let maxValue = 0;
-                let maxCreatureId = null;
-                
-                creatures.forEach(creature => {
-                    // Ensure creature and baseStats exist
-                    if (!creature || !creature.baseStats) {
-                        return;
-                    }
-                    
-                    const baseValue = creature.baseStats[stat] || 0;
-                    if (baseValue > maxValue) {
-                        maxValue = baseValue;
-                        maxCreatureId = creature.id;
-                    }
-                });
-                
-                highest[stat] = {
-                    value: maxValue,
-                    creatureId: maxCreatureId
-                };
-            });
-            
-            return highest;
-        }
-
-        function createCreatureCard(creature, highestStats = {}) {
-            const card = document.createElement('div');
-            card.className = 'creature-card';
-            card.onclick = () => openCreatureDetailModal(creature);
-
-            const badgeHTML = BadgeSystem.generateBadgeHTML(creature);
-            
-            // Format stats for display
-            const healthDisplay = BadgeSystem.formatStatDisplay(
-                creature.baseStats?.Health, 
-                creature.mutations?.Health, 
-                creature.domesticLevels?.Health
-            );
-            const staminaDisplay = BadgeSystem.formatStatDisplay(
-                creature.baseStats?.Stamina, 
-                creature.mutations?.Stamina, 
-                creature.domesticLevels?.Stamina
-            );
-            const oxygenDisplay = BadgeSystem.formatStatDisplay(
-                creature.baseStats?.Oxygen, 
-                creature.mutations?.Oxygen, 
-                creature.domesticLevels?.Oxygen
-            );
-            const foodDisplay = BadgeSystem.formatStatDisplay(
-                creature.baseStats?.Food, 
-                creature.mutations?.Food, 
-                creature.domesticLevels?.Food
-            );
-            const weightDisplay = BadgeSystem.formatStatDisplay(
-                creature.baseStats?.Weight, 
-                creature.mutations?.Weight, 
-                creature.domesticLevels?.Weight
-            );
-            const meleeDisplay = BadgeSystem.formatStatDisplay(
-                creature.baseStats?.Melee, 
-                creature.mutations?.Melee, 
-                creature.domesticLevels?.Melee
-            );
-
-            // Helper function to check if stat is highest
+        <!-- Load species database first, then main app logic -->
+        <script src="species-database.js"></script>
+        <script src="main.js"></script>
+    </body>
+</html>
             const isHighestStat = (statName) => {
                 if (!highestStats || !highestStats[statName] || !creature || !creature.id) {
                     return false;

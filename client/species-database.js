@@ -39197,9 +39197,7 @@ const SPECIES_DATABASE = {
 
   // Badge Categories
   badgeCategories: ['combat', 'boss']
-}
-};
-
+},
 'Amargasaurus': {
     // Basic Info
     id: 'AMARGASAURUS_301',
@@ -44161,7 +44159,7 @@ const SPECIES_DATABASE = {
     // Utility & Roles
     primaryRole: 'Mobile industrial grinder and resource harvester',
     secondaryRoles: ['Chitin/Keratin gathering', 'scrap metal production', 'underwater utility'],
-    gatheringResources: ['Chitin', 'Keratin', 'Fish Meat', can grind items for resources],
+  gatheringResources: ['Chitin', 'Keratin', 'Fish Meat', 'can grind items for resources'],
     gatheringEfficiency: {
       Chitin: 9,
       Keratin: 9,
@@ -46726,8 +46724,8 @@ const SPECIES_DATABASE = {
     resourceInvestment: 'Low',
     maintenanceLevel: 'Low',
 
-    // Badge Categories
-    badgeCategories: ['utility', 'transport']
+  // Badge Categories
+  badgeCategories: ['utility', 'transport'],
   },
 
   'Magmasaur': {
@@ -48972,8 +48970,8 @@ const SPECIES_DATABASE = {
     resourceInvestment: 'Very Low',
     maintenanceLevel: 'Very Low',
 
-    // Badge Categories
-    badgeCategories: ['utility', 'transport']
+  // Badge Categories
+  badgeCategories: ['utility', 'transport'],
   },
 
   'Parakeet Fish School': {
@@ -52275,9 +52273,9 @@ const SPECIES_DATABASE = {
     resourceInvestment: 'Very Low',
     maintenanceLevel: 'Very Low',
   
-    // Badge Categories
-    badgeCategories: ['utility', 'transport']
-    'Skeletal Carnotaurus': {
+  // Badge Categories
+  badgeCategories: ['utility', 'transport'],
+  'Skeletal Carnotaurus': {
     // Basic Info
     id: 'SKELETAL_CARNOTAURUS_381',
     name: 'Skeletal Carnotaurus',
@@ -66139,7 +66137,11 @@ const SPECIES_DATABASE = {
   
     // Badge Categories
     badgeCategories: ['utility', 'harvesting']
-  },
+  }
+
+// Close top-level SPECIES_DATABASE (ensures object literal is terminated)
+};
+
 // Export for use in other files
 window.EXPANDED_SPECIES_DATABASE = SPECIES_DATABASE;
 // Ensure legacy consumers can access it via window.SPECIES_DATABASE

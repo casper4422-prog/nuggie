@@ -1,18 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dino Nuggie Expand</title>
-</head>
-<body>
-  <h1>Welcome to Dino Nuggie Expand</h1>
-  <div id="app"></div>
-  <script src="main.js"></script>
-</body>
-</html><!DOCTYPE html>
-<html lang="en">
-<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🦕 Dino Nuggies Nursery</title>
@@ -1202,6 +1190,78 @@
     </style>
 </head>
 <body>
+  <!-- Auth-required content wrapper -->
+  <div id="authRequiredContent" style="display:none;">
+    <!-- Place your main app content here. Example: -->
+    <div class="main-content">
+      <h2>Welcome, <span id="userEmailDisplay"></span>!</h2>
+      <div id="creatureCardSection">
+        <!-- Creature card UI goes here -->
+        <button class="btn btn-primary" onclick="saveCreatureCard()">Save Creature Card</button>
+        <button class="btn btn-secondary" onclick="loadCreatureCards()">Load My Creature Cards</button>
+        <div id="creatureCardsList"></div>
+      </div>
+    </div>
+  </div>
+  <!-- Not logged in prompt -->
+  <div id="notLoggedInPrompt" style="display:none;text-align:center;margin-top:60px;">
+    <h2>Please log in or register to use Dino Nuggie Expand!</h2>
+    <button class="btn btn-primary" onclick="showLoginModal()">Login</button>
+    <button class="btn btn-secondary" onclick="showRegisterModal()">Register</button>
+  </div>
+  <!-- Login Modal -->
+  <div class="modal" id="loginModal" style="display:none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">🔐 Login</h2>
+        <button class="close-btn" onclick="closeLoginModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="loginForm" onsubmit="return handleLogin(event)">
+          <div class="form-group">
+            <label for="loginEmail">Email</label>
+            <input type="email" id="loginEmail" required autocomplete="username" />
+          </div>
+          <div class="form-group">
+            <label for="loginPassword">Password</label>
+            <input type="password" id="loginPassword" required autocomplete="current-password" />
+          </div>
+          <button type="submit" class="btn btn-primary" style="width:100%;margin-top:16px;">Login</button>
+        </form>
+        <div style="margin-top:12px;text-align:center;">
+          <span>Don't have an account? <a href="#" onclick="showRegisterModal()">Register</a></span>
+        </div>
+        <div id="loginError" style="color:#ef4444;margin-top:8px;display:none;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Register Modal -->
+  <div class="modal" id="registerModal" style="display:none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">📝 Register</h2>
+        <button class="close-btn" onclick="closeRegisterModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="registerForm" onsubmit="return handleRegister(event)">
+          <div class="form-group">
+            <label for="registerEmail">Email</label>
+            <input type="email" id="registerEmail" required autocomplete="username" />
+          </div>
+          <div class="form-group">
+            <label for="registerPassword">Password</label>
+            <input type="password" id="registerPassword" required autocomplete="new-password" />
+          </div>
+          <button type="submit" class="btn btn-primary" style="width:100%;margin-top:16px;">Register</button>
+        </form>
+        <div style="margin-top:12px;text-align:center;">
+          <span>Already have an account? <a href="#" onclick="showLoginModal()">Login</a></span>
+        </div>
+        <div id="registerError" style="color:#ef4444;margin-top:8px;display:none;"></div>
+      </div>
+    </div>
+  </div>
     <!-- Tribe Settings Modal -->
     <div class="modal" id="tribeModal">
         <div class="modal-content">
@@ -1283,9 +1343,12 @@
                         DINO NUGGIES
                     </div>
                     <div class="header-actions">
-                        <button class="btn btn-secondary" onclick="openTribeModal()">
-                            🏛️ Tribe Settings
-                        </button>
+            <button class="btn btn-secondary" onclick="openTribeModal()">
+              🏛️ Tribe Settings
+            </button>
+            <button id="authBtn" class="btn btn-primary" onclick="handleAuthClick()">
+              Login
+            </button>
                     </div>
                 </div>
                 <div class="header-subtitle">
@@ -67810,5 +67873,166 @@ const SPECIES_DATABASE = {
         // Initialize the application
         document.addEventListener('DOMContentLoaded', initializeApp);
     </script>
+</script>
+<script>
+// --- Auth Modal Logic ---
+function showLoginModal() {
+  document.getElementById('loginModal').style.display = 'block';
+  document.getElementById('registerModal').style.display = 'none';
+}
+function closeLoginModal() {
+  document.getElementById('loginModal').style.display = 'none';
+}
+function showRegisterModal() {
+  document.getElementById('registerModal').style.display = 'block';
+  document.getElementById('loginModal').style.display = 'none';
+}
+function closeRegisterModal() {
+  document.getElementById('registerModal').style.display = 'none';
+}
+
+// --- Auth State ---
+function isLoggedIn() {
+  return !!localStorage.getItem('token');
+}
+function setAuthButton() {
+  const btn = document.getElementById('authBtn');
+  if (!btn) return;
+  if (isLoggedIn()) {
+    btn.textContent = 'Sign Out';
+  } else {
+    btn.textContent = 'Login';
+  }
+}
+function handleAuthClick() {
+  if (isLoggedIn()) {
+    // Sign out
+    localStorage.removeItem('token');
+    setAuthButton();
+    alert('Signed out!');
+  } else {
+    showLoginModal();
+  }
+}
+document.addEventListener('DOMContentLoaded', setAuthButton);
+
+// --- Login/Register Handlers (API calls) ---
+async function handleLogin(event) {
+  event.preventDefault();
+  const email = document.getElementById('loginEmail').value;
+  const password = document.getElementById('loginPassword').value;
+  const errorDiv = document.getElementById('loginError');
+  errorDiv.style.display = 'none';
+  try {
+    const res = await fetch('https://nuggie.onrender.com/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+    const data = await res.json();
+    if (res.ok && data.token) {
+      localStorage.setItem('token', data.token);
+      closeLoginModal();
+      setAuthButton();
+    } else {
+      errorDiv.textContent = data.error || 'Login failed.';
+      errorDiv.style.display = 'block';
+    }
+  } catch (e) {
+    errorDiv.textContent = 'Network error.';
+    errorDiv.style.display = 'block';
+  }
+  return false;
+}
+async function handleRegister(event) {
+  event.preventDefault();
+  const email = document.getElementById('registerEmail').value;
+  const password = document.getElementById('registerPassword').value;
+  const errorDiv = document.getElementById('registerError');
+  errorDiv.style.display = 'none';
+  try {
+    const res = await fetch('https://nuggie.onrender.com/api/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+    const data = await res.json();
+    if (res.ok && data.success) {
+      closeRegisterModal();
+      showLoginModal();
+    } else {
+      errorDiv.textContent = data.error || 'Registration failed.';
+      errorDiv.style.display = 'block';
+    }
+  } catch (e) {
+    errorDiv.textContent = 'Network error.';
+    errorDiv.style.display = 'block';
+  }
+  return false;
+}
+// --- Auth-required content logic ---
+function updateAuthContent() {
+  const isAuth = isLoggedIn();
+  document.getElementById('authRequiredContent').style.display = isAuth ? '' : 'none';
+  document.getElementById('notLoggedInPrompt').style.display = isAuth ? 'none' : '';
+  if (isAuth) {
+    // Optionally show user email (decode JWT if needed)
+    const token = localStorage.getItem('token');
+    let email = '';
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      email = payload.email || '';
+    } catch {}
+    document.getElementById('userEmailDisplay').textContent = email;
+  }
+}
+document.addEventListener('DOMContentLoaded', updateAuthContent);
+// Also update on login/logout
+function setAuthButton() {
+  const btn = document.getElementById('authBtn');
+  if (!btn) return;
+  if (isLoggedIn()) {
+    btn.textContent = 'Sign Out';
+  } else {
+    btn.textContent = 'Login';
+  }
+  updateAuthContent();
+}
+
+// --- Creature Card API Example ---
+async function saveCreatureCard() {
+  const token = localStorage.getItem('token');
+  if (!token) return alert('You must be logged in.');
+  // Example card data (replace with your actual form/UI)
+  const data = { name: 'Example Dino', species: 'Rex', level: 100 };
+  const res = await fetch('https://nuggie.onrender.com/api/creature', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+    body: JSON.stringify({ data })
+  });
+  if (res.ok) {
+    alert('Creature card saved!');
+  } else {
+    alert('Failed to save card.');
+  }
+}
+async function loadCreatureCards() {
+  const token = localStorage.getItem('token');
+  if (!token) return alert('You must be logged in.');
+  const res = await fetch('https://nuggie.onrender.com/api/creature', {
+    headers: { 'Authorization': 'Bearer ' + token }
+  });
+  const cards = await res.json();
+  const list = document.getElementById('creatureCardsList');
+  list.innerHTML = '';
+  if (Array.isArray(cards)) {
+    cards.forEach(card => {
+      const div = document.createElement('div');
+      div.textContent = JSON.stringify(card);
+      list.appendChild(div);
+    });
+  }
+}
+</script>
 </body>
 </html>

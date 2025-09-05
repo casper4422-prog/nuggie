@@ -184,6 +184,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Runtime diagnostic: report species DB size so it's obvious whether the external file loaded
 try {
+	// Ensure we reference the global/window copy and avoid TDZ from a later const
+	// If species-database.js loaded earlier it will set window.SPECIES_DATABASE.
+	// Provide a local mutable alias so references before wiring don't hit TDZ.
+	if (typeof SPECIES_DATABASE === 'undefined') {
+		// define a fallback variable in the global scope
+		window.__SPECIES_DB = window.__SPECIES_DB || window.SPECIES_DATABASE || {};
+		var SPECIES_DATABASE = window.__SPECIES_DB; // intentionally var to avoid TDZ
+	}
 	const _speciesCount = Object.keys(SPECIES_DATABASE || {}).length;
 	console.log(`[SPA] species DB loaded: ${_speciesCount} species`);
 	if (_speciesCount === 0) {
@@ -486,5 +494,5 @@ if (typeof window !== 'undefined' && window.SPECIES_DATABASE) {
 	window.__SPECIES_DB = {};
 }
 
-// Local alias used throughout main.js
-const SPECIES_DATABASE = window.__SPECIES_DB;
+// Local alias used throughout main.js (assign into existing var)
+SPECIES_DATABASE = window.__SPECIES_DB || {};

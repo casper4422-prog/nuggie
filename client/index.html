@@ -6,748 +6,10 @@
   <title>🦕 Dino Nuggies Nursery</title>
   <link rel="stylesheet" href="main.css">
   <link rel="stylesheet" href="main-additional.css">
-        }
-
-        .close-btn:hover {
-            background: rgba(239, 68, 68, 0.2);
-            color: #ef4444;
-        }
-
-        .modal-body {
-            padding: 24px;
-        }
-
-        .modal-footer {
-            padding: 24px;
-            border-top: 1px solid rgba(59, 130, 246, 0.2);
-            display: flex;
-            gap: 12px;
-            justify-content: flex-end;
-        }
-
-        /* Creature Page Styles */
-        .creature-page-header {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            margin-bottom: 32px;
-            padding: 24px;
-            background: rgba(30, 41, 59, 0.8);
-            border-radius: 16px;
-            border: 1px solid rgba(59, 130, 246, 0.2);
-        }
-
-        .creature-page-icon {
-            width: 80px;
-            height: 80px;
-            border-radius: 16px;
-            background: linear-gradient(135deg, #1e293b, #334155);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3rem;
-            border: 2px solid rgba(59, 130, 246, 0.2);
-        }
-
-        .creature-page-info h1 {
-            font-size: 32px;
-            font-weight: 700;
-            margin-bottom: 8px;
-            color: #e2e8f0;
-        }
-
-        .creature-page-meta {
-            color: #64748b;
-            font-size: 16px;
-        }
-
-        .creature-page-actions {
-            margin-left: auto;
-            display: flex;
-            gap: 12px;
-        }
-
-        /* Species Info Tabs */
-        .species-info-container {
-            background: rgba(30, 41, 59, 0.8);
-            border-radius: 16px;
-            margin: 24px 0;
-            overflow: hidden;
-            border: 1px solid rgba(59, 130, 246, 0.1);
-        }
-
-        .tab-navigation {
-            display: flex;
-            background: rgba(15, 23, 42, 0.9);
-            border-bottom: 1px solid rgba(59, 130, 246, 0.2);
-            overflow-x: auto;
-        }
-
-        .tab-button {
-            padding: 16px 24px;
-            background: none;
-            border: none;
-            color: #94a3b8;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 14px;
-            white-space: nowrap;
-            transition: all 0.2s ease;
-            border-bottom: 3px solid transparent;
-        }
-
-        .tab-button:hover {
-            color: #e2e8f0;
-            background: rgba(59, 130, 246, 0.1);
-        }
-
-        .tab-button.active {
-            color: #3b82f6;
-            border-bottom-color: #3b82f6;
-            background: rgba(59, 130, 246, 0.1);
-        }
-
-        .tab-content {
-            display: none;
-            padding: 24px;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        .info-section {
-            margin-bottom: 24px;
-        }
-
-        .info-section:last-child {
-            margin-bottom: 0;
-        }
-
-        .info-title {
-            font-size: 18px;
-            font-weight: 700;
-            color: #e2e8f0;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 16px;
-            margin-bottom: 16px;
-        }
-
-        .info-item {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .info-label {
-            font-size: 12px;
-            font-weight: 600;
-            color: #94a3b8;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .info-value {
-            color: #e2e8f0;
-            font-size: 14px;
-            line-height: 1.4;
-        }
-
-        .dossier-text {
-            background: rgba(15, 23, 42, 0.5);
-            padding: 16px;
-            border-radius: 8px;
-            border-left: 4px solid #3b82f6;
-            font-style: italic;
-            line-height: 1.6;
-            color: #cbd5e1;
-        }
-
-        .stats-table {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 12px;
-            background: rgba(15, 23, 42, 0.5);
-            padding: 16px;
-            border-radius: 8px;
-        }
-
-        .stat-item {
-            text-align: center;
-            padding: 8px;
-            background: rgba(59, 130, 246, 0.1);
-            border-radius: 6px;
-        }
-
-        .stat-name {
-            font-size: 11px;
-            color: #94a3b8;
-            text-transform: uppercase;
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-
-        .stat-value {
-            font-size: 16px;
-            font-weight: 700;
-            color: #3b82f6;
-        }
-
-        .resource-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
-        .resource-tag {
-            background: rgba(34, 197, 94, 0.2);
-            color: #22c55e;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        .ability-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
-        .ability-tag {
-            background: rgba(168, 85, 247, 0.2);
-            color: #a855f7;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        @media (max-width: 768px) {
-            .tab-navigation {
-                flex-direction: column;
-            }
-            
-            .tab-button {
-                text-align: left;
-                border-bottom: 1px solid rgba(59, 130, 246, 0.1);
-                border-right: none;
-            }
-            
-            .tab-button.active {
-                border-bottom: 1px solid rgba(59, 130, 246, 0.1);
-                border-left: 3px solid #3b82f6;
-            }
-        }
-
-        /* Creatures Section Header */
-        .creatures-section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding: 15px 20px;
-            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
-            border-radius: 10px;
-            color: white;
-        }
-
-        .creatures-section-title {
-            margin: 0;
-            font-size: 1.5em;
-            font-weight: bold;
-        }
-
-        .view-toggle {
-            display: flex;
-            gap: 5px;
-        }
-
-        .view-toggle-btn {
-            padding: 8px 15px;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 0.9em;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .view-toggle-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-            border-color: rgba(255, 255, 255, 0.6);
-        }
-
-        .view-toggle-btn.active {
-            background: #27ae60;
-            border-color: #27ae60;
-            color: white;
-        }
-
-        /* Creature Cards Grid */
-        .creatures-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 24px;
-            margin-top: 24px;
-        }
-
-        .creature-card {
-            background: rgba(30, 41, 59, 0.8);
-            border-radius: 16px;
-            overflow: hidden;
-            border: 1px solid rgba(59, 130, 246, 0.1);
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .creature-card:hover {
-            transform: translateY(-2px);
-            border-color: rgba(59, 130, 246, 0.3);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-        }
-
-        .creature-card-header {
-            position: relative;
-            height: 160px;
-            background: linear-gradient(135deg, #334155, #475569);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-
-        .creature-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .creature-image-placeholder {
-            width: 80px;
-            height: 80px;
-            background: rgba(59, 130, 246, 0.1);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2.5rem;
-            border: 3px solid rgba(59, 130, 246, 0.2);
-        }
-
-        .creature-badges {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .badge {
-            padding: 4px 12px;
-            border-radius: 12px;
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .badge-bronze {
-            background: linear-gradient(135deg, #cd7f32, #b8691e);
-            color: #fff;
-        }
-
-        .badge-silver {
-            background: linear-gradient(135deg, #c0c0c0, #a8a8a8);
-            color: #000;
-        }
-
-        .badge-gold {
-            background: linear-gradient(135deg, #ffd700, #ffb300);
-            color: #000;
-        }
-
-        .creature-card-content {
-            padding: 20px;
-        }
-
-        .creature-name {
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 8px;
-            color: #e2e8f0;
-        }
-
-        .creature-meta {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 16px;
-            font-size: 14px;
-            color: #64748b;
-        }
-
-        .creature-stats {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            grid-template-rows: repeat(2, 1fr);
-            gap: 8px 12px;
-        }
-
-        .stat-item {
-            text-align: center;
-        }
-
-        .stat-label {
-            font-size: 11px;
-            color: #64748b;
-            text-transform: uppercase;
-            margin-bottom: 4px;
-        }
-
-        .stat-value {
-            font-size: 14px;
-            font-weight: 600;
-            color: #3b82f6;
-        }
-
-        /* List View Styles */
-        .creatures-grid.list-view {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            grid-template-columns: none;
-        }
-
-        .creatures-grid.list-view .creature-card {
-            display: flex;
-            align-items: center;
-            padding: 16px 24px;
-            border-radius: 10px;
-            min-height: 80px;
-            background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(30, 41, 59, 0.7) 100%);
-            border: 1px solid rgba(59, 130, 246, 0.15);
-            transition: all 0.3s ease;
-        }
-
-        .creatures-grid.list-view .creature-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 20px rgba(59, 130, 246, 0.15);
-            border-color: rgba(59, 130, 246, 0.3);
-        }
-
-        .creatures-grid.list-view .creature-card-header {
-            background: none;
-            padding: 0;
-            flex: 0 0 70px;
-            margin-right: 20px;
-        }
-
-        .creatures-grid.list-view .creature-card-header .creature-image,
-        .creatures-grid.list-view .creature-card-header .creature-image-placeholder {
-            width: 60px !important;
-            height: 60px !important;
-            border-radius: 8px;
-            border: 2px solid rgba(59, 130, 246, 0.2);
-        }
-
-        .creatures-grid.list-view .creature-badges {
-            display: flex;
-            gap: 4px;
-            flex-wrap: wrap;
-            flex: 0 0 auto;
-            margin-left: 15px;
-        }
-
-        .creatures-grid.list-view .creature-card-content {
-            padding: 0;
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .creatures-grid.list-view .creature-name {
-            margin: 0;
-            flex: 0 0 180px;
-            font-size: 18px;
-            font-weight: 600;
-            color: #e2e8f0;
-        }
-
-        .creatures-grid.list-view .creature-meta {
-            margin: 0;
-            flex: 1;
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            font-size: 12px;
-            flex-wrap: wrap;
-            padding: 5px 0;
-        }
-
-        .creatures-grid.list-view .creature-stats {
-            display: none;
-        }
-
-        .list-view-stat {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            white-space: nowrap;
-            padding: 6px 12px;
-            background: rgba(59, 130, 246, 0.15);
-            border-radius: 6px;
-            border: 1px solid rgba(59, 130, 246, 0.3);
-            font-size: 12px;
-            min-width: 80px;
-            justify-content: center;
-            font-weight: 500;
-            transition: all 0.2s ease;
-        }
-        
-        .list-view-stat span:first-child {
-            font-size: 14px;
-            line-height: 1;
-            display: inline-block;
-            min-width: 16px;
-            text-align: center;
-        }
-
-        .list-view-stat:hover {
-            background: rgba(59, 130, 246, 0.25);
-            border-color: rgba(59, 130, 246, 0.5);
-        }
-
-        /* Highest Stat Highlighting */
-        .stat-item.highest-stat {
-            background: linear-gradient(135deg, rgba(255, 215, 0, 0.2) 0%, rgba(255, 193, 7, 0.15) 100%);
-            border: 2px solid rgba(255, 215, 0, 0.5);
-            box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
-            position: relative;
-        }
-
-        .stat-item.highest-stat::before {
-            content: "👑";
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            font-size: 16px;
-            background: #ffd700;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 2px solid #fff;
-        }
-
-        .list-view-stat.highest-stat {
-            background: linear-gradient(135deg, rgba(255, 215, 0, 0.25) 0%, rgba(255, 193, 7, 0.2) 100%);
-            border: 2px solid rgba(255, 215, 0, 0.6);
-            box-shadow: 0 0 8px rgba(255, 215, 0, 0.4);
-            position: relative;
-            font-weight: 600;
-        }
-
-        .list-view-stat.highest-stat::before {
-            content: "👑";
-            position: absolute;
-            top: -6px;
-            right: -6px;
-            font-size: 12px;
-            background: #ffd700;
-            border-radius: 50%;
-            width: 16px;
-            height: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid #fff;
-        }
-
-        /* Form Styles */
-        .form-section {
-            margin-bottom: 32px;
-        }
-
-        .section-title {
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 16px;
-            color: #3b82f6;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .form-row {
-            display: grid;
-            gap: 16px;
-            margin-bottom: 16px;
-        }
-
-        .form-row.cols-2 { grid-template-columns: 1fr 1fr; }
-        .form-row.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .form-label {
-            font-size: 14px;
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: #e2e8f0;
-        }
-
-        .form-control {
-            padding: 12px 16px;
-            background: rgba(15, 23, 42, 0.8);
-            border: 1px solid rgba(59, 130, 246, 0.2);
-            border-radius: 8px;
-            color: #e2e8f0;
-            font-size: 14px;
-            transition: border-color 0.2s ease;
-        }
-
-        .form-control:focus {
-            outline: none;
-            border-color: #3b82f6;
-        }
-
-        .form-control::placeholder {
-            color: #64748b;
-        }
-
-        /* Image Upload */
-        .image-upload {
-            position: relative;
-            width: 120px;
-            height: 120px;
-            border: 2px dashed rgba(59, 130, 246, 0.3);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            overflow: hidden;
-        }
-
-        .image-upload:hover {
-            border-color: #3b82f6;
-            background: rgba(59, 130, 246, 0.1);
-        }
-
-        .image-upload input {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            cursor: pointer;
-        }
-
-        .image-upload-preview {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .image-upload-placeholder {
-            text-align: center;
-            color: #64748b;
-        }
-
-        /* Badge Preview */
-        .badge-preview {
-            background: rgba(15, 23, 42, 0.8);
-            border-radius: 12px;
-            padding: 20px;
-            border: 1px solid rgba(59, 130, 246, 0.2);
-        }
-
-        .badge-preview-content {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            align-items: center;
-        }
-
-        /* No creatures state */
-        .no-creatures {
-            text-align: center;
-            padding: 60px 20px;
-            color: #64748b;
-        }
-
-        .no-creatures-icon {
-            font-size: 4rem;
-            margin-bottom: 16px;
-            opacity: 0.5;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .header-top {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .header-actions {
-                justify-content: center;
-            }
-
-            .stats-grid {
-                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-                gap: 16px;
-            }
-
-            .species-controls {
-                flex-direction: column;
-            }
-
-            .search-box {
-                min-width: unset;
-            }
-
-            .species-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .form-row.cols-2,
-            .form-row.cols-3 {
-                grid-template-columns: 1fr;
-            }
-
-            .creature-page-header {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            .creature-page-actions {
-                margin-left: 0;
-            }
-        }
-    </style>
 </head>
 <body>
   <!-- Tribe Settings Modal (kept) -->
-  <div class="modal" id="tribeModal">
+  <div class="modal hidden" id="tribeModal">
     <div class="modal-content">
       <div class="modal-header">
         <h2 class="modal-title">🏛️ Tribe Settings</h2>
@@ -818,12 +80,12 @@
       <h1 class="landing-title">Dino Nuggie Manager</h1>
       <form id="loginForm" onsubmit="return handleLogin(event)">
         <div class="form-group">
-          <label for="loginEmail">Email</label>
-          <input type="email" id="loginEmail" required autocomplete="username" />
+          <label class="form-label" for="loginEmail">Email</label>
+          <input class="form-control" type="email" id="loginEmail" required autocomplete="username" />
         </div>
         <div class="form-group">
-          <label for="loginPassword">Password</label>
-          <input type="password" id="loginPassword" required autocomplete="current-password" />
+          <label class="form-label" for="loginPassword">Password</label>
+          <input class="form-control" type="password" id="loginPassword" required autocomplete="current-password" />
         </div>
         <button type="submit" class="btn btn-primary login-btn">Login</button>
       </form>
@@ -839,12 +101,16 @@
       <h1 class="register-title">Register</h1>
       <form id="registerForm" onsubmit="return handleRegister(event)">
         <div class="form-group">
-          <label for="registerEmail">Email</label>
-          <input type="email" id="registerEmail" required autocomplete="username" />
+          <label class="form-label" for="registerEmail">Email</label>
+          <input class="form-control" type="email" id="registerEmail" required autocomplete="username" />
         </div>
         <div class="form-group">
-          <label for="registerPassword">Password</label>
-          <input type="password" id="registerPassword" required autocomplete="new-password" />
+          <label class="form-label" for="registerPassword">Password</label>
+          <input class="form-control" type="password" id="registerPassword" required autocomplete="new-password" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="registerConfirmPassword">Confirm Password</label>
+          <input class="form-control" type="password" id="registerConfirmPassword" required autocomplete="new-password" />
         </div>
         <button type="submit" class="btn btn-primary register-btn">Register</button>
       </form>
@@ -1056,90 +322,6 @@
         </div>
     </div>
 
-    <script>
-        // Global Application State
-        let appState;
-        
-        try {
-            appState = {
-                creatures: JSON.parse(localStorage.getItem('arkCreatures') || '[]'),
-                tribeSettings: JSON.parse(localStorage.getItem('arkTribeSettings') || '{}'),
-                currentSpecies: null,
-                editingCreature: null,
-                selectedCreature: null
-            };
-            console.log('App state loaded successfully', appState);
-        } catch (error) {
-            console.error('Error loading app state from localStorage:', error);
-            appState = {
-                creatures: [],
-                tribeSettings: {},
-                currentSpecies: null,
-                editingCreature: null,
-                selectedCreature: null
-            };
-        }
-
-const SPECIES_DATABASE = {
-'Achatina': {
-  // Basic Info
-  id: 'ACHATINA_001',
-  name: 'Achatina',
-  icon: '🐌',
-  category: 'utility',
-  rarity: 'uncommon',
-  source: 'Base Game',
-  variants: ['Standard', 'Aberrant', 'Gauntlet2'],
-
-  // Biology & Lore
-  dossierText: "Found mostly in marshes and jungles, Achatina limusegnis is a very slow, very non-threatening land mollusk. It might be the simplest creature on the Island to hunt, and while it only provides a small amount of meat and chitin, an easy meal is always of value on the Island. Unlike nearly every other creature on the Island, Achatina does not defecate normally. Instead, it secretes a thick, sticky substance. Achatina leaves trails of this slime, but the trails are so thin that they crumble to dust quickly. There is a very disgusting, but useful fact about Achatina that causes tribes to seek to tame them: its secretions are chemically similar to the 'Cementing Paste' and 'Organic Polymer' used by many tribes for building materials.",
-  temperament: 'Docile',
-  diet: 'Herbivore (Sweet Vegetable Cake only when tamed)',
-  habitat: 'Marshes, swamps, jungles, moist areas',
-  realWorldBasis: 'Achatina (Giant African Land Snail)',
-  sizeClass: 'Medium',
-
-  // Taming System
-  tamingMethod: 'Knockout',
-  tamingType: 'Violent taming with tranquilizers',
-  preferredKibble: 'Sweet Vegetable Cake',
-  favoriteFood: 'Sweet Vegetable Cake',
-  tamingSpeed: 'Slow',
-  torpor: {
-    baseValue: 200,
-    depleteRate: 'Moderate'
-  },
-  specialRequirements: 'Only eats Sweet Vegetable Cake. Retreats into shell at 33% health with 90% damage reduction',
-
-  // Base Statistics (Level 1 Wild)
-  baseStats: {
-    health: 75,
-    stamina: 100,
-    oxygen: 100,
-    food: 450,
-    weight: 600,
-    melee: 100,
-    speed: 100,
-    torpor: 200
-  },
-
-  // Stat Scaling (Per Level)
-  statScaling: {
-    health: 15,
-    stamina: 10,
-    oxygen: 10,
-    food: 45,
-    weight: 12,
-    melee: 5,
-    speed: 1
-  },
-
-  // Equipment & Combat
-  saddleLevel: 0,
-  saddleType: 'Can wear helmets for extra protection',
-  saddleArmor: 0,
-  platformLimit: 0,
-  specialAbilities: ['Shell retreat (90% damage reduction)', 'slime production'],
   attackTypes: ['None (completely passive)'],
   canCarry: ['None'],
 
@@ -66345,7 +65527,7 @@ const SPECIES_DATABASE = {
             console.log(`Filtered species: showing ${filteredCount} species`);
             
             if (filteredCount === 0) {
-                grid.innerHTML = '<p style="text-align: center; color: #94a3b8; margin: 40px 0;">No species found matching your filters.</p>';
+                grid.innerHTML = '<p class="no-species-found">No species found matching your filters.</p>';
             }
         }
 
@@ -66453,7 +65635,7 @@ const SPECIES_DATABASE = {
             statsContainer.innerHTML = '';
             
             if (!baseStats) {
-                statsContainer.innerHTML = '<div class="info-value">No stats available</div>';
+                statsContainer.innerHTML = '<div class="stat-no-data">No stats available</div>';
                 return;
             }
             
@@ -66486,7 +65668,7 @@ const SPECIES_DATABASE = {
             container.innerHTML = '';
             
             if (!resources || resources.length === 0) {
-                container.innerHTML = '<div class="info-value">No special resource gathering</div>';
+                container.innerHTML = '<div class="stat-no-data">No special resource gathering</div>';
                 return;
             }
             
@@ -66503,7 +65685,7 @@ const SPECIES_DATABASE = {
             container.innerHTML = '';
             
             if (!abilities || abilities.length === 0) {
-                container.innerHTML = '<div class="info-value">No special abilities</div>';
+                container.innerHTML = '<div class="stat-no-data">No special abilities</div>';
                 return;
             }
             
@@ -66554,7 +65736,7 @@ const SPECIES_DATABASE = {
                 grid.innerHTML = `
                     <div class="no-creatures">
                         <div class="no-creatures-icon">🦴</div>
-                        <div style="font-size: 18px; margin-bottom: 8px;">No creatures yet</div>
+                        <div class="no-creatures-yet">No creatures yet</div>
                         <div>Add your first creature to start tracking this species!</div>
                     </div>
                 `;
@@ -66662,8 +65844,8 @@ const SPECIES_DATABASE = {
                 card.innerHTML = `
                     <div class="creature-card-header">
                         ${creature.image ? 
-                            `<img src="${creature.image}" alt="${creature.name}" class="creature-image" style="width: 60px; height: 60px; object-fit: cover;">` :
-                            `<div class="creature-image-placeholder" style="width: 60px; height: 60px; font-size: 28px; display: flex; align-items: center; justify-content: center;">${SPECIES_DATABASE[creature.species]?.icon || '🦖'}</div>`
+                            `<img src="${creature.image}" alt="${creature.name}" class="creature-image creature-image-list">` :
+                            `<div class="creature-image-placeholder creature-image-list-placeholder">${SPECIES_DATABASE[creature.species]?.icon || '🦖'}</div>`
                         }
                     </div>
                     <div class="creature-card-content">
@@ -66800,7 +65982,7 @@ const SPECIES_DATABASE = {
             } else {
                 imagePreview.innerHTML = `
                     <div>📷</div>
-                    <div style="font-size: 12px;">Upload Image</div>
+                    <div class="upload-image-label">Upload Image</div>
                 `;
             }
             
@@ -66844,12 +66026,12 @@ const SPECIES_DATABASE = {
                 const badgeClass = `badge-${bloodline.tier}`;
                 previewContent.innerHTML = `
                     <div class="badge ${badgeClass}">${bloodline.tier.toUpperCase()} BLOODLINE</div>
-                    <span style="color: #94a3b8;">Minimum stat: ${bloodline.minStat} points</span>
+                    <span class="stat-info">Minimum stat: ${bloodline.minStat} points</span>
                 `;
             } else {
                 previewContent.innerHTML = `
-                    <span style="color: #64748b;">No badge qualification yet</span>
-                    <span style="color: #94a3b8;">• Need all 5 core stats ≥45 for Bronze</span>
+                    <span class="no-badge-qualification">No badge qualification yet</span>
+                    <span class="stat-info">• Need all 5 core stats ≥45 for Bronze</span>
                 `;
             }
         }
@@ -66925,42 +66107,42 @@ const SPECIES_DATABASE = {
             const species = SPECIES_DATABASE[creature.species];
             
             document.getElementById('creatureDetailContent').innerHTML = `
-                <div style="display: flex; gap: 24px; margin-bottom: 24px;">
-                    <div style="flex-shrink: 0;">
+                <div class="creature-detail-header">
+                    <div class="creature-detail-image-col">
                         ${creature.image ? 
-                            `<img src="${creature.image}" alt="${creature.name}" style="width: 120px; height: 120px; object-fit: cover; border-radius: 12px;">` :
-                            `<div style="width: 120px; height: 120px; background: linear-gradient(135deg, #1e293b, #334155); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 3rem;">${species?.icon || '🦖'}</div>`
+                            `<img src="${creature.image}" alt="${creature.name}" class="creature-detail-image">` :
+                            `<div class="creature-detail-image-placeholder">${species?.icon || '🦖'}</div>`
                         }
                     </div>
-                    <div style="flex: 1;">
-                        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
-                            <h3 style="margin: 0; font-size: 24px;">${creature.name}</h3>
-                            <span style="background: rgba(59, 130, 246, 0.2); color: #3b82f6; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 600;">${creature.gender || 'Unknown'}</span>
+                    <div class="creature-detail-content-col">
+                        <div class="creature-detail-title-row">
+                            <h3 class="creature-detail-title">${creature.name}</h3>
+                            <span class="creature-gender-badge">${creature.gender || 'Unknown'}</span>
                         </div>
-                        <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px;">
+                        <div class="creature-detail-badges-row">
                             ${badges}
                         </div>
-                        <div style="color: #94a3b8; margin-bottom: 16px;">
+                        <div class="creature-detail-meta">
                             <strong>Species:</strong> ${creature.species} • 
                             <strong>Level:</strong> ${creature.level || 1}
                         </div>
-                        ${creature.notes ? `<div style="color: #94a3b8;"><strong>Notes:</strong> ${creature.notes}</div>` : ''}
+                        ${creature.notes ? `<div class="creature-detail-notes"><strong>Notes:</strong> ${creature.notes}</div>` : ''}
                     </div>
                 </div>
                 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                <div class="creature-detail-stats-grid">
                     <div>
-                        <h4 style="color: #3b82f6; margin-bottom: 16px;">📊 Base Stats</h4>
+                        <h4 class="creature-detail-stats-title">📊 Base Stats</h4>
                         ${generateStatTable(creature.baseStats)}
                     </div>
                     <div>
-                        <h4 style="color: #3b82f6; margin-bottom: 16px;">🧬 Mutations</h4>
+                        <h4 class="creature-detail-stats-title">🧬 Mutations</h4>
                         ${generateStatTable(creature.mutations)}
                     </div>
                 </div>
                 
-                <div style="margin-top: 24px;">
-                    <h4 style="color: #3b82f6; margin-bottom: 16px;">📈 Domestic Levels</h4>
+                <div class="creature-detail-domestic">
+                    <h4 class="creature-detail-stats-title">📈 Domestic Levels</h4>
                     ${generateStatTable(creature.domesticLevels)}
                 </div>
             `;
@@ -66969,14 +66151,14 @@ const SPECIES_DATABASE = {
         }
 
         function generateStatTable(stats) {
-            if (!stats) return '<div style="color: #64748b;">No data</div>';
+            if (!stats) return '<div class="stat-no-data">No data</div>';
             
             return `
-                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
+                <div class="stat-table-grid">
                     ${Object.entries(stats).map(([stat, value]) => `
-                        <div style="text-align: center; padding: 12px; background: rgba(15, 23, 42, 0.6); border-radius: 8px;">
-                            <div style="font-size: 12px; color: #64748b; text-transform: uppercase; margin-bottom: 4px;">${stat}</div>
-                            <div style="font-size: 16px; font-weight: 600; color: #3b82f6;">${value || 0}</div>
+                        <div class="stat-table-cell">
+                            <div class="stat-table-label">${stat}</div>
+                            <div class="stat-table-value">${value || 0}</div>
                         </div>
                     `).join('')}
                 </div>
@@ -67035,17 +66217,23 @@ const SPECIES_DATABASE = {
 // --- New Login/Register and Navigation Logic ---
 function showLoginPage() {
   document.getElementById('landingPage').style.display = '';
+  document.getElementById('landingPage').classList.remove('hidden');
   document.getElementById('registerPage').style.display = 'none';
+  document.getElementById('registerPage').classList.add('hidden');
   document.getElementById('mainApp').style.display = 'none';
 }
 function showRegisterPage() {
   document.getElementById('landingPage').style.display = 'none';
+  document.getElementById('landingPage').classList.add('hidden');
   document.getElementById('registerPage').style.display = '';
+  document.getElementById('registerPage').classList.remove('hidden');
   document.getElementById('mainApp').style.display = 'none';
 }
 function showMainApp() {
   document.getElementById('landingPage').style.display = 'none';
+  document.getElementById('landingPage').classList.add('hidden');
   document.getElementById('registerPage').style.display = 'none';
+  document.getElementById('registerPage').classList.add('hidden');
   document.getElementById('mainApp').style.display = '';
 }
 window.showLoginPage = showLoginPage;
@@ -67121,8 +66309,14 @@ async function handleRegister(event) {
   event.preventDefault();
   const email = document.getElementById('registerEmail').value;
   const password = document.getElementById('registerPassword').value;
+  const confirmPassword = document.getElementById('registerConfirmPassword').value;
   const errorDiv = document.getElementById('registerError');
   errorDiv.style.display = 'none';
+  if (password !== confirmPassword) {
+    errorDiv.textContent = 'Passwords do not match.';
+    errorDiv.style.display = 'block';
+    return false;
+  }
   try {
     const res = await fetch('https://nuggie.onrender.com/api/register', {
       method: 'POST',

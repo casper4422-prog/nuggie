@@ -66341,7 +66341,35 @@ window.handleRegister = handleRegister;
 
 // --- Navigation/Page Loading ---
 function loadSpeciesPage() {
-  document.getElementById('appMainContent').innerHTML = '<h2>Species Page</h2><p>List of all Ark species goes here.</p>';
+  // Show the main dashboard content (restore static HTML)
+  document.getElementById('appMainContent').innerHTML = `
+    <section class="dashboard-section">
+      <h2 class="dashboard-title">Welcome to Dino Nuggie Manager!</h2>
+      <div class="dashboard-cards">
+        <div class="dashboard-card">
+          <h3>Tribe Info</h3>
+          <div id="tribeInfo">
+            <strong>Leader:</strong> <span id="tribeLeaderInfo"></span><br>
+            <strong>Server:</strong> <span id="tribeServerInfo"></span><br>
+            <strong>Map:</strong> <span id="tribeMapInfo"></span><br>
+            <strong>Goals:</strong> <span id="tribeGoalsInfo"></span>
+          </div>
+        </div>
+        <div class="dashboard-card">
+          <h3>Species Grid</h3>
+          <div id="speciesGrid">
+            <!-- Species grid will be rendered here by JS -->
+          </div>
+        </div>
+      </div>
+    </section>
+  `;
+  // Populate tribe info from localStorage or appState
+  document.getElementById('tribeLeaderInfo').textContent = appState.tribeSettings.leader || 'N/A';
+  document.getElementById('tribeServerInfo').textContent = appState.tribeSettings.serverType || 'N/A';
+  document.getElementById('tribeMapInfo').textContent = appState.tribeSettings.primaryMap || 'N/A';
+  document.getElementById('tribeGoalsInfo').textContent = appState.tribeSettings.breedingGoals || 'N/A';
+  // TODO: Render species grid if you want dynamic content
 }
 function loadMyNuggiesPage() {
   document.getElementById('appMainContent').innerHTML = '<h2>My Nuggies</h2><p>Your saved creature cards will appear here. (Sorting/filtering UI coming soon!)</p>';

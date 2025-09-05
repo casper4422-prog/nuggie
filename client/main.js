@@ -111,6 +111,17 @@ document.addEventListener('DOMContentLoaded', () => {
 	}
 });
 
+// Runtime diagnostic: report species DB size so it's obvious whether the external file loaded
+try {
+	const _speciesCount = Object.keys(SPECIES_DATABASE || {}).length;
+	console.log(`[SPA] species DB loaded: ${_speciesCount} species`);
+	if (_speciesCount === 0) {
+		console.warn('[SPA] species database appears empty. Ensure client/species-database.js is present and loads before main.js');
+	}
+} catch (err) {
+	console.error('[SPA] Failed to read SPECIES_DATABASE for diagnostics:', err);
+}
+
 // --- Login/Register Handlers (API calls) ---
 async function handleLogin(event) {
 	event.preventDefault();

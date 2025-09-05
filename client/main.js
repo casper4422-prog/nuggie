@@ -124,8 +124,22 @@ async function handleRegister(event) {
 window.handleRegister = handleRegister;
 
 // --- Navigation/Page Loading ---
+function isValidImageUrl(url) {
+  if (!url || typeof url !== 'string') return false;
+  // Accept data URLs or http(s) URLs
+  return url.startsWith('data:image') || url.startsWith('http://') || url.startsWith('https://');
+}
+
+function renderCreatureImage(creature, className = '') {
+  if (isValidImageUrl(creature.image)) {
+    return `<img src="${creature.image}" alt="${creature.name || 'Creature'}" class="${className}">`;
+  } else {
+    // Use icon or placeholder
+    return `<div class="creature-image-list-placeholder">${creature.icon || '🦖'}</div>`;
+  }
+}
+
 function loadSpeciesPage() {
-	// Show the main dashboard content (restore static HTML)
 	document.getElementById('appMainContent').innerHTML = `
 		<section class="dashboard-section">
 			<h2 class="dashboard-title">Welcome to Dino Nuggie Manager!</h2>
@@ -148,12 +162,23 @@ function loadSpeciesPage() {
 			</div>
 		</section>
 	`;
-	// Populate tribe info from localStorage or appState
 	document.getElementById('tribeLeaderInfo').textContent = appState.tribeSettings.leader || 'N/A';
 	document.getElementById('tribeServerInfo').textContent = appState.tribeSettings.serverType || 'N/A';
 	document.getElementById('tribeMapInfo').textContent = appState.tribeSettings.primaryMap || 'N/A';
 	document.getElementById('tribeGoalsInfo').textContent = appState.tribeSettings.breedingGoals || 'N/A';
-	// TODO: Render species grid if you want dynamic content
+
+	// Example: Render a static species grid (replace with dynamic if needed)
+	const grid = document.getElementById('speciesGrid');
+	if (grid) {
+		const creatures = appState.creatures || [];
+		if (creatures.length === 0) {
+			grid.innerHTML = '<div class="no-creatures-yet">No creatures added yet.</div>';
+		} else {
+			grid.innerHTML = creatures.map(c => `
+				<div class="creature-image-list">${renderCreatureImage(c, 'creature-image-list')}</div>
+			`).join('');
+		}
+	}
 }
 function loadMyNuggiesPage() {
 	document.getElementById('appMainContent').innerHTML = '<h2>My Nuggies</h2><p>Your saved creature cards will appear here. (Sorting/filtering UI coming soon!)</p>';

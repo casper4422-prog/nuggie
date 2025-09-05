@@ -20,6 +20,7 @@ try {
 		selectedCreature: null
 	};
 }
+window.appState = appState;
 
 // --- SPECIES_DATABASE ---
 const SPECIES_DATABASE = {

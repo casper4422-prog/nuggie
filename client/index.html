@@ -65997,15 +65997,22 @@
         }
 
         function handleImageUpload(input) {
-            const file = input.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('imagePreview').innerHTML = 
-                        `<img src="${e.target.result}" alt="Preview" class="image-upload-preview">`;
-                };
-                reader.readAsDataURL(file);
-            }
+          const file = input.files[0];
+          const imagePreview = document.getElementById('imagePreview');
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+              const result = e.target.result;
+              if (typeof result === 'string' && result.startsWith('data:image')) {
+                imagePreview.innerHTML = `<img src="${result}" alt="Preview" class="image-upload-preview">`;
+              } else {
+                imagePreview.innerHTML = `<div>📷</div><div class="upload-image-label">Upload Image</div>`;
+              }
+            };
+            reader.readAsDataURL(file);
+          } else {
+            imagePreview.innerHTML = `<div>📷</div><div class="upload-image-label">Upload Image</div>`;
+          }
         }
 
         function updateBadgePreview() {

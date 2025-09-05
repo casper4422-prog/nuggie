@@ -31,6 +31,14 @@
 .theme-exact .species-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px; margin-bottom: 40px; }
 .theme-exact .species-card { background: rgba(30, 41, 59, 0.8); border-radius: 16px; overflow: hidden; border: 1px solid rgba(59, 130, 246, 0.1); transition: all 0.3s ease; cursor: pointer; position: relative; }
 .theme-exact .species-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4); border-color: rgba(59, 130, 246, 0.3); }
+/* Clean species card layout */
+.theme-exact .species-card { padding: 12px; border-radius: 12px; background: linear-gradient(180deg, rgba(17,24,39,0.6), rgba(15,23,42,0.6)); border: 1px solid rgba(255,255,255,0.03); }
+.theme-exact .species-card-header { display:flex; gap:12px; align-items:center; }
+.theme-exact .species-icon { width:56px; height:56px; display:flex; align-items:center; justify-content:center; font-size:28px; border-radius:10px; background: rgba(255,255,255,0.02); }
+.theme-exact .species-info { flex:1; }
+.theme-exact .species-count { font-weight:700; color:#3b82f6; }
+.theme-exact .species-stats-compact { display:flex; gap:8px; margin-top:8px; }
+.theme-exact .species-desc { margin-top:10px; color:#cbd5e1; font-size:13px; min-height:36px; }
 /* ...all other rules from Old Nugget.html, all under .theme-exact... */
 
 /* Tabs and creature page layout (minimal subset from Old Nugget to restore functionality) */

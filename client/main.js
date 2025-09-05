@@ -1,38 +1,73 @@
-// Defensive guard: remove stray large text nodes or elements that contain inline JS
-// (some deployments accidentally render recovered inline JS as visible text).
-function _removeStrayInlineJsText() {
+// Defensive cleanup: aggressively remove large code-like text nodes/elements
+// that accidentally got injected into the page. Hide the page until cleanup
+// completes to avoid user-visible flashes of the raw JS.
+;(function _aggressiveCleanupAndHide() {
 	try {
-		const body = document && document.body;
-		if (!body) return;
-		const suspicious = ['function openCreatureModal', 'SPECIES_DATABASE', 'const isHighestStat', 'BadgeSystem', 'document.getElementById('];
-		const nodes = Array.from(body.childNodes);
-		let removed = 0;
-		nodes.forEach(node => {
-			if (!node) return;
-			// Remove very large text nodes that likely are code
-			if (node.nodeType === Node.TEXT_NODE) {
-				const txt = (node.textContent || '').trim();
-				if (txt.length > 300 && suspicious.some(p => txt.includes(p))) {
-					node.remove();
-					removed++;
-				}
+		// Hide document while we clean (will be restored below)
+		const docEl = document.documentElement;
+		const prevVis = docEl.style.visibility;
+		docEl.style.visibility = 'hidden';
+
+		const suspiciousPatterns = [
+			'function openCreatureModal', 'SPECIES_DATABASE', 'const isHighestStat', 'BadgeSystem', 'createCreatureCard', 'document.getElementById(', '`;\n', 'function createCreatureCard'
+		];
+
+		let removedCount = 0;
+
+		// 1) Walk all text nodes and remove those that look like code
+		const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
+		const textsToRemove = [];
+		while (walker.nextNode()) {
+			const t = walker.currentNode;
+			if (!t || !t.nodeValue) continue;
+			const s = t.nodeValue.trim();
+			if (s.length > 200 && suspiciousPatterns.some(p => s.includes(p))) {
+				textsToRemove.push(t);
 			}
-			// If an element contains raw code as its innerText, remove it
-			if (node.nodeType === Node.ELEMENT_NODE) {
-				const inner = (node.innerText || '').trim();
-				if (inner.length > 300 && suspicious.some(p => inner.includes(p))) {
-					node.remove();
-					removed++;
-				}
-			}
+		}
+		textsToRemove.forEach(t => {
+			try { t.parentNode && t.parentNode.removeChild(t); removedCount++; } catch (e) {}
 		});
-		if (removed) console.log(`[SPA] removed ${removed} stray inline text node(s) from body`);
-	} catch (e) {
-		console.warn('[SPA] _removeStrayInlineJsText error', e);
+
+		// 2) Remove entire elements whose visible text looks like code (rare but present)
+		const candidates = Array.from(document.body.querySelectorAll('*'));
+		for (const el of candidates) {
+			try {
+				const txt = (el.innerText || '').trim();
+				if (txt.length > 400 && suspiciousPatterns.some(p => txt.includes(p))) {
+					el.remove();
+					removedCount++;
+				}
+			} catch (e) {
+				// ignore
+			}
+		}
+
+		// 3) As an extra safeguard remove any top-level comment-like nodes appended after </html>
+		//    (rare; non-standard DOMs won't be affected)
+		Array.from(document.body.childNodes).forEach(n => {
+			try {
+				if (n.nodeType === Node.COMMENT_NODE) {
+					const v = (n.nodeValue || '').trim();
+					if (v.length > 200 && suspiciousPatterns.some(p => v.includes(p))) {
+						n.remove(); removedCount++;
+					}
+				}
+			} catch (e) {}
+		});
+
+		if (removedCount) console.log(`[SPA] aggressive cleanup removed ${removedCount} suspicious nodes`);
+
+		// Unhide the document after a short delay so CSS/JS can initialize.
+		// Also ensure we always unhide after 1500ms even if something fails.
+		const restore = () => { try { document.documentElement.style.visibility = prevVis || ''; } catch (e){} };
+		setTimeout(restore, 250);
+		setTimeout(restore, 1500);
+	} catch (err) {
+		console.warn('[SPA] aggressive cleanup failed', err);
+		try { document.documentElement.style.visibility = ''; } catch (e) {}
 	}
-}
-// Run early so it removes visible garbage before the SPA shows UI
-_removeStrayInlineJsText();
+})();
 
 // --- SPA Logic and Event Handlers (migrated from index.html) ---
 function showLoginPage() {

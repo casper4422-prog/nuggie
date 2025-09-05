@@ -100,6 +100,8 @@ function showRegisterPage() {
 	register.style.display = '';
 	register.classList.remove('hidden');
 	mainApp.style.display = 'none';
+	// Ensure the register form is rendered and wired when the page is shown
+	renderRegisterForm();
 	console.log('[SPA] Register page should now be visible');
 }
 function showMainApp() {
@@ -169,6 +171,10 @@ document.addEventListener('DOMContentLoaded', () => {
 	console.log('[SPA] DOMContentLoaded fired');
 	try {
 		// Attach UI wiring
+		// Ensure register form markup exists so its handlers can be attached when needed
+		try { renderRegisterForm(); } catch (e) {}
+		// Quick stats render if user is already logged in
+		try { updateStatsDashboard(); } catch (e) {}
 		try {
 			const loginForm = document.getElementById('loginForm');
 			if (loginForm) loginForm.addEventListener('submit', handleLogin);
@@ -177,7 +183,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			const authBtn = document.getElementById('authBtn');
 			if (authBtn) authBtn.addEventListener('click', handleAuthClick);
 			const openTribeBtn = document.getElementById('openTribeBtn');
-			if (openTribeBtn) openTribeBtn.addEventListener('click', () => {/* open tribe settings - placeholder */ console.log('openTribeBtn clicked')});
+			if (openTribeBtn) openTribeBtn.addEventListener('click', showTribeSettings);
 			const goToCreaturesBtn = document.getElementById('goToCreaturesBtn');
 			if (goToCreaturesBtn) goToCreaturesBtn.addEventListener('click', goToCreatures);
 			const goToMyNuggiesBtn = document.getElementById('goToMyNuggiesBtn');
@@ -200,24 +206,45 @@ document.addEventListener('DOMContentLoaded', () => {
 	}
 });
 
-// Runtime diagnostic: report species DB size so it's obvious whether the external file loaded
-try {
-	// Ensure we reference the global/window copy and avoid TDZ from a later const
-	// If species-database.js loaded earlier it will set window.SPECIES_DATABASE.
-	// Provide a local mutable alias so references before wiring don't hit TDZ.
-	if (typeof SPECIES_DATABASE === 'undefined') {
-		// define a fallback variable in the global scope
-		window.__SPECIES_DB = window.__SPECIES_DB || window.SPECIES_DATABASE || {};
-		var SPECIES_DATABASE = window.__SPECIES_DB; // intentionally var to avoid TDZ
-	}
-	const _speciesCount = Object.keys(SPECIES_DATABASE || {}).length;
-	console.log(`[SPA] species DB loaded: ${_speciesCount} species`);
-	if (_speciesCount === 0) {
-		console.warn('[SPA] species database appears empty. Ensure client/species-database.js is present and loads before main.js');
-	}
-} catch (err) {
-	console.error('[SPA] Failed to read SPECIES_DATABASE for diagnostics:', err);
+// --- SPECIES_DATABASE startup helper ---
+// Wait for the external species-database.js to set window.SPECIES_DATABASE.
+// Avoid TDZ and race conditions by polling with a short timeout.
+let SPECIES_DATABASE = {};
+function waitForSpeciesDB(timeoutMs = 2000, intervalMs = 50) {
+	return new Promise((resolve) => {
+		const start = Date.now();
+		const tick = () => {
+			if (window && window.SPECIES_DATABASE && Object.keys(window.SPECIES_DATABASE).length > 0) {
+				resolve(window.SPECIES_DATABASE);
+				return;
+			}
+			if (Date.now() - start >= timeoutMs) {
+				// give up and resolve with whatever is present (possibly empty object)
+				resolve(window.SPECIES_DATABASE || {});
+				return;
+			}
+			setTimeout(tick, intervalMs);
+		};
+		tick();
+	});
 }
+
+// Kick off async probe but don't block the rest of the script sync execution.
+(async function initSpeciesDBProbe() {
+	try {
+		const db = await waitForSpeciesDB(2000, 40);
+		SPECIES_DATABASE = db || {};
+		// ensure global reflects resolved DB so other modules can access it
+		try { window.SPECIES_DATABASE = window.SPECIES_DATABASE || SPECIES_DATABASE; } catch (e) {}
+		const count = Object.keys(SPECIES_DATABASE || {}).length;
+		console.log(`[SPA] species DB resolved: ${count} species`);
+		if (count === 0) console.warn('[SPA] species database appears empty or failed to load before timeout');
+		// If the app is already showing the main app, refresh the species list
+		try { if (document.readyState === 'complete' || document.readyState === 'interactive') { if (typeof loadSpeciesPage === 'function') loadSpeciesPage(); } } catch (e) {}
+	} catch (err) {
+		console.error('[SPA] Error while waiting for SPECIES_DATABASE:', err);
+	}
+})();
 
 // --- Login/Register Handlers (API calls) ---
 async function handleLogin(event) {
@@ -238,6 +265,8 @@ async function handleLogin(event) {
 			showMainApp();
 			updateTribeHeader();
 			loadSpeciesPage();
+			// Refresh stats after login
+			try { updateStatsDashboard(); } catch (e) {}
 		} else {
 			errorDiv.textContent = data.error || 'Login failed.';
 			errorDiv.style.display = 'block';
@@ -482,6 +511,99 @@ function calculateHighestBaseStats(creatures) {
 function loadMyNuggiesPage() {
 	document.getElementById('appMainContent').innerHTML = '<h2>My Nuggies</h2><p>Your saved creature cards will appear here. (Sorting/filtering UI coming soon!)</p>';
 	// TODO: Fetch and display user creature cards from backend
+}
+
+// Render register form into #registerPage (called when user clicks Register)
+function renderRegisterForm() {
+	const register = document.getElementById('registerPage');
+	if (!register) return;
+	register.innerHTML = `
+		<div class="register-container">
+			<h2 class="register-title">Create an account</h2>
+			<form id="registerForm">
+				<div class="form-group">
+					<label class="form-label" for="registerEmail">Email</label>
+					<input id="registerEmail" class="form-control" type="email" required autocomplete="username">
+				</div>
+				<div class="form-group">
+					<label class="form-label" for="registerPassword">Password</label>
+					<input id="registerPassword" class="form-control" type="password" required autocomplete="new-password">
+				</div>
+				<div class="form-group">
+					<label class="form-label" for="registerConfirmPassword">Confirm Password</label>
+					<input id="registerConfirmPassword" class="form-control" type="password" required>
+				</div>
+				<div id="registerError" class="register-error" role="status" aria-live="polite"></div>
+				<button type="submit" class="btn btn-primary register-btn">Register</button>
+				<button type="button" class="btn btn-secondary" id="cancelRegisterBtn">Cancel</button>
+			</form>
+		</div>
+	`;
+
+	// Wire events
+	const registerForm = document.getElementById('registerForm');
+	if (registerForm) registerForm.addEventListener('submit', handleRegister);
+	const cancelBtn = document.getElementById('cancelRegisterBtn');
+	if (cancelBtn) cancelBtn.addEventListener('click', (e) => { e.preventDefault(); showLoginPage(); });
+}
+
+function showTribeSettings() {
+	const main = document.getElementById('appMainContent');
+	if (!main) return;
+	main.innerHTML = `
+		<section class="tribe-settings">
+			<h2>Tribe Settings</h2>
+			<div class="form-group">
+				<label class="form-label">Tribe Name</label>
+				<input id="tribeNameInput" class="form-control" value="${(localStorage.getItem('tribeName')||'My Tribe')}">
+			</div>
+			<div class="form-group">
+				<label class="form-label">Tribe Description</label>
+				<textarea id="tribeDesc" class="form-control">${(localStorage.getItem('tribeDesc')||'')}</textarea>
+			</div>
+			<div class="modal-actions">
+				<button id="saveTribeBtn" class="btn btn-primary">Save</button>
+				<button id="backToMainBtn" class="btn btn-secondary">Back</button>
+			</div>
+		</section>
+	`;
+
+	document.getElementById('saveTribeBtn').addEventListener('click', () => {
+		const name = document.getElementById('tribeNameInput').value.trim();
+		const desc = document.getElementById('tribeDesc').value.trim();
+		localStorage.setItem('tribeName', name);
+		localStorage.setItem('tribeDesc', desc);
+		updateTribeHeader();
+	});
+	document.getElementById('backToMainBtn').addEventListener('click', () => loadSpeciesPage());
+}
+
+function updateStatsDashboard() {
+	// Keep it lightweight: compute a few quick metrics and render into header placeholders
+	const creatures = appState.creatures || [];
+	const total = creatures.length;
+	const speciesCount = new Set(creatures.map(c => c.species)).size;
+	const prized = creatures.filter(c => (window.BadgeSystem && BadgeSystem.calculatePrizedBloodline(c).qualified) ).length;
+	const highest = creatures.length ? Math.max(...creatures.map(c => c.level || 1)) : 1;
+
+	// Ensure placeholders exist; create them if not
+	let statsBar = document.getElementById('statsBar');
+	if (!statsBar) {
+		const header = document.querySelector('.header-content') || document.body;
+		statsBar = document.createElement('div');
+		statsBar.id = 'statsBar';
+		statsBar.className = 'stats-bar';
+		statsBar.innerHTML = `<div class="stats-item">Total: <span id="totalCreatures">${total}</span></div>
+			<div class="stats-item">Species: <span id="speciesTracked">${speciesCount}</span></div>
+			<div class="stats-item">Prized: <span id="prizedBloodlines">${prized}</span></div>
+			<div class="stats-item">Highest Lvl: <span id="highestLevel">${highest}</span></div>`;
+		header.appendChild(statsBar);
+	} else {
+		document.getElementById('totalCreatures').textContent = total;
+		document.getElementById('speciesTracked').textContent = speciesCount;
+		document.getElementById('prizedBloodlines').textContent = prized;
+		document.getElementById('highestLevel').textContent = highest;
+	}
 }
 
 // Global Application State

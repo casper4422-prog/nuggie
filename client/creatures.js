@@ -223,25 +223,49 @@
             </div>
 
             <div style="margin-top:14px;">
+              <!-- Two rows of three stats each -->
               <div style="display:flex;gap:12px;flex-wrap:wrap;">
-                ${['Health','Stamina','Oxygen','Food','Weight','Melee'].map(stat => {
-                  const base = stats[stat] || 0;
-                  const mut = muts[stat] || 0;
-                  const dom = levels[stat] || 0;
-                  return `
-                    <div style="flex:1 1 140px; min-width:120px;">
-                      <div style="font-size:11px;color:#94a3b8;margin-bottom:6px;text-transform:uppercase;">${stat}</div>
-                      <div style="background:rgba(255,255,255,0.04);border-radius:6px;padding:6px;display:flex;align-items:center;gap:8px;">
-                        <div style="flex:1;">
-                          <div style="height:8px;background:rgba(255,255,255,0.06);border-radius:6px;overflow:hidden;position:relative;">
-                            <div style="position:absolute;left:0;top:0;height:100%;width:${Math.min(100, Math.round((base / Math.max(1, base+mut+dom)) * 100))}%;background:linear-gradient(90deg,#2563eb,#4f46e5);"></div>
+                <div style="display:flex;gap:12px;width:100%;">
+                  ${['Health','Stamina','Oxygen'].map(stat => {
+                    const base = stats[stat] || 0;
+                    const mut = muts[stat] || 0;
+                    const dom = levels[stat] || 0;
+                    return `
+                      <div style="flex:1 1 33%; min-width:120px;">
+                        <div style="font-size:11px;color:#94a3b8;margin-bottom:6px;text-transform:uppercase;">${stat}</div>
+                        <div style="background:rgba(255,255,255,0.04);border-radius:6px;padding:6px;display:flex;align-items:center;gap:8px;">
+                          <div style="flex:1;">
+                            <div style="height:8px;background:rgba(255,255,255,0.06);border-radius:6px;overflow:hidden;position:relative;">
+                              <div style="position:absolute;left:0;top:0;height:100%;width:${Math.min(100, Math.round((base / Math.max(1, base+mut+dom)) * 100))}%;background:linear-gradient(90deg,#2563eb,#4f46e5);"></div>
+                            </div>
                           </div>
+                          <div style="min-width:70px;text-align:right;font-weight:600;color:#e6eef8;">${base}/${mut}/${dom}</div>
                         </div>
-                        <div style="min-width:70px;text-align:right;font-weight:600;color:#e6eef8;">${base}/${mut}/${dom}</div>
                       </div>
-                    </div>
-                  `;
-                }).join('')}
+                    `;
+                  }).join('')}
+                </div>
+
+                <div style="display:flex;gap:12px;width:100%;margin-top:10px;">
+                  ${['Food','Weight','Melee'].map(stat => {
+                    const base = stats[stat] || 0;
+                    const mut = muts[stat] || 0;
+                    const dom = levels[stat] || 0;
+                    return `
+                      <div style="flex:1 1 33%; min-width:120px;">
+                        <div style="font-size:11px;color:#94a3b8;margin-bottom:6px;text-transform:uppercase;">${stat}</div>
+                        <div style="background:rgba(255,255,255,0.04);border-radius:6px;padding:6px;display:flex;align-items:center;gap:8px;">
+                          <div style="flex:1;">
+                            <div style="height:8px;background:rgba(255,255,255,0.06);border-radius:6px;overflow:hidden;position:relative;">
+                              <div style="position:absolute;left:0;top:0;height:100%;width:${Math.min(100, Math.round((base / Math.max(1, base+mut+dom)) * 100))}%;background:linear-gradient(90deg,#2563eb,#4f46e5);"></div>
+                            </div>
+                          </div>
+                          <div style="min-width:70px;text-align:right;font-weight:600;color:#e6eef8;">${base}/${mut}/${dom}</div>
+                        </div>
+                      </div>
+                    `;
+                  }).join('')}
+                </div>
               </div>
             </div>
 

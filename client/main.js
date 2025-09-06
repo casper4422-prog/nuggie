@@ -194,7 +194,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			const authBtn = document.getElementById('authBtn');
 			if (authBtn) authBtn.addEventListener('click', handleAuthClick);
 			const openTribeBtn = document.getElementById('openTribeBtn');
-			if (openTribeBtn) openTribeBtn.addEventListener('click', showTribeSettings);
+			if (openTribeBtn) openTribeBtn.addEventListener('click', (e) => { e.preventDefault(); if (typeof openTribeModal === 'function') openTribeModal(); else showTribeSettings(); });
 			const goToCreaturesBtn = document.getElementById('goToCreaturesBtn');
 			if (goToCreaturesBtn) goToCreaturesBtn.addEventListener('click', goToCreatures);
 			const goToMyNuggiesBtn = document.getElementById('goToMyNuggiesBtn');

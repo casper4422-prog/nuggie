@@ -270,6 +270,33 @@ function speciesValues() {
 	try { return Object.values(getSpeciesDB() || {}); } catch (e) { return []; }
 }
 
+// Normalize rarity for a species into the canonical set used by the UI.
+// Canonical set (lowercase keys): common, uncommon, rare, legendary, mythic, boss
+function canonicalRarityForSpecies(species) {
+	try {
+		if (!species) return 'common';
+	// If DB explicitly marks boss-capable or has boss badgeCategories or category 'boss', treat as boss
+	if (species.bossFightCapable === true) return 'boss';
+	if (Array.isArray(species.badgeCategories) && species.badgeCategories.map(String).join(' ').toLowerCase().includes('boss')) return 'boss';
+	if (species.category && (species.category + '').toLowerCase().includes('boss')) return 'boss';
+		// Also check common descriptive fields
+		const hay = ((species.secondaryRoles||[]) .concat([species.description||'', species.name||'', species.rarity||'', species.rarityRating||''])).join(' ').toLowerCase();
+		if (hay.includes('boss')) return 'boss';
+
+		const raw = ((species.rarity || species.rarityRating) + '').toLowerCase();
+		if (!raw || raw === 'undefined') return 'common';
+		if (raw.includes('myth') || raw.includes('mythic')) return 'mythic';
+		// Map legacy/undesired 'epic' to 'mythic' per requested canonical set
+		if (raw.includes('epic')) return 'mythic';
+		if (raw.indexOf('legend') !== -1) return 'legendary';
+		if (raw.indexOf('rare') !== -1 && raw.indexOf('rare') === raw.lastIndexOf('rare')) return 'rare';
+		if (raw.indexOf('uncommon') !== -1) return 'uncommon';
+		if (raw.indexOf('common') !== -1) return 'common';
+		// Fallback: treat unknown as common
+		return 'common';
+	} catch (e) { return 'common'; }
+}
+
 // Kick off async probe but don't block the rest of the script sync execution.
 (async function initSpeciesDBProbe() {
 	try {
@@ -520,7 +547,16 @@ async function loadSpeciesPage() {
 					categoryFilterEl.innerHTML = opts.join('');
 				}
 				if (rarityFilterEl) {
-					const opts = ['<option value="">All Rarities</option>'].concat(Array.from(rarities).sort().map(r => `<option value="${r}">${capitalize(r)}</option>`));
+					// Use the canonical rarity options in the requested order.
+					const canonical = [
+						{ k: 'common', label: 'Common' },
+						{ k: 'uncommon', label: 'Uncommon' },
+						{ k: 'rare', label: 'Rare' },
+						{ k: 'legendary', label: 'Legendary' },
+						{ k: 'mythic', label: 'Mythic' },
+						{ k: 'boss', label: 'Boss', category: 'boss' }
+					];
+					const opts = ['<option value="">All Rarities</option>'].concat(canonical.map(r => `<option value="${r.k}" ${r.category ? 'data-category="'+r.category+'"' : ''}>${r.label}</option>`));
 					rarityFilterEl.innerHTML = opts.join('');
 				}
 				// Re-attach filter handlers if necessary
@@ -585,27 +621,18 @@ function filterSpecies() {
 			} catch (e) { matchesCategory = true; }
 		}
 
-		// Rarity matching: the DB uses values like 'common', 'uncommon', 'rare', 'legendary'.
-		// Allow UI options like 'very rare' or 'extinct' by mapping them to DB equivalents.
-		const rarityMap = {
-			'very rare': ['legendary'],
-			'extinct': ['legendary'],
-			'veryrare': ['legendary'],
-			'legendary': ['legendary'],
-			'rare': ['rare'],
-			'uncommon': ['uncommon'],
-			'common': ['common']
-		};
+		// Rarity matching: normalize species rarity into our canonical set and match against the selected filter.
 		let matchesRarity = true;
 		if (rarityFilter) {
 			try {
-				const key = rarityFilter.replace(/\s+/g,'').toLowerCase();
-				// try direct map first
-				const mapped = rarityMap[rarityFilter] || rarityMap[key] || null;
-				if (mapped && Array.isArray(mapped)) {
-					matchesRarity = mapped.includes((species.rarity||'').toLowerCase());
+				const selected = (rarityFilter || '').toString().toLowerCase();
+				// Compute canonical rarity for this species
+				const sR = canonicalRarityForSpecies(species);
+				// Boss species should only match when 'boss' is selected
+				if (selected === 'boss') {
+					matchesRarity = (sR === 'boss');
 				} else {
-					matchesRarity = (species.rarity || '').toLowerCase().includes(rarityFilter);
+					matchesRarity = (sR === selected);
 				}
 			} catch (e) { matchesRarity = true; }
 		}
@@ -651,7 +678,7 @@ function createSpeciesCard(species, creatureCount) {
 			<div class="species-icon">${species.icon || '🦖'}</div>
 			<div class="species-info">
 				<div class="species-name">${species.name}</div>
-				<div class="species-meta">${species.category || ''} • ${species.rarity || ''}</div>
+				<div class="species-meta">${species.category || ''} • ${canonicalRarityForSpecies(species)}</div>
 			</div>
 			<div class="species-count">${creatureCount}</div>
 		</div>

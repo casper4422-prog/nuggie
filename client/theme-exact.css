@@ -29,16 +29,19 @@
 .theme-exact .search-input::placeholder { color: #94a3b8; }
 .theme-exact .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #94a3b8; }
 .theme-exact .filter-select { padding: 10px 14px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); border-radius: 8px; color: #e6eef8; cursor: pointer; }
-.theme-exact .species-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 22px; margin-bottom: 40px; }
-.theme-exact .species-card { background: linear-gradient(180deg, rgba(10,16,26,0.6), rgba(15,23,35,0.6)); border-radius: 14px; overflow: hidden; border: 1px solid rgba(255,255,255,0.02); transition: transform 200ms ease, box-shadow 200ms ease; cursor: pointer; position: relative; padding:12px; }
-.theme-exact .species-card:hover { transform: translateY(-6px); box-shadow: 0 18px 46px rgba(3,6,23,0.6); border-color: rgba(124,58,237,0.18); }
+.theme-exact .species-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 28px; margin: 0 auto 40px; justify-content: center; width: 100%; max-width: 1200px; }
+.theme-exact .species-card { background: linear-gradient(180deg, rgba(10,16,26,0.6), rgba(15,23,35,0.6)); border-radius: 14px; overflow: hidden; border: 1px solid rgba(255,255,255,0.02); transition: transform 220ms ease, box-shadow 220ms ease; cursor: pointer; position: relative; padding:16px; display:flex; align-items:center; gap:16px; min-height:110px; }
+.theme-exact .species-card:hover { transform: translateY(-6px); box-shadow: 0 20px 60px rgba(3,6,23,0.6); border-color: rgba(124,58,237,0.18); }
 /* Clean species card layout */
 .theme-exact .species-card-header { display:flex; gap:12px; align-items:center; }
-.theme-exact .species-icon { width:64px; height:64px; display:flex; align-items:center; justify-content:center; font-size:30px; border-radius:12px; background: linear-gradient(135deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); box-shadow: inset 0 1px 0 rgba(255,255,255,0.02); }
-.theme-exact .species-info { flex:1; min-width:0; }
-.theme-exact .species-count { font-weight:700; color:#a78bfa; }
+.theme-exact .species-icon { width:72px; height:72px; display:flex; align-items:center; justify-content:center; font-size:32px; border-radius:12px; background: linear-gradient(135deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); box-shadow: inset 0 1px 0 rgba(255,255,255,0.02); flex-shrink:0 }
+.theme-exact .species-info { flex:1; min-width:0; display:flex; flex-direction:column; }
+.theme-exact .species-name { font-size:16px; font-weight:800; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.theme-exact .species-meta { color:#9ca3af; font-size:12px; margin-top:4px; text-transform:lowercase }
+.theme-exact .species-count { font-weight:700; color:#a78bfa; position:absolute; right:14px; top:14px; background: rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.02); padding:6px 8px; border-radius:999px; font-size:12px; }
 .theme-exact .species-stats-compact { display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
-.theme-exact .species-desc { margin-top:10px; color:#cbd5e1; font-size:13px; min-height:38px; }
+.theme-exact .species-desc { margin-top:8px; color:#cbd5e1; font-size:13px; max-height:40px; overflow:hidden; text-overflow:ellipsis; opacity:0.95 }
+.theme-exact .card-badge { font-size:11px; padding:4px 6px }
 .theme-exact .species-card .card-badges { position:absolute; top:12px; right:12px; display:flex; gap:6px; }
 .theme-exact .card-badge { background: rgba(255,255,255,0.03); color:#cbd5e1; padding:6px 8px; border-radius:8px; font-size:12px; border:1px solid rgba(255,255,255,0.02); }
 /* ...all other rules from Old Nugget.html, all under .theme-exact... */

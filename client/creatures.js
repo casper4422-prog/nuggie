@@ -593,12 +593,12 @@ function loadCreaturesGrid(speciesName) {
           <div class="creature-name">${creature.name}</div>
           <div class="creature-meta">Level ${creature.level || 1} • ${creature.gender || ''} • ${creature.species || ''}</div>
           <div class="creature-stats">
-            <div class="stat-item"><div class="stat-label">❤️</div><div class="stat-value">${stats.Health || 0}</div></div>
-            <div class="stat-item"><div class="stat-label">🏃</div><div class="stat-value">${stats.Stamina || 0}</div></div>
-            <div class="stat-item"><div class="stat-label">💨</div><div class="stat-value">${stats.Oxygen || 0}</div></div>
-            <div class="stat-item"><div class="stat-label">🍖</div><div class="stat-value">${stats.Food || 0}</div></div>
-            <div class="stat-item"><div class="stat-label">⚖️</div><div class="stat-value">${stats.Weight || 0}</div></div>
-            <div class="stat-item"><div class="stat-label">🗡️</div><div class="stat-value">${stats.Melee || 0}</div></div>
+            <div class="stat-item"><div class="stat-label">❤️</div><div class="stat-value">${(stats.Health||0)}/${(muts.Health||0)}/${(creature.domesticLevels?.Health||0)}</div></div>
+            <div class="stat-item"><div class="stat-label">🏃</div><div class="stat-value">${(stats.Stamina||0)}/${(muts.Stamina||0)}/${(creature.domesticLevels?.Stamina||0)}</div></div>
+            <div class="stat-item"><div class="stat-label">💨</div><div class="stat-value">${(stats.Oxygen||0)}/${(muts.Oxygen||0)}/${(creature.domesticLevels?.Oxygen||0)}</div></div>
+            <div class="stat-item"><div class="stat-label">🍖</div><div class="stat-value">${(stats.Food||0)}/${(muts.Food||0)}/${(creature.domesticLevels?.Food||0)}</div></div>
+            <div class="stat-item"><div class="stat-label">⚖️</div><div class="stat-value">${(stats.Weight||0)}/${(muts.Weight||0)}/${(creature.domesticLevels?.Weight||0)}</div></div>
+            <div class="stat-item"><div class="stat-label">🗡️</div><div class="stat-value">${(stats.Melee||0)}/${(muts.Melee||0)}/${(creature.domesticLevels?.Melee||0)}</div></div>
           </div>
         </div>
         <div class="creature-card-actions">

@@ -496,7 +496,41 @@ async function loadSpeciesPage() {
 			console.log('[SPA] species DB probe complete, re-rendering species list');
 		}
 	} catch (e) { console.warn('[SPA] error while waiting for species DB', e); }
-	filterSpecies();
+
+	// Populate filters based on the resolved species DB so UI only shows valid options
+	(function populateFilters() {
+		const capitalize = (s) => (s || '').toString().replace(/\b\w/g, c => c.toUpperCase());
+		try {
+			waitForSpeciesDB(2000, 40).then(() => {
+				const db = getSpeciesDB() || {};
+				const list = Object.values(db || {});
+				const cats = new Set();
+				const rarities = new Set();
+				list.forEach(s => {
+					if (!s) return;
+					if (s.category) cats.add((s.category+'').toLowerCase());
+					if (s.diet) cats.add((s.diet+'').toLowerCase());
+					if (s.tags && Array.isArray(s.tags)) s.tags.forEach(t => cats.add((t+'').toLowerCase()));
+					if (s.rarity) rarities.add((s.rarity+'').toLowerCase());
+				});
+				const categoryFilterEl = document.getElementById('categoryFilter');
+				const rarityFilterEl = document.getElementById('rarityFilter');
+				if (categoryFilterEl) {
+					const opts = ['<option value="">All Categories</option>'].concat(Array.from(cats).sort().map(c => `<option value="${c}">${capitalize(c)}</option>`));
+					categoryFilterEl.innerHTML = opts.join('');
+				}
+				if (rarityFilterEl) {
+					const opts = ['<option value="">All Rarities</option>'].concat(Array.from(rarities).sort().map(r => `<option value="${r}">${capitalize(r)}</option>`));
+					rarityFilterEl.innerHTML = opts.join('');
+				}
+				// Re-attach filter handlers if necessary
+				if (document.getElementById('categoryFilter')) document.getElementById('categoryFilter').addEventListener('change', filterSpecies);
+				if (document.getElementById('rarityFilter')) document.getElementById('rarityFilter').addEventListener('change', filterSpecies);
+				// Finally run the filter to populate the grid
+				filterSpecies();
+			});
+		} catch (err) { console.warn('populateFilters failed', err); filterSpecies(); }
+	})();
 }
 
 // Debounce helper

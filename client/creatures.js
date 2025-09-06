@@ -200,52 +200,51 @@
       const muts = creature.mutations || {};
       const levels = creature.domesticLevels || {};
       modal.innerHTML = `
-        <div class="modal-content">
+        <div class="modal-content modal-creature-detail">
           <div class="modal-header">
             <h3 class="modal-title" id="creatureDetailTitle">${creature.name}</h3>
             <button class="close-btn" id="closeCreatureDetailBtn">&times;</button>
           </div>
           <div class="modal-body">
-            <div class="creature-detail-header">
+            <div class="creature-detail-top">
               <div class="creature-detail-image-col">${creature.image ? `<img src="${creature.image}" class="creature-detail-image">` : `<div class="creature-detail-image-placeholder">${(SPECIES_DATABASE && SPECIES_DATABASE[creature.species]?.icon) || '🦖'}</div>`}</div>
-              <div class="creature-detail-content-col">
+              <div class="creature-detail-main">
                 <div class="creature-detail-title-row">
-                  <h2 class="creature-detail-title">${creature.name}</h2>
-                  <div class="creature-gender-badge">${creature.gender || ''}</div>
+                  <h2 class="creature-detail-title">${creature.name} <span class="creature-gender-badge">${creature.gender || ''}</span></h2>
+                  <div class="creature-meta-line">Level ${creature.level || 1} • ${creature.species || ''}</div>
                 </div>
-                <div class="creature-detail-badges-row">${(window.BadgeSystem ? (BadgeSystem.generateBadgeHTML ? (BadgeSystem.generateBadgeHTML(creature) || '') : '') : '')}</div>
-                <div class="creature-detail-meta">Level ${creature.level || 1} • ${creature.species || ''}</div>
-                <div class="creature-detail-notes">${creature.notes || ''}</div>
+                <div class="creature-detail-badges-row">${(window.BadgeSystem && BadgeSystem.generateBadgeHTML) ? (BadgeSystem.generateBadgeHTML(creature) || '') : ''}</div>
+                <div class="creature-detail-notes">${creature.notes ? `<div class="notes-title">Notes</div><div class="notes-body">${creature.notes}</div>` : ''}</div>
               </div>
             </div>
 
             <div class="creature-detail-stats-grid">
-              <div>
+              <div class="stats-column">
                 <div class="creature-detail-stats-title">Base Stats</div>
-                <div class="stat-table-grid">
-                  <div class="stat-table-cell"><div class="stat-table-label">Health</div><div class="stat-table-value">${stats.Health || 0}</div></div>
-                  <div class="stat-table-cell"><div class="stat-table-label">Stamina</div><div class="stat-table-value">${stats.Stamina || 0}</div></div>
-                  <div class="stat-table-cell"><div class="stat-table-label">Oxygen</div><div class="stat-table-value">${stats.Oxygen || 0}</div></div>
-                  <div class="stat-table-cell"><div class="stat-table-label">Food</div><div class="stat-table-value">${stats.Food || 0}</div></div>
-                  <div class="stat-table-cell"><div class="stat-table-label">Weight</div><div class="stat-table-value">${stats.Weight || 0}</div></div>
-                  <div class="stat-table-cell"><div class="stat-table-label">Melee</div><div class="stat-table-value">${stats.Melee || 0}</div></div>
+                <div class="stats-grid">
+                  <div class="stat-row"><div class="stat-name">HEALTH</div><div class="stat-value">${stats.Health || 0}</div></div>
+                  <div class="stat-row"><div class="stat-name">STAMINA</div><div class="stat-value">${stats.Stamina || 0}</div></div>
+                  <div class="stat-row"><div class="stat-name">OXYGEN</div><div class="stat-value">${stats.Oxygen || 0}</div></div>
+                  <div class="stat-row"><div class="stat-name">FOOD</div><div class="stat-value">${stats.Food || 0}</div></div>
+                  <div class="stat-row"><div class="stat-name">WEIGHT</div><div class="stat-value">${stats.Weight || 0}</div></div>
+                  <div class="stat-row"><div class="stat-name">MELEE</div><div class="stat-value">${stats.Melee || 0}</div></div>
                 </div>
               </div>
-              <div>
-                <div class="creature-detail-stats-title">Mutations & Domestic</div>
-                <div class="stat-table-grid">
-                  <div class="stat-table-cell"><div class="stat-table-label">Health Mut</div><div class="stat-table-value">${muts.Health || 0}</div></div>
-                  <div class="stat-table-cell"><div class="stat-table-label">Stamina Mut</div><div class="stat-table-value">${muts.Stamina || 0}</div></div>
-                  <div class="stat-table-cell"><div class="stat-table-label">Oxygen Mut</div><div class="stat-table-value">${muts.Oxygen || 0}</div></div>
-                  <div class="stat-table-cell"><div class="stat-table-label">Food Mut</div><div class="stat-table-value">${muts.Food || 0}</div></div>
-                  <div class="stat-table-cell"><div class="stat-table-label">Weight Mut</div><div class="stat-table-value">${muts.Weight || 0}</div></div>
-                  <div class="stat-table-cell"><div class="stat-table-label">Melee Mut</div><div class="stat-table-value">${muts.Melee || 0}</div></div>
+              <div class="mutations-column">
+                <div class="creature-detail-stats-title">Mutations</div>
+                <div class="stats-grid">
+                  <div class="stat-row"><div class="stat-name">HEALTH MUT</div><div class="stat-value">${muts.Health || 0}</div></div>
+                  <div class="stat-row"><div class="stat-name">STAMINA MUT</div><div class="stat-value">${muts.Stamina || 0}</div></div>
+                  <div class="stat-row"><div class="stat-name">OXYGEN MUT</div><div class="stat-value">${muts.Oxygen || 0}</div></div>
+                  <div class="stat-row"><div class="stat-name">FOOD MUT</div><div class="stat-value">${muts.Food || 0}</div></div>
+                  <div class="stat-row"><div class="stat-name">WEIGHT MUT</div><div class="stat-value">${muts.Weight || 0}</div></div>
+                  <div class="stat-row"><div class="stat-name">MELEE MUT</div><div class="stat-value">${muts.Melee || 0}</div></div>
                 </div>
-                <div style="margin-top:12px;">Domestic levels: H ${levels.Health || 0} • S ${levels.Stamina || 0} • O ${levels.Oxygen || 0} • F ${levels.Food || 0} • W ${levels.Weight || 0} • M ${levels.Melee || 0}</div>
+                <div class="domestic-line">Domestic levels: H ${levels.Health || 0} • S ${levels.Stamina || 0} • O ${levels.Oxygen || 0} • F ${levels.Food || 0} • W ${levels.Weight || 0} • M ${levels.Melee || 0}</div>
               </div>
             </div>
 
-            <div style="margin-top:12px; color:#94a3b8; font-size:12px;">Created: ${created} • Updated: ${updated}</div>
+            <div class="creature-detail-footer-meta">Created: ${created} • Updated: ${updated}</div>
           </div>
           <div class="modal-footer">
             <button class="btn btn-secondary" id="closeCreatureDetailBtnFoot">Close</button>

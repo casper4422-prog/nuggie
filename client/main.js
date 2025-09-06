@@ -335,7 +335,9 @@ async function handleLogin(event) {
 			try { document.documentElement.setAttribute('data-ready', 'true'); } catch (e) {}
 			showMainApp();
 			updateTribeHeader();
-			loadSpeciesPage();
+			// Wait for species DB to be available before rendering species page
+			try { await waitForSpeciesDB(3000, 50); } catch (e) {}
+			try { loadSpeciesPage(); } catch (e) {}
 			// Refresh stats and auth UI after login
 			try { updateStatsDashboard(); } catch (e) {}
 			try { updateAuthUI(); } catch (e) {}
@@ -403,7 +405,29 @@ async function handleRegister(event) {
 		}
 		const data = await readBody(res);
 		if (res.ok && (data === true || (data && data.success))) {
-			showLoginPage();
+			// If server returned a token, sign in immediately. Otherwise, prefill login and attempt auto-login
+			if (data && data.token) {
+				localStorage.setItem('token', data.token);
+				try { document.documentElement.setAttribute('data-ready', 'true'); } catch (e) {}
+				showMainApp();
+				updateTribeHeader();
+				try { loadSpeciesPage(); } catch (e) {}
+				try { updateStatsDashboard(); } catch (e) {}
+				try { updateAuthUI(); } catch (e) {}
+			} else {
+				// No token: show login page and prefill credentials, then attempt login automatically
+				showLoginPage();
+				setTimeout(async () => {
+					try {
+						const le = document.getElementById('loginEmail');
+						const lp = document.getElementById('loginPassword');
+						if (le) le.value = email;
+						if (lp) lp.value = password;
+						// Call handleLogin to perform login flow without requiring a manual refresh
+						try { await handleLogin(new Event('submit')); } catch (e) { /* ignore, user can login manually */ }
+					} catch (e) { /* no-op */ }
+				}, 50);
+			}
 		} else {
 			console.warn('[SPA] register failed', { status: res.status, body: data });
 			let msg = 'Registration failed.';

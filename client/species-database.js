@@ -4762,7 +4762,7 @@ const SPECIES_DATABASE = {
   // Spawn & Location
   spawnMaps: ['The Island', 'The Center', 'Ragnarok', 'Valguero', 'Crystal Isles', 'Lost Island', 'Fjordur'],
   spawnZones: ['Isolated mountain areas', 'extremely limited spawns'],
-  rarityRating: 'Legendary (extremely rare)',
+  rarityRating: 'Legendary',
   levelRange: '1-150',
   packBehavior: 'Solitary',
   territorialBehavior: 'Extremely aggressive, attacks everything on sight',
@@ -6754,7 +6754,7 @@ const SPECIES_DATABASE = {
   // Spawn & Location
   spawnMaps: ['The Island', 'The Center', 'Ragnarok', 'Valguero', 'Crystal Isles', 'Lost Island', 'Fjordur'],
   spawnZones: ['Open plains', 'anywhere with sufficient space'],
-  rarityRating: 'Legendary (extremely rare)',
+  rarityRating: 'Legendary',
   levelRange: '1-5',
   packBehavior: 'Always solitary',
   territorialBehavior: 'Docile unless attacked, then becomes aggressive',

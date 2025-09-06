@@ -217,6 +217,69 @@ document.addEventListener('DOMContentLoaded', () => {
 	}
 });
 
+// Ensure tribe modal container exists and provide modal handlers
+(function ensureTribeModal() {
+	try {
+		if (typeof document !== 'undefined' && !document.getElementById('tribeModal')) {
+			const div = document.createElement('div');
+			div.id = 'tribeModal';
+			div.className = 'modal';
+			div.setAttribute('aria-hidden', 'true');
+			document.body.appendChild(div);
+		}
+	} catch (e) { /* ignore non-browser */ }
+})();
+
+function openTribeModal() {
+	const modal = document.getElementById('tribeModal');
+	if (!modal) return console.warn('tribeModal missing');
+	const s = JSON.parse(localStorage.getItem('arkTribeSettings') || '{}');
+	modal.innerHTML = `
+		<div class="modal-content">
+			<div class="modal-header"><h2 class="modal-title">🏛️ Tribe Settings</h2><button class="close-btn" id="closeTribeModalBtn">&times;</button></div>
+			<div class="modal-body">
+				<div class="section-title">🏛️ Tribe Setup</div>
+				<p style="margin-bottom: 12px; color:#94a3b8;">Personalize your breeding database. These settings are saved locally.</p>
+				<div class="form-row cols-1"><div class="form-group"><label class="form-label">Tribe Leader</label><input class="form-control" id="tribeLeaderInput" value="${(s.tribeLeader||'')}" placeholder="Your username"></div></div>
+				<div class="form-row cols-2"><div class="form-group"><label class="form-label">Server Type</label><select class="form-control" id="serverTypeInput"><option${(s.serverType==='Official'?' selected':'')}>Official</option><option${(s.serverType==='Unofficial'?' selected':'')}>Unofficial</option><option${(s.serverType==='Single Player'?' selected':'')}>Single Player</option></select></div>
+				<div class="form-group"><label class="form-label">Primary Map</label><input class="form-control" id="primaryMapInput" value="${(s.primaryMap||'')}"></div></div>
+				<div class="form-row cols-1"><div class="form-group"><label class="form-label">Breeding Goals</label><textarea id="breedingGoalsInput" class="form-control" rows="3">${(s.breedingGoals||'')}</textarea></div></div>
+				<div class="form-row cols-2"><div class="form-group"><label class="form-label">Tribe Name</label><input class="form-control" id="tribeNameInputModal" value="${(s.tribeName||'')}"></div><div class="form-group"><label class="form-label">Favorite Creature</label><input class="form-control" id="favoriteCreatureInput" value="${(s.favoriteCreature||'')}"></div></div>
+			</div>
+			<div class="modal-footer"><button class="btn btn-primary" id="saveTribeSettingsBtn">Save Settings</button></div>
+		</div>
+	`;
+	document.getElementById('closeTribeModalBtn')?.addEventListener('click', closeTribeModal);
+	document.getElementById('saveTribeSettingsBtn')?.addEventListener('click', saveTribeSettings);
+	modal.classList.add('active'); modal.setAttribute('aria-hidden','false');
+}
+
+function closeTribeModal() {
+	const modal = document.getElementById('tribeModal'); if (!modal) return; modal.classList.remove('active'); modal.setAttribute('aria-hidden','true'); modal.innerHTML = '';
+}
+
+function saveTribeSettings() {
+	try {
+		const settings = {
+			tribeLeader: (document.getElementById('tribeLeaderInput')?.value || '').trim(),
+			serverType: (document.getElementById('serverTypeInput')?.value || '').trim(),
+			primaryMap: (document.getElementById('primaryMapInput')?.value || '').trim(),
+			breedingGoals: (document.getElementById('breedingGoalsInput')?.value || '').trim(),
+			tribeName: (document.getElementById('tribeNameInputModal')?.value || '').trim(),
+			favoriteCreature: (document.getElementById('favoriteCreatureInput')?.value || '').trim()
+		};
+		localStorage.setItem('arkTribeSettings', JSON.stringify(settings));
+		// Also mirror some quick-access keys
+		if (settings.tribeName) localStorage.setItem('tribeName', settings.tribeName);
+		closeTribeModal();
+		try { updateTribeHeader(); } catch (e) {}
+	} catch (e) { console.error('saveTribeSettings failed', e); alert('Failed to save tribe settings'); }
+}
+
+window.openTribeModal = openTribeModal;
+window.closeTribeModal = closeTribeModal;
+window.saveTribeSettings = saveTribeSettings;
+
 // --- SPECIES_DATABASE startup helper ---
 // Wait for the external species-database.js to set window.SPECIES_DATABASE.
 // Avoid TDZ and race conditions by polling with a short timeout.

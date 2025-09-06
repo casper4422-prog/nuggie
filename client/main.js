@@ -709,8 +709,45 @@ function calculateHighestBaseStats(creatures) {
 	return highest;
 }
 function loadMyNuggiesPage() {
-	document.getElementById('appMainContent').innerHTML = '<h2>My Nuggies</h2><p>Your saved creature cards will appear here. (Sorting/filtering UI coming soon!)</p>';
-	// TODO: Fetch and display user creature cards from backend
+	const main = document.getElementById('appMainContent');
+	if (!main) return;
+	main.innerHTML = `
+		<div class="creature-page">
+		  <div class="creature-page-header">
+		    <div class="creature-page-info">
+		      <h1>My Nuggies</h1>
+		      <div class="creature-page-meta" id="myNuggiesMeta">Your saved creatures</div>
+		    </div>
+		    <div class="creature-page-actions">
+		      <button class="btn btn-primary" id="addMyNuggieBtn">➕ Add Creature</button>
+		      <button class="btn btn-secondary" id="backToMainFromMyNuggies">← Back to Species</button>
+		    </div>
+		  </div>
+		  <div class="creatures-section-header">
+		    <h2 class="creatures-section-title">Your Creatures</h2>
+		    <div class="view-toggle">
+		      <button class="view-toggle-btn active" id="myCardViewBtn">📊 Cards</button>
+		      <button class="view-toggle-btn" id="myListViewBtn">📋 List</button>
+		    </div>
+		  </div>
+		  <div class="creatures-grid" id="creaturesGrid"></div>
+		</div>
+	`;
+
+	// Wire actions
+	const addBtn = document.getElementById('addMyNuggieBtn');
+	if (addBtn) addBtn.onclick = () => { try { window.appState.currentSpecies = null; } catch (e) {} ; openCreatureModal(null); };
+	const backBtn = document.getElementById('backToMainFromMyNuggies');
+	if (backBtn) backBtn.onclick = () => { if (typeof window.loadSpeciesPage === 'function') window.loadSpeciesPage(); };
+
+	// Wire view toggle buttons
+	const cardViewBtn = document.getElementById('myCardViewBtn');
+	const listViewBtn = document.getElementById('myListViewBtn');
+	if (cardViewBtn) cardViewBtn.addEventListener('click', (e) => { e.preventDefault(); setCreatureView('card'); cardViewBtn.classList.add('active'); listViewBtn?.classList.remove('active'); });
+	if (listViewBtn) listViewBtn.addEventListener('click', (e) => { e.preventDefault(); setCreatureView('list'); listViewBtn.classList.add('active'); cardViewBtn?.classList.remove('active'); });
+
+	// Populate the grid with all saved creatures
+	try { loadCreaturesGrid(null); } catch (e) { console.warn('loadCreaturesGrid failed on My Nuggies page', e); }
 }
 
 // Render register form into #registerPage (called when user clicks Register)

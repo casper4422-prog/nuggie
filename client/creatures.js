@@ -200,51 +200,52 @@
       const muts = creature.mutations || {};
       const levels = creature.domesticLevels || {};
       modal.innerHTML = `
-        <div class="modal-content modal-creature-detail">
+        <div class="modal-content modal-creature-detail" style="max-width:820px; width:calc(100% - 40px);">
           <div class="modal-header">
             <h3 class="modal-title" id="creatureDetailTitle">${creature.name}</h3>
             <button class="close-btn" id="closeCreatureDetailBtn">&times;</button>
           </div>
-          <div class="modal-body">
-            <div class="creature-detail-top">
-              <div class="creature-detail-image-col">${creature.image ? `<img src="${creature.image}" class="creature-detail-image">` : `<div class="creature-detail-image-placeholder">${(SPECIES_DATABASE && SPECIES_DATABASE[creature.species]?.icon) || '🦖'}</div>`}</div>
-              <div class="creature-detail-main">
-                <div class="creature-detail-title-row">
-                  <h2 class="creature-detail-title">${creature.name} <span class="creature-gender-badge">${creature.gender || ''}</span></h2>
-                  <div class="creature-meta-line">Level ${creature.level || 1} • ${creature.species || ''}</div>
+          <div class="modal-body" style="max-height:70vh; overflow-y:auto; overflow-x:hidden;">
+            <div style="display:flex; gap:18px; align-items:flex-start; flex-wrap:wrap;">
+              <div style="flex:0 0 96px; max-width:96px;">
+                ${creature.image ? `<img src="${creature.image}" class="creature-detail-image" style="width:96px;height:96px;border-radius:8px;object-fit:cover;">` : `<div class="creature-detail-image-placeholder" style="width:96px;height:96px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:36px;">${(SPECIES_DATABASE && SPECIES_DATABASE[creature.species]?.icon) || '🦖'}</div>`}
+              </div>
+              <div style="flex:1 1 320px; min-width:220px;">
+                <div style="display:flex;align-items:center;gap:12px;justify-content:space-between;flex-wrap:wrap;">
+                  <div>
+                    <div style="font-size:20px;font-weight:700;">${creature.name} <span style="font-size:12px;color:#9ca3af;margin-left:6px;">${creature.gender || ''}</span></div>
+                    <div style="color:#9ca3af;margin-top:6px;">Level ${creature.level || 1} • ${creature.species || ''}</div>
+                  </div>
+                  <div style="margin-left:auto;">${(window.BadgeSystem && BadgeSystem.generateBadgeHTML) ? (BadgeSystem.generateBadgeHTML(creature) || '') : ''}</div>
                 </div>
-                <div class="creature-detail-badges-row">${(window.BadgeSystem && BadgeSystem.generateBadgeHTML) ? (BadgeSystem.generateBadgeHTML(creature) || '') : ''}</div>
-                <div class="creature-detail-notes">${creature.notes ? `<div class="notes-title">Notes</div><div class="notes-body">${creature.notes}</div>` : ''}</div>
+                ${creature.notes ? `<div style="margin-top:10px;color:#cbd5e1;line-height:1.4;">${creature.notes}</div>` : ''}
               </div>
             </div>
 
-            <div class="creature-detail-stats-grid">
-              <div class="stats-column">
-                <div class="creature-detail-stats-title">Base Stats</div>
-                <div class="stats-grid">
-                  <div class="stat-row"><div class="stat-name">HEALTH</div><div class="stat-value">${stats.Health || 0}</div></div>
-                  <div class="stat-row"><div class="stat-name">STAMINA</div><div class="stat-value">${stats.Stamina || 0}</div></div>
-                  <div class="stat-row"><div class="stat-name">OXYGEN</div><div class="stat-value">${stats.Oxygen || 0}</div></div>
-                  <div class="stat-row"><div class="stat-name">FOOD</div><div class="stat-value">${stats.Food || 0}</div></div>
-                  <div class="stat-row"><div class="stat-name">WEIGHT</div><div class="stat-value">${stats.Weight || 0}</div></div>
-                  <div class="stat-row"><div class="stat-name">MELEE</div><div class="stat-value">${stats.Melee || 0}</div></div>
-                </div>
-              </div>
-              <div class="mutations-column">
-                <div class="creature-detail-stats-title">Mutations</div>
-                <div class="stats-grid">
-                  <div class="stat-row"><div class="stat-name">HEALTH MUT</div><div class="stat-value">${muts.Health || 0}</div></div>
-                  <div class="stat-row"><div class="stat-name">STAMINA MUT</div><div class="stat-value">${muts.Stamina || 0}</div></div>
-                  <div class="stat-row"><div class="stat-name">OXYGEN MUT</div><div class="stat-value">${muts.Oxygen || 0}</div></div>
-                  <div class="stat-row"><div class="stat-name">FOOD MUT</div><div class="stat-value">${muts.Food || 0}</div></div>
-                  <div class="stat-row"><div class="stat-name">WEIGHT MUT</div><div class="stat-value">${muts.Weight || 0}</div></div>
-                  <div class="stat-row"><div class="stat-name">MELEE MUT</div><div class="stat-value">${muts.Melee || 0}</div></div>
-                </div>
-                <div class="domestic-line">Domestic levels: H ${levels.Health || 0} • S ${levels.Stamina || 0} • O ${levels.Oxygen || 0} • F ${levels.Food || 0} • W ${levels.Weight || 0} • M ${levels.Melee || 0}</div>
+            <div style="margin-top:14px;">
+              <div style="display:flex;gap:12px;flex-wrap:wrap;">
+                ${['Health','Stamina','Oxygen','Food','Weight','Melee'].map(stat => {
+                  const base = stats[stat] || 0;
+                  const mut = muts[stat] || 0;
+                  const dom = levels[stat] || 0;
+                  return `
+                    <div style="flex:1 1 140px; min-width:120px;">
+                      <div style="font-size:11px;color:#94a3b8;margin-bottom:6px;text-transform:uppercase;">${stat}</div>
+                      <div style="background:rgba(255,255,255,0.04);border-radius:6px;padding:6px;display:flex;align-items:center;gap:8px;">
+                        <div style="flex:1;">
+                          <div style="height:8px;background:rgba(255,255,255,0.06);border-radius:6px;overflow:hidden;position:relative;">
+                            <div style="position:absolute;left:0;top:0;height:100%;width:${Math.min(100, Math.round((base / Math.max(1, base+mut+dom)) * 100))}%;background:linear-gradient(90deg,#2563eb,#4f46e5);"></div>
+                          </div>
+                        </div>
+                        <div style="min-width:70px;text-align:right;font-weight:600;color:#e6eef8;">${base}/${mut}/${dom}</div>
+                      </div>
+                    </div>
+                  `;
+                }).join('')}
               </div>
             </div>
 
-            <div class="creature-detail-footer-meta">Created: ${created} • Updated: ${updated}</div>
+            <div style="margin-top:12px;color:#94a3b8;font-size:12px;">Created: ${created} • Updated: ${updated}</div>
           </div>
           <div class="modal-footer">
             <button class="btn btn-secondary" id="closeCreatureDetailBtnFoot">Close</button>

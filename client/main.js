@@ -165,6 +165,19 @@ window.goToMyNuggies = goToMyNuggies;
 document.addEventListener('DOMContentLoaded', async () => {
 	console.log('[SPA] DOMContentLoaded fired');
 
+	// Quick debug probe: ask the server to echo parsed cookies and the raw Cookie header.
+	// This will print into the browser console and help determine whether cookies are sent on credentialed requests.
+	(async function debugCookiesProbe() {
+		try {
+			const probeUrl = resolveApiBase().replace(/\/$/, '') + '/api/debug-cookies';
+			console.log('[DEBUG] probing', probeUrl);
+			const r = await fetch(probeUrl, { method: 'GET', credentials: 'include' });
+			let body = null;
+			try { body = await r.json(); } catch (e) { body = await r.text().catch(() => null); }
+			console.log('[DEBUG] debug-cookies response', { status: r.status, ok: r.ok, body });
+		} catch (e) { console.warn('[DEBUG] debug-cookies probe failed', e); }
+	})();
+
 	// Helper: resolve base path for assets relative to this script
 	function resolveBasePath() {
 		try {

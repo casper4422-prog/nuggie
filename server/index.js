@@ -14,6 +14,8 @@ app.set('trust proxy', true);
 const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3001;
 // Use environment variable for the JWT secret in production. Falling back to a default for dev.
 const SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
+// Optional cookie domain to scope cookies to a parent domain (e.g. .onrender.com)
+const COOKIE_DOMAIN = process.env.COOKIE_DOMAIN || undefined;
 if (!process.env.JWT_SECRET) {
   console.warn('Warning: JWT_SECRET is not set. Using default development secret. Do NOT use this in production.');
 }
@@ -97,8 +99,14 @@ function issueTokensAndSetCookies(res, userId) {
   const secureFlag = (process.env.NODE_ENV === 'production');
   // For cross-origin requests (client and API on different origins) cookies must use SameSite='None' and Secure
   const sameSiteSetting = secureFlag ? 'none' : 'lax';
-  res.cookie('accessToken', accessToken, { httpOnly: true, sameSite: sameSiteSetting, secure: secureFlag, maxAge: 15 * 60 * 1000 });
-  res.cookie('refreshToken', refreshToken, { httpOnly: true, sameSite: sameSiteSetting, secure: secureFlag, maxAge: 7 * 24 * 60 * 60 * 1000 });
+  const accessCookieOptions = { httpOnly: true, sameSite: sameSiteSetting, secure: secureFlag, maxAge: 15 * 60 * 1000, path: '/' };
+  const refreshCookieOptions = { httpOnly: true, sameSite: sameSiteSetting, secure: secureFlag, maxAge: 7 * 24 * 60 * 60 * 1000, path: '/' };
+  if (COOKIE_DOMAIN) {
+    accessCookieOptions.domain = COOKIE_DOMAIN;
+    refreshCookieOptions.domain = COOKIE_DOMAIN;
+  }
+  res.cookie('accessToken', accessToken, accessCookieOptions);
+  res.cookie('refreshToken', refreshToken, refreshCookieOptions);
 }
 
 // Auth middleware
@@ -154,10 +162,16 @@ app.post('/api/refresh', (req, res) => {
       db.run('DELETE FROM refresh_tokens WHERE id = ?', [row.id], function(dErr) {
         if (dErr) console.warn('Failed to delete old refresh token', dErr);
         db.run('INSERT INTO refresh_tokens (user_id, token) VALUES (?, ?)', [userId, newRefresh], function(iErr) { if (iErr) console.warn('Failed to insert new refresh token', iErr); });
-  const secureFlag = (process.env.NODE_ENV === 'production');
-  const sameSiteSetting = secureFlag ? 'none' : 'lax';
-  res.cookie('accessToken', newAccess, { httpOnly: true, sameSite: sameSiteSetting, secure: secureFlag, maxAge: 15 * 60 * 1000 });
-  res.cookie('refreshToken', newRefresh, { httpOnly: true, sameSite: sameSiteSetting, secure: secureFlag, maxAge: 7 * 24 * 60 * 60 * 1000 });
+        const secureFlag = (process.env.NODE_ENV === 'production');
+        const sameSiteSetting = secureFlag ? 'none' : 'lax';
+        const accessCookieOptions = { httpOnly: true, sameSite: sameSiteSetting, secure: secureFlag, maxAge: 15 * 60 * 1000, path: '/' };
+        const refreshCookieOptions = { httpOnly: true, sameSite: sameSiteSetting, secure: secureFlag, maxAge: 7 * 24 * 60 * 60 * 1000, path: '/' };
+        if (COOKIE_DOMAIN) {
+          accessCookieOptions.domain = COOKIE_DOMAIN;
+          refreshCookieOptions.domain = COOKIE_DOMAIN;
+        }
+        res.cookie('accessToken', newAccess, accessCookieOptions);
+        res.cookie('refreshToken', newRefresh, refreshCookieOptions);
         return res.json({ success: true });
       });
     });
@@ -172,8 +186,10 @@ app.post('/api/logout', (req, res) => {
     db.run('DELETE FROM refresh_tokens WHERE token = ?', [refreshToken], function(err) { if (err) console.warn('Failed to delete refresh token', err); });
   }
   // clear cookies
-  res.clearCookie('accessToken');
-  res.clearCookie('refreshToken');
+  const clearOpts = { path: '/' };
+  if (COOKIE_DOMAIN) clearOpts.domain = COOKIE_DOMAIN;
+  res.clearCookie('accessToken', clearOpts);
+  res.clearCookie('refreshToken', clearOpts);
   res.json({ success: true });
 });
 

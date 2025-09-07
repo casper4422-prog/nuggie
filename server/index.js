@@ -1,5 +1,6 @@
 // Entry point for the backend server
 const express = require('express');
+const path = require('path');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
@@ -24,6 +25,14 @@ if (!process.env.JWT_SECRET) {
 app.use(cors({ origin: process.env.CLIENT_ORIGIN || 'http://localhost:3000', credentials: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());
+
+// Serve client static files so the SPA and API can share the same origin.
+// This avoids third-party cookie issues when the client and API are on different subdomains.
+const clientStatic = path.join(__dirname, '..', 'client');
+app.use(express.static(clientStatic));
+app.get('/', (req, res) => {
+  res.sendFile(path.join(clientStatic, 'index.html'));
+});
 
 // Basic rate limiter for auth endpoints to slow brute-force attempts
 const authLimiter = rateLimit({

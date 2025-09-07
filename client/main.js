@@ -3,7 +3,10 @@
 
 // --- SPA Logic and Event Handlers (migrated from index.html) ---
 // Configurable API base. Consumers can override by setting window.__NUGGIE_API_BASE__ before this script runs.
-const API_BASE = (typeof window !== 'undefined' && window.__NUGGIE_API_BASE__) ? window.__NUGGIE_API_BASE__ : 'https://nuggie.onrender.com';
+// Default to the current page origin when available so the SPA works when served from the API host.
+const API_BASE = (typeof window !== 'undefined' && window.__NUGGIE_API_BASE__)
+	? window.__NUGGIE_API_BASE__
+	: ((typeof window !== 'undefined' && window.location && window.location.origin) ? window.location.origin : 'https://nuggie.onrender.com');
 
 // Small helper: parse a JWT without validating signature. Returns payload object or null.
 // apiFetch: send cookies to server (credentials include). On 401 attempt refresh once.
@@ -452,6 +455,8 @@ async function handleLogin(event) {
 		} else {
 			// Show helpful diagnostic including status and any server-provided body
 			console.warn('[SPA] login failed', { status: (res && res.status), body: data, res });
+			// surface to UI log as well for quick debugging
+			console.log('[SPA] login response body:', data);
 			let msg = 'Login failed.';
 			if (data) {
 				if (typeof data === 'string') msg = data;
@@ -530,6 +535,7 @@ async function handleRegister(event) {
 			try { await updateAuthUI(); } catch (e) {}
 		} else {
 			console.warn('[SPA] register failed', { status: res.status, body: data });
+			console.log('[SPA] register response body:', data);
 			let msg = 'Registration failed.';
 			if (data) {
 				if (typeof data === 'string') msg = data;

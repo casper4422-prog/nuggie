@@ -79,7 +79,11 @@ app.post('/api/register', authLimiter, (req, res) => {
       if (err) return res.status(400).json({ error: 'Email already exists' });
       const userId = this.lastID;
       // Issue tokens and set cookies
-      try { issueTokensAndSetCookies(res, userId); return res.json({ success: true }); } catch (e) { return res.status(500).json({ error: 'Failed to create tokens' }); }
+      console.log(`[AUTH] register success for user ${email} (id=${userId}) from ${req.ip}`);
+      try {
+        issueTokensAndSetCookies(res, userId);
+        return res.status(201).json({ success: true, user: { id: userId, email } });
+      } catch (e) { console.error('[AUTH] issueTokensAndSetCookies failed on register', e); return res.status(500).json({ error: 'Failed to create tokens' }); }
     });
   });
 });
@@ -91,7 +95,11 @@ app.post('/api/login', authLimiter, (req, res) => {
     if (err || !user) return res.status(400).json({ error: 'Invalid credentials' });
     bcrypt.compare(password, user.password, (err, result) => {
       if (result) {
-        try { issueTokensAndSetCookies(res, user.id); return res.json({ success: true }); } catch (e) { return res.status(500).json({ error: 'Failed to create tokens' }); }
+        try {
+          issueTokensAndSetCookies(res, user.id);
+          console.log(`[AUTH] login success for user ${email} (id=${user.id}) from ${req.ip}`);
+          return res.json({ success: true, user: { id: user.id, email: user.email } });
+        } catch (e) { console.error('[AUTH] issueTokensAndSetCookies failed on login', e); return res.status(500).json({ error: 'Failed to create tokens' }); }
       } else {
         res.status(400).json({ error: 'Invalid credentials' });
       }
@@ -122,9 +130,9 @@ function issueTokensAndSetCookies(res, userId) {
 function authenticateToken(req, res, next) {
   // Read access token from httpOnly cookie
   const token = req.cookies && req.cookies.accessToken;
-  if (!token) return res.sendStatus(401);
+  if (!token) return res.status(401).json({ error: 'Missing access token' });
   jwt.verify(token, SECRET, (err, user) => {
-    if (err) return res.sendStatus(403);
+    if (err) return res.status(403).json({ error: 'Invalid or expired access token' });
     req.user = user;
     next();
   });
@@ -134,8 +142,8 @@ function authenticateToken(req, res, next) {
 app.post('/api/creature', authenticateToken, (req, res) => {
   const { data } = req.body;
   db.run('INSERT INTO creature_cards (user_id, data) VALUES (?, ?)', [req.user.userId, JSON.stringify(data)], function(err) {
-    if (err) return res.status(500).json({ error: 'Failed to save' });
-    res.json({ id: this.lastID });
+  if (err) { console.error('[DATA] failed to save creature for user', req.user.userId, err); return res.status(500).json({ error: 'Failed to save' }); }
+  res.status(201).json({ success: true, id: this.lastID });
   });
 });
 
@@ -158,9 +166,9 @@ app.get('/api/me', authenticateToken, (req, res) => {
 // Refresh endpoint: issues a fresh access token (and rotates refresh token)
 app.post('/api/refresh', (req, res) => {
   const refreshToken = req.cookies && req.cookies.refreshToken;
-  if (!refreshToken) return res.sendStatus(401);
+  if (!refreshToken) return res.status(401).json({ error: 'Missing refresh token' });
   jwt.verify(refreshToken, SECRET, (err, payload) => {
-    if (err) return res.sendStatus(403);
+    if (err) return res.status(403).json({ error: 'Invalid or expired refresh token' });
     const userId = payload.userId;
     // confirm refresh token exists in DB
     db.get('SELECT id FROM refresh_tokens WHERE user_id = ? AND token = ?', [userId, refreshToken], (dbErr, row) => {
@@ -181,6 +189,7 @@ app.post('/api/refresh', (req, res) => {
         }
         res.cookie('accessToken', newAccess, accessCookieOptions);
         res.cookie('refreshToken', newRefresh, refreshCookieOptions);
+        console.log(`[AUTH] refresh issued for user ${userId} from ${req.ip}`);
         return res.json({ success: true });
       });
     });

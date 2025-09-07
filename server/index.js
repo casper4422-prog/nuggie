@@ -95,8 +95,10 @@ function issueTokensAndSetCookies(res, userId) {
   // store refresh token server-side
   db.run('INSERT INTO refresh_tokens (user_id, token) VALUES (?, ?)', [userId, refreshToken], function(err) { if (err) console.warn('Failed to persist refresh token', err); });
   const secureFlag = (process.env.NODE_ENV === 'production');
-  res.cookie('accessToken', accessToken, { httpOnly: true, sameSite: 'lax', secure: secureFlag, maxAge: 15 * 60 * 1000 });
-  res.cookie('refreshToken', refreshToken, { httpOnly: true, sameSite: 'lax', secure: secureFlag, maxAge: 7 * 24 * 60 * 60 * 1000 });
+  // For cross-origin requests (client and API on different origins) cookies must use SameSite='None' and Secure
+  const sameSiteSetting = secureFlag ? 'none' : 'lax';
+  res.cookie('accessToken', accessToken, { httpOnly: true, sameSite: sameSiteSetting, secure: secureFlag, maxAge: 15 * 60 * 1000 });
+  res.cookie('refreshToken', refreshToken, { httpOnly: true, sameSite: sameSiteSetting, secure: secureFlag, maxAge: 7 * 24 * 60 * 60 * 1000 });
 }
 
 // Auth middleware
@@ -152,9 +154,10 @@ app.post('/api/refresh', (req, res) => {
       db.run('DELETE FROM refresh_tokens WHERE id = ?', [row.id], function(dErr) {
         if (dErr) console.warn('Failed to delete old refresh token', dErr);
         db.run('INSERT INTO refresh_tokens (user_id, token) VALUES (?, ?)', [userId, newRefresh], function(iErr) { if (iErr) console.warn('Failed to insert new refresh token', iErr); });
-        const secureFlag = (process.env.NODE_ENV === 'production');
-        res.cookie('accessToken', newAccess, { httpOnly: true, sameSite: 'lax', secure: secureFlag, maxAge: 15 * 60 * 1000 });
-        res.cookie('refreshToken', newRefresh, { httpOnly: true, sameSite: 'lax', secure: secureFlag, maxAge: 7 * 24 * 60 * 60 * 1000 });
+  const secureFlag = (process.env.NODE_ENV === 'production');
+  const sameSiteSetting = secureFlag ? 'none' : 'lax';
+  res.cookie('accessToken', newAccess, { httpOnly: true, sameSite: sameSiteSetting, secure: secureFlag, maxAge: 15 * 60 * 1000 });
+  res.cookie('refreshToken', newRefresh, { httpOnly: true, sameSite: sameSiteSetting, secure: secureFlag, maxAge: 7 * 24 * 60 * 60 * 1000 });
         return res.json({ success: true });
       });
     });

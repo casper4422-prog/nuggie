@@ -10,7 +10,10 @@ const app = express();
 const PORT = 3001;
 const SECRET = 'your_jwt_secret'; // Change this in production
 
-app.use(cors());
+// Enable CORS for credentialed cross-origin requests.
+// Echo the request Origin so previews and different subdomains are accepted.
+// Allow Authorization header for Bearer token flows and Content-Type for JSON.
+app.use(cors({ origin: true, credentials: true, allowedHeaders: ['Content-Type', 'Authorization'] }));
 app.use(bodyParser.json());
 
 // Initialize SQLite DB

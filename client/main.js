@@ -6,31 +6,26 @@
 const API_BASE = (typeof window !== 'undefined' && window.__NUGGIE_API_BASE__) ? window.__NUGGIE_API_BASE__ : 'https://nuggie.onrender.com';
 
 // Small helper: parse a JWT without validating signature. Returns payload object or null.
-function parseJwt(token) {
-	try {
-		const parts = token.split('.');
-		if (parts.length !== 3) return null;
-		const payload = parts[1].replace(/-/g, '+').replace(/_/g, '/');
-		const json = decodeURIComponent(atob(payload).split('').map(function(c) {
-			return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-		}).join(''));
-		return JSON.parse(json);
-	} catch (e) { return null; }
-}
-
-// apiFetch: convenience wrapper that attaches Authorization header when token present
+// apiFetch: send cookies to server (credentials include). On 401 attempt refresh once.
 async function apiFetch(path, opts = {}) {
 	const url = path.indexOf('http') === 0 ? path : (API_BASE.replace(/\/$/, '') + '/' + path.replace(/^\//, ''));
-	const headers = Object.assign({}, opts.headers || {});
-	const token = localStorage.getItem('token');
-	if (token && typeof token === 'string') headers['Authorization'] = 'Bearer ' + token;
-	const cfg = Object.assign({}, opts, { headers });
-	const resp = await fetch(url, cfg);
-	// If authentication failed or token is invalid/expired, force logout on client
-	if (resp.status === 401 || resp.status === 403) {
-		try { localStorage.removeItem('token'); } catch (e) {}
-		try { updateAuthUI(); } catch (e) {}
-		try { showLoginPage(); } catch (e) {}
+	const cfg = Object.assign({}, { credentials: 'include', headers: Object.assign({}, opts.headers || {}) }, opts);
+	let resp = await fetch(url, cfg);
+	if (resp.status === 401) {
+		// try refresh
+		try {
+			const r = await fetch(API_BASE.replace(/\/$/, '') + '/api/refresh', { method: 'POST', credentials: 'include' });
+			if (r && r.ok) {
+				// retry original request once
+				resp = await fetch(url, cfg);
+			} else {
+				// logout client side
+				try { await fetch(API_BASE.replace(/\/$/, '') + '/api/logout', { method: 'POST', credentials: 'include' }); } catch (e) {}
+				try { showLoginPage(); updateAuthUI(); } catch (e) {}
+			}
+		} catch (e) { try { showLoginPage(); updateAuthUI(); } catch (e) {} }
+	} else if (resp.status === 403) {
+		try { showLoginPage(); updateAuthUI(); } catch (e) {}
 	}
 	return resp;
 }
@@ -105,45 +100,30 @@ function showMainApp() {
 window.showLoginPage = showLoginPage;
 window.showRegisterPage = showRegisterPage;
 
-function isLoggedIn() {
-	const token = localStorage.getItem('token');
-	if (!token || typeof token !== 'string') return false;
-	// Allow forcing the login page via URL param for debugging
+// isLoggedIn: do a lightweight server probe (via /api/me) when needed; for quick checks rely on cached flag
+let __AUTH_CACHE = { loggedIn: false, lastChecked: 0 };
+async function isLoggedIn(checkServer = false) {
+	// quick return if cached and recent
+	if (!checkServer && (Date.now() - __AUTH_CACHE.lastChecked) < 5 * 60 * 1000) return __AUTH_CACHE.loggedIn;
 	try {
-		const params = new URLSearchParams(window.location.search);
-		if (params.get('forceLogin') === '1') {
-			console.log('[SPA] forceLogin param detected; treating as logged out');
-			return false;
-		}
-	} catch (e) {
-		// ignore
-	}
-	// Basic JWT format check (three dot-separated parts). If it doesn't look like a JWT, treat as logged out.
-	const parts = token.split('.');
-	if (parts.length !== 3) {
-		console.warn('[SPA] token present but not a valid JWT, treating as logged out', token);
-		return false;
-	}
-	// token looks like a JWT; try to decode and verify expiry if present
-	try {
-		const payload = parseJwt(token);
-		if (payload && payload.exp) {
-			// exp is in seconds since epoch
-			const now = Math.floor(Date.now() / 1000);
-			if (payload.exp < now) {
-				console.warn('[SPA] token expired according to exp claim');
-				return false;
-			}
-		}
-	} catch (e) { /* ignore */ }
-	return true;
+		const resp = await apiFetch('/api/me');
+		if (resp && resp.ok) { __AUTH_CACHE = { loggedIn: true, lastChecked: Date.now() }; return true; }
+	} catch (e) {}
+	__AUTH_CACHE = { loggedIn: false, lastChecked: Date.now() };
+	return false;
 }
 function handleAuthClick() {
-	if (isLoggedIn()) {
-		localStorage.removeItem('token');
-		showLoginPage();
-		try { updateAuthUI(); } catch (e) {}
-	}
+	(async () => {
+		const logged = await isLoggedIn();
+		if (logged) {
+			try { await fetch(API_BASE.replace(/\/$/, '') + '/api/logout', { method: 'POST', credentials: 'include' }); } catch (e) {}
+			showLoginPage();
+			try { await updateAuthUI(); } catch (e) {}
+		} else {
+			showLoginPage();
+			try { await updateAuthUI(); } catch (e) {}
+		}
+	})();
 }
 window.handleAuthClick = handleAuthClick;
 
@@ -154,10 +134,11 @@ function updateTribeHeader() {
 	if (el) el.textContent = tribeName;
 }
 
-function updateAuthUI() {
+async function updateAuthUI() {
 	const authBtn = document.getElementById('authBtn');
 	if (!authBtn) return;
-	if (isLoggedIn()) {
+	const logged = await isLoggedIn();
+	if (logged) {
 		authBtn.textContent = 'Sign Out';
 		authBtn.classList.remove('btn-primary');
 		authBtn.classList.add('btn-danger');
@@ -247,7 +228,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 			console.warn('[SPA] UI wiring failed', wireErr);
 		}
 
-		if (isLoggedIn()) {
+		if (await isLoggedIn()) {
 			console.log('[SPA] User is logged in');
 			// Try to refresh basic profile info from server. If token is invalid the apiFetch will force logout.
 			try {
@@ -272,7 +253,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 			showMainApp();
 			updateTribeHeader();
 			loadSpeciesPage(); // Default page after login
-		} else {
+	} else {
 			console.log('[SPA] User is NOT logged in');
 			showLoginPage();
 		}
@@ -456,8 +437,15 @@ async function handleLogin(event) {
 		}
 
 		const data = await readBody(res);
-		if (res.ok && data && data.token) {
-			localStorage.setItem('token', data.token);
+	if (res && typeof res.status === 'number' && res.status >= 200 && res.status < 300) {
+			// Server sets httpOnly cookies; probe /api/me to fetch profile and derive tribeName.
+			try {
+				const meResp = await apiFetch('/api/me');
+				if (meResp && meResp.ok) {
+					const me = await meResp.json();
+					if (me && me.email) try { localStorage.setItem('tribeName', me.email.split('@')[0]); } catch (e) {}
+				}
+			} catch (e) { /* ignore */ }
 			// Ensure the document is visible and the main app is shown
 			try { document.documentElement.setAttribute('data-ready', 'true'); } catch (e) {}
 			showMainApp();
@@ -467,10 +455,10 @@ async function handleLogin(event) {
 			try { loadSpeciesPage(); } catch (e) {}
 			// Refresh stats and auth UI after login
 			try { updateStatsDashboard(); } catch (e) {}
-			try { updateAuthUI(); } catch (e) {}
+			try { await updateAuthUI(); } catch (e) {}
 		} else {
 			// Show helpful diagnostic including status and any server-provided body
-			console.warn('[SPA] login failed', { status: res.status, body: data });
+			console.warn('[SPA] login failed', { status: (res && res.status), body: data, res });
 			let msg = 'Login failed.';
 			if (data) {
 				if (typeof data === 'string') msg = data;
@@ -531,30 +519,21 @@ async function handleRegister(event) {
 			} catch (e) { return await resp.text().catch(() => null); }
 		}
 		const data = await readBody(res);
-		if (res.ok && (data === true || (data && data.success))) {
-			// If server returned a token, sign in immediately. Otherwise, prefill login and attempt auto-login
-			if (data && data.token) {
-				localStorage.setItem('token', data.token);
-				try { document.documentElement.setAttribute('data-ready', 'true'); } catch (e) {}
-				showMainApp();
-				updateTribeHeader();
-				try { loadSpeciesPage(); } catch (e) {}
-				try { updateStatsDashboard(); } catch (e) {}
-				try { updateAuthUI(); } catch (e) {}
-			} else {
-				// No token: show login page and prefill credentials, then attempt login automatically
-				showLoginPage();
-				setTimeout(async () => {
-					try {
-						const le = document.getElementById('loginEmail');
-						const lp = document.getElementById('loginPassword');
-						if (le) le.value = email;
-						if (lp) lp.value = password;
-						// Call handleLogin to perform login flow without requiring a manual refresh
-						try { await handleLogin(new Event('submit')); } catch (e) { /* ignore, user can login manually */ }
-					} catch (e) { /* no-op */ }
-				}, 50);
-			}
+	if (res && typeof res.status === 'number' && res.status >= 200 && res.status < 300 && (data === true || (data && data.success))) {
+			// Server set cookies for auth. Probe /api/me to fetch profile and show the main app.
+			try {
+				const meResp = await apiFetch('/api/me');
+				if (meResp && meResp.ok) {
+					const me = await meResp.json();
+					if (me && me.email) try { localStorage.setItem('tribeName', me.email.split('@')[0]); } catch (e) {}
+				}
+			} catch (e) { /* ignore */ }
+			try { document.documentElement.setAttribute('data-ready', 'true'); } catch (e) {}
+			showMainApp();
+			updateTribeHeader();
+			try { loadSpeciesPage(); } catch (e) {}
+			try { updateStatsDashboard(); } catch (e) {}
+			try { await updateAuthUI(); } catch (e) {}
 		} else {
 			console.warn('[SPA] register failed', { status: res.status, body: data });
 			let msg = 'Registration failed.';
@@ -1011,7 +990,7 @@ async function saveCreature(payload) {
 		// If payload contains a full creature object
 		if (payload && payload.id && payload.name) {
 			// If logged in, try to sync to server
-			if (typeof isLoggedIn === 'function' && isLoggedIn() && typeof apiFetch === 'function') {
+			if (typeof isLoggedIn === 'function' && typeof apiFetch === 'function' && await isLoggedIn()) {
 				try {
 					const resp = await apiFetch('/api/creature', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ data: payload }) });
 					if (resp && resp.ok) {
@@ -1062,7 +1041,7 @@ window.saveCreature = saveCreature;
 // wasn't shown (due to an earlier error), force the app shell visible and
 // show the login page after a short timeout. This avoids leaving users with
 // a blank screen if any early init step throws.
-setTimeout(() => {
+setTimeout(async () => {
 	try {
 		const docEl = document.documentElement;
 		// If data-ready wasn't set by the aggressive cleanup, set it now.
@@ -1079,11 +1058,13 @@ setTimeout(() => {
 		const register = document.getElementById('registerPage');
 		const mainApp = document.getElementById('mainApp');
 		if (landing && getComputedStyle(landing).display === 'none') {
-			if (typeof isLoggedIn === 'function' && isLoggedIn()) {
-				try { showMainApp(); } catch (e) { console.warn('[SPA] showMainApp failed', e); }
-			} else {
-				try { showLoginPage(); } catch (e) { console.warn('[SPA] showLoginPage failed', e); }
-			}
+			try {
+				if (typeof isLoggedIn === 'function' && await isLoggedIn()) {
+					try { showMainApp(); } catch (e) { console.warn('[SPA] showMainApp failed', e); }
+				} else {
+					try { showLoginPage(); } catch (e) { console.warn('[SPA] showLoginPage failed', e); }
+				}
+			} catch (e) { try { showLoginPage(); } catch (ee) {} }
 		}
 	} catch (err) {
 		console.warn('[SPA] startup fallback encountered an error', err);

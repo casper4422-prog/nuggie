@@ -188,14 +188,39 @@ document.addEventListener('DOMContentLoaded', async () => {
 	// Compute base and load the exact theme CSS before revealing UI to avoid overlap
 	(async function prepareTheme() {
 		const base = resolveBasePath();
-		const cssHref = base + 'theme-exact.css';
-		console.log('[SPA] loading exact theme from', cssHref);
-		const ok = await loadStylesheet(cssHref, 2500);
-		if (!ok) console.warn('[SPA] theme-exact.css failed to load or timed out:', cssHref);
-		// Apply class that scopes the exact theme
-		try { document.documentElement.classList.add('theme-exact'); } catch (e) {}
-	// Header is static; no runtime injection required here
-		// Now mark the document ready so CSS guard un-hides content with new styling
+		// Candidate locations to try for theme-exact.css. We try the resolved base first,
+		// then a few fallbacks (root, relative) to handle different hosting layouts.
+		const candidates = [
+			(base ? base + 'theme-exact.css' : null),
+			(base ? base + 'theme-exact.css?cb=' + Date.now() : null),
+			'/theme-exact.css',
+			'theme-exact.css',
+			'./theme-exact.css'
+		].filter(Boolean);
+		let loaded = false;
+		for (const href of candidates) {
+			try {
+				console.log('[SPA] attempting to load theme CSS from', href);
+				/* eslint-disable no-await-in-loop */
+				const ok = await loadStylesheet(href, 2200);
+				/* eslint-enable no-await-in-loop */
+				if (ok) {
+					console.log('[SPA] theme-exact.css loaded from', href);
+					document.documentElement.classList.add('theme-exact');
+					loaded = true;
+					break;
+				} else {
+					console.warn('[SPA] failed to load theme-exact.css from', href);
+				}
+			} catch (e) {
+				console.warn('[SPA] error loading theme-exact.css from', href, e);
+			}
+		}
+		if (!loaded) {
+			console.warn('[SPA] theme-exact.css could not be loaded from any candidate path; using base styles');
+		}
+		// Header is static; no runtime injection required here
+		// Now mark the document ready so CSS guard un-hides content with new styling (or fallbacks)
 		try { document.documentElement.setAttribute('data-ready', 'true'); } catch (e) {}
 		try { document.documentElement.style.visibility = ''; } catch (e) {}
 	})();

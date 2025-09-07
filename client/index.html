@@ -65,8 +65,8 @@
     <script src="species-database.js"></script>
     <script src="badge-system.js"></script>
     <script src="creatures.js"></script>
-    <!-- Force the API base to the deployed backend so SPA calls /api/* go to the correct host -->
-    <script>window.__NUGGIE_API_BASE__ = 'https://nuggie.onrender.com';</script>
+    <!-- Do not force a fixed API base here. The client will resolve the API base at runtime
+         and probe fallback hosts if the current origin does not expose the API. -->
     <script src="main.js"></script>
     </body>
 

@@ -26,14 +26,15 @@ async function apiFetch(path, opts = {}) {
 	let resp = await fetch(url, cfg);
 	if (resp.status === 401) {
 		// try refresh
-		try {
-			const r = await fetch(API_BASE.replace(/\/$/, '') + '/api/refresh', { method: 'POST', credentials: 'include' });
+			try {
+				const refreshBase = resolveApiBase();
+				const r = await fetch(refreshBase.replace(/\/$/, '') + '/api/refresh', { method: 'POST', credentials: 'include' });
 			if (r && r.ok) {
 				// retry original request once
 				resp = await fetch(url, cfg);
 			} else {
 				// logout client side
-				try { await fetch(API_BASE.replace(/\/$/, '') + '/api/logout', { method: 'POST', credentials: 'include' }); } catch (e) {}
+					try { await fetch(refreshBase.replace(/\/$/, '') + '/api/logout', { method: 'POST', credentials: 'include' }); } catch (e) {}
 				try { showLoginPage(); updateAuthUI(); } catch (e) {}
 			}
 		} catch (e) { try { showLoginPage(); updateAuthUI(); } catch (e) {} }

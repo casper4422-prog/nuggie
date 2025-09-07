@@ -21,8 +21,21 @@ if (!process.env.JWT_SECRET) {
   console.warn('Warning: JWT_SECRET is not set. Using default development secret. Do NOT use this in production.');
 }
 
-// CORS: allow credentials and configure allowed origin via env. For local testing default to http://localhost:3000
-app.use(cors({ origin: process.env.CLIENT_ORIGIN || 'http://localhost:3000', credentials: true }));
+// CORS: allow credentials and echo the request origin back so browsers receive
+// Access-Control-Allow-Origin matching their request when credentials are used.
+// This is safer than hard-coding a single origin when the app may be served
+// from different subdomains (Render preview / production, etc.).
+// Note: leaving an explicit whitelist in CLIENT_ORIGIN (comma-separated) is
+// still supported via environment configuration; when not set we echo origin.
+app.use((req, res, next) => {
+  // ensure Vary: Origin so caches treat responses per-origin
+  res.header('Vary', 'Origin');
+  const originHeader = req.get('origin');
+  const allowed = (process.env.CLIENT_ORIGIN || '').split(',').map(s => s.trim()).filter(Boolean);
+  // If a whitelist is provided, only echo back origins on the list. Otherwise echo any origin.
+  const origin = (allowed.length === 0) ? originHeader : (allowed.includes(originHeader) ? originHeader : false);
+  cors({ origin: origin, credentials: true })(req, res, next);
+});
 app.use(bodyParser.json());
 app.use(cookieParser());
 
@@ -161,6 +174,16 @@ app.get('/api/me', authenticateToken, (req, res) => {
     if (err || !user) return res.status(500).json({ error: 'Failed to load user' });
     res.json({ id: user.id, email: user.email });
   });
+});
+
+// Debug endpoint: returns parsed cookies and raw Cookie header so the client can verify
+// whether cookies are being sent by the browser on cross-origin requests.
+app.get('/api/debug-cookies', (req, res) => {
+  try {
+    return res.json({ cookies: req.cookies || {}, cookieHeader: req.headers.cookie || null });
+  } catch (e) {
+    return res.status(500).json({ error: 'debug failed' });
+  }
 });
 
 // Refresh endpoint: issues a fresh access token (and rotates refresh token)

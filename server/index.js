@@ -16,7 +16,9 @@ const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3001;
 // Use environment variable for the JWT secret in production. Falling back to a default for dev.
 const SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
 // Optional cookie domain to scope cookies to a parent domain (e.g. .onrender.com)
-const COOKIE_DOMAIN = process.env.COOKIE_DOMAIN || undefined;
+// Default to the parent onrender.com domain so cookies are usable across Render preview subdomains.
+// You can still override by setting COOKIE_DOMAIN in the environment if you prefer.
+const COOKIE_DOMAIN = process.env.COOKIE_DOMAIN || '.onrender.com';
 if (!process.env.JWT_SECRET) {
   console.warn('Warning: JWT_SECRET is not set. Using default development secret. Do NOT use this in production.');
 }

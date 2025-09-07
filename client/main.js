@@ -444,6 +444,8 @@ async function handleLogin(event) {
 				if (meResp && meResp.ok) {
 					const me = await meResp.json();
 					if (me && me.email) try { localStorage.setItem('tribeName', me.email.split('@')[0]); } catch (e) {}
+					// update auth cache so immediate subsequent calls know we're logged in
+					try { __AUTH_CACHE = { loggedIn: true, lastChecked: Date.now() }; } catch (e) {}
 				}
 			} catch (e) { /* ignore */ }
 			// Ensure the document is visible and the main app is shown
@@ -526,6 +528,7 @@ async function handleRegister(event) {
 				if (meResp && meResp.ok) {
 					const me = await meResp.json();
 					if (me && me.email) try { localStorage.setItem('tribeName', me.email.split('@')[0]); } catch (e) {}
+					try { __AUTH_CACHE = { loggedIn: true, lastChecked: Date.now() }; } catch (e) {}
 				}
 			} catch (e) { /* ignore */ }
 			try { document.documentElement.setAttribute('data-ready', 'true'); } catch (e) {}

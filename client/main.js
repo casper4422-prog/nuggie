@@ -7,11 +7,21 @@
 const API_BASE = (typeof window !== 'undefined' && window.__NUGGIE_API_BASE__)
 	? window.__NUGGIE_API_BASE__
 	: ((typeof window !== 'undefined' && window.location && window.location.origin) ? window.location.origin : 'https://nuggie.onrender.com');
+// Fallback API host we can probe when the primary origin doesn't expose API routes.
+const FALLBACK_API_BASE = 'https://nuggie.onrender.com';
 
 // Small helper: parse a JWT without validating signature. Returns payload object or null.
 // apiFetch: send cookies to server (credentials include). On 401 attempt refresh once.
+
+function resolveApiBase() {
+	// Allow runtime override when we detect that the page origin doesn't host the API
+	if (typeof window !== 'undefined' && window.__NUGGIE_API_OVERRIDE__) return window.__NUGGIE_API_OVERRIDE__;
+	return API_BASE;
+}
+
 async function apiFetch(path, opts = {}) {
-	const url = path.indexOf('http') === 0 ? path : (API_BASE.replace(/\/$/, '') + '/' + path.replace(/^\//, ''));
+	const base = resolveApiBase();
+	const url = path.indexOf('http') === 0 ? path : (base.replace(/\/$/, '') + '/' + path.replace(/^\//, ''));
 	const cfg = Object.assign({}, { credentials: 'include', headers: Object.assign({}, opts.headers || {}) }, opts);
 	let resp = await fetch(url, cfg);
 	if (resp.status === 401) {
@@ -251,7 +261,19 @@ document.addEventListener('DOMContentLoaded', async () => {
 			console.log('[SPA] User is logged in');
 			// Try to refresh basic profile info from server. If token is invalid the apiFetch will force logout.
 			try {
-				const meResp = await apiFetch('/api/me');
+				let meResp = await apiFetch('/api/me');
+				// If the page origin doesn't host the API we may get 404; try the fallback host and switch to it
+				if (meResp && meResp.status === 404) {
+					console.warn('[SPA] /api/me returned 404 from primary API base; probing fallback host');
+					try {
+						const probe = await fetch((FALLBACK_API_BASE.replace(/\/$/, '') + '/api/me'), { method: 'GET', credentials: 'include' });
+						if (probe && probe.ok) {
+							console.log('[SPA] fallback API responded; switching API base to', FALLBACK_API_BASE);
+							window.__NUGGIE_API_OVERRIDE__ = FALLBACK_API_BASE;
+							meResp = probe;
+						}
+					} catch (e) { console.warn('[SPA] fallback probe failed', e); }
+				}
 				if (meResp && meResp.ok) {
 					const me = await meResp.json();
 					if (me && me.email) localStorage.setItem('tribeName', me.email.split('@')[0]);

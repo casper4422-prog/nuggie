@@ -533,7 +533,7 @@ function generateId() {
   return 'creature_' + Date.now() + '_' + Math.random().toString(36).substr(2,9);
 }
 
-function saveCreatureFromForm() {
+async function saveCreatureFromForm() {
   try {
     const name = (document.getElementById('creatureName')?.value || '').trim();
     if (!name) { alert('Please enter a creature name'); return; }
@@ -574,12 +574,44 @@ function saveCreatureFromForm() {
       updatedAt: new Date().toISOString()
     };
 
-    if (appState.editingCreature) {
-      const idx = appState.creatures.findIndex(c => c.id === appState.editingCreature);
-      if (idx >= 0) appState.creatures[idx] = creatureData;
-      else appState.creatures.push(creatureData);
+    if (typeof isLoggedIn === 'function' && isLoggedIn() && typeof apiFetch === 'function') {
+      // try to save to server; server returns numeric id
+      try {
+        const payload = Object.assign({}, creatureData);
+        // POST to server
+        const resp = await apiFetch('/api/creature', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ data: payload })
+        });
+        if (resp && resp.ok) {
+          const body = await resp.json();
+          // server returns { id }
+          if (body && body.id) {
+            payload.id = body.id; // numeric id from server
+            // replace or add
+            const idx = appState.creatures.findIndex(c => c.id === appState.editingCreature || c.id === creatureData.id);
+            if (idx >= 0) appState.creatures[idx] = payload; else appState.creatures.push(payload);
+          }
+        } else {
+          // fallback: save locally if server failed
+          const idx = appState.creatures.findIndex(c => c.id === appState.editingCreature || c.id === creatureData.id);
+          if (idx >= 0) appState.creatures[idx] = creatureData; else appState.creatures.push(creatureData);
+        }
+      } catch (e) {
+        // network error -> persist locally
+        const idx = appState.creatures.findIndex(c => c.id === appState.editingCreature || c.id === creatureData.id);
+        if (idx >= 0) appState.creatures[idx] = creatureData; else appState.creatures.push(creatureData);
+      }
     } else {
-      appState.creatures.push(creatureData);
+      // offline or not logged in: local-only save
+      if (appState.editingCreature) {
+        const idx = appState.creatures.findIndex(c => c.id === appState.editingCreature);
+        if (idx >= 0) appState.creatures[idx] = creatureData;
+        else appState.creatures.push(creatureData);
+      } else {
+        appState.creatures.push(creatureData);
+      }
     }
 
     // persist and refresh via main app hooks if present

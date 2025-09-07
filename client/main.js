@@ -254,8 +254,19 @@ document.addEventListener('DOMContentLoaded', async () => {
 				const meResp = await apiFetch('/api/me');
 				if (meResp && meResp.ok) {
 					const me = await meResp.json();
-					// populate tribe header with email as a placeholder for profile name
 					if (me && me.email) localStorage.setItem('tribeName', me.email.split('@')[0]);
+				}
+			} catch (e) { /* ignore */ }
+			// Fetch server-stored creatures and merge with local state (server authoritative)
+			try {
+				const resp = await apiFetch('/api/creature');
+				if (resp && resp.ok) {
+					const serverCreatures = await resp.json();
+					// Merge: keep server items (numeric ids) and append local-only items (string ids)
+					const local = appState.creatures || [];
+					const localOnly = local.filter(c => typeof c.id === 'string' && !serverCreatures.find(sc => String(sc.id) === String(c.id)));
+					appState.creatures = (serverCreatures || []).concat(localOnly);
+					try { localStorage.setItem('arkCreatures', JSON.stringify(appState.creatures || [])); } catch (e) {}
 				}
 			} catch (e) { /* ignore */ }
 			showMainApp();
@@ -992,13 +1003,23 @@ if (typeof window !== 'undefined') {
 }
 
 // saveCreature: accepts either a full creature object or a wrapper from creatures.js
-function saveCreature(payload) {
+async function saveCreature(payload) {
 	try {
 		// payload may be { species, editing } (from creatures.js) or a full creature object
 		if (!payload) return console.warn('saveCreature called with no payload');
 
 		// If payload contains a full creature object
 		if (payload && payload.id && payload.name) {
+			// If logged in, try to sync to server
+			if (typeof isLoggedIn === 'function' && isLoggedIn() && typeof apiFetch === 'function') {
+				try {
+					const resp = await apiFetch('/api/creature', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ data: payload }) });
+					if (resp && resp.ok) {
+						const body = await resp.json();
+						if (body && body.id) payload.id = body.id;
+					}
+				} catch (e) { /* ignore: fallback to local */ }
+			}
 			// direct save
 			const existingIndex = appState.creatures.findIndex(c => c.id === payload.id);
 			if (existingIndex >= 0) appState.creatures[existingIndex] = payload;

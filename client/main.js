@@ -165,42 +165,44 @@ window.goToMyNuggies = goToMyNuggies;
 document.addEventListener('DOMContentLoaded', async () => {
 	console.log('[SPA] DOMContentLoaded fired');
 
-	// Quick debug probe: try primary origin first; if it returns 404/not-ok probe the known fallback
-	// host. If the fallback responds, set runtime override so subsequent API calls use it.
-	(async function debugCookiesProbe() {
+	// Debug probe: try fallback first (the known API host), then primary, and await the result
+	// so the runtime API override is set before any auth probe runs.
+	async function debugCookiesProbe() {
+		// try fallback first
+		try {
+			const fallback = FALLBACK_API_BASE.replace(/\/$/, '');
+			const fallbackUrl = fallback + '/api/debug-cookies';
+			console.log('[DEBUG] probing fallback first', fallbackUrl);
+			try {
+				const r2 = await fetch(fallbackUrl, { method: 'GET', credentials: 'include' });
+				let body2 = null;
+				try { body2 = await r2.json(); } catch (e) { body2 = await r2.text().catch(() => null); }
+				console.log('[DEBUG] fallback response', { status: r2.status, ok: r2.ok, body: body2 });
+				if (r2 && r2.ok) {
+					window.__NUGGIE_API_OVERRIDE__ = fallback;
+					console.log('[DEBUG] switched API override to', fallback);
+					return;
+				}
+			} catch (e) { console.warn('[DEBUG] fallback probe failed', e); }
+		} catch (e) { console.warn('[DEBUG] fallback probe outer error', e); }
+
+		// fallback failed; try primary (page origin)
 		try {
 			const primaryBase = resolveApiBase().replace(/\/$/, '');
 			const primaryUrl = primaryBase + '/api/debug-cookies';
 			console.log('[DEBUG] probing primary', primaryUrl);
 			let r = null;
-			try {
-				r = await fetch(primaryUrl, { method: 'GET', credentials: 'include' });
-			} catch (e) {
-				console.warn('[DEBUG] primary probe network error', e);
-			}
-			let body = null;
+			try { r = await fetch(primaryUrl, { method: 'GET', credentials: 'include' }); } catch (e) { console.warn('[DEBUG] primary probe network error', e); }
 			if (r) {
+				let body = null;
 				try { body = await r.json(); } catch (e) { body = await r.text().catch(() => null); }
 				console.log('[DEBUG] primary response', { status: r.status, ok: r.ok, body });
 			}
-			// If primary is missing or explicitly 404, attempt fallback probe and switch override if it responds OK
-			if (!r || r.status === 404 || !r.ok) {
-				try {
-					const fallback = FALLBACK_API_BASE.replace(/\/$/, '');
-					const fallbackUrl = fallback + '/api/debug-cookies';
-					console.log('[DEBUG] probing fallback', fallbackUrl);
-					const r2 = await fetch(fallbackUrl, { method: 'GET', credentials: 'include' });
-					let body2 = null;
-					try { body2 = await r2.json(); } catch (e) { body2 = await r2.text().catch(() => null); }
-					console.log('[DEBUG] fallback response', { status: r2.status, ok: r2.ok, body: body2 });
-					if (r2 && r2.ok) {
-						window.__NUGGIE_API_OVERRIDE__ = fallback;
-						console.log('[DEBUG] switched API override to', fallback);
-					}
-				} catch (e) { console.warn('[DEBUG] fallback probe failed', e); }
-			}
-		} catch (e) { console.warn('[DEBUG] debug-cookies probe failed', e); }
-	})();
+		} catch (e) { console.warn('[DEBUG] primary probe failed', e); }
+	}
+
+	// await the probe so override is set before auth checks
+	try { await debugCookiesProbe(); } catch (e) { console.warn('[DEBUG] debugCookiesProbe threw', e); }
 
 	// Helper: resolve base path for assets relative to this script
 	function resolveBasePath() {

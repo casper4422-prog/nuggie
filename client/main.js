@@ -117,12 +117,9 @@ function handleAuthClick() {
 		const logged = await isLoggedIn();
 		if (logged) {
 			try { await fetch(API_BASE.replace(/\/$/, '') + '/api/logout', { method: 'POST', credentials: 'include' }); } catch (e) {}
-			showLoginPage();
-			try { await updateAuthUI(); } catch (e) {}
-		} else {
-			showLoginPage();
-			try { await updateAuthUI(); } catch (e) {}
 		}
+		showLoginPage();
+		try { await updateAuthUI(); } catch (e) { /* ignore */ }
 	})();
 }
 window.handleAuthClick = handleAuthClick;
@@ -138,15 +135,9 @@ async function updateAuthUI() {
 	const authBtn = document.getElementById('authBtn');
 	if (!authBtn) return;
 	const logged = await isLoggedIn();
-	if (logged) {
-		authBtn.textContent = 'Sign Out';
-		authBtn.classList.remove('btn-primary');
-		authBtn.classList.add('btn-danger');
-	} else {
-		authBtn.textContent = 'Sign In';
-		authBtn.classList.remove('btn-danger');
-		authBtn.classList.add('btn-primary');
-	}
+	authBtn.textContent = logged ? 'Sign Out' : 'Sign In';
+	authBtn.classList.toggle('btn-danger', logged);
+	authBtn.classList.toggle('btn-primary', !logged);
 }
 function goToCreatures() {
 	loadSpeciesPage();

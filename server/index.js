@@ -94,7 +94,7 @@ app.post('/api/register', authLimiter, (req, res) => {
       // Issue tokens and set cookies
       console.log(`[AUTH] register success for user ${email} (id=${userId}) from ${req.ip}`);
       try {
-        issueTokensAndSetCookies(res, userId);
+        issueTokensAndSetCookies(req, res, userId);
         return res.status(201).json({ success: true, user: { id: userId, email } });
       } catch (e) { console.error('[AUTH] issueTokensAndSetCookies failed on register', e); return res.status(500).json({ error: 'Failed to create tokens' }); }
     });
@@ -109,7 +109,7 @@ app.post('/api/login', authLimiter, (req, res) => {
     bcrypt.compare(password, user.password, (err, result) => {
       if (result) {
         try {
-          issueTokensAndSetCookies(res, user.id);
+          issueTokensAndSetCookies(req, res, user.id);
           console.log(`[AUTH] login success for user ${email} (id=${user.id}) from ${req.ip}`);
           return res.json({ success: true, user: { id: user.id, email: user.email } });
         } catch (e) { console.error('[AUTH] issueTokensAndSetCookies failed on login', e); return res.status(500).json({ error: 'Failed to create tokens' }); }
@@ -121,7 +121,22 @@ app.post('/api/login', authLimiter, (req, res) => {
 });
 
 // Helper to issue access and refresh tokens and set them as httpOnly cookies
-function issueTokensAndSetCookies(res, userId) {
+// Derive a cookie domain (parent domain) from an Origin header when possible.
+function cookieDomainFromOrigin(origin) {
+  try {
+    if (!origin) return undefined;
+    const u = new URL(origin);
+    const host = u.hostname; // e.g. nuggie-1.onrender.com
+    if (!host || host === 'localhost' || host === '127.0.0.1') return undefined;
+    const parts = host.split('.');
+    if (parts.length < 2) return undefined;
+    // Join last two labels to form base domain (onrender.com)
+    const base = parts.slice(-2).join('.');
+    return '.' + base; // leading dot to allow subdomain sharing
+  } catch (e) { return undefined; }
+}
+
+function issueTokensAndSetCookies(req, res, userId) {
   const accessToken = jwt.sign({ userId }, SECRET, { expiresIn: '15m' });
   const refreshToken = jwt.sign({ userId }, SECRET, { expiresIn: '7d' });
   // store refresh token server-side
@@ -129,18 +144,33 @@ function issueTokensAndSetCookies(res, userId) {
   const secureFlag = (process.env.NODE_ENV === 'production');
   // For cross-origin requests (client and API on different origins) cookies must use SameSite='None' and Secure
   const sameSiteSetting = secureFlag ? 'none' : 'lax';
-  const accessCookieOptions = { httpOnly: true, sameSite: sameSiteSetting, secure: secureFlag, maxAge: 15 * 60 * 1000, path: '/' };
-  const refreshCookieOptions = { httpOnly: true, sameSite: sameSiteSetting, secure: secureFlag, maxAge: 7 * 24 * 60 * 60 * 1000, path: '/' };
-  if (COOKIE_DOMAIN) {
-    accessCookieOptions.domain = COOKIE_DOMAIN;
-    refreshCookieOptions.domain = COOKIE_DOMAIN;
+  // Use explicit expires to avoid any ambiguity in how browsers interpret Max-Age
+  const accessExpires = new Date(Date.now() + (15 * 60 * 1000));
+  const refreshExpires = new Date(Date.now() + (7 * 24 * 60 * 60 * 1000));
+  const accessCookieOptions = { httpOnly: true, sameSite: sameSiteSetting, secure: secureFlag, expires: accessExpires, path: '/' };
+  const refreshCookieOptions = { httpOnly: true, sameSite: sameSiteSetting, secure: secureFlag, expires: refreshExpires, path: '/' };
+  // Pick domain: explicit env wins, otherwise try deriving from request Origin header
+  const derivedDomain = COOKIE_DOMAIN || cookieDomainFromOrigin(req.get('origin'));
+  if (derivedDomain) {
+    accessCookieOptions.domain = derivedDomain;
+    refreshCookieOptions.domain = derivedDomain;
   }
   res.cookie('accessToken', accessToken, accessCookieOptions);
   res.cookie('refreshToken', refreshToken, refreshCookieOptions);
+  // Debug: log cookie issuance metadata (do not print token values)
+  console.log('[AUTH] issued cookies', { userId, secure: accessCookieOptions.secure, sameSite: accessCookieOptions.sameSite, domain: accessCookieOptions.domain || '<none>', accessExpires: accessCookieOptions.expires, refreshExpires: refreshCookieOptions.expires, httpOnly: accessCookieOptions.httpOnly });
 }
 
 // Auth middleware
 function authenticateToken(req, res, next) {
+  // Debug: log origin and cookie header to check whether browser sent cookies
+  try {
+    const origin = req.get('origin') || '<none>';
+    const cookieHeader = req.headers && req.headers.cookie ? '[present]' : '<none>';
+    const cookieKeys = Object.keys(req.cookies || {}).join(',') || '<none>';
+    console.log(`[AUTH] authenticateToken: origin=${origin} cookieHeader=${cookieHeader} cookieKeys=${cookieKeys} path=${req.path}`);
+  } catch (e) { /* ignore logging errors */ }
+
   // Read access token from httpOnly cookie
   const token = req.cookies && req.cookies.accessToken;
   if (!token) return res.status(401).json({ error: 'Missing access token' });
@@ -188,6 +218,14 @@ app.get('/api/debug-cookies', (req, res) => {
 
 // Refresh endpoint: issues a fresh access token (and rotates refresh token)
 app.post('/api/refresh', (req, res) => {
+  // Debug: log origin and cookie header to help diagnose missing refresh token
+  try {
+    const origin = req.get('origin') || '<none>';
+    const cookieHeader = req.headers && req.headers.cookie ? '[present]' : '<none>';
+    const cookieKeys = Object.keys(req.cookies || {}).join(',') || '<none>';
+    console.log(`[AUTH] refresh: origin=${origin} cookieHeader=${cookieHeader} cookieKeys=${cookieKeys}`);
+  } catch (e) {}
+
   const refreshToken = req.cookies && req.cookies.refreshToken;
   if (!refreshToken) return res.status(401).json({ error: 'Missing refresh token' });
   jwt.verify(refreshToken, SECRET, (err, payload) => {
@@ -195,7 +233,10 @@ app.post('/api/refresh', (req, res) => {
     const userId = payload.userId;
     // confirm refresh token exists in DB
     db.get('SELECT id FROM refresh_tokens WHERE user_id = ? AND token = ?', [userId, refreshToken], (dbErr, row) => {
-      if (dbErr || !row) return res.sendStatus(403);
+      if (dbErr || !row) {
+        console.warn('[AUTH] refresh: refresh token not found in DB for user', userId, 'dbErr=', dbErr);
+        return res.sendStatus(403);
+      }
       // rotate refresh token: delete old and create new
       const newAccess = jwt.sign({ userId }, SECRET, { expiresIn: '15m' });
       const newRefresh = jwt.sign({ userId }, SECRET, { expiresIn: '7d' });
@@ -204,11 +245,15 @@ app.post('/api/refresh', (req, res) => {
         db.run('INSERT INTO refresh_tokens (user_id, token) VALUES (?, ?)', [userId, newRefresh], function(iErr) { if (iErr) console.warn('Failed to insert new refresh token', iErr); });
         const secureFlag = (process.env.NODE_ENV === 'production');
         const sameSiteSetting = secureFlag ? 'none' : 'lax';
-        const accessCookieOptions = { httpOnly: true, sameSite: sameSiteSetting, secure: secureFlag, maxAge: 15 * 60 * 1000, path: '/' };
-        const refreshCookieOptions = { httpOnly: true, sameSite: sameSiteSetting, secure: secureFlag, maxAge: 7 * 24 * 60 * 60 * 1000, path: '/' };
-        if (COOKIE_DOMAIN) {
-          accessCookieOptions.domain = COOKIE_DOMAIN;
-          refreshCookieOptions.domain = COOKIE_DOMAIN;
+        const accessExpires = new Date(Date.now() + (15 * 60 * 1000));
+        const refreshExpires = new Date(Date.now() + (7 * 24 * 60 * 60 * 1000));
+        const accessCookieOptions = { httpOnly: true, sameSite: sameSiteSetting, secure: secureFlag, expires: accessExpires, path: '/' };
+        const refreshCookieOptions = { httpOnly: true, sameSite: sameSiteSetting, secure: secureFlag, expires: refreshExpires, path: '/' };
+        // derive domain for rotated cookies as well
+        const derivedDomain = COOKIE_DOMAIN || cookieDomainFromOrigin(req.get('origin'));
+        if (derivedDomain) {
+          accessCookieOptions.domain = derivedDomain;
+          refreshCookieOptions.domain = derivedDomain;
         }
         res.cookie('accessToken', newAccess, accessCookieOptions);
         res.cookie('refreshToken', newRefresh, refreshCookieOptions);
@@ -228,7 +273,9 @@ app.post('/api/logout', (req, res) => {
   }
   // clear cookies
   const clearOpts = { path: '/' };
-  if (COOKIE_DOMAIN) clearOpts.domain = COOKIE_DOMAIN;
+  // Use derived domain so clear matches how cookies were set
+  const derivedDomain = COOKIE_DOMAIN || cookieDomainFromOrigin(req.get('origin'));
+  if (derivedDomain) clearOpts.domain = derivedDomain;
   res.clearCookie('accessToken', clearOpts);
   res.clearCookie('refreshToken', clearOpts);
   res.json({ success: true });

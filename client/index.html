@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width,initial-scale=1">
-        <title>🦕 Dino Nuggie Nursery</title>
+        <title>🦕 Dino Nuggie Manager</title>
         <!-- Hide document content until JS declares it's ready (prevents raw inline JS from flashing) -->
         <style>html:not([data-ready="true"]) { visibility: hidden !important; }</style>
         <link rel="stylesheet" href="main.css">
@@ -43,15 +43,8 @@
                             <button id="authBtn" class="btn btn-primary">Sign Out</button>
                         </div>
                     </div>
-                    <!-- subtitle and verbose status removed to simplify header per request -->
-                    <div class="header-status-compact">
-                        <div id="statsCompact" class="stats-compact">
-                            <span>Total: <b id="totalCreatures">0</b></span>
-                            <span>Species: <b id="speciesTracked">0</b></span>
-                            <span>Prized: <b id="prizedBloodlines">0</b></span>
-                            <span>Highest Lvl: <b id="highestLevel">1</b></span>
-                        </div>
-                    </div>
+                    <div class="header-subtitle">Ark Creature Management System Brought to You By Casper4422. Grow Your Armies Here!</div>
+                    <div class="header-status">Work in Progress, please report any issues or bugs to casper.4422</div>
                 </div>
             </header>
             <main id="appMainContent" role="main"></main>
@@ -65,8 +58,6 @@
     <script src="species-database.js"></script>
     <script src="badge-system.js"></script>
     <script src="creatures.js"></script>
-    <!-- Do not force a fixed API base here. The client will resolve the API base at runtime
-         and probe fallback hosts if the current origin does not expose the API. -->
     <script src="main.js"></script>
     </body>
 

@@ -1,53 +1,44 @@
 /* theme-exact.css: Extracted from Old Nugget.html, scoped under .theme-exact */
 .theme-exact * { margin: 0; padding: 0; box-sizing: border-box; }
-.theme-exact body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Inter, system-ui, sans-serif; background: linear-gradient(135deg, #071025 0%, #0f172a 60%, #071129 100%); color: #e6eef8; min-height: 100vh; overflow-x: hidden; }
-.theme-exact .header { background: linear-gradient(180deg, rgba(6,10,23,0.6), rgba(12,18,35,0.72)); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); border-bottom: 1px solid rgba(59, 130, 246, 0.08); padding: 18px 20px; position: sticky; top: 0; z-index: 100; }
-.theme-exact .header-content { max-width: 1280px; margin: 0 auto; display:flex; align-items:center; justify-content:space-between; gap:12px; }
-.theme-exact .header-top { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; margin-bottom: 8px; }
-.theme-exact .logo { display: flex; align-items: center; gap: 12px; font-size: 20px; font-weight: 800; color: #e6eef8; }
-.theme-exact .logo .wordmark { color:#c7d2fe; letter-spacing:0.6px }
-.theme-exact .logo-icon { width: 44px; height: 44px; background: linear-gradient(135deg, #3b82f6, #8b5cf6); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; box-shadow: 0 6px 20px rgba(59,130,246,0.12); }
-.theme-exact .header-actions { display: flex; gap: 12px; flex-wrap: wrap; align-items:center }
-.theme-exact .btn { padding: 8px 14px; border-radius: 10px; border: none; font-weight: 700; cursor: pointer; transition: all 0.18s cubic-bezier(.2,.8,.2,1); font-size: 13px; display: inline-flex; align-items: center; gap: 8px; text-decoration: none; }
-.theme-exact .btn-primary { background: linear-gradient(90deg,#2563eb,#7c3aed); color: white; box-shadow: 0 8px 20px rgba(59,130,246,0.12); }
-.theme-exact .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(59,130,246,0.16); }
-.theme-exact .btn-secondary { background: rgba(255,255,255,0.03); color: #c7d2fe; border: 1px solid rgba(255,255,255,0.04); }
-.theme-exact .btn-secondary:hover { background: rgba(255,255,255,0.05); transform: translateY(-1px); }
-.theme-exact .btn-danger { background: rgba(239, 68, 68, 0.06); color: #fecaca; border: 1px solid rgba(239, 68, 68, 0.08); }
-.theme-exact .btn-danger:hover { transform: translateY(-1px); }
+.theme-exact body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: #e2e8f0; min-height: 100vh; overflow-x: hidden; }
+.theme-exact .header { background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(59, 130, 246, 0.2); padding: 20px; position: sticky; top: 0; z-index: 100; }
+.theme-exact .header-content { max-width: 1400px; margin: 0 auto; }
+.theme-exact .header-top { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px; margin-bottom: 12px; }
+.theme-exact .logo { display: flex; align-items: center; gap: 12px; font-size: 28px; font-weight: 700; color: #3b82f6; }
+.theme-exact .logo-icon { width: 48px; height: 48px; background: linear-gradient(135deg, #3b82f6, #8b5cf6); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+.theme-exact .header-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+.theme-exact .btn { padding: 10px 20px; border-radius: 8px; border: none; font-weight: 600; cursor: pointer; transition: all 0.2s ease; font-size: 14px; display: flex; align-items: center; gap: 8px; text-decoration: none; }
+.theme-exact .btn-primary { background: #3b82f6; color: white; }
+.theme-exact .btn-primary:hover { background: #2563eb; }
+.theme-exact .btn-secondary { background: rgba(59, 130, 246, 0.1); color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.2); }
+.theme-exact .btn-secondary:hover { background: rgba(59, 130, 246, 0.2); }
+.theme-exact .btn-danger { background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); }
+.theme-exact .btn-danger:hover { background: rgba(239, 68, 68, 0.2); }
 .theme-exact .header-subtitle { font-size: 14px; color: #64748b; margin-bottom: 4px; }
 .theme-exact .header-status { font-size: 12px; color: #64748b; }
-.theme-exact .header-status-compact { display:flex; gap:12px; align-items:center; }
-.theme-exact .stats-compact { display:flex; gap:12px; align-items:center; color:#94a3b8; font-size:13px; }
-.theme-exact .stats-compact span { display:inline-block; }
-.theme-exact .stats-compact b { color:#c7d2fe; margin-left:4px; }
-.theme-exact .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; max-width: 1280px; margin: 0 auto; padding: 20px 20px; }
+.theme-exact .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; max-width: 1400px; margin: 0 auto; padding: 24px 20px; }
 .theme-exact .stat-card { background: rgba(30, 41, 59, 0.8); border-radius: 12px; padding: 24px; text-align: center; border: 1px solid rgba(59, 130, 246, 0.1); transition: all 0.3s ease; }
 .theme-exact .stat-card:hover { transform: translateY(-2px); border-color: rgba(59, 130, 246, 0.3); }
 .theme-exact .stat-number { font-size: 32px; font-weight: 700; color: #3b82f6; margin-bottom: 8px; }
 .theme-exact .stat-label { font-size: 14px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; }
-.theme-exact .main-content { max-width: 1280px; margin: 0 auto; padding: 12px 20px 40px; }
-.theme-exact .species-controls { display: flex; gap: 16px; margin-bottom: 18px; flex-wrap: wrap; align-items: center; }
-.theme-exact .search-box { flex: 1; min-width: 260px; position: relative; }
-.theme-exact .search-input { width: 100%; padding: 12px 16px 12px 44px; background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border: 1px solid rgba(255,255,255,0.04); border-radius: 10px; color: #e6eef8; font-size: 14px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.02); }
-.theme-exact .search-input::placeholder { color: #94a3b8; }
-.theme-exact .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #94a3b8; }
-.theme-exact .filter-select { padding: 10px 14px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); border-radius: 8px; color: #e6eef8; cursor: pointer; }
-.theme-exact .species-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 28px; margin: 0 auto 40px; justify-content: center; width: 100%; max-width: 1200px; }
-.theme-exact .species-card { background: linear-gradient(180deg, rgba(10,16,26,0.6), rgba(15,23,35,0.6)); border-radius: 14px; overflow: hidden; border: 1px solid rgba(255,255,255,0.02); transition: transform 220ms ease, box-shadow 220ms ease; cursor: pointer; position: relative; padding:16px; display:flex; align-items:center; gap:16px; min-height:110px; }
-.theme-exact .species-card:hover { transform: translateY(-6px); box-shadow: 0 20px 60px rgba(3,6,23,0.6); border-color: rgba(124,58,237,0.18); }
+.theme-exact .main-content { max-width: 1400px; margin: 0 auto; padding: 0 20px; }
+.theme-exact .species-controls { display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; align-items: center; }
+.theme-exact .search-box { flex: 1; min-width: 300px; position: relative; }
+.theme-exact .search-input { width: 100%; padding: 12px 16px 12px 44px; background: rgba(30, 41, 59, 0.8); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 8px; color: #e2e8f0; font-size: 14px; }
+.theme-exact .search-input::placeholder { color: #64748b; }
+.theme-exact .search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #64748b; }
+.theme-exact .filter-select { padding: 12px 16px; background: rgba(30, 41, 59, 0.8); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 8px; color: #e2e8f0; cursor: pointer; }
+.theme-exact .species-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px; margin-bottom: 40px; }
+.theme-exact .species-card { background: rgba(30, 41, 59, 0.8); border-radius: 16px; overflow: hidden; border: 1px solid rgba(59, 130, 246, 0.1); transition: all 0.3s ease; cursor: pointer; position: relative; }
+.theme-exact .species-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4); border-color: rgba(59, 130, 246, 0.3); }
 /* Clean species card layout */
+.theme-exact .species-card { padding: 12px; border-radius: 12px; background: linear-gradient(180deg, rgba(17,24,39,0.6), rgba(15,23,42,0.6)); border: 1px solid rgba(255,255,255,0.03); }
 .theme-exact .species-card-header { display:flex; gap:12px; align-items:center; }
-.theme-exact .species-icon { width:72px; height:72px; display:flex; align-items:center; justify-content:center; font-size:32px; border-radius:12px; background: linear-gradient(135deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); box-shadow: inset 0 1px 0 rgba(255,255,255,0.02); flex-shrink:0 }
-.theme-exact .species-info { flex:1; min-width:0; display:flex; flex-direction:column; }
-.theme-exact .species-name { font-size:16px; font-weight:800; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.theme-exact .species-meta { color:#9ca3af; font-size:12px; margin-top:4px; text-transform:lowercase }
-.theme-exact .species-count { font-weight:700; color:#a78bfa; position:absolute; right:14px; top:14px; background: rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.02); padding:6px 8px; border-radius:999px; font-size:12px; }
-.theme-exact .species-stats-compact { display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
-.theme-exact .species-desc { margin-top:8px; color:#cbd5e1; font-size:13px; max-height:40px; overflow:hidden; text-overflow:ellipsis; opacity:0.95 }
-.theme-exact .card-badge { font-size:11px; padding:4px 6px }
-.theme-exact .species-card .card-badges { position:absolute; top:12px; right:12px; display:flex; gap:6px; }
-.theme-exact .card-badge { background: rgba(255,255,255,0.03); color:#cbd5e1; padding:6px 8px; border-radius:8px; font-size:12px; border:1px solid rgba(255,255,255,0.02); }
+.theme-exact .species-icon { width:56px; height:56px; display:flex; align-items:center; justify-content:center; font-size:28px; border-radius:10px; background: rgba(255,255,255,0.02); }
+.theme-exact .species-info { flex:1; }
+.theme-exact .species-count { font-weight:700; color:#3b82f6; }
+.theme-exact .species-stats-compact { display:flex; gap:8px; margin-top:8px; }
+.theme-exact .species-desc { margin-top:10px; color:#cbd5e1; font-size:13px; min-height:36px; }
 /* ...all other rules from Old Nugget.html, all under .theme-exact... */
 
 /* Tabs and creature page layout (minimal subset from Old Nugget to restore functionality) */
@@ -65,7 +56,7 @@
 .theme-exact .info-label { font-size: 12px; color: #94a3b8; text-transform: uppercase; margin-bottom: 4px; }
 .theme-exact .info-value { color: #e6eef8; font-size: 14px; }
 
-.theme-exact .creature-page { padding: 20px 0 48px; }
+.theme-exact .creature-page { padding: 18px 0 40px; }
 .theme-exact .creature-page-header { display:flex; gap:12px; align-items:center; justify-content:space-between; margin-bottom: 18px; }
 .theme-exact .creature-page-icon { font-size: 48px; width:56px; height:56px; display:flex; align-items:center; justify-content:center; border-radius:10px; background: rgba(255,255,255,0.02); }
 .theme-exact .creature-page-info h1 { font-size: 28px; margin-bottom:6px; color:#fff; }
@@ -74,7 +65,7 @@
 
 .theme-exact .creatures-section-header { display:flex; align-items:center; justify-content:space-between; margin-top:18px; }
 .theme-exact .creatures-grid { display:grid; grid-template-columns: repeat(auto-fill,minmax(220px,1fr)); gap:12px; margin-top:12px; }
-.theme-exact .creature-card { background: linear-gradient(180deg, rgba(8,12,22,0.6), rgba(12,18,30,0.6)); border-radius:12px; padding:12px; border:1px solid rgba(255,255,255,0.02); box-shadow: 0 6px 18px rgba(3,6,23,0.45); }
+.theme-exact .creature-card { background: rgba(30,41,59,0.7); border-radius:10px; padding:10px; border:1px solid rgba(59,130,246,0.06); }
 .theme-exact .creature-card .creature-image { width:100%; height:auto; border-radius:8px; }
 .theme-exact .no-creatures, .theme-exact .no-species-found { color:#94a3b8; padding:16px; }
 

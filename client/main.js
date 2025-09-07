@@ -2,47 +2,6 @@
 // to avoid the original UI flashing and then being overlapped by the injected UI.
 
 // --- SPA Logic and Event Handlers (migrated from index.html) ---
-// Configurable API base. Consumers can override by setting window.__NUGGIE_API_BASE__ before this script runs.
-// Default to the current page origin when available so the SPA works when served from the API host.
-const API_BASE = (typeof window !== 'undefined' && window.__NUGGIE_API_BASE__)
-	? window.__NUGGIE_API_BASE__
-	: ((typeof window !== 'undefined' && window.location && window.location.origin) ? window.location.origin : 'https://nuggie.onrender.com');
-// Fallback API host we can probe when the primary origin doesn't expose API routes.
-const FALLBACK_API_BASE = 'https://nuggie.onrender.com';
-
-// Small helper: parse a JWT without validating signature. Returns payload object or null.
-// apiFetch: send cookies to server (credentials include). On 401 attempt refresh once.
-
-function resolveApiBase() {
-	// Allow runtime override when we detect that the page origin doesn't host the API
-	if (typeof window !== 'undefined' && window.__NUGGIE_API_OVERRIDE__) return window.__NUGGIE_API_OVERRIDE__;
-	return API_BASE;
-}
-
-async function apiFetch(path, opts = {}) {
-	const base = resolveApiBase();
-	const url = path.indexOf('http') === 0 ? path : (base.replace(/\/$/, '') + '/' + path.replace(/^\//, ''));
-	const cfg = Object.assign({}, { credentials: 'include', headers: Object.assign({}, opts.headers || {}) }, opts);
-	let resp = await fetch(url, cfg);
-	if (resp.status === 401) {
-		// try refresh
-			try {
-				const refreshBase = resolveApiBase();
-				const r = await fetch(refreshBase.replace(/\/$/, '') + '/api/refresh', { method: 'POST', credentials: 'include' });
-			if (r && r.ok) {
-				// retry original request once
-				resp = await fetch(url, cfg);
-			} else {
-				// logout client side
-					try { await fetch(refreshBase.replace(/\/$/, '') + '/api/logout', { method: 'POST', credentials: 'include' }); } catch (e) {}
-				try { showLoginPage(); updateAuthUI(); } catch (e) {}
-			}
-		} catch (e) { try { showLoginPage(); updateAuthUI(); } catch (e) {} }
-	} else if (resp.status === 403) {
-		try { showLoginPage(); updateAuthUI(); } catch (e) {}
-	}
-	return resp;
-}
 function showLoginPage() {
 	console.log('[SPA] showLoginPage called');
 	const landing = document.getElementById('landingPage');
@@ -114,44 +73,55 @@ function showMainApp() {
 window.showLoginPage = showLoginPage;
 window.showRegisterPage = showRegisterPage;
 
-// isLoggedIn: do a lightweight server probe (via /api/me) when needed; for quick checks rely on cached flag
-let __AUTH_CACHE = { loggedIn: false, lastChecked: 0 };
-async function isLoggedIn(checkServer = false) {
-	// quick return if cached and recent
-	if (!checkServer && (Date.now() - __AUTH_CACHE.lastChecked) < 5 * 60 * 1000) return __AUTH_CACHE.loggedIn;
+function isLoggedIn() {
+	const token = localStorage.getItem('token');
+	if (!token || typeof token !== 'string') return false;
+	// Allow forcing the login page via URL param for debugging
 	try {
-		const resp = await apiFetch('/api/me');
-		if (resp && resp.ok) { __AUTH_CACHE = { loggedIn: true, lastChecked: Date.now() }; return true; }
-	} catch (e) {}
-	__AUTH_CACHE = { loggedIn: false, lastChecked: Date.now() };
-	return false;
+		const params = new URLSearchParams(window.location.search);
+		if (params.get('forceLogin') === '1') {
+			console.log('[SPA] forceLogin param detected; treating as logged out');
+			return false;
+		}
+	} catch (e) {
+		// ignore
+	}
+	// Basic JWT format check (three dot-separated parts). If it doesn't look like a JWT, treat as logged out.
+	const parts = token.split('.');
+	if (parts.length !== 3) {
+		console.warn('[SPA] token present but not a valid JWT, treating as logged out', token);
+		return false;
+	}
+	// token looks like a JWT; treat as logged in (we could validate with server if desired)
+	return true;
 }
 function handleAuthClick() {
-	(async () => {
-		const logged = await isLoggedIn();
-		if (logged) {
-			try { await fetch(API_BASE.replace(/\/$/, '') + '/api/logout', { method: 'POST', credentials: 'include' }); } catch (e) {}
-		}
+	if (isLoggedIn()) {
+		localStorage.removeItem('token');
 		showLoginPage();
-		try { await updateAuthUI(); } catch (e) { /* ignore */ }
-	})();
+		try { updateAuthUI(); } catch (e) {}
+	}
 }
 window.handleAuthClick = handleAuthClick;
 
 function updateTribeHeader() {
 	// Replace with actual tribe name from user profile if available
 	const tribeName = localStorage.getItem('tribeName') || 'My Tribe';
-	const el = document.getElementById('tribeHeader');
-	if (el) el.textContent = tribeName;
+	document.getElementById('tribeHeader').textContent = tribeName;
 }
 
-async function updateAuthUI() {
+function updateAuthUI() {
 	const authBtn = document.getElementById('authBtn');
 	if (!authBtn) return;
-	const logged = await isLoggedIn();
-	authBtn.textContent = logged ? 'Sign Out' : 'Sign In';
-	authBtn.classList.toggle('btn-danger', logged);
-	authBtn.classList.toggle('btn-primary', !logged);
+	if (isLoggedIn()) {
+		authBtn.textContent = 'Sign Out';
+		authBtn.classList.remove('btn-primary');
+		authBtn.classList.add('btn-danger');
+	} else {
+		authBtn.textContent = 'Sign In';
+		authBtn.classList.remove('btn-danger');
+		authBtn.classList.add('btn-primary');
+	}
 }
 function goToCreatures() {
 	loadSpeciesPage();
@@ -162,47 +132,8 @@ function goToMyNuggies() {
 window.goToCreatures = goToCreatures;
 window.goToMyNuggies = goToMyNuggies;
 
-document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener('DOMContentLoaded', () => {
 	console.log('[SPA] DOMContentLoaded fired');
-
-	// Debug probe: try fallback first (the known API host), then primary, and await the result
-	// so the runtime API override is set before any auth probe runs.
-	async function debugCookiesProbe() {
-		// try fallback first
-		try {
-			const fallback = FALLBACK_API_BASE.replace(/\/$/, '');
-			const fallbackUrl = fallback + '/api/debug-cookies';
-			console.log('[DEBUG] probing fallback first', fallbackUrl);
-			try {
-				const r2 = await fetch(fallbackUrl, { method: 'GET', credentials: 'include' });
-				let body2 = null;
-				try { body2 = await r2.json(); } catch (e) { body2 = await r2.text().catch(() => null); }
-				console.log('[DEBUG] fallback response', { status: r2.status, ok: r2.ok, body: body2 });
-				if (r2 && r2.ok) {
-					window.__NUGGIE_API_OVERRIDE__ = fallback;
-					console.log('[DEBUG] switched API override to', fallback);
-					return;
-				}
-			} catch (e) { console.warn('[DEBUG] fallback probe failed', e); }
-		} catch (e) { console.warn('[DEBUG] fallback probe outer error', e); }
-
-		// fallback failed; try primary (page origin)
-		try {
-			const primaryBase = resolveApiBase().replace(/\/$/, '');
-			const primaryUrl = primaryBase + '/api/debug-cookies';
-			console.log('[DEBUG] probing primary', primaryUrl);
-			let r = null;
-			try { r = await fetch(primaryUrl, { method: 'GET', credentials: 'include' }); } catch (e) { console.warn('[DEBUG] primary probe network error', e); }
-			if (r) {
-				let body = null;
-				try { body = await r.json(); } catch (e) { body = await r.text().catch(() => null); }
-				console.log('[DEBUG] primary response', { status: r.status, ok: r.ok, body });
-			}
-		} catch (e) { console.warn('[DEBUG] primary probe failed', e); }
-	}
-
-	// await the probe so override is set before auth checks
-	try { await debugCookiesProbe(); } catch (e) { console.warn('[DEBUG] debugCookiesProbe threw', e); }
 
 	// Helper: resolve base path for assets relative to this script
 	function resolveBasePath() {
@@ -238,39 +169,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 	// Compute base and load the exact theme CSS before revealing UI to avoid overlap
 	(async function prepareTheme() {
 		const base = resolveBasePath();
-		// Candidate locations to try for theme-exact.css. We try the resolved base first,
-		// then a few fallbacks (root, relative) to handle different hosting layouts.
-		const candidates = [
-			(base ? base + 'theme-exact.css' : null),
-			(base ? base + 'theme-exact.css?cb=' + Date.now() : null),
-			'/theme-exact.css',
-			'theme-exact.css',
-			'./theme-exact.css'
-		].filter(Boolean);
-		let loaded = false;
-		for (const href of candidates) {
-			try {
-				console.log('[SPA] attempting to load theme CSS from', href);
-				/* eslint-disable no-await-in-loop */
-				const ok = await loadStylesheet(href, 2200);
-				/* eslint-enable no-await-in-loop */
-				if (ok) {
-					console.log('[SPA] theme-exact.css loaded from', href);
-					document.documentElement.classList.add('theme-exact');
-					loaded = true;
-					break;
-				} else {
-					console.warn('[SPA] failed to load theme-exact.css from', href);
-				}
-			} catch (e) {
-				console.warn('[SPA] error loading theme-exact.css from', href, e);
-			}
-		}
-		if (!loaded) {
-			console.warn('[SPA] theme-exact.css could not be loaded from any candidate path; using base styles');
-		}
-		// Header is static; no runtime injection required here
-		// Now mark the document ready so CSS guard un-hides content with new styling (or fallbacks)
+		const cssHref = base + 'theme-exact.css';
+		console.log('[SPA] loading exact theme from', cssHref);
+		const ok = await loadStylesheet(cssHref, 2500);
+		if (!ok) console.warn('[SPA] theme-exact.css failed to load or timed out:', cssHref);
+		// Apply class that scopes the exact theme
+		try { document.documentElement.classList.add('theme-exact'); } catch (e) {}
+	// Header is static; no runtime injection required here
+		// Now mark the document ready so CSS guard un-hides content with new styling
 		try { document.documentElement.setAttribute('data-ready', 'true'); } catch (e) {}
 		try { document.documentElement.style.visibility = ''; } catch (e) {}
 	})();
@@ -297,44 +203,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 			console.warn('[SPA] UI wiring failed', wireErr);
 		}
 
-		if (await isLoggedIn()) {
+		if (isLoggedIn()) {
 			console.log('[SPA] User is logged in');
-			// Try to refresh basic profile info from server. If token is invalid the apiFetch will force logout.
-			try {
-				let meResp = await apiFetch('/api/me');
-				// If the page origin doesn't host the API we may get 404; try the fallback host and switch to it
-				if (meResp && meResp.status === 404) {
-					console.warn('[SPA] /api/me returned 404 from primary API base; probing fallback host');
-					try {
-						const probe = await fetch((FALLBACK_API_BASE.replace(/\/$/, '') + '/api/me'), { method: 'GET', credentials: 'include' });
-						if (probe && probe.ok) {
-							console.log('[SPA] fallback API responded; switching API base to', FALLBACK_API_BASE);
-							window.__NUGGIE_API_OVERRIDE__ = FALLBACK_API_BASE;
-							meResp = probe;
-						}
-					} catch (e) { console.warn('[SPA] fallback probe failed', e); }
-				}
-				if (meResp && meResp.ok) {
-					const me = await meResp.json();
-					if (me && me.email) localStorage.setItem('tribeName', me.email.split('@')[0]);
-				}
-			} catch (e) { /* ignore */ }
-			// Fetch server-stored creatures and merge with local state (server authoritative)
-			try {
-				const resp = await apiFetch('/api/creature');
-				if (resp && resp.ok) {
-					const serverCreatures = await resp.json();
-					// Merge: keep server items (numeric ids) and append local-only items (string ids)
-					const local = appState.creatures || [];
-					const localOnly = local.filter(c => typeof c.id === 'string' && !serverCreatures.find(sc => String(sc.id) === String(c.id)));
-					appState.creatures = (serverCreatures || []).concat(localOnly);
-					try { localStorage.setItem('arkCreatures', JSON.stringify(appState.creatures || [])); } catch (e) {}
-				}
-			} catch (e) { /* ignore */ }
 			showMainApp();
 			updateTribeHeader();
 			loadSpeciesPage(); // Default page after login
-	} else {
+		} else {
 			console.log('[SPA] User is NOT logged in');
 			showLoginPage();
 		}
@@ -503,7 +377,7 @@ async function handleLogin(event) {
 		return false;
 	}
 	try {
-		const res = await apiFetch('/api/login', {
+		const res = await fetch('https://nuggie.onrender.com/api/login', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({ email, password })
@@ -518,17 +392,8 @@ async function handleLogin(event) {
 		}
 
 		const data = await readBody(res);
-	if (res && typeof res.status === 'number' && res.status >= 200 && res.status < 300) {
-			// Server sets httpOnly cookies; probe /api/me to fetch profile and derive tribeName.
-			try {
-				const meResp = await apiFetch('/api/me');
-				if (meResp && meResp.ok) {
-					const me = await meResp.json();
-					if (me && me.email) try { localStorage.setItem('tribeName', me.email.split('@')[0]); } catch (e) {}
-					// update auth cache so immediate subsequent calls know we're logged in
-					try { __AUTH_CACHE = { loggedIn: true, lastChecked: Date.now() }; } catch (e) {}
-				}
-			} catch (e) { /* ignore */ }
+		if (res.ok && data && data.token) {
+			localStorage.setItem('token', data.token);
 			// Ensure the document is visible and the main app is shown
 			try { document.documentElement.setAttribute('data-ready', 'true'); } catch (e) {}
 			showMainApp();
@@ -538,12 +403,10 @@ async function handleLogin(event) {
 			try { loadSpeciesPage(); } catch (e) {}
 			// Refresh stats and auth UI after login
 			try { updateStatsDashboard(); } catch (e) {}
-			try { await updateAuthUI(); } catch (e) {}
+			try { updateAuthUI(); } catch (e) {}
 		} else {
 			// Show helpful diagnostic including status and any server-provided body
-			console.warn('[SPA] login failed', { status: (res && res.status), body: data, res });
-			// surface to UI log as well for quick debugging
-			console.log('[SPA] login response body:', data);
+			console.warn('[SPA] login failed', { status: res.status, body: data });
 			let msg = 'Login failed.';
 			if (data) {
 				if (typeof data === 'string') msg = data;
@@ -591,7 +454,7 @@ async function handleRegister(event) {
 		return false;
 	}
 	try {
-		const res = await apiFetch('/api/register', {
+		const res = await fetch('https://nuggie.onrender.com/api/register', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({ email, password })
@@ -604,25 +467,32 @@ async function handleRegister(event) {
 			} catch (e) { return await resp.text().catch(() => null); }
 		}
 		const data = await readBody(res);
-	if (res && typeof res.status === 'number' && res.status >= 200 && res.status < 300 && (data === true || (data && data.success))) {
-			// Server set cookies for auth. Probe /api/me to fetch profile and show the main app.
-			try {
-				const meResp = await apiFetch('/api/me');
-				if (meResp && meResp.ok) {
-					const me = await meResp.json();
-					if (me && me.email) try { localStorage.setItem('tribeName', me.email.split('@')[0]); } catch (e) {}
-					try { __AUTH_CACHE = { loggedIn: true, lastChecked: Date.now() }; } catch (e) {}
-				}
-			} catch (e) { /* ignore */ }
-			try { document.documentElement.setAttribute('data-ready', 'true'); } catch (e) {}
-			showMainApp();
-			updateTribeHeader();
-			try { loadSpeciesPage(); } catch (e) {}
-			try { updateStatsDashboard(); } catch (e) {}
-			try { await updateAuthUI(); } catch (e) {}
+		if (res.ok && (data === true || (data && data.success))) {
+			// If server returned a token, sign in immediately. Otherwise, prefill login and attempt auto-login
+			if (data && data.token) {
+				localStorage.setItem('token', data.token);
+				try { document.documentElement.setAttribute('data-ready', 'true'); } catch (e) {}
+				showMainApp();
+				updateTribeHeader();
+				try { loadSpeciesPage(); } catch (e) {}
+				try { updateStatsDashboard(); } catch (e) {}
+				try { updateAuthUI(); } catch (e) {}
+			} else {
+				// No token: show login page and prefill credentials, then attempt login automatically
+				showLoginPage();
+				setTimeout(async () => {
+					try {
+						const le = document.getElementById('loginEmail');
+						const lp = document.getElementById('loginPassword');
+						if (le) le.value = email;
+						if (lp) lp.value = password;
+						// Call handleLogin to perform login flow without requiring a manual refresh
+						try { await handleLogin(new Event('submit')); } catch (e) { /* ignore, user can login manually */ }
+					} catch (e) { /* no-op */ }
+				}, 50);
+			}
 		} else {
 			console.warn('[SPA] register failed', { status: res.status, body: data });
-			console.log('[SPA] register response body:', data);
 			let msg = 'Registration failed.';
 			if (data) {
 				if (typeof data === 'string') msg = data;
@@ -662,14 +532,23 @@ async function loadSpeciesPage() {
 		<section class="species-section">
 			<div class="species-header-controls">
 				<div class="species-search">
-					<input id="searchInput" class="form-control" placeholder="Search species by name, category or tags">
+					<input id="searchInput" class="form-control" placeholder="Search species by name, category or diet">
 				</div>
 				<div class="species-filters">
 					<select id="categoryFilter" class="form-control">
 						<option value="">All Categories</option>
+						<option value="herbivore">Herbivore</option>
+						<option value="carnivore">Carnivore</option>
+						<option value="aquatic">Aquatic</option>
+						<option value="flyer">Flyer</option>
 					</select>
 					<select id="rarityFilter" class="form-control">
 						<option value="">All Rarities</option>
+						<option value="common">Common</option>
+						<option value="uncommon">Uncommon</option>
+						<option value="rare">Rare</option>
+						<option value="very rare">Very Rare</option>
+						<option value="extinct">Extinct</option>
 					</select>
 					<button id="clearFiltersBtn" class="btn btn-secondary">Clear</button>
 				</div>
@@ -712,47 +591,45 @@ async function loadSpeciesPage() {
 	} catch (e) { console.warn('[SPA] error while waiting for species DB', e); }
 
 	// Populate filters based on the resolved species DB so UI only shows valid options
-	(async function populateFilters() {
+	(function populateFilters() {
 		const capitalize = (s) => (s || '').toString().replace(/\b\w/g, c => c.toUpperCase());
 		try {
-			// Wait for species DB to be ready (up to 3s), then build filter lists
-			await waitForSpeciesDB(3000, 50);
-			const db = getSpeciesDB() || {};
-			const list = Object.values(db || {});
-			const cats = new Set();
-			const rarities = new Set();
-			list.forEach(s => {
-				if (!s) return;
-				// Use category and tags as category sources; do NOT use diet as a category source
-				if (s.category) cats.add((s.category+'').toLowerCase());
-				if (s.tags && Array.isArray(s.tags)) s.tags.forEach(t => cats.add((t+'').toLowerCase()));
-				if (s.rarity) rarities.add((s.rarity+'').toLowerCase());
+			waitForSpeciesDB(2000, 40).then(() => {
+				const db = getSpeciesDB() || {};
+				const list = Object.values(db || {});
+				const cats = new Set();
+				const rarities = new Set();
+				list.forEach(s => {
+					if (!s) return;
+					if (s.category) cats.add((s.category+'').toLowerCase());
+					if (s.tags && Array.isArray(s.tags)) s.tags.forEach(t => cats.add((t+'').toLowerCase()));
+					if (s.rarity) rarities.add((s.rarity+'').toLowerCase());
+				});
+				const categoryFilterEl = document.getElementById('categoryFilter');
+				const rarityFilterEl = document.getElementById('rarityFilter');
+				if (categoryFilterEl) {
+					const opts = ['<option value="">All Categories</option>'].concat(Array.from(cats).sort().map(c => `<option value="${c}">${capitalize(c)}</option>`));
+					categoryFilterEl.innerHTML = opts.join('');
+				}
+				if (rarityFilterEl) {
+					// Use the canonical rarity options in the requested order.
+					const canonical = [
+						{ k: 'common', label: 'Common' },
+						{ k: 'uncommon', label: 'Uncommon' },
+						{ k: 'rare', label: 'Rare' },
+						{ k: 'legendary', label: 'Legendary' },
+						{ k: 'mythic', label: 'Mythic' },
+						{ k: 'boss', label: 'Boss', category: 'boss' }
+					];
+					const opts = ['<option value="">All Rarities</option>'].concat(canonical.map(r => `<option value="${r.k}" ${r.category ? 'data-category="'+r.category+'"' : ''}>${r.label}</option>`));
+					rarityFilterEl.innerHTML = opts.join('');
+				}
+				// Re-attach filter handlers if necessary
+				if (document.getElementById('categoryFilter')) document.getElementById('categoryFilter').addEventListener('change', filterSpecies);
+				if (document.getElementById('rarityFilter')) document.getElementById('rarityFilter').addEventListener('change', filterSpecies);
+				// Finally run the filter to populate the grid
+				filterSpecies();
 			});
-
-			const categoryFilterEl = document.getElementById('categoryFilter');
-			const rarityFilterEl = document.getElementById('rarityFilter');
-			if (categoryFilterEl) {
-				const opts = ['<option value="">All Categories</option>'].concat(Array.from(cats).sort().map(c => `<option value="${c}">${capitalize(c)}</option>`));
-				categoryFilterEl.innerHTML = opts.join('');
-			}
-			if (rarityFilterEl) {
-				// Use the canonical rarity options in the requested order.
-				const canonical = [
-					{ k: 'common', label: 'Common' },
-					{ k: 'uncommon', label: 'Uncommon' },
-					{ k: 'rare', label: 'Rare' },
-					{ k: 'legendary', label: 'Legendary' },
-					{ k: 'mythic', label: 'Mythic' },
-					{ k: 'boss', label: 'Boss', category: 'boss' }
-				];
-				const opts = ['<option value="">All Rarities</option>'].concat(canonical.map(r => `<option value="${r.k}" ${r.category ? 'data-category="'+r.category+'"' : ''}>${r.label}</option>`));
-				rarityFilterEl.innerHTML = opts.join('');
-			}
-			// Attach filter handlers
-			if (categoryFilterEl) categoryFilterEl.addEventListener('change', filterSpecies);
-			if (rarityFilterEl) rarityFilterEl.addEventListener('change', filterSpecies);
-			// Run the filter to populate the grid
-			filterSpecies();
 		} catch (err) { console.warn('populateFilters failed', err); filterSpecies(); }
 	})();
 }
@@ -784,17 +661,12 @@ function filterSpecies() {
 	speciesValues().forEach(species => {
 		if (!species || !species.name) return;
 
-			// Search should match name, category, tags, and description
-			const tagsText = (species.tags && Array.isArray(species.tags)) ? species.tags.join(' ').toLowerCase() : '';
-			const catText = (species.category || '').toLowerCase();
-			const descText = (species.description || '').toLowerCase();
-			const nameText = (species.name || '').toLowerCase();
-			const matchesSearch = !searchTerm || (
-				nameText.includes(searchTerm) ||
-				catText.includes(searchTerm) ||
-				tagsText.includes(searchTerm) ||
-				descText.includes(searchTerm)
-			);
+		const matchesSearch = !searchTerm || (
+			(species.name && species.name.toLowerCase().includes(searchTerm)) ||
+			(species.category && species.category.toLowerCase().includes(searchTerm)) ||
+			(species.diet && species.diet.toLowerCase().includes(searchTerm)) ||
+			(species.description && species.description.toLowerCase().includes(searchTerm))
+		);
 
 		// Category matching: accept contains/includes (handles multi-value categories or tags),
 		// and special-case 'flyer' to detect flying species via speeds or category/tag mentions.
@@ -802,13 +674,12 @@ function filterSpecies() {
 		if (categoryFilter) {
 			try {
 				const cat = (species.category || '') + '';
+				const diet = (species.diet || '') + '';
 				const tags = (species.tags && Array.isArray(species.tags)) ? species.tags.join(' ') : '';
-				const hay = (cat + ' ' + tags).toLowerCase();
+				const hay = (cat + ' ' + diet + ' ' + tags).toLowerCase();
 				if (categoryFilter === 'flyer') {
-					// Prefer an explicit 'flight' indicator or tags mentioning flying
 					const flying = (species.speeds && (Number(species.speeds.flying) || 0)) || 0;
-					const flightFlag = species.flight || species.canFly || false;
-					matchesCategory = flying > 0 || flightFlag === true || hay.includes('fly') || hay.includes('flying') || hay.includes('wing');
+					matchesCategory = flying > 0 || hay.includes('fly') || hay.includes('flying') || hay.includes('wing');
 				} else {
 					matchesCategory = hay.includes(categoryFilter);
 				}
@@ -1069,23 +940,13 @@ if (typeof window !== 'undefined') {
 }
 
 // saveCreature: accepts either a full creature object or a wrapper from creatures.js
-async function saveCreature(payload) {
+function saveCreature(payload) {
 	try {
 		// payload may be { species, editing } (from creatures.js) or a full creature object
 		if (!payload) return console.warn('saveCreature called with no payload');
 
 		// If payload contains a full creature object
 		if (payload && payload.id && payload.name) {
-			// If logged in, try to sync to server
-			if (typeof isLoggedIn === 'function' && typeof apiFetch === 'function' && await isLoggedIn()) {
-				try {
-					const resp = await apiFetch('/api/creature', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ data: payload }) });
-					if (resp && resp.ok) {
-						const body = await resp.json();
-						if (body && body.id) payload.id = body.id;
-					}
-				} catch (e) { /* ignore: fallback to local */ }
-			}
 			// direct save
 			const existingIndex = appState.creatures.findIndex(c => c.id === payload.id);
 			if (existingIndex >= 0) appState.creatures[existingIndex] = payload;
@@ -1128,7 +989,7 @@ window.saveCreature = saveCreature;
 // wasn't shown (due to an earlier error), force the app shell visible and
 // show the login page after a short timeout. This avoids leaving users with
 // a blank screen if any early init step throws.
-setTimeout(async () => {
+setTimeout(() => {
 	try {
 		const docEl = document.documentElement;
 		// If data-ready wasn't set by the aggressive cleanup, set it now.
@@ -1145,13 +1006,11 @@ setTimeout(async () => {
 		const register = document.getElementById('registerPage');
 		const mainApp = document.getElementById('mainApp');
 		if (landing && getComputedStyle(landing).display === 'none') {
-			try {
-				if (typeof isLoggedIn === 'function' && await isLoggedIn()) {
-					try { showMainApp(); } catch (e) { console.warn('[SPA] showMainApp failed', e); }
-				} else {
-					try { showLoginPage(); } catch (e) { console.warn('[SPA] showLoginPage failed', e); }
-				}
-			} catch (e) { try { showLoginPage(); } catch (ee) {} }
+			if (typeof isLoggedIn === 'function' && isLoggedIn()) {
+				try { showMainApp(); } catch (e) { console.warn('[SPA] showMainApp failed', e); }
+			} else {
+				try { showLoginPage(); } catch (e) { console.warn('[SPA] showLoginPage failed', e); }
+			}
 		}
 	} catch (err) {
 		console.warn('[SPA] startup fallback encountered an error', err);

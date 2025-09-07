@@ -5,13 +5,26 @@ const cors = require('cors');
 const sqlite3 = require('sqlite3').verbose();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const rateLimit = require('express-rate-limit');
 
 const app = express();
-const PORT = 3001;
-const SECRET = 'your_jwt_secret'; // Change this in production
+const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3001;
+// Use environment variable for the JWT secret in production. Falling back to a default for dev.
+const SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
+if (!process.env.JWT_SECRET) {
+  console.warn('Warning: JWT_SECRET is not set. Using default development secret. Do NOT use this in production.');
+}
 
 app.use(cors());
 app.use(bodyParser.json());
+
+// Basic rate limiter for auth endpoints to slow brute-force attempts
+const authLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minute
+  max: 10, // limit each IP to 10 requests per windowMs
+  standardHeaders: true,
+  legacyHeaders: false,
+});
 
 // Initialize SQLite DB
 const db = new sqlite3.Database('database.sqlite', (err) => {
@@ -34,20 +47,27 @@ db.serialize(() => {
 });
 
 // Register endpoint
-app.post('/api/register', (req, res) => {
+app.post('/api/register', authLimiter, (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) return res.status(400).json({ error: 'Missing email or password' });
   bcrypt.hash(password, 10, (err, hash) => {
     if (err) return res.status(500).json({ error: 'Server error' });
     db.run('INSERT INTO users (email, password) VALUES (?, ?)', [email, hash], function(err) {
       if (err) return res.status(400).json({ error: 'Email already exists' });
-      res.json({ success: true });
+      // Create JWT for new user and return it so client can be immediately authenticated
+      try {
+        const userId = this.lastID;
+        const token = jwt.sign({ userId }, SECRET, { expiresIn: '1d' });
+        return res.json({ token });
+      } catch (e) {
+        return res.status(500).json({ error: 'Failed to create token' });
+      }
     });
   });
 });
 
 // Login endpoint
-app.post('/api/login', (req, res) => {
+app.post('/api/login', authLimiter, (req, res) => {
   const { email, password } = req.body;
   db.get('SELECT * FROM users WHERE email = ?', [email], (err, user) => {
     if (err || !user) return res.status(400).json({ error: 'Invalid credentials' });
@@ -88,6 +108,14 @@ app.get('/api/creature', authenticateToken, (req, res) => {
   db.all('SELECT id, data FROM creature_cards WHERE user_id = ?', [req.user.userId], (err, rows) => {
     if (err) return res.status(500).json({ error: 'Failed to load' });
     res.json(rows.map(row => ({ id: row.id, ...JSON.parse(row.data) })));
+  });
+});
+
+// Simple endpoint for the client to fetch the current user's profile
+app.get('/api/me', authenticateToken, (req, res) => {
+  db.get('SELECT id, email FROM users WHERE id = ?', [req.user.userId], (err, user) => {
+    if (err || !user) return res.status(500).json({ error: 'Failed to load user' });
+    res.json({ id: user.id, email: user.email });
   });
 });
 

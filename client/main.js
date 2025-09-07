@@ -2,6 +2,38 @@
 // to avoid the original UI flashing and then being overlapped by the injected UI.
 
 // --- SPA Logic and Event Handlers (migrated from index.html) ---
+// Configurable API base. Consumers can override by setting window.__NUGGIE_API_BASE__ before this script runs.
+const API_BASE = (typeof window !== 'undefined' && window.__NUGGIE_API_BASE__) ? window.__NUGGIE_API_BASE__ : 'https://nuggie.onrender.com';
+
+// Small helper: parse a JWT without validating signature. Returns payload object or null.
+function parseJwt(token) {
+	try {
+		const parts = token.split('.');
+		if (parts.length !== 3) return null;
+		const payload = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+		const json = decodeURIComponent(atob(payload).split('').map(function(c) {
+			return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+		}).join(''));
+		return JSON.parse(json);
+	} catch (e) { return null; }
+}
+
+// apiFetch: convenience wrapper that attaches Authorization header when token present
+async function apiFetch(path, opts = {}) {
+	const url = path.indexOf('http') === 0 ? path : (API_BASE.replace(/\/$/, '') + '/' + path.replace(/^\//, ''));
+	const headers = Object.assign({}, opts.headers || {});
+	const token = localStorage.getItem('token');
+	if (token && typeof token === 'string') headers['Authorization'] = 'Bearer ' + token;
+	const cfg = Object.assign({}, opts, { headers });
+	const resp = await fetch(url, cfg);
+	// If authentication failed or token is invalid/expired, force logout on client
+	if (resp.status === 401 || resp.status === 403) {
+		try { localStorage.removeItem('token'); } catch (e) {}
+		try { updateAuthUI(); } catch (e) {}
+		try { showLoginPage(); } catch (e) {}
+	}
+	return resp;
+}
 function showLoginPage() {
 	console.log('[SPA] showLoginPage called');
 	const landing = document.getElementById('landingPage');
@@ -92,7 +124,18 @@ function isLoggedIn() {
 		console.warn('[SPA] token present but not a valid JWT, treating as logged out', token);
 		return false;
 	}
-	// token looks like a JWT; treat as logged in (we could validate with server if desired)
+	// token looks like a JWT; try to decode and verify expiry if present
+	try {
+		const payload = parseJwt(token);
+		if (payload && payload.exp) {
+			// exp is in seconds since epoch
+			const now = Math.floor(Date.now() / 1000);
+			if (payload.exp < now) {
+				console.warn('[SPA] token expired according to exp claim');
+				return false;
+			}
+		}
+	} catch (e) { /* ignore */ }
 	return true;
 }
 function handleAuthClick() {
@@ -107,7 +150,8 @@ window.handleAuthClick = handleAuthClick;
 function updateTribeHeader() {
 	// Replace with actual tribe name from user profile if available
 	const tribeName = localStorage.getItem('tribeName') || 'My Tribe';
-	document.getElementById('tribeHeader').textContent = tribeName;
+	const el = document.getElementById('tribeHeader');
+	if (el) el.textContent = tribeName;
 }
 
 function updateAuthUI() {
@@ -132,7 +176,7 @@ function goToMyNuggies() {
 window.goToCreatures = goToCreatures;
 window.goToMyNuggies = goToMyNuggies;
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
 	console.log('[SPA] DOMContentLoaded fired');
 
 	// Helper: resolve base path for assets relative to this script
@@ -205,6 +249,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
 		if (isLoggedIn()) {
 			console.log('[SPA] User is logged in');
+			// Try to refresh basic profile info from server. If token is invalid the apiFetch will force logout.
+			try {
+				const meResp = await apiFetch('/api/me');
+				if (meResp && meResp.ok) {
+					const me = await meResp.json();
+					// populate tribe header with email as a placeholder for profile name
+					if (me && me.email) localStorage.setItem('tribeName', me.email.split('@')[0]);
+				}
+			} catch (e) { /* ignore */ }
 			showMainApp();
 			updateTribeHeader();
 			loadSpeciesPage(); // Default page after login
@@ -377,7 +430,7 @@ async function handleLogin(event) {
 		return false;
 	}
 	try {
-		const res = await fetch('https://nuggie.onrender.com/api/login', {
+		const res = await apiFetch('/api/login', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({ email, password })
@@ -454,7 +507,7 @@ async function handleRegister(event) {
 		return false;
 	}
 	try {
-		const res = await fetch('https://nuggie.onrender.com/api/register', {
+		const res = await apiFetch('/api/register', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({ email, password })

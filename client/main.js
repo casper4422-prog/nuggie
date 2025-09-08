@@ -930,23 +930,22 @@ function loadMyNuggiesPage() {
 function loadTradingPage() {
 	const main = document.getElementById('appMainContent');
 	if (!main) return;
-	main.innerHTML = `
-		<section class="trading-page">
-			<div class="page-header"><h1>Trading</h1><div class="section-sub">A simple marketplace for exchanging creatures</div></div>
+		main.innerHTML = `
+			<section class="trading-page">
+				<div class="page-header"><h1>Trading</h1><div class="section-sub">A simple marketplace for exchanging creatures</div></div>
 
-			<div class="trading-controls" style="display:flex;gap:10px;align-items:center;margin:12px 0;flex-wrap:wrap;">
-				<div style="flex:1;min-width:180px;"><input id="tradeSearch" class="form-control" placeholder="Search species or creature name"></div>
-				<select id="tradeSpeciesFilter" class="form-control"><option value="">All Species</option></select>
-				<input id="tradeMinPrice" class="form-control" placeholder="Min Price" style="width:110px;">
-				<input id="tradeMaxPrice" class="form-control" placeholder="Max Price" style="width:110px;">
-				<select id="tradeStatusFilter" class="form-control" style="width:140px;"><option value="">Any</option><option value="open">Open</option><option value="closed">Closed</option></select>
-				<button id="tradeRefreshBtn" class="btn btn-secondary">Refresh</button>
-				<button id="createTradeBtn" class="btn btn-primary">Create Listing</button>
-			</div>
+				<div class="trading-controls" style="display:flex;gap:10px;align-items:center;margin:12px 0;flex-wrap:wrap;">
+					<div style="flex:1;min-width:180px;"><input id="tradeSearch" class="form-control" placeholder="Search species or creature name"></div>
+					<select id="tradeSpeciesFilter" class="form-control"><option value="">All Species</option></select>
+					<select id="tradeStatSort" class="form-control" style="width:160px;"><option value="">Sort: None</option><option value="Health">Highest HP</option><option value="Melee">Highest Melee</option><option value="Stamina">Highest Stamina</option></select>
+					<select id="tradeStatusFilter" class="form-control" style="width:140px;"><option value="">Any</option><option value="open">Open</option><option value="closed">Closed</option></select>
+					<button id="tradeRefreshBtn" class="btn btn-secondary">Refresh</button>
+					<button id="createTradeBtn" class="btn btn-primary">Create Listing</button>
+				</div>
 
-			<div id="tradesGrid" class="species-grid" style="margin-top:12px;"></div>
-		</section>
-	`;
+				<div id="tradesGrid" class="species-grid" style="margin-top:12px;"></div>
+			</section>
+		`;
 
 	// Wire controls
 	const tradeSearch = document.getElementById('tradeSearch');
@@ -975,11 +974,20 @@ function loadTradingPage() {
 		if (tradeMaxPrice?.value) q.maxPrice = tradeMaxPrice.value;
 		if (statusFilter?.value) q.status = statusFilter.value;
 		const qs = new URLSearchParams(q).toString();
-		apiRequest('/api/trades' + (qs ? ('?' + qs) : ''), { method: 'GET' }).then(({ res, body }) => {
+			apiRequest('/api/trades' + (qs ? ('?' + qs) : ''), { method: 'GET' }).then(({ res, body }) => {
 			const grid = document.getElementById('tradesGrid');
 			if (!res.ok) { grid.innerHTML = '<div class="no-species-found">Failed to load trades</div>'; return; }
 			if (!Array.isArray(body) || body.length === 0) { grid.innerHTML = '<div class="no-species-found">No trades found</div>'; return; }
-			grid.innerHTML = '';
+				grid.innerHTML = '';
+				// optionally sort by selected stat (highest)
+				const statSort = document.getElementById('tradeStatSort')?.value || '';
+				if (statSort) {
+					body.sort((a,b) => {
+						const aVal = (a.creature && a.creature.baseStats && Number(a.creature.baseStats[statSort] || 0)) || 0;
+						const bVal = (b.creature && b.creature.baseStats && Number(b.creature.baseStats[statSort] || 0)) || 0;
+						return bVal - aVal; // descending
+					});
+				}
 					// safely decode local user id from token for ownership checks
 					const localUserId = (function() {
 						try {
@@ -992,16 +1000,65 @@ function loadTradingPage() {
 				const item = document.createElement('div');
 				item.className = 'species-card';
 						const owner = isLoggedIn() && localUserId && Number(trade.user_id) === Number(localUserId);
-				item.innerHTML = `
-					<div class="species-card-header"><div class="species-icon">${trade.creature.icon || '🦖'}</div><div class="species-info"><div class="species-name">${trade.creature.name || trade.creature.species}</div><div class="species-meta">${trade.creature.species || ''} • ${trade.status || 'open'}</div></div><div class="species-count">${trade.price ? ('$' + trade.price) : ''}</div></div>
-					<div class="species-card-body"><div>${trade.creature.description || ''}</div><div style="margin-top:8px;color:#94a3b8;">Wanted: ${trade.wanted || 'Any'}</div></div>
-				`;
-				// If owner, allow delete
-				if (isLoggedIn() && trade.user_id === (JSON.parse(atob(localStorage.getItem('token').split('.')[1] || 'eyJpZCI6MH0='))?.userId)) {
-					const del = document.createElement('button'); del.className = 'btn btn-danger'; del.textContent = 'Remove'; del.style.marginTop = '8px';
-					del.onclick = async () => { await apiRequest('/api/trades/' + trade.id, { method: 'DELETE' }); fetchAndRenderTrades(); };
-					item.querySelector('.species-card-body')?.appendChild(del);
-				}
+								// Render creature summary with full base stats (matching My Nuggies style)
+								const statsHtml = (() => {
+									try {
+										const s = trade.creature.baseStats || {};
+										const parts = ['Health','Stamina','Oxygen','Food','Weight','Melee'].map(k => `${k}: ${s[k]||0}`);
+										return `<div class="stat-row">${parts.join(' • ')}</div>`;
+									} catch (e) { return ''; }
+								})();
+						item.innerHTML = `
+							<div class="species-card-header"><div class="species-icon">${trade.creature.icon || '🦖'}</div><div class="species-info"><div class="species-name">${trade.creature.name || trade.creature.species}</div><div class="species-meta">${trade.creature.species || ''} • ${trade.status || 'open'}</div></div><div class="species-count">${trade.price ? ('$' + trade.price) : ''}</div></div>
+							<div class="species-card-body"><div>${trade.creature.description || ''}</div>${statsHtml}<div style="margin-top:8px;color:#94a3b8;">Wanted: ${trade.wanted || 'Any'}</div></div>
+						`;
+						// If owner, allow delete and view offers; otherwise allow making an offer
+						if (isLoggedIn() && owner) {
+							const del = document.createElement('button'); del.className = 'btn btn-danger'; del.textContent = 'Remove'; del.style.marginTop = '8px';
+							del.onclick = async () => { await apiRequest('/api/trades/' + trade.id, { method: 'DELETE' }); fetchAndRenderTrades(); };
+							const viewOffers = document.createElement('button'); viewOffers.className = 'btn btn-secondary'; viewOffers.textContent = 'View Offers'; viewOffers.style.marginLeft = '8px';
+										viewOffers.onclick = async () => {
+								// fetch offers for this trade and show in modal with accept/reject buttons
+								const { res, body } = await apiRequest('/api/trades/' + trade.id + '/offers', { method: 'GET' });
+								const modal = document.getElementById('creatureModal'); if (!modal) return alert('Modal container missing');
+											if (!res.ok) return alert('Failed to load offers');
+											// smaller modal and softer close button
+											modal.classList.add('active'); modal.setAttribute('aria-hidden','false');
+											modal.innerHTML = `<div class="modal-content" style="max-width:680px;margin:20px auto;"><div class="modal-header"><h3>Offers for ${trade.creature.name || trade.creature.species}</h3><button id="closeOffersModal" class="close-btn soft">Close</button></div><div class="modal-body" id="offersList"></div></div>`;
+								document.getElementById('closeOffersModal').addEventListener('click', () => { modal.classList.remove('active'); modal.innerHTML = ''; modal.setAttribute('aria-hidden','true'); });
+								const list = document.getElementById('offersList'); list.innerHTML = '';
+								(body || []).forEach(o => {
+									const row = document.createElement('div'); row.style.borderTop = '1px solid rgba(255,255,255,0.03)'; row.style.padding = '8px 0';
+									row.innerHTML = `<div><strong>From:</strong> User ${o.from_user_id} • <strong>Price:</strong> ${o.offered_price || 'N/A'}</div><div style="color:#cbd5e1;">${o.message || ''}</div>`;
+									const acceptBtn = document.createElement('button'); acceptBtn.className = 'btn btn-primary'; acceptBtn.textContent = 'Accept'; acceptBtn.style.marginRight = '8px';
+									const rejectBtn = document.createElement('button'); rejectBtn.className = 'btn btn-secondary'; rejectBtn.textContent = 'Reject';
+									acceptBtn.onclick = async () => { await apiRequest('/api/offers/' + o.id, { method: 'PUT', body: JSON.stringify({ status: 'accepted' }) }); alert('Offer accepted'); modal.classList.remove('active'); modal.innerHTML = ''; fetchAndRenderTrades(); };
+									rejectBtn.onclick = async () => { await apiRequest('/api/offers/' + o.id, { method: 'PUT', body: JSON.stringify({ status: 'rejected' }) }); alert('Offer rejected'); fetchAndRenderTrades(); };
+									row.appendChild(acceptBtn); row.appendChild(rejectBtn); list.appendChild(row);
+								});
+							};
+							item.querySelector('.species-card-body')?.appendChild(del);
+							item.querySelector('.species-card-body')?.appendChild(viewOffers);
+						} else {
+							const offerBtn = document.createElement('button'); offerBtn.className = 'btn btn-primary'; offerBtn.textContent = 'Make Offer'; offerBtn.style.marginTop = '8px';
+										offerBtn.onclick = () => {
+								const modal = document.getElementById('creatureModal'); if (!modal) return alert('Modal missing');
+											// simplified modal: remove price field (not needed), narrower, softer close label
+											modal.innerHTML = `<div class="modal-content" style="max-width:640px;margin:20px auto;"><div class="modal-header"><h3>Make Offer</h3><button id="closeMakeOffer" class="close-btn soft">Close</button></div><div class="modal-body"><div class="form-group"><label class="form-label">Offered Creature (optional)</label><select id="offerCreatureSelect" class="form-control">${(window.appState.creatures||[]).map(c=>`<option value="${c.id}">${c.name} (${c.species})</option>`).join('')}</select></div><div class="form-group"><label class="form-label">Message</label><input id="offerMessageInput" class="form-control" type="text"></div></div><div class="modal-footer"><button class="btn btn-primary" id="sendOfferBtn">Send Offer</button></div></div>`;
+								modal.classList.add('active'); modal.setAttribute('aria-hidden','false');
+											document.getElementById('closeMakeOffer').addEventListener('click', ()=>{ modal.classList.remove('active'); modal.innerHTML=''; modal.setAttribute('aria-hidden','true'); });
+								document.getElementById('sendOfferBtn').addEventListener('click', async ()=>{
+									const offeredCreatureId = document.getElementById('offerCreatureSelect')?.value || null;
+									const offeredPrice = parseFloat(document.getElementById('offerPriceInput')?.value) || null;
+									const message = document.getElementById('offerMessageInput')?.value || null;
+									const creatureData = (window.appState.creatures||[]).find(c=>String(c.id)===String(offeredCreatureId)) || null;
+									await apiRequest('/api/trades/' + trade.id + '/offers', { method: 'POST', body: JSON.stringify({ offered_creature_id: (!String(offeredCreatureId).startsWith('creature_') ? Number(offeredCreatureId) : null), offered_creature_data: creatureData, offered_price: offeredPrice, message }) });
+									modal.classList.remove('active'); modal.innerHTML=''; modal.setAttribute('aria-hidden','true');
+									alert('Offer sent');
+								});
+							};
+							item.querySelector('.species-card-body')?.appendChild(offerBtn);
+						}
 				grid.appendChild(item);
 			});
 		}).catch(err => { const grid = document.getElementById('tradesGrid'); if (grid) grid.innerHTML = '<div class="no-species-found">Failed to load trades</div>'; });
@@ -1012,26 +1069,25 @@ function loadTradingPage() {
 	document.getElementById('tradeSpeciesFilter')?.addEventListener('change', fetchAndRenderTrades);
 	document.getElementById('tradeStatusFilter')?.addEventListener('change', fetchAndRenderTrades);
 
-	// Create listing flow: pick one of your creatures and submit
-	createBtn?.addEventListener('click', () => {
-		// simple modal to choose creature and set price/wanted
-		const modal = document.getElementById('creatureModal');
-		if (!modal) return alert('Modal area missing');
-		const myCreatures = (window.appState.creatures || []).slice();
-		modal.innerHTML = `<div class="modal-content"><div class="modal-header"><h3>Create Trade</h3><button id="closeTradeModal">&times;</button></div><div class="modal-body"><div><label class="form-label">Select Creature</label><select id="tradeCreatureSelect" class="form-control">${myCreatures.map(c => `<option value="${c.id}">${c.name} (${c.species})</option>`).join('')}</select></div><div class="form-group"><label class="form-label">Price</label><input id="tradePriceInput" class="form-control" type="number" step="0.01"></div><div class="form-group"><label class="form-label">Wanted (optional)</label><input id="tradeWantedInput" class="form-control" type="text"></div></div><div class="modal-footer"><button class="btn btn-primary" id="postTradeBtn">Post</button></div></div>`;
-		modal.classList.add('active'); modal.setAttribute('aria-hidden','false');
-		document.getElementById('closeTradeModal').addEventListener('click', () => { modal.classList.remove('active'); modal.innerHTML = ''; modal.setAttribute('aria-hidden','true'); });
-		document.getElementById('postTradeBtn').addEventListener('click', async () => {
-			const selectedId = document.getElementById('tradeCreatureSelect')?.value;
-			const price = parseFloat(document.getElementById('tradePriceInput')?.value) || null;
-			const wanted = document.getElementById('tradeWantedInput')?.value || null;
-			const creature = myCreatures.find(c => String(c.id) === String(selectedId));
-			if (!creature) return alert('Select a creature');
-			await apiRequest('/api/trades', { method: 'POST', body: JSON.stringify({ creature_card_id: (!String(creature.id).startsWith('creature_') ? Number(creature.id) : null), creature_data: creature, wanted, price }) });
-			modal.classList.remove('active'); modal.innerHTML = ''; modal.setAttribute('aria-hidden','true');
-			fetchAndRenderTrades();
+		// Create listing flow: pick one of your creatures and submit (no price field)
+		createBtn?.addEventListener('click', () => {
+			const modal = document.getElementById('creatureModal');
+			if (!modal) return alert('Modal area missing');
+			const myCreatures = (window.appState.creatures || []).slice();
+			modal.innerHTML = `<div class="modal-content" style="max-width:680px;margin:20px auto;"><div class="modal-header"><h3>Create Trade</h3><button id="closeTradeModal" class="close-btn soft">Close</button></div><div class="modal-body"><div><label class="form-label">Select Creature</label><select id="tradeCreatureSelect" class="form-control">${myCreatures.map(c => `<option value="${c.id}">${c.name} (${c.species})</option>`).join('')}</select></div><div class="form-group"><label class="form-label">Wanted (optional)</label><input id="tradeWantedInput" class="form-control" type="text"></div></div><div class="modal-footer"><button class="btn btn-primary" id="postTradeBtn">Post</button></div></div>`;
+			modal.classList.add('active'); modal.setAttribute('aria-hidden','false');
+			document.getElementById('closeTradeModal').addEventListener('click', () => { modal.classList.remove('active'); modal.innerHTML = ''; modal.setAttribute('aria-hidden','true'); });
+			document.getElementById('postTradeBtn').addEventListener('click', async () => {
+				const selectedId = document.getElementById('tradeCreatureSelect')?.value;
+				const wanted = document.getElementById('tradeWantedInput')?.value || null;
+				const creature = myCreatures.find(c => String(c.id) === String(selectedId));
+				if (!creature) return alert('Select a creature');
+				// Post a snapshot and reference if available; price omitted intentionally
+				await apiRequest('/api/trades', { method: 'POST', body: JSON.stringify({ creature_card_id: (!String(creature.id).startsWith('creature_') ? Number(creature.id) : null), creature_data: creature, wanted }) });
+				modal.classList.remove('active'); modal.innerHTML = ''; modal.setAttribute('aria-hidden','true');
+				fetchAndRenderTrades();
+			});
 		});
-	});
 
 	// initial load
 	fetchAndRenderTrades();

@@ -863,6 +863,10 @@ function loadMyNuggiesPage() {
 		      <button class="btn btn-secondary" id="backToMainFromMyNuggies">← Back to Species</button>
 		    </div>
 		  </div>
+		  <div class="creature-page-filters" style="display:flex;gap:8px;align-items:center;margin:12px 0;">
+		    <input id="myNuggiesSearch" class="form-control" placeholder="Search by name or species" style="flex:1;min-width:140px;">
+		    <select id="myNuggiesSpeciesFilter" class="form-control" style="width:220px;"><option value="">All owned species</option></select>
+		  </div>
 		  <div class="creatures-section-header">
 		    <h2 class="creatures-section-title">Your Creatures</h2>
 		    <div class="view-toggle">
@@ -887,7 +891,26 @@ function loadMyNuggiesPage() {
 	if (listViewBtn) listViewBtn.addEventListener('click', (e) => { e.preventDefault(); setCreatureView('list'); listViewBtn.classList.add('active'); cardViewBtn?.classList.remove('active'); });
 
 	// Populate the grid with all saved creatures
-	try { loadCreaturesGrid(null); } catch (e) { console.warn('loadCreaturesGrid failed on My Nuggies page', e); }
+	// Populate species filter dropdown with species user actually owns
+	try {
+		const speciesFilter = document.getElementById('myNuggiesSpeciesFilter');
+		const searchInput = document.getElementById('myNuggiesSearch');
+		const owned = Array.from(new Set((window.appState.creatures || []).map(c => c.species).filter(Boolean)));
+		if (speciesFilter) {
+			// clear and add default
+			speciesFilter.innerHTML = '<option value="">All owned species</option>' + owned.map(s => `<option value="${s}">${s}</option>`).join('');
+		}
+		// wire inputs to re-render grid with filter/search
+		const refreshGrid = () => {
+			const species = speciesFilter?.value || null;
+			const search = searchInput?.value || '';
+			try { loadCreaturesGrid(species, search); } catch (e) { console.warn('loadCreaturesGrid failed on My Nuggies page', e); }
+		};
+		if (speciesFilter) speciesFilter.addEventListener('change', refreshGrid);
+		if (searchInput) searchInput.addEventListener('input', debounce(refreshGrid, 160));
+		// initial render
+		refreshGrid();
+	} catch (e) { console.warn('failed to wire My Nuggies filters', e); }
 }
 
 // Render register form into #registerPage (called when user clicks Register)

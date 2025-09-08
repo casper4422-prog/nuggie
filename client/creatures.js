@@ -592,10 +592,15 @@ function saveCreatureFromForm() {
 }
 
 // Render creatures grid/cards exactly like Old Nugget
-function loadCreaturesGrid(speciesName) {
+function loadCreaturesGrid(speciesFilter, searchTerm) {
   const grid = document.getElementById('creaturesGrid');
   if (!grid) return;
-  const creatures = (appState.creatures || []).filter(c => (speciesName ? c.species === speciesName : true));
+  // normalize inputs
+  const species = (typeof speciesFilter === 'string' && speciesFilter.trim().length > 0) ? speciesFilter.trim() : null;
+  const search = (typeof searchTerm === 'string' && searchTerm.trim().length > 0) ? searchTerm.trim().toLowerCase() : null;
+  let creatures = (appState.creatures || []).slice();
+  if (species) creatures = creatures.filter(c => (c.species || '').toLowerCase() === species.toLowerCase());
+  if (search) creatures = creatures.filter(c => ((c.name||'').toLowerCase().includes(search) || (c.species||'').toLowerCase().includes(search)));
   grid.innerHTML = '';
   if (!creatures || creatures.length === 0) {
     grid.innerHTML = '<div class="no-creatures">No creatures saved for this species.</div>';

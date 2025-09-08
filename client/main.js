@@ -134,6 +134,10 @@ function goToCreatures() {
 function goToMyNuggies() {
 	loadMyNuggiesPage();
 }
+function goToTrading() {
+	loadTradingPage();
+}
+window.goToTrading = goToTrading;
 window.goToCreatures = goToCreatures;
 window.goToMyNuggies = goToMyNuggies;
 
@@ -204,6 +208,8 @@ document.addEventListener('DOMContentLoaded', () => {
 			if (goToCreaturesBtn) goToCreaturesBtn.addEventListener('click', goToCreatures);
 			const goToMyNuggiesBtn = document.getElementById('goToMyNuggiesBtn');
 			if (goToMyNuggiesBtn) goToMyNuggiesBtn.addEventListener('click', goToMyNuggies);
+			const goToTradingBtn = document.getElementById('goToTradingBtn');
+			if (goToTradingBtn) goToTradingBtn.addEventListener('click', goToTrading);
 		} catch (wireErr) {
 			console.warn('[SPA] UI wiring failed', wireErr);
 		}
@@ -912,6 +918,32 @@ function loadMyNuggiesPage() {
 		refreshGrid();
 	} catch (e) { console.warn('failed to wire My Nuggies filters', e); }
 }
+
+function loadTradingPage() {
+	const main = document.getElementById('appMainContent');
+	if (!main) return;
+	main.innerHTML = `
+		<section class="trading-page">
+			<div class="page-header">
+				<h1>Trading</h1>
+				<div class="section-sub">A simple marketplace for exchanging creatures (coming soon)</div>
+			</div>
+			<div style="margin-top:18px;">
+				<p>This is an initial Trading page. You can list creatures for trade or browse offers here.</p>
+				<div class="trading-actions">
+					<button class="btn btn-primary" id="createTradeBtn">Create Trade</button>
+					<button class="btn btn-secondary" id="browseTradesBtn">Browse Trades</button>
+				</div>
+			</div>
+		</section>
+	`;
+	// Wire basic actions
+	const createBtn = document.getElementById('createTradeBtn');
+	if (createBtn) createBtn.addEventListener('click', () => alert('Trade creation not implemented yet'));
+	const browseBtn = document.getElementById('browseTradesBtn');
+	if (browseBtn) browseBtn.addEventListener('click', () => alert('Browse trades not implemented yet'));
+}
+
 
 // Render register form into #registerPage (called when user clicks Register)
 function renderRegisterForm() {

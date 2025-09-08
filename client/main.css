@@ -284,3 +284,13 @@ body {
 
 /* Hide header placeholder buttons (if any placeholders remain) */
 .header-actions .btn[disabled], .header-actions .btn.placeholder { opacity: 0.65; pointer-events: none; }
+
+/* Page container: center main app content and add consistent horizontal padding
+   so pages align visually with the header and aren't edge-to-edge. */
+#appMainContent {
+    box-sizing: border-box;
+    padding: 24px 20px; /* vertical + horizontal padding */
+    max-width: 1120px; /* center content and limit line length on large screens */
+    margin: 0 auto; /* horizontal centering */
+    width: 100%;
+}

@@ -219,8 +219,23 @@ document.addEventListener('DOMContentLoaded', () => {
 			const goToTradingBtn = document.getElementById('goToTradingBtn');
 			if (goToTradingBtn) goToTradingBtn.addEventListener('click', goToTrading);
 			// Notifications button (may be present in header)
-			const notificationsBtn = document.getElementById('notificationsBtn');
-			if (notificationsBtn) notificationsBtn.addEventListener('click', async (e) => { e.preventDefault(); await showNotificationsInbox(); });
+			let notificationsBtn = document.getElementById('notificationsBtn');
+			// If header doesn't include a dedicated notifications button, create one in the header area
+			if (!notificationsBtn) {
+				const headerArea = document.querySelector('.header-content') || document.querySelector('header') || document.body;
+				if (headerArea) {
+					notificationsBtn = document.createElement('button');
+					notificationsBtn.id = 'notificationsBtn';
+					notificationsBtn.className = 'btn btn-secondary';
+					notificationsBtn.setAttribute('aria-label', 'Inbox');
+					notificationsBtn.style.marginLeft = '8px';
+					notificationsBtn.innerHTML = 'Inbox <span id="inboxBadge" style="background:#e11d48;color:white;border-radius:10px;padding:2px 6px;font-size:12px;margin-left:6px;display:none">0</span>';
+					// Try to append to header controls area if present
+					const target = headerArea.querySelector('.header-controls') || headerArea;
+					target.appendChild(notificationsBtn);
+				}
+			}
+			if (notificationsBtn) notificationsBtn.addEventListener('click', async (e) => { e.preventDefault(); loadInboxPage(); });
 		} catch (wireErr) {
 			console.warn('[SPA] UI wiring failed', wireErr);
 		}
@@ -1315,6 +1330,135 @@ async function showNotificationsInbox() {
 	});
 }
 window.showNotificationsInbox = showNotificationsInbox;
+
+// Render a dedicated Inbox page inside #appMainContent
+async function loadInboxPage() {
+	const main = document.getElementById('appMainContent'); if (!main) return;
+	main.innerHTML = `
+		<section class="inbox-page">
+			<div class="page-header"><h1>Inbox</h1><div class="section-sub">Notifications and messages</div></div>
+			<div style="margin:12px 0;display:flex;gap:10px;align-items:center;"><button id="refreshInboxBtn" class="btn btn-secondary">Refresh</button><button id="clearReadBtn" class="btn btn-secondary">Clear Read</button></div>
+			<div id="inboxListPage" style="margin-top:12px;"></div>
+		</section>
+	`;
+	document.getElementById('refreshInboxBtn')?.addEventListener('click', async () => { await renderInboxList(); });
+	document.getElementById('clearReadBtn')?.addEventListener('click', async () => {
+		// Remove read notifications from UI (server retains them). Client-side remove for now.
+		const notes = await fetchNotifications();
+		const toRemove = notes.filter(n => n.read).map(n => n.id);
+		// Optimistically mark as read on server for each (no unread endpoint to delete). We'll mark them read to hide.
+		for (const id of toRemove) { try { await markNotificationRead(id); } catch (e) {} }
+		await renderInboxList();
+	});
+	await renderInboxList();
+
+	async function renderInboxList() {
+		const container = document.getElementById('inboxListPage'); if (!container) return;
+		container.innerHTML = '';
+		const notes = await fetchNotifications();
+		if (!notes || notes.length === 0) { container.innerHTML = '<div class="no-species-found">No notifications</div>'; updateInboxBadge(0); return; }
+		updateInboxBadge(notes.filter(n=>!n.read).length);
+		notes.forEach(n => {
+			const row = document.createElement('div'); row.className = 'inbox-row'; row.style.borderTop = '1px solid rgba(255,255,255,0.03)'; row.style.padding = '12px 0';
+			const when = document.createElement('div'); when.style.fontSize='12px'; when.style.color='#94a3b8'; when.textContent = n.created_at;
+			const actor = n.actor_nickname ? `${n.actor_nickname}` : `User ${n.actor_user_id}`;
+			const title = document.createElement('div'); title.innerHTML = `<strong>${friendlyType(n.type)}</strong> from ${actor}`;
+			const body = document.createElement('div'); body.style.marginTop='6px'; body.style.color='#cbd5e1'; body.innerHTML = formatNotification(n);
+			row.appendChild(title); row.appendChild(when); row.appendChild(body);
+			const actions = document.createElement('div'); actions.style.marginTop='8px';
+			if (!n.read) {
+				const markBtn = document.createElement('button'); markBtn.className='btn btn-primary'; markBtn.textContent='Mark Read'; markBtn.onclick = async ()=>{ await markNotificationRead(n.id); markBtn.remove(); try{ n.read=true; updateInboxBadge((await fetchNotifications()).filter(x=>!x.read).length); }catch(e){} };
+				actions.appendChild(markBtn);
+			}
+			// If payload contains tradeId/offerId, add button to open trade or offer
+			try {
+				const p = n.payload || {};
+				if (p.tradeId) {
+					const openBtn = document.createElement('button');
+					openBtn.className = 'btn btn-secondary';
+					openBtn.textContent = 'Open Trade';
+					openBtn.style.marginLeft = '8px';
+					openBtn.onclick = async () => {
+						try {
+							const t = await apiRequest('/api/trades/' + p.tradeId, { method: 'GET' });
+							if (!t.res.ok) return alert('Failed to open trade');
+							const trade = t.body;
+							loadTradingPage();
+							setTimeout(() => {
+								try {
+									const el = Array.from(document.querySelectorAll('.species-card')).find(c => c.querySelector('.species-name') && (c.querySelector('.species-name').textContent.includes(trade.creature.name || trade.creature.species)));
+									if (el) { el.style.outline = '3px solid #fde68a'; setTimeout(() => el.style.outline = '', 3000); }
+								} catch (e) { /* ignore */ }
+							}, 400);
+						} catch (err) {
+							console.warn('open trade failed', err);
+						}
+					};
+					actions.appendChild(openBtn);
+				}
+				if (p.offerId) {
+					const openOffer = document.createElement('button');
+					openOffer.className = 'btn btn-secondary';
+					openOffer.textContent = 'Open Offer';
+					openOffer.style.marginLeft = '8px';
+					openOffer.onclick = async () => {
+						// Open the trading page and then show the offers modal for the referenced trade
+						if (!p.tradeId) return alert('No trade referenced');
+						loadTradingPage();
+						setTimeout(async () => {
+							try {
+								const resp = await apiRequest('/api/trades/' + p.tradeId + '/offers', { method: 'GET' });
+								if (!resp.res.ok) return alert('Failed to load offers');
+								const offers = resp.body || [];
+								const modal = document.getElementById('creatureModal'); if (!modal) return alert('Modal missing');
+								modal.classList.add('active'); modal.setAttribute('aria-hidden','false');
+								modal.innerHTML = `<div class="modal-content" style="max-width:680px;margin:20px auto;"><div class="modal-header"><h3>Offers</h3><button id="closeOffersModal" class="close-btn soft">Close</button></div><div id="offersListPage" class="modal-body"></div></div>`;
+								document.getElementById('closeOffersModal').addEventListener('click', ()=>{ modal.classList.remove('active'); modal.innerHTML=''; modal.setAttribute('aria-hidden','true'); });
+								const listEl = document.getElementById('offersListPage'); listEl.innerHTML = '';
+								(offers||[]).forEach(o => {
+									const r = document.createElement('div'); r.style.padding = '8px';
+									r.innerHTML = `<div><strong>From:</strong> ${o.from_nickname||o.from_user_id} • ${o.message||''}</div>`;
+									listEl.appendChild(r);
+								});
+							} catch (err) {
+								console.warn('Failed to open offers from inbox', err);
+							}
+						}, 500);
+					};
+					actions.appendChild(openOffer);
+				}
+			} catch (e) {}
+			row.appendChild(actions);
+			container.appendChild(row);
+		});
+	}
+
+	function friendlyType(t) { if (!t) return 'Notification'; return t.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase()); }
+
+	function formatNotification(n) {
+		try {
+			const p = n.payload || {};
+			if (n.type === 'offer') {
+				const from = n.actor_nickname || `User ${n.actor_user_id}`;
+				return `${from} made an offer${p.tradeId ? ' on your listing' : ''}${p.message ? ': "' + escapeHtml(p.message) + '"' : ''}`;
+			}
+			if (n.type === 'offer_accepted') return `Your offer (id:${p.offerId||''}) was accepted.`;
+			if (n.type === 'offer_rejected' || n.type === 'rejected') return `Your offer (id:${p.offerId||''}) was rejected.`;
+			// fallback: show payload JSON
+			return `<pre style="white-space:pre-wrap;word-break:break-word">${escapeHtml(JSON.stringify(p))}</pre>`;
+		} catch (e) { return JSON.stringify(n.payload || {}); }
+	}
+
+	function escapeHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+}
+window.loadInboxPage = loadInboxPage;
+
+// Update badge helper used by inbox rendering
+function updateInboxBadge(count) {
+	try {
+		const b = document.getElementById('inboxBadge'); if (!b) return; if (!count || count <= 0) { b.style.display='none'; } else { b.style.display='inline-block'; b.textContent = String(count); }
+	} catch (e) {}
+}
 
 // --- SPECIES_DATABASE wiring (non-destructive) ---
 // Ensure fallback storage exists; avoid touching any variable named SPECIES_DATABASE

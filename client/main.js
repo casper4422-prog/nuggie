@@ -138,6 +138,10 @@ function goToTrading() {
 	loadTradingPage();
 }
 window.goToTrading = goToTrading;
+function goToBossPlanner() { loadBossPlanner(); }
+window.goToBossPlanner = goToBossPlanner;
+function goToMyProfile() { loadMyProfile(); }
+window.goToMyProfile = goToMyProfile;
 window.goToCreatures = goToCreatures;
 window.goToMyNuggies = goToMyNuggies;
 
@@ -203,7 +207,11 @@ document.addEventListener('DOMContentLoaded', () => {
 			const authBtn = document.getElementById('authBtn');
 			if (authBtn) authBtn.addEventListener('click', handleAuthClick);
 			const openTribeBtn = document.getElementById('openTribeBtn');
-			if (openTribeBtn) openTribeBtn.addEventListener('click', (e) => { e.preventDefault(); if (typeof openTribeModal === 'function') openTribeModal(); else showTribeSettings(); });
+			if (openTribeBtn) openTribeBtn.addEventListener('click', (e) => { e.preventDefault(); if (typeof showTribeSettings === 'function') { showTribeSettings(); } else if (typeof openTribeModal === 'function') { openTribeModal(); } });
+			const goToBossPlannerBtn = document.getElementById('goToBossPlannerBtn');
+			if (goToBossPlannerBtn) goToBossPlannerBtn.addEventListener('click', (e) => { e.preventDefault(); if (typeof goToBossPlanner === 'function') goToBossPlanner(); });
+			const goToMyProfileBtn = document.getElementById('goToMyProfileBtn');
+			if (goToMyProfileBtn) goToMyProfileBtn.addEventListener('click', (e) => { e.preventDefault(); if (typeof goToMyProfile === 'function') goToMyProfile(); });
 			const goToCreaturesBtn = document.getElementById('goToCreaturesBtn');
 			if (goToCreaturesBtn) goToCreaturesBtn.addEventListener('click', goToCreatures);
 			const goToMyNuggiesBtn = document.getElementById('goToMyNuggiesBtn');
@@ -943,6 +951,37 @@ function loadTradingPage() {
 	const browseBtn = document.getElementById('browseTradesBtn');
 	if (browseBtn) browseBtn.addEventListener('click', () => alert('Browse trades not implemented yet'));
 }
+
+function loadBossPlanner() {
+	const main = document.getElementById('appMainContent');
+	if (!main) return;
+	main.innerHTML = `
+		<section class="boss-planner-page">
+			<div class="page-header"><h1>Boss Planner</h1><div class="section-sub">Plan boss fights, rewards and party composition</div></div>
+			<div style="margin-top:12px;">This is a start for Boss Planner. You can add bosses, track drops, and plan strategies here.</div>
+		</section>
+	`;
+}
+
+function loadMyProfile() {
+	const main = document.getElementById('appMainContent');
+	if (!main) return;
+	const email = localStorage.getItem('userEmail') || '';
+	const tribe = localStorage.getItem('tribeName') || '';
+	main.innerHTML = `
+		<section class="profile-page">
+			<h1>My Profile</h1>
+			<div class="profile-grid">
+				<div><label class="form-label">Email</label><div>${email}</div></div>
+				<div><label class="form-label">Tribe</label><div>${tribe}</div></div>
+			</div>
+			<div style="margin-top:12px;"><button class="btn btn-primary" id="editProfileBtn">Edit Profile</button></div>
+		</section>
+	`;
+	const editBtn = document.getElementById('editProfileBtn');
+	if (editBtn) editBtn.addEventListener('click', () => alert('Profile editing not implemented yet'));
+}
+
 
 
 // Render register form into #registerPage (called when user clicks Register)

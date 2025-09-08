@@ -398,6 +398,8 @@ async function handleLogin(event) {
 			try { document.documentElement.setAttribute('data-ready', 'true'); } catch (e) {}
 			showMainApp();
 			updateTribeHeader();
+			// Sync server-stored creatures for this user
+			try { await loadServerCreatures(); } catch (e) { console.warn('loadServerCreatures after login failed', e); }
 			// Wait for species DB to be available before rendering species page
 			try { await waitForSpeciesDB(3000, 50); } catch (e) {}
 			try { loadSpeciesPage(); } catch (e) {}
@@ -509,6 +511,76 @@ async function handleRegister(event) {
 	return false;
 }
 window.handleRegister = handleRegister;
+
+// --- API helper and server-sync for creature persistence ---
+async function apiRequest(path, opts = {}) {
+	const token = localStorage.getItem('token');
+	const headers = opts.headers || {};
+	if (token) headers['Authorization'] = 'Bearer ' + token;
+	headers['Content-Type'] = headers['Content-Type'] || 'application/json';
+	const res = await fetch((opts.base || 'https://nuggie.onrender.com') + path, Object.assign({}, opts, { headers, credentials: 'include' }));
+	const ct = res.headers.get('content-type') || '';
+	let body = null;
+	try { body = ct.includes('application/json') ? await res.json() : await res.text(); } catch (e) { body = null; }
+	return { res, body };
+}
+
+// Load creatures from server and merge into appState.creatures
+async function loadServerCreatures() {
+	try {
+		const { res, body } = await apiRequest('/api/creature', { method: 'GET' });
+		if (res.ok && Array.isArray(body)) {
+			// Map server objects into client format, using id as stable id
+			const serverCreatures = body.map(c => ({ id: String(c.id), ...c }));
+			// Merge: prefer server copy for logged-in users
+			window.appState = window.appState || { creatures: [] };
+			window.appState.creatures = serverCreatures;
+			try { localStorage.setItem('arkCreatures', JSON.stringify(window.appState.creatures)); } catch (e) {}
+			try { if (typeof loadSpeciesPage === 'function') loadSpeciesPage(); } catch (e) {}
+		}
+	} catch (e) { console.warn('loadServerCreatures failed', e); }
+}
+
+// Save local creature list to server: create or update each entry
+async function saveDataToServer() {
+	try {
+		if (!window.appState || !Array.isArray(window.appState.creatures)) return;
+		for (const c of window.appState.creatures) {
+			// Server expects objects without client-generated ids for creation; use numeric id for updates
+			if (String(c.id).startsWith('creature_')) {
+				// create
+				const { res, body } = await apiRequest('/api/creature', { method: 'POST', body: JSON.stringify({ data: c }) });
+				if (res.ok && body && body.id) {
+					// replace local id with server id
+					c.id = String(body.id);
+				}
+			} else {
+				// update
+				await apiRequest(`/api/creature/${c.id}`, { method: 'PUT', body: JSON.stringify({ data: c }) });
+			}
+		}
+		try { localStorage.setItem('arkCreatures', JSON.stringify(window.appState.creatures)); } catch (e) {}
+	} catch (e) { console.warn('saveDataToServer failed', e); }
+}
+
+async function deleteCreatureOnServer(id) {
+	try {
+		if (!id) return;
+		await apiRequest(`/api/creature/${id}`, { method: 'DELETE' });
+	} catch (e) { console.warn('deleteCreatureOnServer failed', e); }
+}
+
+// Expose for creatures.js or console
+window.apiRequest = apiRequest;
+window.loadServerCreatures = loadServerCreatures;
+window.saveDataToServer = saveDataToServer;
+window.deleteCreatureOnServer = deleteCreatureOnServer;
+
+// Global saveData used by legacy code — write localStorage and sync to server when logged in
+window.saveData = function() {
+	try { localStorage.setItem('arkCreatures', JSON.stringify(window.appState && window.appState.creatures || [])); } catch (e) {}
+	try { if (typeof window.saveDataToServer === 'function' && localStorage.getItem('token')) window.saveDataToServer(); } catch (e) {}
+};
 
 // --- Navigation/Page Loading ---
 function isValidImageUrl(url) {

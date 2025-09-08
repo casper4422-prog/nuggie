@@ -651,6 +651,8 @@ function deleteCreature(id) {
   try { localStorage.setItem('arkCreatures', JSON.stringify(appState.creatures || [])); } catch (e) {}
   try { loadCreaturesGrid(appState.currentSpecies); } catch (e) {}
   try { updateStatsDashboard(); } catch (e) {}
+  // If this was a server-owned creature (numeric id), notify server to delete
+  try { if (typeof window.deleteCreatureOnServer === 'function' && /^\d+$/.test(String(id))) window.deleteCreatureOnServer(id); } catch (e) {}
 }
 window.deleteCreature = deleteCreature;
 

@@ -82,7 +82,28 @@ app.post('/api/creature', authenticateToken, (req, res) => {
   const { data } = req.body;
   db.run('INSERT INTO creature_cards (user_id, data) VALUES (?, ?)', [req.user.userId, JSON.stringify(data)], function(err) {
     if (err) return res.status(500).json({ error: 'Failed to save' });
-    res.json({ id: this.lastID });
+    res.status(201).json({ success: true, id: this.lastID });
+  });
+});
+
+// Update existing creature (only if owned by user)
+app.put('/api/creature/:id', authenticateToken, (req, res) => {
+  const id = req.params.id;
+  const { data } = req.body;
+  db.run('UPDATE creature_cards SET data = ? WHERE id = ? AND user_id = ?', [JSON.stringify(data), id, req.user.userId], function(err) {
+    if (err) return res.status(500).json({ error: 'Failed to update' });
+    if (this.changes === 0) return res.status(404).json({ error: 'Not found or not owned' });
+    res.json({ success: true });
+  });
+});
+
+// Delete creature
+app.delete('/api/creature/:id', authenticateToken, (req, res) => {
+  const id = req.params.id;
+  db.run('DELETE FROM creature_cards WHERE id = ? AND user_id = ?', [id, req.user.userId], function(err) {
+    if (err) return res.status(500).json({ error: 'Failed to delete' });
+    if (this.changes === 0) return res.status(404).json({ error: 'Not found or not owned' });
+    res.json({ success: true });
   });
 });
 

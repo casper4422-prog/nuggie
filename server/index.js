@@ -35,6 +35,18 @@ db.serialize(() => {
     data TEXT NOT NULL,
     FOREIGN KEY(user_id) REFERENCES users(id)
   )`);
+  db.run(`CREATE TABLE IF NOT EXISTS trades (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    creature_card_id INTEGER,
+    creature_data TEXT NOT NULL,
+    wanted TEXT,
+    price REAL,
+    status TEXT DEFAULT 'open',
+    created_at TEXT DEFAULT (datetime('now')),
+    FOREIGN KEY(user_id) REFERENCES users(id),
+    FOREIGN KEY(creature_card_id) REFERENCES creature_cards(id)
+  )`);
   // Ensure nickname column exists for older databases (safe check)
   db.all("PRAGMA table_info(users)", (err, cols) => {
     if (err || !Array.isArray(cols)) return;
@@ -135,6 +147,54 @@ app.get('/api/creature', authenticateToken, (req, res) => {
   db.all('SELECT id, data FROM creature_cards WHERE user_id = ?', [req.user.userId], (err, rows) => {
     if (err) return res.status(500).json({ error: 'Failed to load' });
     res.json(rows.map(row => ({ id: row.id, ...JSON.parse(row.data) })));
+  });
+});
+
+// Marketplace: create a trade listing
+app.post('/api/trades', authenticateToken, (req, res) => {
+  const { creature_card_id, creature_data, wanted, price } = req.body || {};
+  if (!creature_data) return res.status(400).json({ error: 'Missing creature data' });
+  db.run('INSERT INTO trades (user_id, creature_card_id, creature_data, wanted, price, status) VALUES (?, ?, ?, ?, ?, ?)',
+    [req.user.userId, creature_card_id || null, JSON.stringify(creature_data), wanted || null, price || null, 'open'], function(err) {
+      if (err) return res.status(500).json({ error: 'Failed to create trade' });
+      res.status(201).json({ success: true, id: this.lastID });
+    });
+});
+
+// Marketplace: list/search trades (public)
+app.get('/api/trades', (req, res) => {
+  // Support simple query params: species, minPrice, maxPrice, status
+  const { species, minPrice, maxPrice, status } = req.query || {};
+  db.all('SELECT id, user_id, creature_card_id, creature_data, wanted, price, status, created_at FROM trades', [], (err, rows) => {
+    if (err) return res.status(500).json({ error: 'Failed to load trades' });
+    try {
+      let items = rows.map(r => ({ id: r.id, user_id: r.user_id, creature_card_id: r.creature_card_id, creature: JSON.parse(r.creature_data), wanted: r.wanted, price: r.price, status: r.status, created_at: r.created_at }));
+      if (species) items = items.filter(i => (i.creature && i.creature.species && i.creature.species.toLowerCase().includes(species.toLowerCase())));
+      if (status) items = items.filter(i => (i.status || '').toLowerCase() === (status+'').toLowerCase());
+      if (minPrice) items = items.filter(i => Number(i.price || 0) >= Number(minPrice));
+      if (maxPrice) items = items.filter(i => Number(i.price || 0) <= Number(maxPrice));
+      res.json(items);
+    } catch (e) { res.status(500).json({ error: 'Failed to parse trades' }); }
+  });
+});
+
+// Marketplace: get a single trade
+app.get('/api/trades/:id', (req, res) => {
+  const id = req.params.id;
+  db.get('SELECT id, user_id, creature_card_id, creature_data, wanted, price, status, created_at FROM trades WHERE id = ?', [id], (err, row) => {
+    if (err) return res.status(500).json({ error: 'Failed to load trade' });
+    if (!row) return res.status(404).json({ error: 'Not found' });
+    try { res.json({ id: row.id, user_id: row.user_id, creature: JSON.parse(row.creature_data), wanted: row.wanted, price: row.price, status: row.status, created_at: row.created_at }); } catch (e) { res.status(500).json({ error: 'Failed to parse trade' }); }
+  });
+});
+
+// Marketplace: delete a trade (owner only)
+app.delete('/api/trades/:id', authenticateToken, (req, res) => {
+  const id = req.params.id;
+  db.run('DELETE FROM trades WHERE id = ? AND user_id = ?', [id, req.user.userId], function(err) {
+    if (err) return res.status(500).json({ error: 'Failed to delete' });
+    if (this.changes === 0) return res.status(404).json({ error: 'Not found or not owner' });
+    res.json({ success: true });
   });
 });
 

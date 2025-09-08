@@ -932,24 +932,109 @@ function loadTradingPage() {
 	if (!main) return;
 	main.innerHTML = `
 		<section class="trading-page">
-			<div class="page-header">
-				<h1>Trading</h1>
-				<div class="section-sub">A simple marketplace for exchanging creatures (coming soon)</div>
+			<div class="page-header"><h1>Trading</h1><div class="section-sub">A simple marketplace for exchanging creatures</div></div>
+
+			<div class="trading-controls" style="display:flex;gap:10px;align-items:center;margin:12px 0;flex-wrap:wrap;">
+				<div style="flex:1;min-width:180px;"><input id="tradeSearch" class="form-control" placeholder="Search species or creature name"></div>
+				<select id="tradeSpeciesFilter" class="form-control"><option value="">All Species</option></select>
+				<input id="tradeMinPrice" class="form-control" placeholder="Min Price" style="width:110px;">
+				<input id="tradeMaxPrice" class="form-control" placeholder="Max Price" style="width:110px;">
+				<select id="tradeStatusFilter" class="form-control" style="width:140px;"><option value="">Any</option><option value="open">Open</option><option value="closed">Closed</option></select>
+				<button id="tradeRefreshBtn" class="btn btn-secondary">Refresh</button>
+				<button id="createTradeBtn" class="btn btn-primary">Create Listing</button>
 			</div>
-			<div style="margin-top:18px;">
-				<p>This is an initial Trading page. You can list creatures for trade or browse offers here.</p>
-				<div class="trading-actions">
-					<button class="btn btn-primary" id="createTradeBtn">Create Trade</button>
-					<button class="btn btn-secondary" id="browseTradesBtn">Browse Trades</button>
-				</div>
-			</div>
+
+			<div id="tradesGrid" class="species-grid" style="margin-top:12px;"></div>
 		</section>
 	`;
-	// Wire basic actions
+
+	// Wire controls
+	const tradeSearch = document.getElementById('tradeSearch');
+	const tradeSpeciesFilter = document.getElementById('tradeSpeciesFilter');
+	const tradeMinPrice = document.getElementById('tradeMinPrice');
+	const tradeMaxPrice = document.getElementById('tradeMaxPrice');
+	const statusFilter = document.getElementById('tradeStatusFilter');
+	const refreshBtn = document.getElementById('tradeRefreshBtn');
 	const createBtn = document.getElementById('createTradeBtn');
-	if (createBtn) createBtn.addEventListener('click', () => alert('Trade creation not implemented yet'));
-	const browseBtn = document.getElementById('browseTradesBtn');
-	if (browseBtn) browseBtn.addEventListener('click', () => alert('Browse trades not implemented yet'));
+
+	// populate species filter from species DB
+	waitForSpeciesDB(1000, 30).then(() => {
+		const db = getSpeciesDB() || {};
+		const speciesList = Object.values(db || {}).map(s => s.name).filter(Boolean).sort();
+		const sel = document.getElementById('tradeSpeciesFilter');
+		if (sel) sel.innerHTML = '<option value="">All Species</option>' + speciesList.map(s => `<option value="${s}">${s}</option>`).join('');
+	});
+
+	function fetchAndRenderTrades() {
+		const q = {};
+		const sp = (tradeSearch?.value || '').trim();
+		const spFilter = (document.getElementById('tradeSpeciesFilter')?.value || '').trim();
+		if (spFilter) q.species = spFilter;
+		if (sp) q.species = sp; // quick search by species or name
+		if (tradeMinPrice?.value) q.minPrice = tradeMinPrice.value;
+		if (tradeMaxPrice?.value) q.maxPrice = tradeMaxPrice.value;
+		if (statusFilter?.value) q.status = statusFilter.value;
+		const qs = new URLSearchParams(q).toString();
+		apiRequest('/api/trades' + (qs ? ('?' + qs) : ''), { method: 'GET' }).then(({ res, body }) => {
+			const grid = document.getElementById('tradesGrid');
+			if (!res.ok) { grid.innerHTML = '<div class="no-species-found">Failed to load trades</div>'; return; }
+			if (!Array.isArray(body) || body.length === 0) { grid.innerHTML = '<div class="no-species-found">No trades found</div>'; return; }
+			grid.innerHTML = '';
+					// safely decode local user id from token for ownership checks
+					const localUserId = (function() {
+						try {
+							const t = localStorage.getItem('token'); if (!t) return null;
+							const payload = JSON.parse(atob(t.split('.')[1] || '')); return payload && payload.userId ? Number(payload.userId) : null;
+						} catch (e) { return null; }
+					})();
+
+					body.forEach(trade => {
+				const item = document.createElement('div');
+				item.className = 'species-card';
+						const owner = isLoggedIn() && localUserId && Number(trade.user_id) === Number(localUserId);
+				item.innerHTML = `
+					<div class="species-card-header"><div class="species-icon">${trade.creature.icon || '🦖'}</div><div class="species-info"><div class="species-name">${trade.creature.name || trade.creature.species}</div><div class="species-meta">${trade.creature.species || ''} • ${trade.status || 'open'}</div></div><div class="species-count">${trade.price ? ('$' + trade.price) : ''}</div></div>
+					<div class="species-card-body"><div>${trade.creature.description || ''}</div><div style="margin-top:8px;color:#94a3b8;">Wanted: ${trade.wanted || 'Any'}</div></div>
+				`;
+				// If owner, allow delete
+				if (isLoggedIn() && trade.user_id === (JSON.parse(atob(localStorage.getItem('token').split('.')[1] || 'eyJpZCI6MH0='))?.userId)) {
+					const del = document.createElement('button'); del.className = 'btn btn-danger'; del.textContent = 'Remove'; del.style.marginTop = '8px';
+					del.onclick = async () => { await apiRequest('/api/trades/' + trade.id, { method: 'DELETE' }); fetchAndRenderTrades(); };
+					item.querySelector('.species-card-body')?.appendChild(del);
+				}
+				grid.appendChild(item);
+			});
+		}).catch(err => { const grid = document.getElementById('tradesGrid'); if (grid) grid.innerHTML = '<div class="no-species-found">Failed to load trades</div>'; });
+	}
+
+	refreshBtn?.addEventListener('click', fetchAndRenderTrades);
+	tradeSearch?.addEventListener('input', debounce(fetchAndRenderTrades, 180));
+	document.getElementById('tradeSpeciesFilter')?.addEventListener('change', fetchAndRenderTrades);
+	document.getElementById('tradeStatusFilter')?.addEventListener('change', fetchAndRenderTrades);
+
+	// Create listing flow: pick one of your creatures and submit
+	createBtn?.addEventListener('click', () => {
+		// simple modal to choose creature and set price/wanted
+		const modal = document.getElementById('creatureModal');
+		if (!modal) return alert('Modal area missing');
+		const myCreatures = (window.appState.creatures || []).slice();
+		modal.innerHTML = `<div class="modal-content"><div class="modal-header"><h3>Create Trade</h3><button id="closeTradeModal">&times;</button></div><div class="modal-body"><div><label class="form-label">Select Creature</label><select id="tradeCreatureSelect" class="form-control">${myCreatures.map(c => `<option value="${c.id}">${c.name} (${c.species})</option>`).join('')}</select></div><div class="form-group"><label class="form-label">Price</label><input id="tradePriceInput" class="form-control" type="number" step="0.01"></div><div class="form-group"><label class="form-label">Wanted (optional)</label><input id="tradeWantedInput" class="form-control" type="text"></div></div><div class="modal-footer"><button class="btn btn-primary" id="postTradeBtn">Post</button></div></div>`;
+		modal.classList.add('active'); modal.setAttribute('aria-hidden','false');
+		document.getElementById('closeTradeModal').addEventListener('click', () => { modal.classList.remove('active'); modal.innerHTML = ''; modal.setAttribute('aria-hidden','true'); });
+		document.getElementById('postTradeBtn').addEventListener('click', async () => {
+			const selectedId = document.getElementById('tradeCreatureSelect')?.value;
+			const price = parseFloat(document.getElementById('tradePriceInput')?.value) || null;
+			const wanted = document.getElementById('tradeWantedInput')?.value || null;
+			const creature = myCreatures.find(c => String(c.id) === String(selectedId));
+			if (!creature) return alert('Select a creature');
+			await apiRequest('/api/trades', { method: 'POST', body: JSON.stringify({ creature_card_id: (!String(creature.id).startsWith('creature_') ? Number(creature.id) : null), creature_data: creature, wanted, price }) });
+			modal.classList.remove('active'); modal.innerHTML = ''; modal.setAttribute('aria-hidden','true');
+			fetchAndRenderTrades();
+		});
+	});
+
+	// initial load
+	fetchAndRenderTrades();
 }
 
 function loadBossPlanner() {

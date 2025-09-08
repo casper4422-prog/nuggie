@@ -230,9 +230,17 @@ document.addEventListener('DOMContentLoaded', () => {
 					notificationsBtn.setAttribute('aria-label', 'Inbox');
 					notificationsBtn.style.marginLeft = '8px';
 					notificationsBtn.innerHTML = 'Inbox <span id="inboxBadge" style="background:#e11d48;color:white;border-radius:10px;padding:2px 6px;font-size:12px;margin-left:6px;display:none">0</span>';
-					// Try to append to header controls area if present
-					const target = headerArea.querySelector('.header-controls') || headerArea;
-					target.appendChild(notificationsBtn);
+					// Prefer inserting after Boss Planner button and before Sign Out (authBtn)
+					const bpBtn = document.getElementById('goToBossPlannerBtn');
+					const authBtnEl = document.getElementById('authBtn');
+					if (bpBtn && bpBtn.parentNode) {
+						bpBtn.parentNode.insertBefore(notificationsBtn, bpBtn.nextSibling);
+					} else if (authBtnEl && authBtnEl.parentNode) {
+						authBtnEl.parentNode.insertBefore(notificationsBtn, authBtnEl);
+					} else {
+						const target = headerArea.querySelector('.header-controls') || headerArea;
+						target.appendChild(notificationsBtn);
+					}
 				}
 			}
 			if (notificationsBtn) notificationsBtn.addEventListener('click', async (e) => { e.preventDefault(); loadInboxPage(); });

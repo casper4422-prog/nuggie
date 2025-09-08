@@ -26,7 +26,8 @@ db.serialize(() => {
   db.run(`CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     email TEXT UNIQUE NOT NULL,
-    password TEXT NOT NULL
+    password TEXT NOT NULL,
+    nickname TEXT UNIQUE
   )`);
   db.run(`CREATE TABLE IF NOT EXISTS creature_cards (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -34,30 +35,52 @@ db.serialize(() => {
     data TEXT NOT NULL,
     FOREIGN KEY(user_id) REFERENCES users(id)
   )`);
+  // Ensure nickname column exists for older databases (safe check)
+  db.all("PRAGMA table_info(users)", (err, cols) => {
+    if (err || !Array.isArray(cols)) return;
+    const hasNickname = cols.some(c => c.name === 'nickname');
+    if (!hasNickname) {
+      db.run('ALTER TABLE users ADD COLUMN nickname TEXT UNIQUE', (aerr) => {
+        if (aerr) console.warn('Failed to add nickname column:', aerr.message || aerr);
+      });
+    }
+  });
 });
 
 // Register endpoint
 app.post('/api/register', (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, nickname } = req.body;
   if (!email || !password) return res.status(400).json({ error: 'Missing email or password' });
-  bcrypt.hash(password, 10, (err, hash) => {
+  const emailVal = (email || '').trim();
+  const nickVal = nickname ? String(nickname).trim() : null;
+  // Check for existing email or nickname (case-insensitive)
+  db.get('SELECT id FROM users WHERE email = ? COLLATE NOCASE OR (nickname IS NOT NULL AND nickname = ? COLLATE NOCASE)', [emailVal, nickVal], (err, row) => {
     if (err) return res.status(500).json({ error: 'Server error' });
-    db.run('INSERT INTO users (email, password) VALUES (?, ?)', [email, hash], function(err) {
-      if (err) return res.status(400).json({ error: 'Email already exists' });
-      res.json({ success: true });
+    if (row) return res.status(400).json({ error: 'Email or nickname already exists' });
+    bcrypt.hash(password, 10, (err, hash) => {
+      if (err) return res.status(500).json({ error: 'Server error' });
+      db.run('INSERT INTO users (email, password, nickname) VALUES (?, ?, ?)', [emailVal, hash, nickVal], function(err) {
+        if (err) return res.status(500).json({ error: 'Failed to create user' });
+        // return token + user info
+        const userId = this.lastID;
+        const token = jwt.sign({ userId }, SECRET, { expiresIn: '1d' });
+        return res.json({ success: true, token, user: { id: userId, email: emailVal, nickname: nickVal } });
+      });
     });
   });
 });
 
 // Login endpoint
 app.post('/api/login', (req, res) => {
-  const { email, password } = req.body;
-  db.get('SELECT * FROM users WHERE email = ?', [email], (err, user) => {
+  const { identifier, password } = req.body; // identifier can be email or nickname
+  if (!identifier || !password) return res.status(400).json({ error: 'Missing credentials' });
+  const ident = String(identifier).trim();
+  db.get('SELECT * FROM users WHERE email = ? COLLATE NOCASE OR nickname = ? COLLATE NOCASE', [ident, ident], (err, user) => {
     if (err || !user) return res.status(400).json({ error: 'Invalid credentials' });
     bcrypt.compare(password, user.password, (err, result) => {
       if (result) {
         const token = jwt.sign({ userId: user.id }, SECRET, { expiresIn: '1d' });
-        res.json({ token });
+        res.json({ token, user: { id: user.id, email: user.email, nickname: user.nickname } });
       } else {
         res.status(400).json({ error: 'Invalid credentials' });
       }

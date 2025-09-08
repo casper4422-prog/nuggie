@@ -379,19 +379,15 @@ function canonicalRarityForSpecies(species) {
 // --- Login/Register Handlers (API calls) ---
 async function handleLogin(event) {
 	event.preventDefault();
-	const email = (document.getElementById('loginEmail')?.value || '').trim();
+	// identifier can be email or nickname
+	const identifier = (document.getElementById('loginEmail')?.value || '').trim();
 	const password = (document.getElementById('loginPassword')?.value || '').trim();
 	const errorDiv = document.getElementById('loginError');
 	errorDiv.style.display = 'none';
 
 	// Basic client-side validation
-	if (!email || !password) {
-		errorDiv.textContent = 'Please provide email and password.';
-		errorDiv.style.display = 'block';
-		return false;
-	}
-	if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
-		errorDiv.textContent = 'Please enter a valid email address.';
+	if (!identifier || !password) {
+		errorDiv.textContent = 'Please provide email/nickname and password.';
 		errorDiv.style.display = 'block';
 		return false;
 	}
@@ -399,7 +395,7 @@ async function handleLogin(event) {
 		const res = await fetch('https://nuggie.onrender.com/api/login', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ email, password })
+			body: JSON.stringify({ identifier, password })
 		});
 		// helper to read JSON or text body for better diagnostics
 		async function readBody(resp) {
@@ -413,6 +409,8 @@ async function handleLogin(event) {
 		const data = await readBody(res);
 		if (res.ok && data && data.token) {
 			localStorage.setItem('token', data.token);
+			// store returned user info for profile page if present
+			try { if (data.user) { localStorage.setItem('userEmail', data.user.email || ''); localStorage.setItem('userNickname', data.user.nickname || ''); } } catch (e) {}
 			// Ensure the document is visible and the main app is shown
 			try { document.documentElement.setAttribute('data-ready', 'true'); } catch (e) {}
 			showMainApp();
@@ -448,6 +446,7 @@ window.handleLogin = handleLogin;
 async function handleRegister(event) {
 	event.preventDefault();
 	const email = (document.getElementById('registerEmail')?.value || '').trim();
+	const nickname = (document.getElementById('registerNickname')?.value || '').trim();
 	const password = (document.getElementById('registerPassword')?.value || '').trim();
 	const confirmPassword = (document.getElementById('registerConfirmPassword')?.value || '').trim();
 	const errorDiv = document.getElementById('registerError');
@@ -478,7 +477,7 @@ async function handleRegister(event) {
 		const res = await fetch('https://nuggie.onrender.com/api/register', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ email, password })
+			body: JSON.stringify({ email, password, nickname })
 		});
 		async function readBody(resp) {
 			const ct = resp.headers.get('content-type') || '';
@@ -492,6 +491,7 @@ async function handleRegister(event) {
 			// If server returned a token, sign in immediately. Otherwise, prefill login and attempt auto-login
 			if (data && data.token) {
 				localStorage.setItem('token', data.token);
+				try { if (data.user) { localStorage.setItem('userEmail', data.user.email || ''); localStorage.setItem('userNickname', data.user.nickname || ''); } } catch (e) {}
 				try { document.documentElement.setAttribute('data-ready', 'true'); } catch (e) {}
 				showMainApp();
 				updateTribeHeader();
@@ -967,12 +967,14 @@ function loadMyProfile() {
 	const main = document.getElementById('appMainContent');
 	if (!main) return;
 	const email = localStorage.getItem('userEmail') || '';
+	const nickname = localStorage.getItem('userNickname') || '';
 	const tribe = localStorage.getItem('tribeName') || '';
 	main.innerHTML = `
 		<section class="profile-page">
 			<h1>My Profile</h1>
 			<div class="profile-grid">
 				<div><label class="form-label">Email</label><div>${email}</div></div>
+				<div><label class="form-label">Nickname</label><div>${nickname}</div></div>
 				<div><label class="form-label">Tribe</label><div>${tribe}</div></div>
 			</div>
 			<div style="margin-top:12px;"><button class="btn btn-primary" id="editProfileBtn">Edit Profile</button></div>
@@ -995,6 +997,10 @@ function renderRegisterForm() {
 				<div class="form-group">
 					<label class="form-label" for="registerEmail">Email</label>
 					<input id="registerEmail" class="form-control" type="email" required autocomplete="username">
+				</div>
+				<div class="form-group">
+					<label class="form-label" for="registerNickname">Nickname</label>
+					<input id="registerNickname" class="form-control" type="text" required autocomplete="off" placeholder="Choose a unique nickname">
 				</div>
 				<div class="form-group">
 					<label class="form-label" for="registerPassword">Password</label>

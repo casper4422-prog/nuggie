@@ -107,7 +107,12 @@ window.handleAuthClick = handleAuthClick;
 function updateTribeHeader() {
 	// Replace with actual tribe name from user profile if available
 	const tribeName = localStorage.getItem('tribeName') || 'My Tribe';
-	document.getElementById('tribeHeader').textContent = tribeName;
+	try {
+		const el = document.getElementById('tribeHeader');
+		if (el) el.textContent = tribeName;
+	} catch (e) {
+		// In some pages the tribe header may be absent; fail silently to avoid breaking initialization
+	}
 }
 
 function updateAuthUI() {

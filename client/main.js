@@ -218,6 +218,9 @@ document.addEventListener('DOMContentLoaded', () => {
 			if (goToMyNuggiesBtn) goToMyNuggiesBtn.addEventListener('click', goToMyNuggies);
 			const goToTradingBtn = document.getElementById('goToTradingBtn');
 			if (goToTradingBtn) goToTradingBtn.addEventListener('click', goToTrading);
+			// Notifications button (may be present in header)
+			const notificationsBtn = document.getElementById('notificationsBtn');
+			if (notificationsBtn) notificationsBtn.addEventListener('click', async (e) => { e.preventDefault(); await showNotificationsInbox(); });
 		} catch (wireErr) {
 			console.warn('[SPA] UI wiring failed', wireErr);
 		}
@@ -939,6 +942,9 @@ function loadTradingPage() {
 					<select id="tradeSpeciesFilter" class="form-control"><option value="">All Species</option></select>
 					<select id="tradeStatSort" class="form-control" style="width:160px;"><option value="">Sort: None</option><option value="Health">Highest HP</option><option value="Melee">Highest Melee</option><option value="Stamina">Highest Stamina</option></select>
 					<select id="tradeStatusFilter" class="form-control" style="width:140px;"><option value="">Any</option><option value="open">Open</option><option value="closed">Closed</option></select>
+					<select id="tradeStatFilter" class="form-control" style="width:120px;"><option value="">Stat</option><option value="Health">HP</option><option value="Melee">Melee</option><option value="Stamina">Stamina</option></select>
+					<input id="tradeStatMin" class="form-control" placeholder="min" style="width:80px;">
+					<input id="tradeStatMax" class="form-control" placeholder="max" style="width:80px;">
 					<button id="tradeRefreshBtn" class="btn btn-secondary">Refresh</button>
 					<button id="createTradeBtn" class="btn btn-primary">Create Listing</button>
 				</div>
@@ -972,6 +978,13 @@ function loadTradingPage() {
 		if (sp) q.species = sp; // quick search by species or name
 		if (tradeMinPrice?.value) q.minPrice = tradeMinPrice.value;
 		if (tradeMaxPrice?.value) q.maxPrice = tradeMaxPrice.value;
+		// stat range filters
+		const statFilter = (document.getElementById('tradeStatFilter')?.value || '').trim();
+		const statMin = (document.getElementById('tradeStatMin')?.value || '').trim();
+		const statMax = (document.getElementById('tradeStatMax')?.value || '').trim();
+		if (statFilter) q.stat = statFilter;
+		if (statMin) q.statMin = statMin;
+		if (statMax) q.statMax = statMax;
 		if (statusFilter?.value) q.status = statusFilter.value;
 		const qs = new URLSearchParams(q).toString();
 			apiRequest('/api/trades' + (qs ? ('?' + qs) : ''), { method: 'GET' }).then(({ res, body }) => {
@@ -996,7 +1009,17 @@ function loadTradingPage() {
 						} catch (e) { return null; }
 					})();
 
-					body.forEach(trade => {
+					// client-side stat-range filtering if server didn't apply it
+					const serverDidFilter = !!q.stat || !!q.statMin || !!q.statMax;
+					const filteredBody = body.filter(trade => {
+						if (!trade.creature || !trade.creature.baseStats) return true;
+						if (!statFilter && !statMin && !statMax) return true;
+						const val = Number(trade.creature.baseStats?.[statFilter] || 0);
+						if (statMin && val < Number(statMin)) return false;
+						if (statMax && val > Number(statMax)) return false;
+						return true;
+					});
+					filteredBody.forEach(trade => {
 				const item = document.createElement('div');
 				item.className = 'species-card';
 						const owner = isLoggedIn() && localUserId && Number(trade.user_id) === Number(localUserId);
@@ -1029,7 +1052,16 @@ function loadTradingPage() {
 								const list = document.getElementById('offersList'); list.innerHTML = '';
 								(body || []).forEach(o => {
 									const row = document.createElement('div'); row.style.borderTop = '1px solid rgba(255,255,255,0.03)'; row.style.padding = '8px 0';
-									row.innerHTML = `<div><strong>From:</strong> User ${o.from_user_id} • <strong>Price:</strong> ${o.offered_price || 'N/A'}</div><div style="color:#cbd5e1;">${o.message || ''}</div>`;
+									// show from nickname when available
+									const fromLabel = o.from_nickname ? `${o.from_nickname} (id:${o.from_user_id})` : `User ${o.from_user_id}`;
+									let offeredPreview = '';
+									try {
+										if (o.offered_creature_data && Object.keys(o.offered_creature_data).length) {
+											const oc = o.offered_creature_data;
+											offeredPreview = `<div style="margin-top:6px;padding:8px;border:1px solid rgba(255,255,255,0.03);border-radius:6px;background:rgba(255,255,255,0.01);"><div><strong>${oc.name||oc.species||'Creature'}</strong> • ${oc.species||''}</div><div style="color:#94a3b8;margin-top:6px;">${(oc.baseStats? Object.keys(oc.baseStats).slice(0,3).map(k=>`${k}:${oc.baseStats[k]||0}`).join(' • '):'')}</div></div>`;
+										}
+									} catch (e) { offeredPreview = ''; }
+									row.innerHTML = `<div><strong>From:</strong> ${fromLabel} • <strong>Price:</strong> ${o.offered_price || 'N/A'}</div><div style="color:#cbd5e1;">${o.message || ''}</div>${offeredPreview}`;
 									const acceptBtn = document.createElement('button'); acceptBtn.className = 'btn btn-primary'; acceptBtn.textContent = 'Accept'; acceptBtn.style.marginRight = '8px';
 									const rejectBtn = document.createElement('button'); rejectBtn.className = 'btn btn-secondary'; rejectBtn.textContent = 'Reject';
 									acceptBtn.onclick = async () => { await apiRequest('/api/offers/' + o.id, { method: 'PUT', body: JSON.stringify({ status: 'accepted' }) }); alert('Offer accepted'); modal.classList.remove('active'); modal.innerHTML = ''; fetchAndRenderTrades(); };
@@ -1246,6 +1278,43 @@ try {
 	};
 }
 window.appState = appState;
+
+// Notifications: client helpers
+async function fetchNotifications() {
+	try {
+		const { res, body } = await apiRequest('/api/notifications', { method: 'GET' });
+		if (!res.ok) return [];
+		return Array.isArray(body) ? body : [];
+	} catch (e) { return []; }
+}
+
+async function markNotificationRead(id) {
+	try {
+		await apiRequest('/api/notifications/' + id + '/read', { method: 'PUT' });
+	} catch (e) { /* ignore */ }
+}
+
+async function showNotificationsInbox() {
+	const modal = document.getElementById('creatureModal'); if (!modal) return alert('Modal missing');
+	const notes = await fetchNotifications();
+	modal.classList.add('active'); modal.setAttribute('aria-hidden','false');
+	modal.innerHTML = `<div class="modal-content" style="max-width:720px;margin:20px auto;"><div class="modal-header"><h3>Inbox</h3><button id="closeInbox" class="close-btn soft">Close</button></div><div class="modal-body" id="inboxList" style="max-height:480px;overflow:auto"></div></div>`;
+	document.getElementById('closeInbox').addEventListener('click', ()=>{ modal.classList.remove('active'); modal.innerHTML=''; modal.setAttribute('aria-hidden','true'); });
+	const list = document.getElementById('inboxList'); list.innerHTML = '';
+	if (!notes || notes.length === 0) { list.innerHTML = '<div class="no-species-found">No notifications</div>'; return; }
+	notes.forEach(n => {
+		const row = document.createElement('div'); row.style.borderTop = '1px solid rgba(255,255,255,0.03)'; row.style.padding = '8px 0';
+		const actor = n.actor_nickname ? `${n.actor_nickname} (id:${n.actor_user_id})` : `User ${n.actor_user_id}`;
+		row.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center"><div><strong>${n.type.replace('_',' ')}</strong> from ${actor}</div><div style="font-size:12px;color:#94a3b8">${n.created_at}</div></div><div style="color:#cbd5e1;margin-top:6px">${JSON.stringify(n.payload || {})}</div>`;
+		if (!n.read) {
+			const markBtn = document.createElement('button'); markBtn.className = 'btn btn-primary'; markBtn.textContent = 'Mark Read'; markBtn.style.marginTop = '6px';
+			markBtn.onclick = async () => { await markNotificationRead(n.id); markBtn.remove(); try { const idx = notes.findIndex(x=>x.id===n.id); if (idx>=0) notes[idx].read=true; } catch(e){} };
+			row.appendChild(markBtn);
+		}
+		list.appendChild(row);
+	});
+}
+window.showNotificationsInbox = showNotificationsInbox;
 
 // --- SPECIES_DATABASE wiring (non-destructive) ---
 // Ensure fallback storage exists; avoid touching any variable named SPECIES_DATABASE

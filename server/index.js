@@ -62,6 +62,16 @@ db.serialize(() => {
     FOREIGN KEY(from_user_id) REFERENCES users(id),
     FOREIGN KEY(to_user_id) REFERENCES users(id)
   )`);
+  db.run(`CREATE TABLE IF NOT EXISTS notifications (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    actor_user_id INTEGER,
+    type TEXT,
+    payload TEXT,
+    read INTEGER DEFAULT 0,
+    created_at TEXT DEFAULT (datetime('now')),
+    FOREIGN KEY(user_id) REFERENCES users(id)
+  )`);
   // Ensure nickname column exists for older databases (safe check)
   db.all("PRAGMA table_info(users)", (err, cols) => {
     if (err || !Array.isArray(cols)) return;
@@ -178,8 +188,8 @@ app.post('/api/trades', authenticateToken, (req, res) => {
 
 // Marketplace: list/search trades (public)
 app.get('/api/trades', (req, res) => {
-  // Support simple query params: species, minPrice, maxPrice, status
-  const { species, minPrice, maxPrice, status } = req.query || {};
+  // Support simple query params: species, minPrice, maxPrice, status, stat, statMin, statMax
+  const { species, minPrice, maxPrice, status, stat, statMin, statMax } = req.query || {};
   db.all('SELECT id, user_id, creature_card_id, creature_data, wanted, price, status, created_at FROM trades', [], (err, rows) => {
     if (err) return res.status(500).json({ error: 'Failed to load trades' });
     try {
@@ -188,6 +198,17 @@ app.get('/api/trades', (req, res) => {
       if (status) items = items.filter(i => (i.status || '').toLowerCase() === (status+'').toLowerCase());
       if (minPrice) items = items.filter(i => Number(i.price || 0) >= Number(minPrice));
       if (maxPrice) items = items.filter(i => Number(i.price || 0) <= Number(maxPrice));
+      // stat-range filtering: expects stat name matching keys inside creature.baseStats (e.g., Health, Melee, Stamina)
+      if (stat) {
+        items = items.filter(i => {
+          try {
+            const v = Number(i.creature && i.creature.baseStats ? (i.creature.baseStats[stat] || 0) : 0);
+            if (statMin && v < Number(statMin)) return false;
+            if (statMax && v > Number(statMax)) return false;
+            return true;
+          } catch (e) { return false; }
+        });
+      }
       res.json(items);
     } catch (e) { res.status(500).json({ error: 'Failed to parse trades' }); }
   });
@@ -224,7 +245,13 @@ app.post('/api/trades/:id/offers', authenticateToken, (req, res) => {
     db.run('INSERT INTO offers (trade_id, from_user_id, to_user_id, offered_creature_id, offered_creature_data, offered_price, message, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
       [tradeId, req.user.userId, trade.user_id, offered_creature_id || null, JSON.stringify(offered_creature_data || {}), offered_price || null, message || null, 'pending'], function(err) {
         if (err) return res.status(500).json({ error: 'Failed to create offer' });
-        res.status(201).json({ success: true, id: this.lastID });
+        const offerId = this.lastID;
+        // create notification for trade owner
+        try {
+          const payload = JSON.stringify({ offerId, tradeId, fromUserId: req.user.userId, message: message || null });
+          db.run('INSERT INTO notifications (user_id, actor_user_id, type, payload, read) VALUES (?, ?, ?, ?, ?)', [trade.user_id, req.user.userId, 'offer', payload, 0]);
+        } catch (e) { /* ignore notif failures */ }
+        res.status(201).json({ success: true, id: offerId });
       });
   });
 });
@@ -232,9 +259,9 @@ app.post('/api/trades/:id/offers', authenticateToken, (req, res) => {
 // Offers: list offers for a trade (owner sees all, others see only their offers)
 app.get('/api/trades/:id/offers', authenticateToken, (req, res) => {
   const tradeId = req.params.id;
-  db.all('SELECT id, trade_id, from_user_id, to_user_id, offered_creature_id, offered_creature_data, offered_price, message, status, created_at FROM offers WHERE trade_id = ?', [tradeId], (err, rows) => {
+  db.all('SELECT offers.id, offers.trade_id, offers.from_user_id, offers.to_user_id, offers.offered_creature_id, offers.offered_creature_data, offers.offered_price, offers.message, offers.status, offers.created_at, u.nickname AS from_nickname FROM offers LEFT JOIN users u ON offers.from_user_id = u.id WHERE offers.trade_id = ?', [tradeId], (err, rows) => {
     if (err) return res.status(500).json({ error: 'Failed to load offers' });
-    const parsed = rows.map(r => ({ id: r.id, trade_id: r.trade_id, from_user_id: r.from_user_id, to_user_id: r.to_user_id, offered_creature_id: r.offered_creature_id, offered_creature_data: JSON.parse(r.offered_creature_data || '{}'), offered_price: r.offered_price, message: r.message, status: r.status, created_at: r.created_at }));
+    const parsed = rows.map(r => ({ id: r.id, trade_id: r.trade_id, from_user_id: r.from_user_id, from_nickname: r.from_nickname || null, to_user_id: r.to_user_id, offered_creature_id: r.offered_creature_id, offered_creature_data: JSON.parse(r.offered_creature_data || '{}'), offered_price: r.offered_price, message: r.message, status: r.status, created_at: r.created_at }));
     // If requester is trade owner, return all; otherwise filter to only their offers
     const filtered = parsed.filter(o => (req.user.userId === o.to_user_id) || (req.user.userId === o.from_user_id));
     res.json(filtered);

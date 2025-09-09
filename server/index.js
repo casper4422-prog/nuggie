@@ -6,7 +6,6 @@ const sqlite3 = require('sqlite3').verbose();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3001;
 const SECRET = process.env.JWT_SECRET || 'your_jwt_secret'; // Override via JWT_SECRET in production
@@ -17,11 +16,7 @@ const SECRET = process.env.JWT_SECRET || 'your_jwt_secret'; // Override via JWT_
 app.use(cors({ origin: true, credentials: true, allowedHeaders: ['Content-Type', 'Authorization'] }));
 app.use(bodyParser.json());
 
-// Serve client static files (so a single Render web service can host both client and API)
-try {
-  const clientRoot = path.join(__dirname, '..', 'client');
-  app.use(express.static(clientRoot));
-} catch (e) { console.warn('Failed to mount static client', e); }
+// Note: client is served separately in production (no static mounting here)
 
 // Initialize SQLite DB
 const db = new sqlite3.Database('database.sqlite', (err) => {

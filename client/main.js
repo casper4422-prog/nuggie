@@ -373,23 +373,12 @@ async function handleLogin(event) {
 		return false;
 	}
 	try {
-		console.log('[SPA] sending login request to server for', identifier);
-		const res = await fetch('https://nuggie.onrender.com/api/login', {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ identifier, password })
-		});
-		// helper to read JSON or text body for better diagnostics
-		async function readBody(resp) {
-			const ct = resp.headers.get('content-type') || '';
-			try {
-				if (ct.includes('application/json')) return await resp.json();
-				return await resp.text();
-			} catch (e) { return await resp.text().catch(() => null); }
-		}
-
-		const data = await readBody(res);
-		if (res.ok && data && data.token) {
+	console.log('[SPA] sending login request to server for', identifier);
+	const { res, body } = await apiRequest('/api/login', { method: 'POST', body: JSON.stringify({ identifier, password }) });
+	// Mirror the original helper behavior: prefer parsed body from apiRequest
+	const data = body;
+	// `res` and `data` variables now available
+	if (res.ok && data && data.token) {
 			localStorage.setItem('token', data.token);
 			// store returned user info for profile page if present
 			try { if (data.user) { localStorage.setItem('userEmail', data.user.email || ''); localStorage.setItem('userNickname', data.user.nickname || ''); } } catch (e) {}
@@ -520,7 +509,9 @@ async function apiRequest(path, opts = {}) {
 	const headers = opts.headers || {};
 	if (token) headers['Authorization'] = 'Bearer ' + token;
 	headers['Content-Type'] = headers['Content-Type'] || 'application/json';
-	const res = await fetch((opts.base || 'https://nuggie.onrender.com') + path, Object.assign({}, opts, { headers, credentials: 'include' }));
+	// Default to same-origin so preview/deployed hosts don't use a hard-coded API host
+	const base = opts.base || (typeof window !== 'undefined' ? window.location.origin : '');
+	const res = await fetch(base + path, Object.assign({}, opts, { headers, credentials: 'include' }));
 	const ct = res.headers.get('content-type') || '';
 	let body = null;
 	try { body = ct.includes('application/json') ? await res.json() : await res.text(); } catch (e) { body = null; }

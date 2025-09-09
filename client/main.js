@@ -1364,7 +1364,8 @@ const ARENAS = [
 	{ id: 'island_dragon', arena: 'The Island - Dragon', map: 'The Island', bosses: [{ id: 'dragon', name: 'Dragon', notes: 'Fire-breathing dragon. Ranged tactics recommended.' }] },
 	{ id: 'island_megapithecus', arena: 'The Island - Megapithecus', map: 'The Island', bosses: [{ id: 'megapithecus', name: 'Megapithecus', notes: 'Giant ape boss.' }] },
 	{ id: 'island_broodmother', arena: 'The Island - Broodmother', map: 'The Island', bosses: [{ id: 'broodmother', name: 'Broodmother Lysrix', notes: 'Spawns insect minions causing torpor.' }] },
-	{ id: 'center_nunatak', arena: 'The Center - Nunatak', map: 'The Center', bosses: [{ id: 'nunatak', name: 'Nunatak (Ice Wyvern Titan)', notes: 'Massive ice wyvern; freezing attacks.' }] },
+	// Corrected: Nunatak arena is on Ragnarok (Rag) not The Center
+	{ id: 'rag_nunatak', arena: 'Ragnarok - Nunatak', map: 'Ragnarok', bosses: [{ id: 'nunatak', name: 'Nunatak', notes: 'Massive ice wyvern; freezing attacks.' }] },
 	{ id: 'center_dual', arena: 'The Center - Dual Arena', map: 'The Center', bosses: [{ id: 'dual_brood_meg', name: 'Dual: Broodmother + Megapithecus', notes: 'Two bosses spawn at once; extreme difficulty.' }] },
 	{ id: 'scorched_manticore', arena: 'Scorched Earth - Manticore', map: 'Scorched Earth', bosses: [{ id: 'manticore', name: 'Manticore', notes: 'Venom projectiles and elementals.' }] },
 	{ id: 'aberration_rockwell', arena: 'Aberration - Rockwell', map: 'Aberration', bosses: [{ id: 'rockwell', name: 'Rockwell', notes: 'Mutated human-plant hybrid, radiation hazards.' }] },
@@ -1457,11 +1458,35 @@ function renderArenaGrid() {
 }
 
 function openArenaPage(arenaId) {
-	const wrap = document.getElementById('arenaDetailWrap'); if (!wrap) return;
-	const arena = ARENAS.find(a=>a.id===arenaId); if (!arena) { wrap.innerHTML = '<div class="no-items">Arena not found</div>'; return; }
-	// Render header
-	wrap.innerHTML = `<div style="display:flex;align-items:center;gap:12px;margin-top:12px"><h2 style="margin:0">${escapeHtml(arena.arena)}</h2><div style="color:#666">${escapeHtml(arena.map||'')}</div></div><div id="arenaBossList" style="margin-top:12px;display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px"></div><div id="arenaBossDetail" style="margin-top:12px"></div>`;
-	renderArenaBosses(arena);
+	// Render a full arena page (replace main content) so navigation flows: Boss Planner -> Arena -> Arena Page
+	const main = document.getElementById('appMainContent'); if (!main) return;
+	const arena = ARENAS.find(a=>a.id===arenaId);
+	if (!arena) { main.innerHTML = '<div class="no-items">Arena not found</div>'; return; }
+	main.innerHTML = `
+		<section class="arena-page">
+			<div class="page-header"><h1>${escapeHtml(arena.arena)}</h1><div class="section-sub">Map: ${escapeHtml(arena.map||'')}</div></div>
+			<div style="margin-top:12px;display:flex;gap:18px;align-items:flex-start;">
+				<div style="flex:1;min-width:360px;">
+					<div id="arenaBossListPage" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px"></div>
+				</div>
+				<div style="width:420px;flex:0 0 420px;">
+					<div id="arenaBossRightPanel" style="background:#fff;border:1px solid #eee;padding:12px;border-radius:6px;min-height:120px"></div>
+				</div>
+			</div>
+		</section>`;
+	// render bosses into the list and wire clicks to open assignment panel
+	const listEl = document.getElementById('arenaBossListPage');
+	listEl.innerHTML = '';
+	(arena.bosses||[]).forEach(b => {
+		const card = document.createElement('div'); card.className='boss-card'; card.style='background:#fff;border:1px solid #eee;padding:10px;border-radius:8px;display:flex;flex-direction:column;gap:8px;cursor:pointer';
+		const h = document.createElement('div'); h.style='display:flex;align-items:center;justify-content:space-between'; h.innerHTML = `<div><strong>${escapeHtml(b.name||'Untitled')}</strong><div style="font-size:12px;color:#666">${escapeHtml(b.notes||'')}</div></div>`;
+		card.appendChild(h);
+		card.addEventListener('click', () => {
+			// open assignment panel in right column
+			openBossAssignment(b);
+		});
+		listEl.appendChild(card);
+	});
 }
 
 function renderArenaBosses(arena) {

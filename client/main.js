@@ -1361,15 +1361,37 @@ function saveBossData(data) {
 
 // Arena and boss definitions used for the Boss Planner UI (grouped by arena)
 const ARENAS = [
+	// The Island guardians
 	{ id: 'island_dragon', arena: 'The Island - Dragon', map: 'The Island', bosses: [{ id: 'dragon', name: 'Dragon', notes: 'Fire-breathing dragon. Ranged tactics recommended.' }] },
 	{ id: 'island_megapithecus', arena: 'The Island - Megapithecus', map: 'The Island', bosses: [{ id: 'megapithecus', name: 'Megapithecus', notes: 'Giant ape boss.' }] },
 	{ id: 'island_broodmother', arena: 'The Island - Broodmother', map: 'The Island', bosses: [{ id: 'broodmother', name: 'Broodmother Lysrix', notes: 'Spawns insect minions causing torpor.' }] },
-	// Corrected: Nunatak arena is on Ragnarok (Rag) not The Center
+	// Island ascension boss
+	{ id: 'island_overseer', arena: 'The Island - Overseer', map: 'The Island', bosses: [{ id: 'overseer', name: 'Overseer', notes: 'Final ascension boss fought in the Tek Cave.' }] },
+
+	// Ragnarok: Nunatak plus mini-bosses referenced in the guide
 	{ id: 'rag_nunatak', arena: 'Ragnarok - Nunatak', map: 'Ragnarok', bosses: [{ id: 'nunatak', name: 'Nunatak', notes: 'Massive ice wyvern; freezing attacks.' }] },
+	{ id: 'rag_iceworm_queen', arena: 'Ragnarok - Iceworm Queen (Frozen Dungeon)', map: 'Ragnarok', bosses: [{ id: 'iceworm_queen', name: 'Iceworm Queen', notes: 'Mini-boss in the Frozen Dungeon; spawns Ice Worms.' }] },
+	{ id: 'rag_lava_elemental', arena: 'Ragnarok - Lava Elemental (Jungle Dungeon)', map: 'Ragnarok', bosses: [{ id: 'lava_elemental', name: 'Lava Elemental', notes: 'Mini-boss in the Jungle Dungeon.' }] },
+
+	// The Center dual arena
 	{ id: 'center_dual', arena: 'The Center - Dual Arena', map: 'The Center', bosses: [{ id: 'dual_brood_meg', name: 'Dual: Broodmother + Megapithecus', notes: 'Two bosses spawn at once; extreme difficulty.' }] },
+
+	// Scorched Earth
 	{ id: 'scorched_manticore', arena: 'Scorched Earth - Manticore', map: 'Scorched Earth', bosses: [{ id: 'manticore', name: 'Manticore', notes: 'Venom projectiles and elementals.' }] },
+
+	// Aberration
 	{ id: 'aberration_rockwell', arena: 'Aberration - Rockwell', map: 'Aberration', bosses: [{ id: 'rockwell', name: 'Rockwell', notes: 'Mutated human-plant hybrid, radiation hazards.' }] },
+
+	// Astraeos (custom / mythological themed map) – include main bosses and notable myth enemies
+	{ id: 'astraeos_thodes', arena: 'Astraeos - Thodes (Widowmaker)', map: 'Astraeos', bosses: [{ id: 'thodes_widowmaker', name: 'Thodes the Widowmaker', notes: 'Primary Greek-mythology style boss for Astraeos.' }] },
+	{ id: 'astraeos_natrix', arena: 'Astraeos - Natrix (Devious)', map: 'Astraeos', bosses: [{ id: 'natrix_devious', name: 'Natrix the Devious', notes: 'Secondary Astraeos boss.' }] },
+	{ id: 'astraeos_medusa', arena: 'Astraeos - Medusa', map: 'Astraeos', bosses: [{ id: 'medusa', name: 'Medusa', notes: 'Mythological enemy encountered in caves.' }] },
+	{ id: 'astraeos_minotaur', arena: 'Astraeos - Minotaur', map: 'Astraeos', bosses: [{ id: 'minotaur', name: 'Minotaur', notes: 'Legendary beast encounter.' }] },
+
+	// Extinction Titans and King Titan
 	{ id: 'extinction_desert_titan', arena: 'Extinction - Desert Titan', map: 'Extinction', bosses: [{ id: 'desert_titan', name: 'Desert Titan', notes: 'Massive flying titan; teleport mechanics.' }] },
+	{ id: 'extinction_forest_titan', arena: 'Extinction - Forest Titan', map: 'Extinction', bosses: [{ id: 'forest_titan', name: 'Forest Titan', notes: 'Extremely slow but powerful; destroys surroundings.' }] },
+	{ id: 'extinction_ice_titan', arena: 'Extinction - Ice Titan', map: 'Extinction', bosses: [{ id: 'ice_titan', name: 'Ice Titan', notes: 'Agile frost titan with freeze attacks.' }] },
 	{ id: 'extinction_king_titan', arena: 'Extinction - King Titan', map: 'Extinction', bosses: [{ id: 'king_titan', name: 'King Titan', notes: 'Final Titan boss; keep fight centered.' }] }
 ];
 

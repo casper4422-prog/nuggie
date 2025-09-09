@@ -28,6 +28,22 @@ function isLoggedIn() {
 		return parts.length === 3;
 	} catch (e) { return false; }
 }
+
+// Show main application UI (called after successful login)
+function showMainApp() {
+	try {
+		const landing = document.getElementById('landingPage');
+		const register = document.getElementById('registerPage');
+		const mainApp = document.getElementById('mainApp');
+		if (landing) landing.style.display = 'none';
+		if (register) register.style.display = 'none';
+		if (mainApp) mainApp.style.display = '';
+		// Ensure the app main content exists
+		const appMain = document.getElementById('appMainContent');
+		if (appMain) appMain.style.display = '';
+	} catch (e) { console.warn('showMainApp failed', e); }
+}
+window.showMainApp = showMainApp;
 function handleAuthClick() {
 	if (isLoggedIn()) {
 		localStorage.removeItem('token');

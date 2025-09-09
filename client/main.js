@@ -645,10 +645,18 @@ async function apiRequest(path, opts = {}) {
 	const headers = opts.headers || {};
 	if (token) headers['Authorization'] = 'Bearer ' + token;
 	headers['Content-Type'] = headers['Content-Type'] || 'application/json';
-	// Default to runtime-configurable base (window.__API_BASE) then same-origin
-	let base = opts.base || (typeof window !== 'undefined' ? (window.__API_BASE || window.location.origin) : '');
+	// Resolve base with safe fallbacks:
+	// 1) explicit opts.base
+	// 2) runtime override window.__API_BASE
+	// 3) same-origin (window.location.origin)
+	// 4) fallback to canonical host used for the API so previews still work
+	const canonicalApiHost = 'https://nuggie.onrender.com';
+	let base = '';
+	try {
+		base = opts.base || (typeof window !== 'undefined' ? (window.__API_BASE || window.location.origin) : '') || canonicalApiHost;
+	} catch (e) { base = canonicalApiHost; }
 	// Normalize: remove trailing slash if present so base + path is consistent
-	try { if (base.endsWith('/')) base = base.slice(0, -1); } catch (e) {}
+	try { if (base && base.endsWith('/')) base = base.slice(0, -1); } catch (e) {}
 	const url = base + path;
 	const method = (opts.method || 'GET').toUpperCase();
 	try {

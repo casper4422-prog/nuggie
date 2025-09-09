@@ -16,6 +16,23 @@ const SECRET = process.env.JWT_SECRET || 'your_jwt_secret'; // Override via JWT_
 app.use(cors({ origin: true, credentials: true, allowedHeaders: ['Content-Type', 'Authorization'] }));
 app.use(bodyParser.json());
 
+// Optional: serve the client static files from the same server for simple deployments.
+// Set SERVE_CLIENT=false to disable when frontend is hosted separately.
+const serveClient = (process.env.SERVE_CLIENT || 'true') === 'true';
+if (serveClient) {
+  const path = require('path');
+  const clientDir = path.join(__dirname, '..', 'client');
+  try {
+    app.use(express.static(clientDir));
+    // SPA fallback: serve index.html for non-api routes
+    app.get('*', (req, res, next) => {
+      if (req.path.startsWith('/api')) return next();
+      res.sendFile(path.join(clientDir, 'index.html'));
+    });
+    console.log('Serving client static files from', clientDir);
+  } catch (e) { console.warn('Failed to enable static client serving', e); }
+}
+
 // Note: client is served separately in production (no static mounting here)
 
 // Initialize SQLite DB

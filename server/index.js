@@ -558,6 +558,27 @@ app.get('/api/tribes/:id/creatures', authenticateToken, (req, res) => {
   });
 });
 
+// Notifications: list notifications for authenticated user
+app.get('/api/notifications', authenticateToken, (req, res) => {
+  db.all('SELECT id, actor_user_id, type, payload, read, created_at FROM notifications WHERE user_id = ? ORDER BY created_at DESC', [req.user.userId], (err, rows) => {
+    if (err) return res.status(500).json({ error: 'Failed to load notifications' });
+    try {
+      const items = (rows || []).map(r => ({ id: r.id, actor_user_id: r.actor_user_id, type: r.type, payload: (r.payload ? JSON.parse(r.payload) : {}), read: !!r.read, created_at: r.created_at }));
+      res.json(items);
+    } catch (e) { res.status(500).json({ error: 'Failed to parse notifications' }); }
+  });
+});
+
+// Mark a notification as read
+app.put('/api/notifications/:id/read', authenticateToken, (req, res) => {
+  const id = req.params.id;
+  db.run('UPDATE notifications SET read = 1 WHERE id = ? AND user_id = ?', [id, req.user.userId], function(err) {
+    if (err) return res.status(500).json({ error: 'Failed to mark read' });
+    if (this.changes === 0) return res.status(404).json({ error: 'Notification not found or not owned' });
+    res.json({ success: true });
+  });
+});
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   if (!process.env.JWT_SECRET) console.warn('Using default JWT secret; set JWT_SECRET in environment for production');

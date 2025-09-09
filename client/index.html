@@ -10,6 +10,14 @@
         <link rel="stylesheet" href="main-additional.css">
     </head>
     <body>
+        <script>
+            // Defensive fallback: ensure showMainApp exists so early callers won't throw
+            // This will be overwritten by the real implementation in main.js when it loads.
+            window.showMainApp = window.showMainApp || function() {
+                try { console.warn('[SPA] fallback showMainApp invoked'); } catch (e) {}
+                try { const landing = document.getElementById('landingPage'); const mainApp = document.getElementById('mainApp'); const appMain = document.getElementById('appMainContent'); if (landing) landing.style.display = 'none'; if (mainApp) mainApp.style.display = ''; if (appMain) appMain.style.display = ''; } catch (e) {}
+            };
+        </script>
         <!-- Minimal app shell. All JS lives in external files. -->
         <div id="landingPage" class="landing-page" role="main">
             <div class="landing-container">

@@ -8,8 +8,8 @@ const jwt = require('jsonwebtoken');
 
 const path = require('path');
 const app = express();
-const PORT = 3001;
-const SECRET = 'your_jwt_secret'; // Change this in production
+const PORT = process.env.PORT || 3001;
+const SECRET = process.env.JWT_SECRET || 'your_jwt_secret'; // Override via JWT_SECRET in production
 
 // Enable CORS for credentialed cross-origin requests.
 // Echo the request Origin so previews and different subdomains are accepted.
@@ -553,5 +553,6 @@ app.get('/api/tribes/:id/creatures', authenticateToken, (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`Server running on port ${PORT}`);
+  if (!process.env.JWT_SECRET) console.warn('Using default JWT secret; set JWT_SECRET in environment for production');
 });

@@ -1283,13 +1283,8 @@ function loadBossPlanner() {
 		<section class="boss-planner-page">
 			<div class="page-header"><h1>Boss Planner</h1><div class="section-sub">Plan boss fights, rewards and party composition</div></div>
 			<div style="margin-top:12px;display:flex;gap:12px;align-items:center;">
-				<button id="seedDefaultsBtn" class="btn btn-secondary">Seed Defaults</button>
-				<button id="addBossBtn" class="btn btn-primary">+ Add Boss</button>
-				<button id="viewArenasBtn" class="btn btn-secondary">View Arenas</button>
 				<input id="bossSearch" class="form-control" placeholder="Search bosses..." style="max-width:320px;"> 
 				<select id="bossMapFilter" class="form-control" style="max-width:220px;"><option value="">All Maps</option><option>The Island</option><option>Scorched Earth</option><option>The Center</option><option>Aberration</option><option>Ragnarok</option><option>Astraeos</option><option>Extinction</option></select>
-				<button id="exportBossesBtn" class="btn btn-secondary">Export</button>
-				<button id="importBossesBtn" class="btn btn-secondary">Import</button>
 				<span style="margin-left:auto;color:#666;font-size:13px">Stored locally (per browser)</span>
 			</div>
 			<div style="margin-top:18px;display:flex;gap:18px;">
@@ -1305,42 +1300,7 @@ function loadBossPlanner() {
 		</section>
 	`;
 
-	// Wire buttons
-	const addBtn = document.getElementById('addBossBtn');
-	const viewArenasBtn = document.getElementById('viewArenasBtn');
-	const exportBtn = document.getElementById('exportBossesBtn');
-	const importBtn = document.getElementById('importBossesBtn');
-	addBtn?.addEventListener('click', () => openBossModal());
-	viewArenasBtn?.addEventListener('click', () => { renderArenaGrid(); document.getElementById('arenaDetailWrap').innerHTML = ''; });
-	exportBtn?.addEventListener('click', () => {
-		const data = getBossData();
-		const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-		const url = URL.createObjectURL(blob);
-		const a = document.createElement('a');
-		a.href = url; a.download = 'bosses.json'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 5000);
-	});
-	importBtn?.addEventListener('click', () => {
-		const input = document.createElement('input'); input.type = 'file'; input.accept = '.json,application/json';
-		input.addEventListener('change', (e) => {
-			const f = input.files && input.files[0]; if (!f) return;
-			const r = new FileReader(); r.onload = () => {
-				try {
-					const parsed = JSON.parse(r.result);
-					if (!Array.isArray(parsed)) return alert('Invalid file format: expected array of bosses');
-					saveBossData(parsed);
-					renderBossList();
-					alert('Imported ' + parsed.length + ' bosses');
-				} catch (e) { alert('Failed to import: ' + (e.message || e)); }
-			}; r.readAsText(f);
-		});
-		input.click();
-	});
-
-	// Seed defaults button
-	document.getElementById('seedDefaultsBtn')?.addEventListener('click', () => {
-		if (!confirm('Seed default bosses into your local storage? This will overwrite existing bosses.')) return;
-		saveBossData(DEFAULT_BOSSES.slice()); renderBossList(); alert('Seeded ' + DEFAULT_BOSSES.length + ' bosses.');
-	});
+	// (Removed unused toolbar buttons: Seed Defaults, Add Boss, View Arenas, Export, Import)
 
 	// Search & filter (map filter will still filter boss data when using legacy list)
 	document.getElementById('bossSearch')?.addEventListener('input', debounce(() => { renderArenaGrid(); renderBossList && renderBossList(); }, 220));

@@ -1,4 +1,5 @@
 // ARK Species Database - Expanded Version
+try {
 const SPECIES_DATABASE = {
 'Achatina': {
   // Basic Info
@@ -66165,6 +66166,13 @@ window.getSpeciesByCategory = function(category) {
 
 window.getSpeciesForBadge = function(badgeType) {
   return Object.entries(SPECIES_DATABASE)
-    .filter(([key, species]) => species.badgeCategories.includes(badgeType))
+    .filter(([key, species]) => (species.badgeCategories || []).includes(badgeType))
     .map(([key, species]) => key);
 };
+
+} catch (e) {
+  // Guard: log but do not throw so other scripts can run
+  try { console.error('[SPA] species-database.js failed during evaluation', e); } catch (err) {}
+  // Provide a minimal fallback so consumers won't crash
+  try { window.SPECIES_DATABASE = window.SPECIES_DATABASE || {}; window.EXPANDED_SPECIES_DATABASE = window.EXPANDED_SPECIES_DATABASE || {}; } catch (err) {}
+}

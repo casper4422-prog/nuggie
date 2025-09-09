@@ -953,6 +953,117 @@ function loadMyNuggiesPage() {
 	} catch (e) { console.warn('failed to wire My Nuggies filters', e); }
 }
 
+// Inject tribe creatures column into My Nuggies page when user is member of tribes
+function loadMyTribeColumn(tribeId) {
+	try {
+		const main = document.getElementById('appMainContent');
+		if (!main) return;
+		// Ensure two-column layout
+		const container = document.querySelector('.creature-page');
+		if (!container) return;
+		// If already injected, refresh
+		let tribeCol = document.getElementById('tribeCreaturesColumn');
+		if (!tribeCol) {
+			tribeCol = document.createElement('div');
+			tribeCol.id = 'tribeCreaturesColumn';
+			tribeCol.style.width = '360px';
+			tribeCol.style.marginLeft = '12px';
+			tribeCol.innerHTML = `<div class="creature-page-header"><h2>Tribe Vault</h2><div id="tribeVaultMeta" class="creature-page-meta">Shared creatures from your tribe</div></div><div id="tribeCreaturesGrid" class="creatures-grid"></div>`;
+			// Place it after the main creature-page content if available
+			container.parentNode.style.display = 'flex';
+			container.parentNode.style.alignItems = 'flex-start';
+			container.parentNode.appendChild(tribeCol);
+		}
+		// fetch tribe creatures
+		apiRequest('/api/tribes/' + tribeId + '/creatures', { method: 'GET' }).then(({ res, body }) => {
+			const grid = document.getElementById('tribeCreaturesGrid');
+			if (!res.ok) { if (grid) grid.innerHTML = '<div class="no-species-found">Failed to load tribe creatures</div>'; return; }
+			if (!Array.isArray(body) || body.length === 0) { if (grid) grid.innerHTML = '<div class="no-species-found">No tribe creatures</div>'; return; }
+			grid.innerHTML = '';
+			(body || []).forEach(c => {
+				const card = document.createElement('div'); card.className = 'species-card';
+				const stats = (c.baseStats ? Object.keys(c.baseStats).map(k => `${k}: ${c.baseStats[k]||0}`).join(' • ') : '');
+				card.innerHTML = `<div class="species-card-header"><div class="species-icon">${c.icon||'🦖'}</div><div class="species-info"><div class="species-name">${c.name||c.species||'Creature'}</div><div class="species-meta">${c.species||''}</div></div></div><div class="species-card-body"><div style="color:#94a3b8">${stats}</div></div>`;
+				// Allow user to copy tribe creature to their own collection
+				const copyBtn = document.createElement('button'); copyBtn.className = 'btn btn-primary'; copyBtn.textContent = 'Add to My Nuggies';
+				copyBtn.onclick = async () => {
+					// POST to /api/creature with the creature data to save to user's personal vault
+					await apiRequest('/api/creature', { method: 'POST', body: JSON.stringify({ data: c }) });
+					alert('Creature added to your collection');
+					// reload user's creatures state
+					if (typeof loadUserCreatures === 'function') loadUserCreatures();
+				};
+				card.querySelector('.species-card-body')?.appendChild(copyBtn);
+				grid.appendChild(card);
+			});
+		}).catch(() => { const grid = document.getElementById('tribeCreaturesGrid'); if (grid) grid.innerHTML = '<div class="no-species-found">Failed to load tribe creatures</div>'; });
+	} catch (e) { console.warn('loadMyTribeColumn failed', e); }
+}
+
+// --- My Tribe page ---
+function loadMyTribePage() {
+	const main = document.getElementById('appMainContent');
+	if (!main) return;
+	main.innerHTML = `
+		<section class="tribe-page">
+			<div class="page-header"><h1>My Tribe</h1><div class="section-sub">View and manage tribes you belong to</div></div>
+			<div style="display:flex;gap:12px;margin-top:12px;">
+				<div style="flex:1;min-width:420px;">
+					<div style="margin-bottom:10px;display:flex;gap:8px;align-items:center;"><input id="tribeSearch" class="form-control" placeholder="Search tribes"><button id="createTribeBtn" class="btn btn-primary">Create Tribe</button></div>
+					<div id="tribeList" class="species-grid"></div>
+				</div>
+				<div style="width:420px;">
+					<div id="tribeDetail" style="border-left:1px solid rgba(255,255,255,0.03);padding-left:12px;"></div>
+				</div>
+			</div>
+		</section>
+	`;
+	document.getElementById('tribeSearch')?.addEventListener('input', debounce(fetchAndRenderTribes, 220));
+	document.getElementById('createTribeBtn')?.addEventListener('click', () => {
+		const name = prompt('Tribe name'); if (!name) return; const main_map = prompt('Main base map (optional)') || null; const desc = prompt('Description (optional)') || null;
+		apiRequest('/api/tribes', { method: 'POST', body: JSON.stringify({ name, main_map, description: desc }) }).then(({ res, body }) => { if (res.ok) { alert('Tribe created'); fetchAndRenderTribes(); } else alert('Failed to create tribe'); });
+	});
+	fetchAndRenderTribes();
+	function fetchAndRenderTribes() {
+		const q = (document.getElementById('tribeSearch')?.value || '').trim();
+		apiRequest('/api/tribes' + (q ? ('?q=' + encodeURIComponent(q)) : ''), { method: 'GET' }).then(({ res, body }) => {
+			const list = document.getElementById('tribeList'); if (!res.ok) { list.innerHTML = '<div class="no-species-found">Failed to load tribes</div>'; return; }
+			list.innerHTML = '';
+			(body || []).forEach(t => {
+				const item = document.createElement('div'); item.className = 'species-card';
+				item.innerHTML = `<div class="species-card-header"><div class="species-info"><div class="species-name">${t.name}</div><div class="species-meta">${t.main_map || ''}</div></div></div><div class="species-card-body"><div style="color:#94a3b8">${t.description || ''}</div></div>`;
+				const viewBtn = document.createElement('button'); viewBtn.className = 'btn btn-secondary'; viewBtn.textContent = 'View'; viewBtn.style.marginTop = '8px';
+				viewBtn.onclick = async () => {
+					// load tribe details
+					const { res: r2, body: b2 } = await apiRequest('/api/tribes/' + t.id, { method: 'GET' });
+					if (!r2.ok) return alert('Failed to load tribe details');
+					const detail = document.getElementById('tribeDetail'); detail.innerHTML = '';
+					detail.innerHTML = `<h2>${b2.name}</h2><div style="color:#94a3b8">${b2.main_map || ''}</div><p style="margin-top:8px">${b2.description || ''}</p><h3>Members</h3><div id="tribeMembersList"></div><div style="margin-top:8px;"><button id="requestJoinBtn" class="btn btn-primary">Request to Join</button></div><h3 style="margin-top:12px">Vault</h3><div id="tribeDetailVault"></div>`;
+					const membersEl = document.getElementById('tribeMembersList'); membersEl.innerHTML = '';
+					(b2.members || []).forEach(m => { const row = document.createElement('div'); row.textContent = `${m.nickname || m.email || ('user:' + m.user_id)} — ${m.role}`; membersEl.appendChild(row); });
+					document.getElementById('requestJoinBtn').addEventListener('click', async () => {
+						const msg = prompt('Message to tribe admins (optional)');
+						const { res: rj } = await apiRequest('/api/tribes/' + t.id + '/join', { method: 'POST', body: JSON.stringify({ message: msg }) });
+						if (rj.ok) alert('Join request sent'); else alert('Failed to send join request');
+					});
+					// load vault for this tribe if user is member
+					apiRequest('/api/tribes/' + t.id + '/creatures', { method: 'GET' }).then(({ res: rv, body: bv }) => {
+						const vault = document.getElementById('tribeDetailVault'); if (!rv.ok) { vault.innerHTML = '<div style="color:#94a3b8">Vault (members only)</div>'; return; }
+						vault.innerHTML = '';
+						(bv || []).forEach(tc => { const el = document.createElement('div'); el.className = 'species-card'; el.innerHTML = `<div class="species-card-body"><strong>${tc.name||tc.species||'Creature'}</strong><div style="color:#94a3b8">${(tc.baseStats?Object.keys(tc.baseStats).slice(0,3).map(k=>`${k}:${tc.baseStats[k]||0}`).join(' • '):'')}</div></div>`; vault.appendChild(el); });
+					});
+					// update tribe column on My Nuggies if visible
+					try { loadMyTribeColumn(t.id); } catch (e) {}
+				};
+				item.querySelector('.species-card-body')?.appendChild(viewBtn);
+				list.appendChild(item);
+			});
+		});
+	}
+}
+
+window.loadMyTribePage = loadMyTribePage;
+
 function loadTradingPage() {
 	const main = document.getElementById('appMainContent');
 	if (!main) return;

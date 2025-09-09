@@ -72,6 +72,45 @@ db.serialize(() => {
     created_at TEXT DEFAULT (datetime('now')),
     FOREIGN KEY(user_id) REFERENCES users(id)
   )`);
+  // Tribe system: tribes, memberships, shared tribe creature vault, join requests
+  db.run(`CREATE TABLE IF NOT EXISTS tribes (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    main_map TEXT,
+    description TEXT,
+    owner_user_id INTEGER NOT NULL,
+    created_at TEXT DEFAULT (datetime('now')),
+    FOREIGN KEY(owner_user_id) REFERENCES users(id)
+  )`);
+  db.run(`CREATE TABLE IF NOT EXISTS tribe_memberships (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    tribe_id INTEGER NOT NULL,
+    user_id INTEGER NOT NULL,
+    role TEXT DEFAULT 'member', -- owner, admin, member
+    created_at TEXT DEFAULT (datetime('now')),
+    FOREIGN KEY(tribe_id) REFERENCES tribes(id),
+    FOREIGN KEY(user_id) REFERENCES users(id)
+  )`);
+  db.run(`CREATE TABLE IF NOT EXISTS tribe_creatures (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    tribe_id INTEGER NOT NULL,
+    created_by_user_id INTEGER NOT NULL,
+    data TEXT NOT NULL,
+    created_at TEXT DEFAULT (datetime('now')),
+    FOREIGN KEY(tribe_id) REFERENCES tribes(id),
+    FOREIGN KEY(created_by_user_id) REFERENCES users(id)
+  )`);
+  db.run(`CREATE TABLE IF NOT EXISTS tribe_join_requests (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    tribe_id INTEGER NOT NULL,
+    user_id INTEGER NOT NULL,
+    message TEXT,
+    status TEXT DEFAULT 'pending', -- pending, accepted, rejected
+    created_at TEXT DEFAULT (datetime('now')),
+    FOREIGN KEY(tribe_id) REFERENCES tribes(id),
+    FOREIGN KEY(user_id) REFERENCES users(id)
++
+  )`);
   // Ensure nickname column exists for older databases (safe check)
   db.all("PRAGMA table_info(users)", (err, cols) => {
     if (err || !Array.isArray(cols)) return;
@@ -332,6 +371,177 @@ app.get('/api/offers', authenticateToken, (req, res) => {
   db.all('SELECT id, trade_id, from_user_id, to_user_id, offered_creature_id, offered_creature_data, offered_price, message, status, created_at FROM offers WHERE from_user_id = ?', [req.user.userId], (err, rows) => {
     if (err) return res.status(500).json({ error: 'Failed to load offers' });
     res.json(rows.map(r => ({ id: r.id, trade_id: r.trade_id, offered_creature_id: r.offered_creature_id, offered_creature_data: JSON.parse(r.offered_creature_data || '{}'), offered_price: r.offered_price, message: r.message, status: r.status, created_at: r.created_at })));
+  });
+});
+
+// --- Tribe endpoints ---
+// Create a tribe
+app.post('/api/tribes', authenticateToken, (req, res) => {
+  const { name, main_map, description } = req.body || {};
+  if (!name) return res.status(400).json({ error: 'Missing tribe name' });
+  db.run('INSERT INTO tribes (name, main_map, description, owner_user_id) VALUES (?, ?, ?, ?)', [name, main_map || null, description || null, req.user.userId], function(err) {
+    if (err) return res.status(500).json({ error: 'Failed to create tribe' });
+    const tribeId = this.lastID;
+    // Create membership as owner
+    db.run('INSERT INTO tribe_memberships (tribe_id, user_id, role) VALUES (?, ?, ?)', [tribeId, req.user.userId, 'owner']);
+    res.status(201).json({ success: true, id: tribeId });
+  });
+});
+
+// List tribes (public search)
+app.get('/api/tribes', (req, res) => {
+  const q = (req.query.q || '').trim();
+  db.all('SELECT id, name, main_map, description, owner_user_id, created_at FROM tribes', [], (err, rows) => {
+    if (err) return res.status(500).json({ error: 'Failed to load tribes' });
+    let items = rows || [];
+    if (q) items = items.filter(t => (t.name || '').toLowerCase().includes(q.toLowerCase()) || (t.description || '').toLowerCase().includes(q.toLowerCase()));
+    res.json(items);
+  });
+});
+
+// Get tribe details including members (requires auth to see member roles)
+app.get('/api/tribes/:id', authenticateToken, (req, res) => {
+  const id = req.params.id;
+  db.get('SELECT id, name, main_map, description, owner_user_id, created_at FROM tribes WHERE id = ?', [id], (err, tribe) => {
+    if (err || !tribe) return res.status(404).json({ error: 'Tribe not found' });
+    db.all('SELECT m.id, m.user_id, m.role, u.nickname, u.email FROM tribe_memberships m LEFT JOIN users u ON m.user_id = u.id WHERE m.tribe_id = ?', [id], (err2, members) => {
+      if (err2) return res.status(500).json({ error: 'Failed to load members' });
+      res.json({ ...tribe, members: members || [] });
+    });
+  });
+});
+
+// Add a member to tribe (owner/admin only)
+app.post('/api/tribes/:id/members', authenticateToken, (req, res) => {
+  const tribeId = req.params.id;
+  const { user_id, role } = req.body || {};
+  if (!user_id) return res.status(400).json({ error: 'Missing user_id' });
+  // Check caller role
+  db.get('SELECT role FROM tribe_memberships WHERE tribe_id = ? AND user_id = ?', [tribeId, req.user.userId], (err, me) => {
+    if (err || !me) return res.status(403).json({ error: 'Not a member' });
+    if (!(me.role === 'owner' || me.role === 'admin')) return res.status(403).json({ error: 'Insufficient role' });
+    // ensure not already member
+    db.get('SELECT id FROM tribe_memberships WHERE tribe_id = ? AND user_id = ?', [tribeId, user_id], (err2, row) => {
+      if (err2) return res.status(500).json({ error: 'Lookup failed' });
+      if (row) return res.status(400).json({ error: 'Already a member' });
+      db.run('INSERT INTO tribe_memberships (tribe_id, user_id, role) VALUES (?, ?, ?)', [tribeId, user_id, role || 'member'], function(err3) {
+        if (err3) return res.status(500).json({ error: 'Failed to add member' });
+        res.json({ success: true });
+      });
+    });
+  });
+});
+
+// Remove a member (owner/admin cannot remove owner unless owner transfers ownership first)
+app.delete('/api/tribes/:id/members/:userId', authenticateToken, (req, res) => {
+  const tribeId = req.params.id;
+  const targetUserId = req.params.userId;
+  db.get('SELECT role FROM tribe_memberships WHERE tribe_id = ? AND user_id = ?', [tribeId, req.user.userId], (err, me) => {
+    if (err || !me) return res.status(403).json({ error: 'Not a member' });
+    if (!(me.role === 'owner' || me.role === 'admin')) return res.status(403).json({ error: 'Insufficient role' });
+    // prevent removing owner
+    db.get('SELECT role FROM tribe_memberships WHERE tribe_id = ? AND user_id = ?', [tribeId, targetUserId], (err2, target) => {
+      if (err2 || !target) return res.status(404).json({ error: 'Target not a member' });
+      if (target.role === 'owner') return res.status(400).json({ error: 'Cannot remove owner' });
+      db.run('DELETE FROM tribe_memberships WHERE tribe_id = ? AND user_id = ?', [tribeId, targetUserId], function(err3) {
+        if (err3) return res.status(500).json({ error: 'Failed to remove member' });
+        res.json({ success: true });
+      });
+    });
+  });
+});
+
+// Transfer ownership (only current owner)
+app.post('/api/tribes/:id/transfer', authenticateToken, (req, res) => {
+  const tribeId = req.params.id;
+  const { new_owner_user_id } = req.body || {};
+  if (!new_owner_user_id) return res.status(400).json({ error: 'Missing new owner id' });
+  db.get('SELECT role FROM tribe_memberships WHERE tribe_id = ? AND user_id = ?', [tribeId, req.user.userId], (err, me) => {
+    if (err || !me || me.role !== 'owner') return res.status(403).json({ error: 'Only owner can transfer' });
+    // set previous owner's role to admin, and new owner role to owner
+    db.run('UPDATE tribe_memberships SET role = ? WHERE tribe_id = ? AND user_id = ?', ['admin', tribeId, req.user.userId], function(err2) {
+      if (err2) return res.status(500).json({ error: 'Failed to demote previous owner' });
+      db.run('UPDATE tribe_memberships SET role = ? WHERE tribe_id = ? AND user_id = ?', ['owner', tribeId, new_owner_user_id], function(err3) {
+        if (err3) return res.status(500).json({ error: 'Failed to promote new owner' });
+        db.run('UPDATE tribes SET owner_user_id = ? WHERE id = ?', [new_owner_user_id, tribeId]);
+        res.json({ success: true });
+      });
+    });
+  });
+});
+
+// Request to join a tribe (creates a join request and notifies owners/admins)
+app.post('/api/tribes/:id/join', authenticateToken, (req, res) => {
+  const tribeId = req.params.id;
+  const { message } = req.body || {};
+  db.run('INSERT INTO tribe_join_requests (tribe_id, user_id, message, status) VALUES (?, ?, ?, ?)', [tribeId, req.user.userId, message || null, 'pending'], function(err) {
+    if (err) return res.status(500).json({ error: 'Failed to create join request' });
+    const reqId = this.lastID;
+    // notify all owners/admins of tribe
+    db.all('SELECT m.user_id FROM tribe_memberships m WHERE m.tribe_id = ? AND (m.role = ? OR m.role = ?)', [tribeId, 'owner', 'admin'], (err2, rows) => {
+      try {
+        (rows||[]).forEach(r => {
+          const payload = JSON.stringify({ joinRequestId: reqId, tribeId, fromUserId: req.user.userId, message: message || null });
+          db.run('INSERT INTO notifications (user_id, actor_user_id, type, payload, read) VALUES (?, ?, ?, ?, ?)', [r.user_id, req.user.userId, 'tribe_join_request', payload, 0]);
+        });
+      } catch (e) {}
+    });
+    res.json({ success: true, id: reqId });
+  });
+});
+
+// Admins/Owners can respond to join requests
+app.put('/api/tribes/join_requests/:id', authenticateToken, (req, res) => {
+  const id = req.params.id;
+  const { status, targetRole } = req.body || {};
+  if (!status) return res.status(400).json({ error: 'Missing status' });
+  db.get('SELECT * FROM tribe_join_requests WHERE id = ?', [id], (err, jr) => {
+    if (err || !jr) return res.status(404).json({ error: 'Join request not found' });
+    // check caller is admin/owner for that tribe
+    db.get('SELECT role FROM tribe_memberships WHERE tribe_id = ? AND user_id = ?', [jr.tribe_id, req.user.userId], (err2, me) => {
+      if (err2 || !me) return res.status(403).json({ error: 'Not a tribe admin' });
+      if (!(me.role === 'owner' || me.role === 'admin')) return res.status(403).json({ error: 'Insufficient role' });
+      db.run('UPDATE tribe_join_requests SET status = ? WHERE id = ?', [status, id], function(err3) {
+        if (err3) return res.status(500).json({ error: 'Failed to update request' });
+        if (status === 'accepted') {
+          // add membership
+          db.run('INSERT INTO tribe_memberships (tribe_id, user_id, role) VALUES (?, ?, ?)', [jr.tribe_id, jr.user_id, targetRole || 'member']);
+        }
+        // notify requester
+        const payload = JSON.stringify({ joinRequestId: id, status });
+        db.run('INSERT INTO notifications (user_id, actor_user_id, type, payload, read) VALUES (?, ?, ?, ?, ?)', [jr.user_id, req.user.userId, 'tribe_join_response', payload, 0]);
+        res.json({ success: true });
+      });
+    });
+  });
+});
+
+// --- Tribe creature vault endpoints ---
+// Add a creature to tribe vault (member+ can add)
+app.post('/api/tribes/:id/creatures', authenticateToken, (req, res) => {
+  const tribeId = req.params.id;
+  const { data } = req.body || {};
+  if (!data) return res.status(400).json({ error: 'Missing creature data' });
+  // verify membership
+  db.get('SELECT role FROM tribe_memberships WHERE tribe_id = ? AND user_id = ?', [tribeId, req.user.userId], (err, me) => {
+    if (err || !me) return res.status(403).json({ error: 'Not a tribe member' });
+    db.run('INSERT INTO tribe_creatures (tribe_id, created_by_user_id, data) VALUES (?, ?, ?)', [tribeId, req.user.userId, JSON.stringify(data)], function(err2) {
+      if (err2) return res.status(500).json({ error: 'Failed to add creature' });
+      res.status(201).json({ success: true, id: this.lastID });
+    });
+  });
+});
+
+// List tribe creatures
+app.get('/api/tribes/:id/creatures', authenticateToken, (req, res) => {
+  const tribeId = req.params.id;
+  // verify membership
+  db.get('SELECT id FROM tribe_memberships WHERE tribe_id = ? AND user_id = ?', [tribeId, req.user.userId], (err, me) => {
+    if (err || !me) return res.status(403).json({ error: 'Not a tribe member' });
+    db.all('SELECT id, created_by_user_id, data, created_at FROM tribe_creatures WHERE tribe_id = ?', [tribeId], (err2, rows) => {
+      if (err2) return res.status(500).json({ error: 'Failed to load tribe creatures' });
+      res.json((rows||[]).map(r => ({ id: r.id, created_by_user_id: r.created_by_user_id, ...JSON.parse(r.data || '{}'), created_at: r.created_at })));
+    });
   });
 });
 

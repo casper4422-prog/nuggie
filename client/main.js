@@ -1271,6 +1271,7 @@ function loadBossPlanner() {
 			<div style="margin-top:12px;display:flex;gap:12px;align-items:center;">
 				<button id="seedDefaultsBtn" class="btn btn-secondary">Seed Defaults</button>
 				<button id="addBossBtn" class="btn btn-primary">+ Add Boss</button>
+				<button id="viewArenasBtn" class="btn btn-secondary">View Arenas</button>
 				<input id="bossSearch" class="form-control" placeholder="Search bosses..." style="max-width:320px;"> 
 				<select id="bossMapFilter" class="form-control" style="max-width:220px;"><option value="">All Maps</option><option>The Island</option><option>Scorched Earth</option><option>The Center</option><option>Aberration</option><option>Ragnarok</option><option>Astraeos</option><option>Extinction</option></select>
 				<button id="exportBossesBtn" class="btn btn-secondary">Export</button>
@@ -1279,10 +1280,11 @@ function loadBossPlanner() {
 			</div>
 			<div style="margin-top:18px;display:flex;gap:18px;">
 				<div style="flex:1;min-width:320px;max-height:66vh;overflow:auto;">
-					<div id="bossList" class="boss-list"></div>
+					<!-- Arena grid will render here -->
+					<div id="arenaGrid" style="padding:12px;display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px"></div>
 				</div>
-				<div style="width:360px;flex:0 0 360px;">
-					<div id="bossDetail" class="boss-detail" style="background:#fff;border:1px solid #eee;padding:12px;border-radius:6px;min-height:120px"></div>
+				<div style="width:420px;flex:0 0 420px;">
+					<div id="arenaDetailWrap" class="boss-detail" style="background:#fff;border:1px solid #eee;padding:12px;border-radius:6px;min-height:120px"></div>
 				</div>
 			</div>
 			<!-- Reuse creatureModal for editor -->
@@ -1291,9 +1293,11 @@ function loadBossPlanner() {
 
 	// Wire buttons
 	const addBtn = document.getElementById('addBossBtn');
+	const viewArenasBtn = document.getElementById('viewArenasBtn');
 	const exportBtn = document.getElementById('exportBossesBtn');
 	const importBtn = document.getElementById('importBossesBtn');
 	addBtn?.addEventListener('click', () => openBossModal());
+	viewArenasBtn?.addEventListener('click', () => { renderArenaGrid(); document.getElementById('arenaDetailWrap').innerHTML = ''; });
 	exportBtn?.addEventListener('click', () => {
 		const data = getBossData();
 		const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
@@ -1324,11 +1328,12 @@ function loadBossPlanner() {
 		saveBossData(DEFAULT_BOSSES.slice()); renderBossList(); alert('Seeded ' + DEFAULT_BOSSES.length + ' bosses.');
 	});
 
-	// Search & filter
-	document.getElementById('bossSearch')?.addEventListener('input', debounce(renderBossList, 220));
-	document.getElementById('bossMapFilter')?.addEventListener('change', renderBossList);
+	// Search & filter (map filter will still filter boss data when using legacy list)
+	document.getElementById('bossSearch')?.addEventListener('input', debounce(() => { renderArenaGrid(); renderBossList && renderBossList(); }, 220));
+	document.getElementById('bossMapFilter')?.addEventListener('change', () => { renderArenaGrid(); renderBossList && renderBossList(); });
 
-	renderBossList();
+	// Render arenas by default
+	renderArenaGrid();
 }
 
 // Boss Planner storage helpers

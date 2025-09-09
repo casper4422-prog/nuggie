@@ -1285,14 +1285,9 @@ function loadBossPlanner() {
 				<select id="bossMapFilter" class="form-control" style="max-width:220px;"><option value="">All Maps</option><option>The Island</option><option>Scorched Earth</option><option>The Center</option><option>Aberration</option><option>Ragnarok</option><option>Astraeos</option><option>Extinction</option></select>
 				<span style="margin-left:auto;color:#666;font-size:13px">Stored locally (per browser)</span>
 			</div>
-			<div style="margin-top:18px;display:flex;gap:18px;">
-				<div style="flex:1;min-width:320px;max-height:66vh;overflow:auto;">
-					<!-- Arena grid will render here -->
-					<div id="arenaGrid" style="padding:12px;display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px"></div>
-				</div>
-				<div style="width:420px;flex:0 0 420px;">
-					<div id="arenaDetailWrap" class="boss-detail" style="background:#fff;border:1px solid #eee;padding:12px;border-radius:6px;min-height:120px"></div>
-				</div>
+			<div style="margin-top:18px;">
+				<!-- Arena grid will render here (full width) -->
+				<div id="arenaGrid" style="padding:12px;display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;max-height:72vh;overflow:auto"></div>
 			</div>
 			<!-- Reuse creatureModal for editor -->
 		</section>

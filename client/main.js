@@ -227,12 +227,10 @@ function loadTribeManagerPage() {
 	main.innerHTML = `
 		<section class="tribe-manager-page">
 			<div class="page-header"><h1>Tribe Manager</h1><div class="section-sub">Create, manage and configure tribes (owner/admin tools)</div></div>
-			<div style="display:flex;gap:12px;margin-top:12px;">
-				<div style="flex:1;min-width:420px;">
-					<div style="margin-bottom:10px;display:flex;gap:8px;align-items:center;"><input id="tribeSearch" class="form-control" placeholder="Search tribes"><button id="createTribeBtn" class="btn btn-primary">Create Tribe</button></div>
-					<div id="tribeList" class="species-grid"></div>
-				</div>
-				<div style="width:420px;"><div id="tribeDetail" style="border-left:1px solid rgba(255,255,255,0.03);padding-left:12px;"></div></div>
+			<div style="margin-top:12px;">
+				<div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;"><input id="tribeSearch" class="form-control" placeholder="Search tribes" style="flex:1;min-width:260px;"><button id="createTribeBtn" class="btn btn-primary">Create Tribe</button></div>
+				<div id="tribeList" class="species-grid"></div>
+				<div id="tribeDetail" style="margin-top:12px;border-top:1px solid rgba(255,255,255,0.03);padding-top:12px;"></div>
 			</div>
 		</section>
 	`;
@@ -1378,6 +1376,51 @@ function getUserCreatures() {
 	} catch (e) { return []; }
 }
 
+// Arena-specific creature storage: key maps arenaId -> array of creature objects
+const ARENA_CREATURES_KEY = 'arenaCreatures.v1';
+function getArenaCreatures() { try { return JSON.parse(localStorage.getItem(ARENA_CREATURES_KEY) || '{}'); } catch (e) { return {}; } }
+function saveArenaCreatures(obj) { try { localStorage.setItem(ARENA_CREATURES_KEY, JSON.stringify(obj)); } catch (e) {} }
+
+function renderArenaCreatureList(arenaId) {
+	const wrap = document.getElementById('arenaCreatureList'); if (!wrap) return;
+	const all = getArenaCreatures(); const list = Array.isArray(all[arenaId]) ? all[arenaId] : [];
+	wrap.innerHTML = '';
+	if (!list.length) { wrap.innerHTML = '<div style="color:#666">No creatures added to this arena yet.</div>'; return; }
+	list.forEach(c => {
+		const item = document.createElement('div'); item.className = 'species-card'; item.style = 'padding:8px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between';
+		item.innerHTML = `<div style="display:flex;gap:8px;align-items:center"><div style="width:56px;height:56px;border-radius:6px;overflow:hidden;background:#f7fafc">${isValidImageUrl(c.image)?'<img src="'+c.image+'" style="width:56px;height:56px;object-fit:cover">':(c.icon||'🦖')}</div><div><div style="font-weight:700">${escapeHtml(c.name||c.species||'Creature')}</div><div style="font-size:12px;color:#666">${escapeHtml(c.species||'')}</div></div></div><div><button class="btn btn-small btn-secondary remove-arena-creature">Remove</button></div>`;
+		const btn = item.querySelector('.remove-arena-creature'); btn?.addEventListener('click', () => {
+			const all = getArenaCreatures(); all[arenaId] = (all[arenaId]||[]).filter(x => String(x.id) !== String(c.id)); saveArenaCreatures(all); renderArenaCreatureList(arenaId);
+		});
+		wrap.appendChild(item);
+	});
+}
+
+function openAddCreatureModal(arenaId) {
+	const modal = document.getElementById('creatureModal'); if (!modal) return alert('Modal missing');
+	const my = getUserCreatures(); if (!my || my.length === 0) {
+		// allow quick upload from file (not implemented fully) or instruct user
+		return alert('No saved creatures found. Create or import creatures in My Nuggies first.');
+	}
+	modal.classList.add('active'); modal.setAttribute('aria-hidden','false');
+	modal.innerHTML = `<div class="modal-content" style="max-width:720px;margin:20px auto;"><div class="modal-header"><h3>Add Creature to Arena</h3><button id="closeAddCreatureModal" class="close-btn soft">Close</button></div><div class="modal-body"><div style="margin-bottom:8px;color:#666">Select one or more of your saved creature cards to copy into this arena.</div><div id="addCreatureList" style="max-height:420px;overflow:auto"></div></div><div class="modal-footer"><button class="btn btn-primary" id="addSelectedToArenaBtn">Add Selected</button><button class="btn btn-secondary" id="cancelAddCreatureBtn">Cancel</button></div></div>`;
+	document.getElementById('closeAddCreatureModal')?.addEventListener('click', () => { modal.classList.remove('active'); modal.innerHTML=''; modal.setAttribute('aria-hidden','true'); });
+	document.getElementById('cancelAddCreatureBtn')?.addEventListener('click', () => { modal.classList.remove('active'); modal.innerHTML=''; modal.setAttribute('aria-hidden','true'); });
+	const listWrap = document.getElementById('addCreatureList'); listWrap.innerHTML = '';
+	my.forEach(c => {
+		const el = document.createElement('div'); el.style='padding:8px;border-bottom:1px solid rgba(255,255,255,0.03);display:flex;align-items:center;justify-content:space-between';
+		el.innerHTML = `<div style="display:flex;gap:8px;align-items:center"><div style="width:48px;height:48px;border-radius:6px;overflow:hidden">${isValidImageUrl(c.image)?'<img src="'+c.image+'" style="width:48px;height:48px;object-fit:cover">':(c.icon||'🦖')}</div><div><div style="font-weight:700">${escapeHtml(c.name||c.species||'Creature')}</div><div style="font-size:12px;color:#666">${escapeHtml(c.species||'')}</div></div></div><div><input type="checkbox" data-id="${escapeHtml(String(c.id))}" class="add-arena-checkbox"></div>`;
+		listWrap.appendChild(el);
+	});
+	document.getElementById('addSelectedToArenaBtn')?.addEventListener('click', () => {
+		const checks = Array.from(document.querySelectorAll('.add-arena-checkbox')).filter(x=>x.checked).map(x=>x.getAttribute('data-id'));
+		if (!checks.length) return alert('Select at least one creature');
+		const my = getUserCreatures(); const selected = my.filter(c => checks.includes(String(c.id)));
+		const all = getArenaCreatures(); all[arenaId] = (all[arenaId]||[]).concat(selected.map(c=>({ ...c }))); saveArenaCreatures(all);
+		modal.classList.remove('active'); modal.innerHTML=''; modal.setAttribute('aria-hidden','true'); renderArenaCreatureList(arenaId);
+	});
+}
+
 function renderBossList() {
 	const listEl = document.getElementById('bossList');
 	const detailEl = document.getElementById('bossDetail');
@@ -1458,7 +1501,14 @@ function openArenaPage(arenaId) {
 		</section>`;
 	// render bosses into the list and wire clicks to open assignment panel
 	const listEl = document.getElementById('arenaBossListPage');
+	const rightPanel = document.getElementById('arenaBossRightPanel');
 	listEl.innerHTML = '';
+	// Add 'Add Creature' button in right panel for uploading/copying saved creatures
+	if (rightPanel) {
+		rightPanel.innerHTML = `<div style="display:flex;align-items:center;justify-content:space-between"><h4 style="margin:0">Arena Tools</h4><div><button id="arenaAddCreatureBtn" class="btn btn-primary">Add Creature</button></div></div><div id="arenaCreatureList" style="margin-top:10px;max-height:300px;overflow:auto"></div>`;
+		document.getElementById('arenaAddCreatureBtn')?.addEventListener('click', () => openAddCreatureModal(arenaId));
+		renderArenaCreatureList(arenaId);
+	}
 	(arena.bosses||[]).forEach(b => {
 		const card = document.createElement('div'); card.className='boss-card'; card.style='background:#fff;border:1px solid #eee;padding:10px;border-radius:8px;display:flex;flex-direction:column;gap:8px;cursor:pointer';
 		const h = document.createElement('div'); h.style='display:flex;align-items:center;justify-content:space-between'; h.innerHTML = `<div><strong>${escapeHtml(b.name||'Untitled')}</strong><div style="font-size:12px;color:#666">${escapeHtml(b.notes||'')}</div></div>`;

@@ -1313,13 +1313,16 @@ function loadBossPlanner() {
 		<section class="boss-planner-page">
 			<div class="page-header"><h1>Boss Planner</h1><div class="section-sub">Plan boss fights, rewards and party composition</div></div>
 			<div style="margin-top:12px;display:flex;gap:12px;align-items:center;">
+				<button id="seedDefaultsBtn" class="btn btn-secondary">Seed Defaults</button>
 				<button id="addBossBtn" class="btn btn-primary">+ Add Boss</button>
+				<input id="bossSearch" class="form-control" placeholder="Search bosses..." style="max-width:320px;"> 
+				<select id="bossMapFilter" class="form-control" style="max-width:220px;"><option value="">All Maps</option><option>The Island</option><option>Scorched Earth</option><option>The Center</option><option>Aberration</option><option>Ragnarok</option><option>Astraeos</option><option>Extinction</option></select>
 				<button id="exportBossesBtn" class="btn btn-secondary">Export</button>
 				<button id="importBossesBtn" class="btn btn-secondary">Import</button>
 				<span style="margin-left:auto;color:#666;font-size:13px">Stored locally (per browser)</span>
 			</div>
 			<div style="margin-top:18px;display:flex;gap:18px;">
-				<div style="flex:1;min-width:320px;">
+				<div style="flex:1;min-width:320px;max-height:66vh;overflow:auto;">
 					<div id="bossList" class="boss-list"></div>
 				</div>
 				<div style="width:360px;flex:0 0 360px;">
@@ -1359,6 +1362,16 @@ function loadBossPlanner() {
 		input.click();
 	});
 
+	// Seed defaults button
+	document.getElementById('seedDefaultsBtn')?.addEventListener('click', () => {
+		if (!confirm('Seed default bosses into your local storage? This will overwrite existing bosses.')) return;
+		saveBossData(DEFAULT_BOSSES.slice()); renderBossList(); alert('Seeded ' + DEFAULT_BOSSES.length + ' bosses.');
+	});
+
+	// Search & filter
+	document.getElementById('bossSearch')?.addEventListener('input', debounce(renderBossList, 220));
+	document.getElementById('bossMapFilter')?.addEventListener('change', renderBossList);
+
 	renderBossList();
 }
 
@@ -1371,30 +1384,56 @@ function saveBossData(data) {
 	try { localStorage.setItem(BOSS_STORAGE_KEY, JSON.stringify(data)); } catch (e) { console.warn('bossPlanner: failed to save', e); }
 }
 
+// Default boss dataset (seedable). Summarized from the attached ARK: Survival Ascended guide.
+const DEFAULT_BOSSES = [
+	{ id: 'boss_broodmother', name: 'Broodmother Lysrix', map: 'The Island', level: null, partySize: null, drops: [{name:'Trophy', chance:5}], notes: 'Spawns Araneo minions; bring stimulants. Megatheriums +250% vs insects. Yutyrannus pray useful.', mechanics: 'Gamma/Beta/Alpha difficulties; spawns insect minions causing torpor.' },
+	{ id: 'boss_megapithecus', name: 'Megapithecus', map: 'The Island', level: null, partySize: null, drops: [{name:'Giant Ape Trophy', chance:5}], notes: 'Giant ape boss, easier than Dragon. Pit in center - avoid.', mechanics: 'Spawn minions; use ranged when possible.' },
+	{ id: 'boss_dragon', name: 'Dragon', map: 'The Island', level: null, partySize: null, drops: [{name:'Dragon Trophy', chance:3}], notes: 'Fire damage is % based; use fire-resistant mounts like Woolly Rhino.', mechanics: 'Fire breath, high damage; ranged strategy recommended.' },
+	{ id: 'boss_overseer', name: 'Overseer', map: 'The Island', level: null, partySize: null, drops: [{name:'Tek Core', chance:1}], notes: 'Final ascension boss; requires trophies from guardians.', mechanics: 'Complex phases; requires preparation and trophies.' },
+	{ id: 'boss_manticore', name: 'Manticore', map: 'Scorched Earth', level: null, partySize: null, drops: [{name:'Manticore Trophy', chance:4}], notes: 'Shoots venom projectiles, spawns Elementals. Gas mask recommended.', mechanics: 'Poison attacks, torpor; bring stamina recovery.' },
+	{ id: 'boss_rockwell', name: 'Rockwell', map: 'Aberration', level: null, partySize: null, drops: [{name:'Rockwell Trophy', chance:2}], notes: 'Tentacled mutated boss; radiation and plant attacks.', mechanics: 'Multiple phases, high health; hazard suits recommended.' },
+	{ id: 'boss_nunatak', name: 'Nunatak', map: 'Ragnarok', level: null, partySize: null, drops: [{name:'Nunatak Trophy', chance:3}], notes: 'Massive Ice Wyvern; freezes players. Use mobile mounts.', mechanics: 'Freezing breath, spawns Ice Worm minions.' },
+	{ id: 'boss_thodes', name: 'Thodes the Widowmaker', map: 'Astraeos', level: null, partySize: null, drops: [{name:'Thodes Trophy', chance:2}], notes: 'Greek myth themed boss. Requires multiple artifacts to access.', mechanics: 'Mythology-themed mechanics; expect multiple phases.' },
+	{ id: 'boss_desert_titan', name: 'Desert Titan (Sky Titan)', map: 'Extinction', level: 1500, partySize: null, drops: [{name:'Titan Component', chance:1}], notes: 'Massive flying titan; tamed temporarily by destroying corruption nodules.', mechanics: 'Teleport mechanics, electrical attacks; high requirements to summon.' },
+	{ id: 'boss_forest_titan', name: 'Forest Titan', map: 'Extinction', level: 1500, partySize: null, drops: [{name:'Titan Component', chance:1}], notes: 'Slow but powerful; creates deadly trees. Target corruption nodules to tame.', mechanics: 'High HP, slow attacks; requires coordination.' },
+	{ id: 'boss_king_titan', name: 'King Titan', map: 'Extinction', level: 1500, partySize: null, drops: [{name:'King Titan Trophy', chance:0.5}], notes: 'Final boss; extremely powerful. Must defeat other titans first; keep fight centered.', mechanics: '60-minute fight limit; respawns if moved too far.' }
+];
+
 function renderBossList() {
 	const listEl = document.getElementById('bossList');
 	const detailEl = document.getElementById('bossDetail');
 	if (!listEl) return;
-	const data = getBossData();
+	const all = getBossData();
+	const search = (document.getElementById('bossSearch')?.value || '').toLowerCase();
+	const mapFilter = (document.getElementById('bossMapFilter')?.value || '').toLowerCase();
+	let data = all.slice();
+	if (mapFilter) data = data.filter(d => (d.map||'').toLowerCase().includes(mapFilter));
+	if (search) data = data.filter(d => (d.name||'').toLowerCase().includes(search) || (d.notes||'').toLowerCase().includes(search));
 	if (!data.length) {
 		listEl.innerHTML = '<div class="no-items">No bosses defined yet. Click "Add Boss" to get started.</div>';
 		if (detailEl) detailEl.innerHTML = '';
 		return;
 	}
+	// group by map
+	const groups = {};
+	data.forEach(b => { const m = b.map || 'Unknown'; if (!groups[m]) groups[m] = []; groups[m].push(b); });
 	listEl.innerHTML = '';
-	data.forEach(b => {
-		const item = document.createElement('div');
-		item.className = 'boss-item';
-		item.style = 'padding:10px;border:1px solid #eee;margin-bottom:8px;border-radius:6px;cursor:pointer;background:#fff';
-		item.innerHTML = `<div style="display:flex;align-items:center;gap:10px;"><div style="flex:1"><strong>${escapeHtml(b.name||'Untitled')}</strong><div style="font-size:12px;color:#666">Level: ${escapeHtml(String(b.level||''))} • Party: ${escapeHtml(String(b.partySize||''))}</div></div><div><button class="btn btn-small edit-btn">Edit</button> <button class="btn btn-small danger delete-btn">Delete</button></div></div>`;
-		item.addEventListener('click', (e) => {
-			// if clicked on buttons, ignore outer click
-			if (e.target && (e.target.classList.contains('edit-btn') || e.target.classList.contains('delete-btn'))) return;
-			showBossDetail(b.id);
+	Object.keys(groups).forEach(mapName => {
+		const header = document.createElement('div'); header.style = 'font-weight:700;padding:6px 4px;color:#222;background:#f9f9f9;border-bottom:1px solid #eee;margin-top:8px'; header.textContent = mapName; listEl.appendChild(header);
+		groups[mapName].forEach(b => {
+			const item = document.createElement('div');
+			item.className = 'boss-item';
+			item.style = 'padding:10px;border:1px solid #eee;margin-bottom:8px;border-radius:6px;cursor:pointer;background:#fff';
+			item.innerHTML = `<div style="display:flex;align-items:center;gap:10px;"><div style="flex:1"><strong>${escapeHtml(b.name||'Untitled')}</strong><div style="font-size:12px;color:#666">Level: ${escapeHtml(String(b.level||''))} • Party: ${escapeHtml(String(b.partySize||''))}</div></div><div><button class="btn btn-small edit-btn">Edit</button> <button class="btn btn-small danger delete-btn">Delete</button></div></div>`;
+			item.addEventListener('click', (e) => {
+				// if clicked on buttons, ignore outer click
+				if (e.target && (e.target.classList.contains('edit-btn') || e.target.classList.contains('delete-btn'))) return;
+				showBossDetail(b.id);
+			});
+			item.querySelector('.edit-btn')?.addEventListener('click', (ev) => { ev.stopPropagation(); openBossModal(b.id); });
+			item.querySelector('.delete-btn')?.addEventListener('click', (ev) => { ev.stopPropagation(); if (confirm('Delete boss "'+(b.name||'')+'"?')) { const next = getBossData().filter(x=>x.id!==b.id); saveBossData(next); renderBossList(); if (detailEl) detailEl.innerHTML=''; } });
+			listEl.appendChild(item);
 		});
-		item.querySelector('.edit-btn')?.addEventListener('click', (ev) => { ev.stopPropagation(); openBossModal(b.id); });
-		item.querySelector('.delete-btn')?.addEventListener('click', (ev) => { ev.stopPropagation(); if (confirm('Delete boss "'+(b.name||'')+'"?')) { const next = getBossData().filter(x=>x.id!==b.id); saveBossData(next); renderBossList(); if (detailEl) detailEl.innerHTML=''; } });
-		listEl.appendChild(item);
 	});
 	// show first detail by default
 	if (data.length && detailEl) showBossDetail(data[0].id);

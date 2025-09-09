@@ -645,16 +645,11 @@ async function apiRequest(path, opts = {}) {
 	const headers = opts.headers || {};
 	if (token) headers['Authorization'] = 'Bearer ' + token;
 	headers['Content-Type'] = headers['Content-Type'] || 'application/json';
-	// Resolve base with safe fallbacks:
-	// 1) explicit opts.base
-	// 2) runtime override window.__API_BASE
-	// 3) same-origin (window.location.origin)
-	// 4) fallback to canonical host used for the API so previews still work
-	const canonicalApiHost = 'https://nuggie.onrender.com';
+	// Resolve base with safe fallbacks: opts.base -> window.__API_BASE -> same-origin
 	let base = '';
 	try {
-		base = opts.base || (typeof window !== 'undefined' ? (window.__API_BASE || window.location.origin) : '') || canonicalApiHost;
-	} catch (e) { base = canonicalApiHost; }
+		base = opts.base || (typeof window !== 'undefined' ? (window.__API_BASE || window.location.origin) : '');
+	} catch (e) { base = ''; }
 	// Normalize: remove trailing slash if present so base + path is consistent
 	try { if (base && base.endsWith('/')) base = base.slice(0, -1); } catch (e) {}
 	const url = base + path;
@@ -674,30 +669,7 @@ async function apiRequest(path, opts = {}) {
 	} catch (e) {
 		body = raw;
 	}
-	// If this was an API call and we got a 200 with an empty/non-JSON body, try the canonical API host as a fallback
-	try {
-		const isApiPath = path && path.indexOf('/api') === 0;
-		const emptyBody = !raw || (typeof raw === 'string' && raw.trim() === '');
-		const nonJson = ct && !ct.toLowerCase().includes('application/json');
-		if (isApiPath && res.ok && res.status === 200 && (emptyBody || nonJson) && url.indexOf(canonicalApiHost) === -1) {
-			try {
-				const fallbackUrl = canonicalApiHost + path;
-				console.warn('[SPA] apiRequest: empty/non-json response from', url, '— retrying', fallbackUrl);
-				const fres = await fetch(fallbackUrl, Object.assign({}, opts, { headers, credentials: 'include' }));
-				const fct = fres.headers.get('content-type') || '';
-				let fraw = null;
-				try { fraw = await fres.text(); } catch (e) { fraw = null; }
-				let fbody = null;
-				try { if (fraw && fct.toLowerCase().includes('application/json')) fbody = JSON.parse(fraw); else fbody = fraw; } catch (e) { fbody = fraw; }
-				if (!fres.ok) {
-					console.warn('[SPA] apiRequest fallback response not ok', { url: fallbackUrl, status: fres.status, contentType: fct, bodyPreview: (fraw||'').slice(0,200) });
-				}
-				return { res: fres, body: fbody };
-			} catch (e) {
-				console.warn('[SPA] apiRequest fallback failed', e);
-			}
-		}
-	} catch (e) {}
+	// No cross-origin canonical fallback to avoid CORS errors; rely on same-origin or explicitly set window.__API_BASE
 	if (!res.ok || (res.ok && (path === '/api/login' || path === '/api/register') && (!body || (typeof body === 'string' && body.trim() === '')))) {
 		// log helpful debugging info for auth-related failures or non-ok responses
 		try {

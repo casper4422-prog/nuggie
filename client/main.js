@@ -7,93 +7,26 @@ function showLoginPage() {
 	const landing = document.getElementById('landingPage');
 	const register = document.getElementById('registerPage');
 	const mainApp = document.getElementById('mainApp');
+	// If any of the main containers are missing, log and abort gracefully
 	if (!landing || !register || !mainApp) {
 		console.error('[SPA] One or more main containers missing:', { landing, register, mainApp });
 		return;
 	}
-	landing.style.display = '';
-	landing.classList.remove('hidden');
-	try { landing.setAttribute('aria-hidden', 'false'); } catch (e) {}
-
-	register.style.display = 'none';
-	register.classList.add('hidden');
-	try { register.setAttribute('aria-hidden', 'true'); } catch (e) {}
-
-	mainApp.style.display = 'none';
-	mainApp.classList.add('hidden');
-	try { mainApp.setAttribute('aria-hidden', 'true'); } catch (e) {}
-	console.log('[SPA] Login page should now be visible');
+	// Show landing/login, hide register and main app content
+	try { landing.style.display = ''; } catch (e) {}
+	try { register.style.display = 'none'; } catch (e) {}
+	try { mainApp.style.display = 'none'; } catch (e) {}
+	// If there's a login form, focus first field
+	try { const f = document.getElementById('loginEmail') || document.getElementById('loginForm')?.querySelector('input'); if (f) f.focus(); } catch (e) {}
 }
-function showRegisterPage() {
-	console.log('[SPA] showRegisterPage called');
-	const landing = document.getElementById('landingPage');
-	const register = document.getElementById('registerPage');
-	const mainApp = document.getElementById('mainApp');
-	if (!landing || !register || !mainApp) {
-		console.error('[SPA] One or more main containers missing:', { landing, register, mainApp });
-		return;
-	}
-	landing.style.display = 'none';
-	landing.classList.add('hidden');
-	try { landing.setAttribute('aria-hidden', 'true'); } catch (e) {}
-
-	register.style.display = '';
-	register.classList.remove('hidden');
-	try { register.setAttribute('aria-hidden', 'false'); } catch (e) {}
-
-	mainApp.style.display = 'none';
-	mainApp.classList.add('hidden');
-	try { mainApp.setAttribute('aria-hidden', 'true'); } catch (e) {}
-	// Ensure the register form is rendered and wired when the page is shown
-	renderRegisterForm();
-	console.log('[SPA] Register page should now be visible');
-}
-function showMainApp() {
-	console.log('[SPA] showMainApp called');
-	const landing = document.getElementById('landingPage');
-	const register = document.getElementById('registerPage');
-	const mainApp = document.getElementById('mainApp');
-	if (!landing || !register || !mainApp) {
-		console.error('[SPA] One or more main containers missing:', { landing, register, mainApp });
-		return;
-	}
-	landing.style.display = 'none';
-	landing.classList.add('hidden');
-	try { landing.setAttribute('aria-hidden', 'true'); } catch (e) {}
-
-	register.style.display = 'none';
-	register.classList.add('hidden');
-	try { register.setAttribute('aria-hidden', 'true'); } catch (e) {}
-
-	mainApp.style.display = '';
-	mainApp.classList.remove('hidden');
-	try { mainApp.setAttribute('aria-hidden', 'false'); } catch (e) {}
-	console.log('[SPA] Main app should now be visible');
-}
-window.showLoginPage = showLoginPage;
-window.showRegisterPage = showRegisterPage;
 
 function isLoggedIn() {
-	const token = localStorage.getItem('token');
-	if (!token || typeof token !== 'string') return false;
-	// Allow forcing the login page via URL param for debugging
 	try {
-		const params = new URLSearchParams(window.location.search);
-		if (params.get('forceLogin') === '1') {
-			console.log('[SPA] forceLogin param detected; treating as logged out');
-			return false;
-		}
-	} catch (e) {
-		// ignore
-	}
-	// Basic JWT format check (three dot-separated parts). If it doesn't look like a JWT, treat as logged out.
-	const parts = token.split('.');
-	if (parts.length !== 3) {
-		console.warn('[SPA] token present but not a valid JWT, treating as logged out', token);
-		return false;
-	}
-	// token looks like a JWT; treat as logged in (we could validate with server if desired)
-	return true;
+		const token = localStorage.getItem('token');
+		if (!token) return false;
+		const parts = token.split('.');
+		return parts.length === 3;
+	} catch (e) { return false; }
 }
 function handleAuthClick() {
 	if (isLoggedIn()) {
@@ -1384,20 +1317,41 @@ function saveBossData(data) {
 	try { localStorage.setItem(BOSS_STORAGE_KEY, JSON.stringify(data)); } catch (e) { console.warn('bossPlanner: failed to save', e); }
 }
 
-// Default boss dataset (seedable). Summarized from the attached ARK: Survival Ascended guide.
-const DEFAULT_BOSSES = [
-	{ id: 'boss_broodmother', name: 'Broodmother Lysrix', map: 'The Island', level: null, partySize: null, drops: [{name:'Trophy', chance:5}], notes: 'Spawns Araneo minions; bring stimulants. Megatheriums +250% vs insects. Yutyrannus pray useful.', mechanics: 'Gamma/Beta/Alpha difficulties; spawns insect minions causing torpor.' },
-	{ id: 'boss_megapithecus', name: 'Megapithecus', map: 'The Island', level: null, partySize: null, drops: [{name:'Giant Ape Trophy', chance:5}], notes: 'Giant ape boss, easier than Dragon. Pit in center - avoid.', mechanics: 'Spawn minions; use ranged when possible.' },
-	{ id: 'boss_dragon', name: 'Dragon', map: 'The Island', level: null, partySize: null, drops: [{name:'Dragon Trophy', chance:3}], notes: 'Fire damage is % based; use fire-resistant mounts like Woolly Rhino.', mechanics: 'Fire breath, high damage; ranged strategy recommended.' },
-	{ id: 'boss_overseer', name: 'Overseer', map: 'The Island', level: null, partySize: null, drops: [{name:'Tek Core', chance:1}], notes: 'Final ascension boss; requires trophies from guardians.', mechanics: 'Complex phases; requires preparation and trophies.' },
-	{ id: 'boss_manticore', name: 'Manticore', map: 'Scorched Earth', level: null, partySize: null, drops: [{name:'Manticore Trophy', chance:4}], notes: 'Shoots venom projectiles, spawns Elementals. Gas mask recommended.', mechanics: 'Poison attacks, torpor; bring stamina recovery.' },
-	{ id: 'boss_rockwell', name: 'Rockwell', map: 'Aberration', level: null, partySize: null, drops: [{name:'Rockwell Trophy', chance:2}], notes: 'Tentacled mutated boss; radiation and plant attacks.', mechanics: 'Multiple phases, high health; hazard suits recommended.' },
-	{ id: 'boss_nunatak', name: 'Nunatak', map: 'Ragnarok', level: null, partySize: null, drops: [{name:'Nunatak Trophy', chance:3}], notes: 'Massive Ice Wyvern; freezes players. Use mobile mounts.', mechanics: 'Freezing breath, spawns Ice Worm minions.' },
-	{ id: 'boss_thodes', name: 'Thodes the Widowmaker', map: 'Astraeos', level: null, partySize: null, drops: [{name:'Thodes Trophy', chance:2}], notes: 'Greek myth themed boss. Requires multiple artifacts to access.', mechanics: 'Mythology-themed mechanics; expect multiple phases.' },
-	{ id: 'boss_desert_titan', name: 'Desert Titan (Sky Titan)', map: 'Extinction', level: 1500, partySize: null, drops: [{name:'Titan Component', chance:1}], notes: 'Massive flying titan; tamed temporarily by destroying corruption nodules.', mechanics: 'Teleport mechanics, electrical attacks; high requirements to summon.' },
-	{ id: 'boss_forest_titan', name: 'Forest Titan', map: 'Extinction', level: 1500, partySize: null, drops: [{name:'Titan Component', chance:1}], notes: 'Slow but powerful; creates deadly trees. Target corruption nodules to tame.', mechanics: 'High HP, slow attacks; requires coordination.' },
-	{ id: 'boss_king_titan', name: 'King Titan', map: 'Extinction', level: 1500, partySize: null, drops: [{name:'King Titan Trophy', chance:0.5}], notes: 'Final boss; extremely powerful. Must defeat other titans first; keep fight centered.', mechanics: '60-minute fight limit; respawns if moved too far.' }
+// Arena and boss definitions used for the Boss Planner UI (grouped by arena)
+const ARENAS = [
+	{ id: 'island_dragon', arena: 'The Island - Dragon', map: 'The Island', bosses: [{ id: 'dragon', name: 'Dragon', notes: 'Fire-breathing dragon. Ranged tactics recommended.' }] },
+	{ id: 'island_megapithecus', arena: 'The Island - Megapithecus', map: 'The Island', bosses: [{ id: 'megapithecus', name: 'Megapithecus', notes: 'Giant ape boss.' }] },
+	{ id: 'island_broodmother', arena: 'The Island - Broodmother', map: 'The Island', bosses: [{ id: 'broodmother', name: 'Broodmother Lysrix', notes: 'Spawns insect minions causing torpor.' }] },
+	{ id: 'center_nunatak', arena: 'The Center - Nunatak', map: 'The Center', bosses: [{ id: 'nunatak', name: 'Nunatak (Ice Wyvern Titan)', notes: 'Massive ice wyvern; freezing attacks.' }] },
+	{ id: 'center_dual', arena: 'The Center - Dual Arena', map: 'The Center', bosses: [{ id: 'dual_brood_meg', name: 'Dual: Broodmother + Megapithecus', notes: 'Two bosses spawn at once; extreme difficulty.' }] },
+	{ id: 'scorched_manticore', arena: 'Scorched Earth - Manticore', map: 'Scorched Earth', bosses: [{ id: 'manticore', name: 'Manticore', notes: 'Venom projectiles and elementals.' }] },
+	{ id: 'aberration_rockwell', arena: 'Aberration - Rockwell', map: 'Aberration', bosses: [{ id: 'rockwell', name: 'Rockwell', notes: 'Mutated human-plant hybrid, radiation hazards.' }] },
+	{ id: 'extinction_desert_titan', arena: 'Extinction - Desert Titan', map: 'Extinction', bosses: [{ id: 'desert_titan', name: 'Desert Titan', notes: 'Massive flying titan; teleport mechanics.' }] },
+	{ id: 'extinction_king_titan', arena: 'Extinction - King Titan', map: 'Extinction', bosses: [{ id: 'king_titan', name: 'King Titan', notes: 'Final Titan boss; keep fight centered.' }] }
 ];
+
+// Assignment storage: maps bossId -> array of creature ids
+const ASSIGNMENT_KEY = 'bossPlanner.assignments.v1';
+function getAssignments() { try { return JSON.parse(localStorage.getItem(ASSIGNMENT_KEY) || '{}'); } catch (e) { return {}; } }
+function saveAssignments(a) { try { localStorage.setItem(ASSIGNMENT_KEY, JSON.stringify(a)); } catch (e) {} }
+
+// Invites storage (keeps invited user ids per boss locally until server-side invites implemented)
+const INVITE_STORAGE_KEY = 'bossPlanner.invites.v1';
+function getInvites() { try { return JSON.parse(localStorage.getItem(INVITE_STORAGE_KEY) || '{}'); } catch (e) { return {}; } }
+function saveInvites(v) { try { localStorage.setItem(INVITE_STORAGE_KEY, JSON.stringify(v)); } catch (e) {} }
+
+// Timers storage (per-boss scheduled timestamp)
+const TIMER_STORAGE_KEY = 'bossPlanner.timers.v1';
+function getTimers() { try { return JSON.parse(localStorage.getItem(TIMER_STORAGE_KEY) || '{}'); } catch (e) { return {}; } }
+function saveTimers(t) { try { localStorage.setItem(TIMER_STORAGE_KEY, JSON.stringify(t)); } catch (e) {} }
+
+function getUserCreatures() {
+	try {
+		if (window.appState && Array.isArray(window.appState.creatures) && window.appState.creatures.length) return window.appState.creatures;
+		const raw = localStorage.getItem('arkCreatures'); if (!raw) return [];
+		return JSON.parse(raw || '[]');
+	} catch (e) { return []; }
+}
 
 function renderBossList() {
 	const listEl = document.getElementById('bossList');
@@ -1437,6 +1391,169 @@ function renderBossList() {
 	});
 	// show first detail by default
 	if (data.length && detailEl) showBossDetail(data[0].id);
+}
+
+// --- New arena-based rendering ---
+function renderArenaGrid() {
+	const wrap = document.getElementById('arenaGrid'); if (!wrap) return;
+	wrap.innerHTML = '';
+	ARENAS.forEach(ar => {
+	// Use species-card styling so it matches the creature page
+	const card = document.createElement('div');
+	card.className = 'species-card';
+	card.tabIndex = 0;
+	card.style.cursor = 'pointer';
+	const inner = document.createElement('div');
+	inner.className = 'species-card-header';
+	inner.innerHTML = `<div class="species-icon">🎯</div><div class="species-info"><div class="species-name">${escapeHtml(ar.arena)}</div><div class="species-meta">${escapeHtml(ar.map||'')}</div></div><div class="species-count">${(ar.bosses||[]).length}</div>`;
+	card.appendChild(inner);
+	const body = document.createElement('div'); body.className = 'species-card-body'; body.innerHTML = `<div style="font-size:13px;color:#666">${escapeHtml((ar.bosses||[]).map(b=>b.name).join(', '))}</div>`;
+	card.appendChild(body);
+	card.addEventListener('click', () => openArenaPage(ar.id));
+	wrap.appendChild(card);
+	});
+}
+
+function openArenaPage(arenaId) {
+	const wrap = document.getElementById('arenaDetailWrap'); if (!wrap) return;
+	const arena = ARENAS.find(a=>a.id===arenaId); if (!arena) { wrap.innerHTML = '<div class="no-items">Arena not found</div>'; return; }
+	// Render header
+	wrap.innerHTML = `<div style="display:flex;align-items:center;gap:12px;margin-top:12px"><h2 style="margin:0">${escapeHtml(arena.arena)}</h2><div style="color:#666">${escapeHtml(arena.map||'')}</div></div><div id="arenaBossList" style="margin-top:12px;display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px"></div><div id="arenaBossDetail" style="margin-top:12px"></div>`;
+	renderArenaBosses(arena);
+}
+
+function renderArenaBosses(arena) {
+	const list = document.getElementById('arenaBossList'); if (!list) return;
+	list.innerHTML = '';
+	const assignments = getAssignments();
+	(arena.bosses||[]).forEach(b => {
+		const card = document.createElement('div'); card.className='boss-card'; card.style='background:#fff;border:1px solid #eee;padding:10px;border-radius:8px;display:flex;flex-direction:column;gap:8px;';
+		const h = document.createElement('div'); h.style='display:flex;align-items:center;justify-content:space-between'; h.innerHTML = `<div><strong>${escapeHtml(b.name||'Untitled')}</strong><div style="font-size:12px;color:#666">${escapeHtml(b.notes||'')}</div></div>`;
+		const assignCount = (assignments[b.id] || []).length;
+		const actions = document.createElement('div'); actions.style='display:flex;gap:6px;align-items:center';
+		const assignBtn = document.createElement('button'); assignBtn.className='btn btn-primary'; assignBtn.textContent = 'Assign Creatures';
+		const countBadge = document.createElement('span'); countBadge.style='background:#f1f1f1;padding:6px;border-radius:6px;font-size:13px'; countBadge.textContent = assignCount + ' assigned';
+		assignBtn.addEventListener('click', () => openBossAssignment(b));
+		actions.appendChild(assignBtn); actions.appendChild(countBadge);
+		h.appendChild(actions);
+		card.appendChild(h);
+		list.appendChild(card);
+	});
+}
+
+function openBossAssignment(boss) {
+	const detail = document.getElementById('arenaBossDetail'); if (!detail) return;
+	const assignments = getAssignments();
+	const assigned = new Set(assignments[boss.id] || []);
+	const creatures = getUserCreatures();
+	// Build the planning page: left = assign creatures, right = invites + timer
+	detail.innerHTML = `<div style="display:flex;gap:12px;align-items:flex-start"><div style="flex:1"><div style="display:flex;align-items:center;justify-content:space-between"><div><h3 style="margin:0">${escapeHtml(boss.name||'Untitled')}</h3><div style="color:#666">${escapeHtml(boss.notes||'')}</div></div><div><button id="backToArenaBtn" class="btn btn-secondary">← Back</button></div></div><div style="margin-top:10px"><strong>Assign your saved creature cards to this boss</strong></div><div id="assignGrid" style="margin-top:10px;display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;max-height:56vh;overflow:auto;padding-right:6px"></div><div style="margin-top:8px"><button id="saveAssignBtn" class="btn btn-primary">Save Assignments</button> <button id="clearAssignBtn" class="btn btn-secondary">Clear</button></div></div><div style="width:360px;flex:0 0 360px;background:#fff;border:1px solid #eee;border-radius:8px;padding:12px;"><h4 style="margin-top:0">Invites</h4><div style="font-size:13px;color:#666;margin-bottom:8px">Invite tribemates or other users to join this fight (local invites until server-side invites are available)</div><div style="display:flex;gap:8px;margin-bottom:8px"><input id="userSearchInput" class="form-control" placeholder="Search users by email or nickname"> <button id="userSearchBtn" class="btn btn-secondary">Search</button></div><div id="userSearchResults" style="max-height:160px;overflow:auto;margin-bottom:8px"></div><div><strong>Invited</strong><div id="invitedList" style="margin-top:8px;max-height:120px;overflow:auto"></div></div><hr><h4>Timer</h4><div style="font-size:13px;color:#666;margin-bottom:6px">Set a countdown to alert invited users locally when the fight is about to begin.</div><div style="display:flex;gap:8px;align-items:center;margin-bottom:8px"><input id="timerMinutes" class="form-control" type="number" min="0" placeholder="Minutes"> <button id="startTimerBtn" class="btn btn-primary">Start</button> <button id="stopTimerBtn" class="btn btn-secondary">Stop</button></div><div id="timerDisplay" style="font-weight:700;color:#d946ef"></div></div></div>`;
+	document.getElementById('backToArenaBtn')?.addEventListener('click', () => { renderArenaGrid(); document.getElementById('arenaBossDetail').innerHTML = ''; });
+	const grid = document.getElementById('assignGrid'); if (!grid) return;
+	creatures.forEach(c => {
+		const card = document.createElement('div'); card.className='species-card'; card.style='cursor:pointer;padding:8px;';
+		const icon = document.createElement('div'); icon.className='species-icon'; icon.innerHTML = isValidImageUrl(c.image) ? `<img src="${c.image}" alt="${escapeHtml(c.name||c.species||'Creature')}" style="width:56px;height:56px;border-radius:6px;object-fit:cover">` : (c.icon || '🦖');
+		const info = document.createElement('div'); info.className='species-info'; info.innerHTML = `<div class="species-name">${escapeHtml(c.name||c.species||'Creature')}</div><div class="species-meta" style="font-size:12px;color:#666">${c.level?('Lvl '+c.level):''}</div>`;
+		const right = document.createElement('div'); right.style='display:flex;align-items:center;gap:8px';
+		const cb = document.createElement('input'); cb.type='checkbox'; cb.checked = assigned.has(c.id);
+		cb.addEventListener('change', () => { if (cb.checked) assigned.add(c.id); else assigned.delete(c.id); });
+		right.appendChild(cb);
+		card.appendChild(icon); card.appendChild(info); card.appendChild(right);
+		grid.appendChild(card);
+	});
+
+	document.getElementById('saveAssignBtn')?.addEventListener('click', () => {
+		const assignments = getAssignments(); assignments[boss.id] = Array.from(assigned); saveAssignments(assignments); renderArenaGrid(); renderArenaBosses(ARENAS.find(a=> (a.bosses||[]).some(bb=>bb.id===boss.id) )); alert('Saved ' + assigned.size + ' assignments for ' + (boss.name||'this boss'));
+	});
+	document.getElementById('clearAssignBtn')?.addEventListener('click', () => {
+		if (!confirm('Clear assignments for this boss?')) return; const assignments = getAssignments(); delete assignments[boss.id]; saveAssignments(assignments); renderArenaGrid(); renderArenaBosses(ARENAS.find(a=> (a.bosses||[]).some(bb=>bb.id===boss.id) )); detail.innerHTML = '';
+	});
+
+	// --- Invite UI wiring ---
+	const searchInput = document.getElementById('userSearchInput');
+	const searchBtn = document.getElementById('userSearchBtn');
+	const resultsEl = document.getElementById('userSearchResults');
+	const invitedListEl = document.getElementById('invitedList');
+	const invites = getInvites();
+	const invited = new Set((invites[boss.id] || []).slice());
+	function renderInvited() {
+		invitedListEl.innerHTML = '';
+		Array.from(invited).forEach(uid => {
+			const row = document.createElement('div'); row.style='display:flex;justify-content:space-between;align-items:center;padding:6px;border-bottom:1px solid #f4f4f4';
+			row.textContent = uid;
+			const rem = document.createElement('button'); rem.className='btn btn-small'; rem.textContent='Remove'; rem.addEventListener('click', ()=>{ invited.delete(uid); saveInvites(Object.assign(getInvites(), { [boss.id]: Array.from(invited) })); renderInvited(); });
+			row.appendChild(rem);
+			invitedListEl.appendChild(row);
+		});
+	}
+	renderInvited();
+
+	async function doUserSearch(q) {
+		resultsEl.innerHTML = '<div style="color:#666">Searching...</div>';
+		if (!q) { resultsEl.innerHTML = ''; return; }
+		if (!isLoggedIn()) { resultsEl.innerHTML = '<div style="color:#cbd5e1">Sign in to search users</div>'; return; }
+		try {
+			const { res, body } = await apiRequest('/api/users/search?q=' + encodeURIComponent(q), { method: 'GET' });
+			if (!res.ok) { resultsEl.innerHTML = '<div style="color:#cbd5e1">Search failed</div>'; return; }
+			const arr = Array.isArray(body) ? body : [];
+			resultsEl.innerHTML = '';
+			arr.forEach(u => {
+				const r = document.createElement('div'); r.style='padding:6px;border-bottom:1px solid #f4f4f4;display:flex;justify-content:space-between;align-items:center';
+				r.innerHTML = `<div><strong>${escapeHtml(u.nickname||u.email||('User '+u.id))}</strong><div style="font-size:12px;color:#666">${escapeHtml(u.email||'')}</div></div>`;
+				const inv = document.createElement('button'); inv.className='btn btn-secondary'; inv.textContent = 'Invite'; inv.addEventListener('click', async ()=>{ 
+					// call server to create invite and rely on notifications
+					try {
+						const payload = { bossId: boss.id, invitedUserId: u.id, message: 'Join boss fight: ' + (boss.name||'Boss') };
+						const resp = await apiRequest('/api/boss/invites', { method: 'POST', body: JSON.stringify(payload) });
+						if (!resp.res.ok) return alert('Invite failed');
+						invited.add(String(u.id)); saveInvites(Object.assign(getInvites(), { [boss.id]: Array.from(invited) })); renderInvited();
+					} catch (e) { alert('Invite failed'); }
+				});
+				r.appendChild(inv);
+				resultsEl.appendChild(r);
+			});
+			if (arr.length === 0) resultsEl.innerHTML = '<div style="color:#666">No users found</div>';
+		} catch (e) { resultsEl.innerHTML = '<div style="color:#cbd5e1">Search error</div>'; }
+	}
+	searchBtn?.addEventListener('click', () => doUserSearch((searchInput?.value||'').trim()));
+
+	// --- Timer wiring ---
+	const startBtn = document.getElementById('startTimerBtn');
+	const stopBtn = document.getElementById('stopTimerBtn');
+	const minutesInput = document.getElementById('timerMinutes');
+	const timerDisplay = document.getElementById('timerDisplay');
+	let timerInterval = null;
+	function renderTimer() {
+		const timers = getTimers();
+		const ts = timers[boss.id];
+		if (!ts) { timerDisplay.textContent = '' ; return; }
+		const remaining = Math.max(0, Math.floor((new Date(ts).getTime() - Date.now())/1000));
+		const mins = Math.floor(remaining/60); const secs = remaining % 60;
+		timerDisplay.textContent = `${mins}:${String(secs).padStart(2,'0')} remaining`;
+		if (remaining <= 0) {
+			// fire notification
+			try { if (Notification && Notification.permission === 'granted') new Notification('Boss timer', { body: boss.name + ' fight time!' }); else alert('Boss fight time: ' + (boss.name||'Boss')); } catch (e) { alert('Boss fight time: ' + (boss.name||'Boss')); }
+			// remove timer
+			const t = getTimers(); delete t[boss.id]; saveTimers(t); clearInterval(timerInterval); timerInterval = null; renderTimer();
+		}
+	}
+
+	startBtn?.addEventListener('click', async () => {
+		const m = parseInt(minutesInput?.value) || 0; if (m <= 0) return alert('Enter minutes > 0');
+		// create timer on server
+		try {
+			const when = new Date(Date.now() + m * 60000).toISOString();
+			const resp = await apiRequest('/api/boss/timers', { method: 'POST', body: JSON.stringify({ bossId: boss.id, scheduledAt: when }) });
+			if (!resp.res.ok) return alert('Failed to schedule timer');
+			// also save locally for UI convenience
+			const timers = getTimers(); timers[boss.id] = when; saveTimers(timers); renderTimer();
+			if (timerInterval) clearInterval(timerInterval);
+			timerInterval = setInterval(renderTimer, 1000);
+		} catch (e) { alert('Failed to schedule timer'); }
+	});
+	stopBtn?.addEventListener('click', () => { const timers = getTimers(); delete timers[boss.id]; saveTimers(timers); if (timerInterval) clearInterval(timerInterval); timerInterval = null; renderTimer(); });
+	// if there is an active timer, start rendering
+	if (getTimers()[boss.id]) { if (timerInterval) clearInterval(timerInterval); timerInterval = setInterval(renderTimer, 1000); renderTimer(); }
 }
 
 function showBossDetail(id) {

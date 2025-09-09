@@ -148,6 +148,28 @@ db.serialize(() => {
     FOREIGN KEY(tribe_id) REFERENCES tribes(id),
     FOREIGN KEY(user_id) REFERENCES users(id)
   )`);
+  // Boss invites and timers (planner)
+  db.run(`CREATE TABLE IF NOT EXISTS boss_invites (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    boss_id TEXT NOT NULL,
+    inviter_user_id INTEGER NOT NULL,
+    invited_user_id INTEGER NOT NULL,
+    message TEXT,
+    status TEXT DEFAULT 'pending',
+    created_at TEXT DEFAULT (datetime('now')),
+    FOREIGN KEY(inviter_user_id) REFERENCES users(id),
+    FOREIGN KEY(invited_user_id) REFERENCES users(id)
+  )`);
+
+  db.run(`CREATE TABLE IF NOT EXISTS boss_timers (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    boss_id TEXT NOT NULL,
+    scheduled_at TEXT NOT NULL,
+    created_by_user_id INTEGER NOT NULL,
+    status TEXT DEFAULT 'scheduled',
+    created_at TEXT DEFAULT (datetime('now')),
+    FOREIGN KEY(created_by_user_id) REFERENCES users(id)
+  )`);
 
   // Ensure nickname column exists for older databases (safe check)
   db.all("PRAGMA table_info(users)", (err, cols) => {
@@ -615,7 +637,115 @@ app.put('/api/notifications/:id/read', authenticateToken, (req, res) => {
   });
 });
 
+// --- Boss Planner endpoints: invites and timers ---
+// Create an invite (inviter must be authenticated)
+app.post('/api/boss/invites', authenticateToken, (req, res) => {
+  const { bossId, invitedUserId, message } = req.body || {};
+  if (!bossId || !invitedUserId) return res.status(400).json({ error: 'Missing fields' });
+  db.run('INSERT INTO boss_invites (boss_id, inviter_user_id, invited_user_id, message) VALUES (?, ?, ?, ?)', [bossId, req.user.userId, invitedUserId, message || null], function(err) {
+    if (err) return res.status(500).json({ error: 'Failed to create invite' });
+    // create a notification for the invited user
+    const payload = JSON.stringify({ bossId, inviteId: this.lastID, from: req.user.userId, message: message || '' });
+    db.run('INSERT INTO notifications (user_id, actor_user_id, type, payload) VALUES (?, ?, ?, ?)', [invitedUserId, req.user.userId, 'boss_invite', payload]);
+    res.status(201).json({ success: true, id: this.lastID });
+  });
+});
+
+// List invites for a boss or for a user
+app.get('/api/boss/invites', authenticateToken, (req, res) => {
+  const bossId = req.query.bossId;
+  if (bossId) {
+    db.all('SELECT id, boss_id, inviter_user_id, invited_user_id, message, status, created_at FROM boss_invites WHERE boss_id = ?', [bossId], (err, rows) => {
+      if (err) return res.status(500).json({ error: 'Failed to load invites' });
+      res.json(rows || []);
+    });
+  } else {
+    // return invites where the user is invited or invited others
+    db.all('SELECT id, boss_id, inviter_user_id, invited_user_id, message, status, created_at FROM boss_invites WHERE invited_user_id = ? OR inviter_user_id = ? ORDER BY created_at DESC', [req.user.userId, req.user.userId], (err, rows) => {
+      if (err) return res.status(500).json({ error: 'Failed to load invites' });
+      res.json(rows || []);
+    });
+  }
+});
+
+// Update or cancel an invite (inviter or invited user)
+app.put('/api/boss/invites/:id', authenticateToken, (req, res) => {
+  const id = req.params.id;
+  const { status } = req.body || {};
+  if (!status) return res.status(400).json({ error: 'Missing status' });
+  db.get('SELECT * FROM boss_invites WHERE id = ?', [id], (err, row) => {
+    if (err || !row) return res.status(404).json({ error: 'Invite not found' });
+    if (row.inviter_user_id !== req.user.userId && row.invited_user_id !== req.user.userId) return res.status(403).json({ error: 'Not authorized' });
+    db.run('UPDATE boss_invites SET status = ? WHERE id = ?', [status, id], function(err2) {
+      if (err2) return res.status(500).json({ error: 'Failed to update invite' });
+      res.json({ success: true });
+    });
+  });
+});
+
+// Create a timer for a boss
+app.post('/api/boss/timers', authenticateToken, (req, res) => {
+  const { bossId, scheduledAt } = req.body || {};
+  if (!bossId || !scheduledAt) return res.status(400).json({ error: 'Missing fields' });
+  db.run('INSERT INTO boss_timers (boss_id, scheduled_at, created_by_user_id) VALUES (?, ?, ?)', [bossId, scheduledAt, req.user.userId], function(err) {
+    if (err) return res.status(500).json({ error: 'Failed to create timer' });
+    res.status(201).json({ success: true, id: this.lastID });
+  });
+});
+
+// List timers (optional filter by bossId)
+app.get('/api/boss/timers', authenticateToken, (req, res) => {
+  const bossId = req.query.bossId;
+  if (bossId) {
+    db.all('SELECT id, boss_id, scheduled_at, created_by_user_id, status, created_at FROM boss_timers WHERE boss_id = ? ORDER BY scheduled_at ASC', [bossId], (err, rows) => {
+      if (err) return res.status(500).json({ error: 'Failed to load timers' });
+      res.json(rows || []);
+    });
+  } else {
+    db.all('SELECT id, boss_id, scheduled_at, created_by_user_id, status, created_at FROM boss_timers WHERE created_by_user_id = ? OR status = ? ORDER BY scheduled_at ASC', [req.user.userId, 'scheduled'], (err, rows) => {
+      if (err) return res.status(500).json({ error: 'Failed to load timers' });
+      res.json(rows || []);
+    });
+  }
+});
+
+// Cancel a timer
+app.put('/api/boss/timers/:id/cancel', authenticateToken, (req, res) => {
+  const id = req.params.id;
+  db.get('SELECT * FROM boss_timers WHERE id = ?', [id], (err, row) => {
+    if (err || !row) return res.status(404).json({ error: 'Timer not found' });
+    if (row.created_by_user_id !== req.user.userId) return res.status(403).json({ error: 'Not authorized' });
+    db.run('UPDATE boss_timers SET status = ? WHERE id = ?', ['cancelled', id], function(err2) {
+      if (err2) return res.status(500).json({ error: 'Failed to cancel timer' });
+      res.json({ success: true });
+    });
+  });
+});
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   if (!process.env.JWT_SECRET) console.warn('Using default JWT secret; set JWT_SECRET in environment for production');
 });
+
+// Background job: poll boss_timers and fire notifications for due timers
+setInterval(() => {
+  try {
+    // find timers that are scheduled and due (scheduled_at <= now)
+    const now = new Date().toISOString();
+    db.all("SELECT id, boss_id, scheduled_at, created_by_user_id FROM boss_timers WHERE status = 'scheduled' AND scheduled_at <= ?", [now], (err, rows) => {
+      if (err || !rows || rows.length === 0) return;
+      rows.forEach(timer => {
+        // mark timer as fired
+        db.run("UPDATE boss_timers SET status = 'fired' WHERE id = ?", [timer.id]);
+        // fetch invites for this boss and notify invited users
+        db.all('SELECT invited_user_id, inviter_user_id FROM boss_invites WHERE boss_id = ? AND status = ?', [timer.boss_id, 'pending'], (err2, invites) => {
+          if (err2) return;
+          (invites||[]).forEach(inv => {
+            const payload = JSON.stringify({ bossId: timer.boss_id, timerId: timer.id, from: timer.created_by_user_id });
+            db.run('INSERT INTO notifications (user_id, actor_user_id, type, payload) VALUES (?, ?, ?, ?)', [inv.invited_user_id, inv.inviter_user_id || timer.created_by_user_id, 'boss_timer_alert', payload]);
+          });
+        });
+      });
+    });
+  } catch (e) { console.warn('Timer worker error', e); }
+}, 15000);

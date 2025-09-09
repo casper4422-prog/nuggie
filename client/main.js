@@ -1312,10 +1312,153 @@ function loadBossPlanner() {
 	main.innerHTML = `
 		<section class="boss-planner-page">
 			<div class="page-header"><h1>Boss Planner</h1><div class="section-sub">Plan boss fights, rewards and party composition</div></div>
-			<div style="margin-top:12px;">This is a start for Boss Planner. You can add bosses, track drops, and plan strategies here.</div>
+			<div style="margin-top:12px;display:flex;gap:12px;align-items:center;">
+				<button id="addBossBtn" class="btn btn-primary">+ Add Boss</button>
+				<button id="exportBossesBtn" class="btn btn-secondary">Export</button>
+				<button id="importBossesBtn" class="btn btn-secondary">Import</button>
+				<span style="margin-left:auto;color:#666;font-size:13px">Stored locally (per browser)</span>
+			</div>
+			<div style="margin-top:18px;display:flex;gap:18px;">
+				<div style="flex:1;min-width:320px;">
+					<div id="bossList" class="boss-list"></div>
+				</div>
+				<div style="width:360px;flex:0 0 360px;">
+					<div id="bossDetail" class="boss-detail" style="background:#fff;border:1px solid #eee;padding:12px;border-radius:6px;min-height:120px"></div>
+				</div>
+			</div>
+			<!-- Reuse creatureModal for editor -->
 		</section>
 	`;
+
+	// Wire buttons
+	const addBtn = document.getElementById('addBossBtn');
+	const exportBtn = document.getElementById('exportBossesBtn');
+	const importBtn = document.getElementById('importBossesBtn');
+	addBtn?.addEventListener('click', () => openBossModal());
+	exportBtn?.addEventListener('click', () => {
+		const data = getBossData();
+		const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+		const url = URL.createObjectURL(blob);
+		const a = document.createElement('a');
+		a.href = url; a.download = 'bosses.json'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 5000);
+	});
+	importBtn?.addEventListener('click', () => {
+		const input = document.createElement('input'); input.type = 'file'; input.accept = '.json,application/json';
+		input.addEventListener('change', (e) => {
+			const f = input.files && input.files[0]; if (!f) return;
+			const r = new FileReader(); r.onload = () => {
+				try {
+					const parsed = JSON.parse(r.result);
+					if (!Array.isArray(parsed)) return alert('Invalid file format: expected array of bosses');
+					saveBossData(parsed);
+					renderBossList();
+					alert('Imported ' + parsed.length + ' bosses');
+				} catch (e) { alert('Failed to import: ' + (e.message || e)); }
+			}; r.readAsText(f);
+		});
+		input.click();
+	});
+
+	renderBossList();
 }
+
+// Boss Planner storage helpers
+const BOSS_STORAGE_KEY = 'bossPlanner.v1';
+function getBossData() {
+	try { const raw = localStorage.getItem(BOSS_STORAGE_KEY); return raw ? JSON.parse(raw) : []; } catch (e) { console.warn('bossPlanner: failed to read storage', e); return []; }
+}
+function saveBossData(data) {
+	try { localStorage.setItem(BOSS_STORAGE_KEY, JSON.stringify(data)); } catch (e) { console.warn('bossPlanner: failed to save', e); }
+}
+
+function renderBossList() {
+	const listEl = document.getElementById('bossList');
+	const detailEl = document.getElementById('bossDetail');
+	if (!listEl) return;
+	const data = getBossData();
+	if (!data.length) {
+		listEl.innerHTML = '<div class="no-items">No bosses defined yet. Click "Add Boss" to get started.</div>';
+		if (detailEl) detailEl.innerHTML = '';
+		return;
+	}
+	listEl.innerHTML = '';
+	data.forEach(b => {
+		const item = document.createElement('div');
+		item.className = 'boss-item';
+		item.style = 'padding:10px;border:1px solid #eee;margin-bottom:8px;border-radius:6px;cursor:pointer;background:#fff';
+		item.innerHTML = `<div style="display:flex;align-items:center;gap:10px;"><div style="flex:1"><strong>${escapeHtml(b.name||'Untitled')}</strong><div style="font-size:12px;color:#666">Level: ${escapeHtml(String(b.level||''))} • Party: ${escapeHtml(String(b.partySize||''))}</div></div><div><button class="btn btn-small edit-btn">Edit</button> <button class="btn btn-small danger delete-btn">Delete</button></div></div>`;
+		item.addEventListener('click', (e) => {
+			// if clicked on buttons, ignore outer click
+			if (e.target && (e.target.classList.contains('edit-btn') || e.target.classList.contains('delete-btn'))) return;
+			showBossDetail(b.id);
+		});
+		item.querySelector('.edit-btn')?.addEventListener('click', (ev) => { ev.stopPropagation(); openBossModal(b.id); });
+		item.querySelector('.delete-btn')?.addEventListener('click', (ev) => { ev.stopPropagation(); if (confirm('Delete boss "'+(b.name||'')+'"?')) { const next = getBossData().filter(x=>x.id!==b.id); saveBossData(next); renderBossList(); if (detailEl) detailEl.innerHTML=''; } });
+		listEl.appendChild(item);
+	});
+	// show first detail by default
+	if (data.length && detailEl) showBossDetail(data[0].id);
+}
+
+function showBossDetail(id) {
+	const detailEl = document.getElementById('bossDetail'); if (!detailEl) return;
+	const data = getBossData(); const b = data.find(x=>x.id===id); if (!b) { detailEl.innerHTML=''; return; }
+	detailEl.innerHTML = `<h3 style="margin-top:0">${escapeHtml(b.name||'Untitled')}</h3>
+		<div style="font-size:13px;color:#444">Level: <strong>${escapeHtml(String(b.level||''))}</strong></div>
+		<div style="font-size:13px;color:#444">Party size: <strong>${escapeHtml(String(b.partySize||''))}</strong></div>
+		<div style="margin-top:8px;color:#333">${escapeHtml(b.notes||'')}</div>
+		<div style="margin-top:10px"><strong>Drops</strong></div>
+		<div id="bossDrops" style="margin-top:6px"></div>
+		<div style="margin-top:10px"><button class="btn btn-secondary" id="editBossDetailBtn">Edit</button></div>`;
+	const dropsEl = document.getElementById('bossDrops'); if (dropsEl) {
+		const drops = Array.isArray(b.drops) ? b.drops : [];
+		if (!drops.length) dropsEl.innerHTML = '<div style="color:#666;font-size:13px">No drops defined</div>';
+		else {
+			dropsEl.innerHTML = drops.map(d=>`<div style="padding:6px;border-bottom:1px solid #f1f1f1"><strong>${escapeHtml(d.name)}</strong> <span style="color:#666">(${escapeHtml(String(d.chance||''))}%)</span></div>`).join('');
+		}
+	}
+	document.getElementById('editBossDetailBtn')?.addEventListener('click', () => openBossModal(b.id));
+}
+
+function openBossModal(bossId) {
+	const modal = document.getElementById('creatureModal'); if (!modal) return alert('Modal area missing');
+	const data = getBossData(); const boss = bossId ? data.find(x=>x.id===bossId) : null;
+	const dropsJson = boss ? JSON.stringify(boss.drops||[], null, 2) : '[]';
+	modal.innerHTML = `<div class="modal-content" style="max-width:720px;margin:20px auto;"><div class="modal-header"><h3>${boss? 'Edit Boss' : 'Add Boss'}</h3><button id="closeBossModal" class="close-btn soft">Close</button></div>
+		<div class="modal-body">
+			<div class="form-group"><label class="form-label">Name</label><input id="bossNameInput" class="form-control" value="${escapeHtml(boss?boss.name:'')}"></div>
+			<div class="form-group"><label class="form-label">Level</label><input id="bossLevelInput" class="form-control" type="number" value="${escapeHtml(boss?String(boss.level||''):'')}"></div>
+			<div class="form-group"><label class="form-label">Party Size</label><input id="bossPartyInput" class="form-control" type="number" value="${escapeHtml(boss?String(boss.partySize||''):'')}"></div>
+			<div class="form-group"><label class="form-label">Notes</label><textarea id="bossNotesInput" class="form-control" rows="3">${escapeHtml(boss?boss.notes:'')}</textarea></div>
+			<div class="form-group"><label class="form-label">Drops (JSON array of {name, chance})</label><textarea id="bossDropsInput" class="form-control" rows="6">${escapeHtml(dropsJson)}</textarea><div style="font-size:12px;color:#666;margin-top:6px">Example: [{"name":"Ultra Hide","chance":2.5}]</div></div>
+		</div>
+		<div class="modal-footer"><button class="btn btn-primary" id="saveBossBtn">Save</button> <button class="btn btn-secondary" id="cancelBossBtn">Cancel</button></div>
+	</div>`;
+	modal.classList.add('active'); modal.setAttribute('aria-hidden','false');
+	document.getElementById('closeBossModal')?.addEventListener('click', () => { modal.classList.remove('active'); modal.innerHTML=''; modal.setAttribute('aria-hidden','true'); });
+	document.getElementById('cancelBossBtn')?.addEventListener('click', () => { modal.classList.remove('active'); modal.innerHTML=''; modal.setAttribute('aria-hidden','true'); });
+	document.getElementById('saveBossBtn')?.addEventListener('click', () => {
+		const name = document.getElementById('bossNameInput')?.value || '';
+		const level = parseInt(document.getElementById('bossLevelInput')?.value) || null;
+		const partySize = parseInt(document.getElementById('bossPartyInput')?.value) || null;
+		const notes = document.getElementById('bossNotesInput')?.value || '';
+		let drops = [];
+		try { drops = JSON.parse(document.getElementById('bossDropsInput')?.value || '[]'); if (!Array.isArray(drops)) throw new Error('Drops must be an array'); } catch (e) { return alert('Invalid drops JSON: ' + (e.message || e)); }
+		const all = getBossData();
+		if (boss) {
+			// update
+			const idx = all.findIndex(x=>x.id===boss.id);
+			if (idx !== -1) { all[idx] = { ...all[idx], name, level, partySize, notes, drops }; }
+		} else {
+			const id = 'boss_' + Date.now();
+			all.unshift({ id, name, level, partySize, notes, drops });
+		}
+		saveBossData(all); modal.classList.remove('active'); modal.innerHTML=''; modal.setAttribute('aria-hidden','true'); renderBossList();
+	});
+}
+
+// small helper to escape HTML in strings
+function escapeHtml(s) { if (s === undefined || s === null) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
 function loadMyProfile() {
 	const main = document.getElementById('appMainContent');

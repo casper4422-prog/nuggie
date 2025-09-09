@@ -44,8 +44,8 @@ db.serialize(() => {
     price REAL,
     status TEXT DEFAULT 'open',
     created_at TEXT DEFAULT (datetime('now')),
-    FOREIGN KEY(user_id) REFERENCES users(id),
-    FOREIGN KEY(creature_card_id) REFERENCES creature_cards(id)
+    FOREIGN KEY(user_id) REFERENCES users(id)
+
   )`);
   db.run(`CREATE TABLE IF NOT EXISTS offers (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -109,8 +109,8 @@ db.serialize(() => {
     created_at TEXT DEFAULT (datetime('now')),
     FOREIGN KEY(tribe_id) REFERENCES tribes(id),
     FOREIGN KEY(user_id) REFERENCES users(id)
-+
   )`);
+
   // Ensure nickname column exists for older databases (safe check)
   db.all("PRAGMA table_info(users)", (err, cols) => {
     if (err || !Array.isArray(cols)) return;

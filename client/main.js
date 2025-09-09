@@ -1779,6 +1779,19 @@ function updateStatsDashboard() {
 	const total = creatures.length;
 	const speciesCount = new Set(creatures.map(c => c.species)).size;
 	const prized = creatures.filter(c => (window.BadgeSystem && BadgeSystem.calculatePrizedBloodline(c).qualified) ).length;
+	// Count species that have at least one Boss Ready badge (alpha/beta/...) among their creatures
+	let bossReadySpeciesCount = 0;
+	let underdogCount = 0;
+	try {
+		const bySpecies = {};
+		(creatures || []).forEach(c => { try { bySpecies[c.species] = bySpecies[c.species] || []; bySpecies[c.species].push(c); } catch(e){} });
+		Object.keys(bySpecies).forEach(spec => {
+			const list = bySpecies[spec] || [];
+			if (list.some(cc => (window.BadgeSystem && (BadgeSystem.calculateBossReady(cc) || []).length > 0))) bossReadySpeciesCount++;
+			// Underdog badges are per-creature; count unique creatures with underdog badges
+			list.forEach(cc => { if (window.BadgeSystem && (BadgeSystem.calculateUnderdog(cc) || []).length > 0) underdogCount++; });
+		});
+	} catch (e) { /* ignore dashboard calc failures */ }
 	const highest = creatures.length ? Math.max(...creatures.map(c => c.level || 1)) : 1;
 
 	// Ensure placeholders exist; create them if not
@@ -1791,6 +1804,8 @@ function updateStatsDashboard() {
 		statsBar.innerHTML = `<div class="stats-item">Total: <span id="totalCreatures">${total}</span></div>
 			<div class="stats-item">Species: <span id="speciesTracked">${speciesCount}</span></div>
 			<div class="stats-item">Prized: <span id="prizedBloodlines">${prized}</span></div>
+			<div class="stats-item">Boss Ready Species: <span id="bossReadySpecies">${bossReadySpeciesCount}</span></div>
+			<div class="stats-item">Underdog Creatures: <span id="underdogCount">${underdogCount}</span></div>
 			<div class="stats-item">Highest Lvl: <span id="highestLevel">${highest}</span></div>`;
 		header.appendChild(statsBar);
 	} else {

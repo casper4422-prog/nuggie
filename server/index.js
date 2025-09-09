@@ -6,6 +6,7 @@ const sqlite3 = require('sqlite3').verbose();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
+const path = require('path');
 const app = express();
 const PORT = 3001;
 const SECRET = 'your_jwt_secret'; // Change this in production
@@ -15,6 +16,12 @@ const SECRET = 'your_jwt_secret'; // Change this in production
 // Allow Authorization header for Bearer token flows and Content-Type for JSON.
 app.use(cors({ origin: true, credentials: true, allowedHeaders: ['Content-Type', 'Authorization'] }));
 app.use(bodyParser.json());
+
+// Serve client static files (so a single Render web service can host both client and API)
+try {
+  const clientRoot = path.join(__dirname, '..', 'client');
+  app.use(express.static(clientRoot));
+} catch (e) { console.warn('Failed to mount static client', e); }
 
 // Initialize SQLite DB
 const db = new sqlite3.Database('database.sqlite', (err) => {

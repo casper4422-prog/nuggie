@@ -13,9 +13,16 @@ function showLoginPage() {
 		return;
 	}
 	// Show landing/login, hide register and main app content
-	try { landing.style.display = ''; } catch (e) {}
-	try { register.style.display = 'none'; } catch (e) {}
-	try { mainApp.style.display = 'none'; } catch (e) {}
+	try {
+		landing.classList.remove('hidden'); landing.style.display = '';
+		landing.setAttribute('aria-hidden', 'false');
+	} catch (e) {}
+	try {
+		register.classList.add('hidden'); register.style.display = 'none'; register.setAttribute('aria-hidden', 'true');
+	} catch (e) {}
+	try {
+		mainApp.classList.add('hidden'); mainApp.style.display = 'none'; mainApp.setAttribute('aria-hidden', 'true');
+	} catch (e) {}
 	// If there's a login form, focus first field
 	try { const f = document.getElementById('loginEmail') || document.getElementById('loginForm')?.querySelector('input'); if (f) f.focus(); } catch (e) {}
 }
@@ -35,9 +42,9 @@ function showMainApp() {
 		const landing = document.getElementById('landingPage');
 		const register = document.getElementById('registerPage');
 		const mainApp = document.getElementById('mainApp');
-		if (landing) landing.style.display = 'none';
-		if (register) register.style.display = 'none';
-		if (mainApp) mainApp.style.display = '';
+		if (landing) { landing.classList.add('hidden'); landing.style.display = 'none'; landing.setAttribute('aria-hidden', 'true'); }
+		if (register) { register.classList.add('hidden'); register.style.display = 'none'; register.setAttribute('aria-hidden', 'true'); }
+		if (mainApp) { mainApp.classList.remove('hidden'); mainApp.style.display = ''; mainApp.setAttribute('aria-hidden', 'false'); }
 		// Ensure the app main content exists
 		const appMain = document.getElementById('appMainContent');
 		if (appMain) appMain.style.display = '';

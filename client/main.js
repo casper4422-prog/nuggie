@@ -193,7 +193,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			const authBtn = document.getElementById('authBtn');
 			if (authBtn) authBtn.addEventListener('click', handleAuthClick);
 			const openTribeBtn = document.getElementById('openTribeBtn');
-			if (openTribeBtn) openTribeBtn.addEventListener('click', (e) => { e.preventDefault(); if (typeof showTribeSettings === 'function') { showTribeSettings(); } else if (typeof openTribeModal === 'function') { openTribeModal(); } });
+			if (openTribeBtn) openTribeBtn.addEventListener('click', (e) => { e.preventDefault(); if (typeof openTribeModal === 'function') { openTribeModal(); } else if (typeof showTribeSettings === 'function') { showTribeSettings(); } });
 			const goToBossPlannerBtn = document.getElementById('goToBossPlannerBtn');
 			if (goToBossPlannerBtn) goToBossPlannerBtn.addEventListener('click', (e) => { e.preventDefault(); if (typeof goToBossPlanner === 'function') goToBossPlanner(); });
 			const goToMyProfileBtn = document.getElementById('goToMyProfileBtn');
@@ -1009,8 +1009,37 @@ function loadMyTribePage() {
 	`;
 	document.getElementById('tribeSearch')?.addEventListener('input', debounce(fetchAndRenderTribes, 220));
 	document.getElementById('createTribeBtn')?.addEventListener('click', () => {
-		const name = prompt('Tribe name'); if (!name) return; const main_map = prompt('Main base map (optional)') || null; const desc = prompt('Description (optional)') || null;
-		apiRequest('/api/tribes', { method: 'POST', body: JSON.stringify({ name, main_map, description: desc }) }).then(({ res, body }) => { if (res.ok) { alert('Tribe created'); fetchAndRenderTribes(); } else alert('Failed to create tribe'); });
+		// Open a modal to create a tribe instead of using prompt()
+		const modal = document.getElementById('tribeModal');
+		if (!modal) return alert('Modal area missing');
+		modal.classList.add('active'); modal.setAttribute('aria-hidden','false');
+		modal.innerHTML = `
+			<div class="modal-content" style="max-width:520px;margin:20px auto;">
+				<div class="modal-header"><h3>Create Tribe</h3><button id="closeCreateTribe" class="close-btn soft">Close</button></div>
+				<div class="modal-body">
+					<div class="form-group"><label class="form-label">Tribe name</label><input id="createTribeName" class="form-control" type="text"></div>
+					<div class="form-group"><label class="form-label">Main base map (optional)</label><input id="createTribeMap" class="form-control" type="text"></div>
+					<div class="form-group"><label class="form-label">Description (optional)</label><textarea id="createTribeDesc" class="form-control" rows="3"></textarea></div>
+				</div>
+				<div class="modal-footer"><button id="submitCreateTribe" class="btn btn-primary">Create</button> <button id="cancelCreateTribe" class="btn btn-secondary">Cancel</button></div>
+			</div>
+		`;
+		document.getElementById('closeCreateTribe')?.addEventListener('click', ()=>{ modal.classList.remove('active'); modal.innerHTML=''; modal.setAttribute('aria-hidden','true'); });
+		document.getElementById('cancelCreateTribe')?.addEventListener('click', ()=>{ modal.classList.remove('active'); modal.innerHTML=''; modal.setAttribute('aria-hidden','true'); });
+		document.getElementById('submitCreateTribe')?.addEventListener('click', async () => {
+			const name = (document.getElementById('createTribeName')?.value || '').trim();
+			const main_map = (document.getElementById('createTribeMap')?.value || '').trim() || null;
+			const description = (document.getElementById('createTribeDesc')?.value || '').trim() || null;
+			if (!name) return alert('Please enter a tribe name');
+			const { res } = await apiRequest('/api/tribes', { method: 'POST', body: JSON.stringify({ name, main_map, description }) });
+			if (res.ok) {
+				modal.classList.remove('active'); modal.innerHTML=''; modal.setAttribute('aria-hidden','true');
+				alert('Tribe created');
+				try { fetchAndRenderTribes(); } catch (e) { /* ignore */ }
+			} else {
+				alert('Failed to create tribe');
+			}
+		});
 	});
 	fetchAndRenderTribes();
 	function fetchAndRenderTribes() {
@@ -1460,14 +1489,16 @@ async function showNotificationsInbox() {
 	document.getElementById('closeInbox').addEventListener('click', ()=>{ modal.classList.remove('active'); modal.innerHTML=''; modal.setAttribute('aria-hidden','true'); });
 	const list = document.getElementById('inboxList'); list.innerHTML = '';
 	if (!notes || notes.length === 0) { list.innerHTML = '<div class="no-species-found">No notifications</div>'; return; }
-	notes.forEach(n => {
+		notes.forEach(n => {
 		const row = document.createElement('div'); row.style.borderTop = '1px solid rgba(255,255,255,0.03)'; row.style.padding = '8px 0';
 		const actor = n.actor_nickname ? `${n.actor_nickname} (id:${n.actor_user_id})` : `User ${n.actor_user_id}`;
 		row.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center"><div><strong>${n.type.replace('_',' ')}</strong> from ${actor}</div><div style="font-size:12px;color:#94a3b8">${n.created_at}</div></div><div style="color:#cbd5e1;margin-top:6px">${JSON.stringify(n.payload || {})}</div>`;
+		// actions container to hold buttons
+		const actions = document.createElement('div'); actions.style.marginTop = '6px';
 		if (!n.read) {
-			const markBtn = document.createElement('button'); markBtn.className = 'btn btn-primary'; markBtn.textContent = 'Mark Read'; markBtn.style.marginTop = '6px';
+			const markBtn = document.createElement('button'); markBtn.className = 'btn btn-primary'; markBtn.textContent = 'Mark Read'; markBtn.style.marginRight = '8px';
 			markBtn.onclick = async () => { await markNotificationRead(n.id); markBtn.remove(); try { const idx = notes.findIndex(x=>x.id===n.id); if (idx>=0) notes[idx].read=true; } catch(e){} };
-			row.appendChild(markBtn);
+			actions.appendChild(markBtn);
 		}
 		// If this is a tribe join request, show quick Accept/Reject for admins
 		try {
@@ -1479,17 +1510,19 @@ async function showNotificationsInbox() {
 					const resp = await apiRequest('/api/tribes/join_requests/' + p.joinRequestId, { method: 'PUT', body: JSON.stringify({ status: 'accepted', targetRole: 'member' }) });
 					if (!resp.res.ok) return alert('Failed to accept');
 					await markNotificationRead(n.id);
-					await renderInboxList();
+					// re-render the inbox modal contents
+					try { await showNotificationsInbox(); } catch (e) {}
 				};
 				reject.onclick = async () => {
 					const resp = await apiRequest('/api/tribes/join_requests/' + p.joinRequestId, { method: 'PUT', body: JSON.stringify({ status: 'rejected' }) });
 					if (!resp.res.ok) return alert('Failed to reject');
 					await markNotificationRead(n.id);
-					await renderInboxList();
+					try { await showNotificationsInbox(); } catch (e) {}
 				};
 				actions.appendChild(accept); actions.appendChild(reject);
 			}
 		} catch (e) {}
+		row.appendChild(actions);
 		list.appendChild(row);
 	});
 }

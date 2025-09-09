@@ -584,11 +584,9 @@ async function handleRegister(event) {
 		return false;
 	}
 	try {
-		const res = await fetch('https://nuggie.onrender.com/api/register', {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ email, password, nickname })
-		});
+	const { res, body } = await apiRequest('/api/register', { method: 'POST', body: JSON.stringify({ email, password, nickname }) });
+	// normalize body to variable used later
+	const data = body;
 		async function readBody(resp) {
 			const ct = resp.headers.get('content-type') || '';
 			try {
@@ -596,8 +594,8 @@ async function handleRegister(event) {
 				return await resp.text();
 			} catch (e) { return await resp.text().catch(() => null); }
 		}
-		const data = await readBody(res);
-		if (res.ok && (data === true || (data && data.success))) {
+	// previous code expected 'data' after parsing; we already have it above
+	if (res.ok && (data === true || (data && data.success))) {
 			// If server returned a token, sign in immediately. Otherwise, prefill login and attempt auto-login
 			if (data && data.token) {
 				localStorage.setItem('token', data.token);
@@ -647,8 +645,10 @@ async function apiRequest(path, opts = {}) {
 	const headers = opts.headers || {};
 	if (token) headers['Authorization'] = 'Bearer ' + token;
 	headers['Content-Type'] = headers['Content-Type'] || 'application/json';
-	// Default to same-origin so preview/deployed hosts don't use a hard-coded API host
-	const base = opts.base || (typeof window !== 'undefined' ? window.location.origin : '');
+	// Default to runtime-configurable base (window.__API_BASE) then same-origin
+	let base = opts.base || (typeof window !== 'undefined' ? (window.__API_BASE || window.location.origin) : '');
+	// Normalize: remove trailing slash if present so base + path is consistent
+	try { if (base.endsWith('/')) base = base.slice(0, -1); } catch (e) {}
 	const res = await fetch(base + path, Object.assign({}, opts, { headers, credentials: 'include' }));
 	const ct = res.headers.get('content-type') || '';
 	let body = null;

@@ -674,6 +674,30 @@ async function apiRequest(path, opts = {}) {
 	} catch (e) {
 		body = raw;
 	}
+	// If this was an API call and we got a 200 with an empty/non-JSON body, try the canonical API host as a fallback
+	try {
+		const isApiPath = path && path.indexOf('/api') === 0;
+		const emptyBody = !raw || (typeof raw === 'string' && raw.trim() === '');
+		const nonJson = ct && !ct.toLowerCase().includes('application/json');
+		if (isApiPath && res.ok && res.status === 200 && (emptyBody || nonJson) && url.indexOf(canonicalApiHost) === -1) {
+			try {
+				const fallbackUrl = canonicalApiHost + path;
+				console.warn('[SPA] apiRequest: empty/non-json response from', url, '— retrying', fallbackUrl);
+				const fres = await fetch(fallbackUrl, Object.assign({}, opts, { headers, credentials: 'include' }));
+				const fct = fres.headers.get('content-type') || '';
+				let fraw = null;
+				try { fraw = await fres.text(); } catch (e) { fraw = null; }
+				let fbody = null;
+				try { if (fraw && fct.toLowerCase().includes('application/json')) fbody = JSON.parse(fraw); else fbody = fraw; } catch (e) { fbody = fraw; }
+				if (!fres.ok) {
+					console.warn('[SPA] apiRequest fallback response not ok', { url: fallbackUrl, status: fres.status, contentType: fct, bodyPreview: (fraw||'').slice(0,200) });
+				}
+				return { res: fres, body: fbody };
+			} catch (e) {
+				console.warn('[SPA] apiRequest fallback failed', e);
+			}
+		}
+	} catch (e) {}
 	if (!res.ok || (res.ok && (path === '/api/login' || path === '/api/register') && (!body || (typeof body === 'string' && body.trim() === '')))) {
 		// log helpful debugging info for auth-related failures or non-ok responses
 		try {

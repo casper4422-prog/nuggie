@@ -27,6 +27,20 @@ function showLoginPage() {
 	try { const f = document.getElementById('loginEmail') || document.getElementById('loginForm')?.querySelector('input'); if (f) f.focus(); } catch (e) {}
 }
 
+// Show the register page
+function showRegisterPage() {
+	try {
+		const landing = document.getElementById('landingPage');
+		const register = document.getElementById('registerPage');
+		const mainApp = document.getElementById('mainApp');
+		if (landing) { landing.classList.add('hidden'); landing.style.display = 'none'; landing.setAttribute('aria-hidden','true'); }
+		if (mainApp) { mainApp.classList.add('hidden'); mainApp.style.display = 'none'; mainApp.setAttribute('aria-hidden','true'); }
+		if (register) { register.classList.remove('hidden'); register.style.display = ''; register.setAttribute('aria-hidden','false'); }
+		try { const f = document.getElementById('registerEmail') || register?.querySelector('input'); if (f) f.focus(); } catch (e) {}
+	} catch (e) { console.warn('showRegisterPage failed', e); }
+}
+window.showRegisterPage = showRegisterPage;
+
 function isLoggedIn() {
 	try {
 		const token = localStorage.getItem('token');

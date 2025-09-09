@@ -376,6 +376,17 @@ app.get('/api/offers', authenticateToken, (req, res) => {
   });
 });
 
+// User search (by email or nickname) - used by tribe admins to find users to add
+app.get('/api/users/search', authenticateToken, (req, res) => {
+  const q = (req.query.q || '').trim();
+  if (!q) return res.json([]);
+  const like = `%${q}%`;
+  db.all('SELECT id, email, nickname FROM users WHERE email LIKE ? COLLATE NOCASE OR nickname LIKE ? COLLATE NOCASE LIMIT 50', [like, like], (err, rows) => {
+    if (err) return res.status(500).json({ error: 'User search failed' });
+    res.json(rows || []);
+  });
+});
+
 // --- Tribe endpoints ---
 // Create a tribe
 app.post('/api/tribes', authenticateToken, (req, res) => {

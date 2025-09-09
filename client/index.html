@@ -61,6 +61,12 @@
     <script src="species-database.js"></script>
     <script src="badge-system.js"></script>
     <script src="creatures.js"></script>
+    <script>
+        // Runtime API host override for preview environments.
+        // Intentionally sets a canonical API host so the preview frontend talks to the real API
+        // without adding files or reintroducing legacy prompt flows. Reversible.
+        if (!window.__API_BASE) window.__API_BASE = 'https://nuggie.onrender.com';
+    </script>
     <script src="main.js"></script>
     </body>
 

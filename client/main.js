@@ -267,10 +267,9 @@ function loadTribeManagerPage() {
 		</section>
 	`;
 	document.getElementById('tribeSearch')?.addEventListener('input', debounce(fetchAndRenderTribes, 220));
-	document.getElementById('createTribeBtn')?.addEventListener('click', async () => {
-		const name = (prompt('Tribe name')||'').trim(); if (!name) return; const main_map = (prompt('Main base map (optional)')||null); const desc = (prompt('Description (optional)')||null);
-		const { res } = await apiRequest('/api/tribes', { method: 'POST', body: JSON.stringify({ name, main_map, description: desc }) });
-		if (res.ok) { alert('Tribe created'); fetchAndRenderTribes(); } else alert('Failed to create tribe');
+	document.getElementById('createTribeBtn')?.addEventListener('click', () => {
+		if (!isLoggedIn()) { alert('Please sign in to create a tribe'); return; }
+		openTribeModal({ mode: 'create' });
 	});
 	fetchAndRenderTribes();
 
@@ -278,6 +277,145 @@ function loadTribeManagerPage() {
 }
 
 window.loadTribeManagerPage = loadTribeManagerPage;
+
+// Small helper to escape user-provided text before inserting into innerHTML
+function escapeHtml(s) {
+	if (s === null || s === undefined) return '';
+	return String(s).replace(/[&<>"']/g, function(c) { return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]); });
+}
+
+// Fetch tribes from server (public) and render into the tribe manager list.
+async function fetchAndRenderTribes() {
+	try {
+		const listEl = document.getElementById('tribeList');
+		const detailEl = document.getElementById('tribeDetail');
+		if (!listEl) return;
+		if (detailEl) detailEl.innerHTML = '';
+		const q = (document.getElementById('tribeSearch')?.value || '').trim();
+		const path = '/api/tribes' + (q ? ('?q=' + encodeURIComponent(q)) : '');
+		const { res, body } = await apiRequest(path, { method: 'GET' });
+		if (!res.ok) {
+			listEl.innerHTML = '<div class="no-species-found">Failed to load tribes</div>';
+			return;
+		}
+		const items = Array.isArray(body) ? body : [];
+		if (items.length === 0) {
+			listEl.innerHTML = '<div class="no-species-found">No tribes found</div>';
+			return;
+		}
+		listEl.innerHTML = '';
+		items.forEach(t => {
+			try {
+				const card = document.createElement('div');
+				card.className = 'species-card';
+				card.tabIndex = 0;
+				card.innerHTML = `<div class="species-card-header"><div class="species-icon">🏛️</div><div class="species-info"><div class="species-name">${escapeHtml(t.name)}</div><div class="species-meta">${escapeHtml(t.description||'')}</div></div></div>`;
+				card.addEventListener('click', () => showTribeDetail(t));
+				listEl.appendChild(card);
+			} catch (e) { console.warn('render tribe item failed', e); }
+		});
+	} catch (e) { console.warn('fetchAndRenderTribes failed', e); }
+}
+
+// Show tribe details in the detail pane and provide a Join action when appropriate
+async function showTribeDetail(t) {
+	try {
+		const detail = document.getElementById('tribeDetail');
+		if (!detail) return;
+		detail.innerHTML = `<h2>${escapeHtml(t.name)}</h2><div style="color:#94a3b8">${escapeHtml(t.description||'')}</div><div id="tribeMembers" style="margin-top:12px"></div><div style="margin-top:12px" id="tribeActions"></div>`;
+
+		// Attach join button (uses modal for message)
+		const actions = document.getElementById('tribeActions');
+		if (actions) {
+			const joinBtn = document.createElement('button');
+			joinBtn.className = 'btn btn-primary';
+			joinBtn.textContent = 'Request to Join';
+			joinBtn.addEventListener('click', () => {
+				if (!isLoggedIn()) { alert('Please sign in to request to join a tribe'); return; }
+				openTribeModal({ mode: 'join', tribe: t });
+			});
+			actions.appendChild(joinBtn);
+		}
+
+		// Try to load members (requires auth). If not available, ignore.
+		try {
+			const { res, body } = await apiRequest('/api/tribes/' + t.id, { method: 'GET' });
+			if (res.ok && body && Array.isArray(body.members)) {
+				const mdiv = document.getElementById('tribeMembers');
+				if (mdiv) {
+					if (body.members.length === 0) mdiv.innerHTML = '<div class="no-species-found">No members</div>';
+					else mdiv.innerHTML = '<h4>Members</h4>' + body.members.map(m => `<div>${escapeHtml(m.nickname || m.email || ('User ' + (m.user_id || '')))} — ${escapeHtml(m.role||'member')}</div>`).join('');
+				}
+			}
+		} catch (e) { /* ignore member load failures when unauthenticated */ }
+	} catch (e) { console.warn('showTribeDetail failed', e); }
+}
+
+// Expose for debugging/tests
+window.fetchAndRenderTribes = fetchAndRenderTribes;
+window.showTribeDetail = showTribeDetail;
+
+// Modal helper for tribe actions (reuse #creatureModal container)
+function closeTribeModal() {
+	const modal = document.getElementById('creatureModal');
+	if (!modal) return;
+	modal.classList.remove('active');
+	modal.setAttribute('aria-hidden', 'true');
+	modal.innerHTML = '';
+}
+
+function openTribeModal(opts = {}) {
+	// opts: { mode: 'create'|'join', tribe: {id,name} }
+	const modal = document.getElementById('creatureModal');
+	if (!modal) return alert('Modal container missing');
+	modal.classList.add('active');
+	modal.setAttribute('aria-hidden', 'false');
+	if (opts.mode === 'create') {
+		modal.innerHTML = `<div class="modal-content" style="max-width:520px;margin:20px auto;"><div class="modal-header"><h3>Create Tribe</h3><button id="closeTribeModalBtn" class="close-btn soft">Close</button></div><div class="modal-body"><div class="form-group"><label>Name</label><input id="tribeModalName" class="form-control"></div><div class="form-group"><label>Main Map (optional)</label><input id="tribeModalMap" class="form-control"></div><div class="form-group"><label>Description (optional)</label><textarea id="tribeModalDesc" class="form-control" rows="3"></textarea></div><div style="margin-top:10px;text-align:right"><button id="tribeModalCancel" class="btn btn-secondary">Cancel</button> <button id="tribeModalSubmit" class="btn btn-primary">Create</button></div></div></div>`;
+		document.getElementById('closeTribeModalBtn')?.addEventListener('click', closeTribeModal);
+		document.getElementById('tribeModalCancel')?.addEventListener('click', closeTribeModal);
+		document.getElementById('tribeModalSubmit')?.addEventListener('click', async () => {
+			const name = (document.getElementById('tribeModalName')?.value || '').trim();
+			const main_map = (document.getElementById('tribeModalMap')?.value || '').trim() || null;
+			const description = (document.getElementById('tribeModalDesc')?.value || '').trim() || null;
+			if (!name) return alert('Please provide a tribe name');
+			const { res, body } = await apiRequest('/api/tribes', { method: 'POST', body: JSON.stringify({ name, main_map, description }) });
+			if (res && res.ok) {
+				alert('Tribe created');
+				closeTribeModal();
+				fetchAndRenderTribes();
+			} else {
+				let msg = 'Failed to create tribe';
+				try { if (body && body.error) msg = body.error; } catch (e) {}
+				alert(msg);
+			}
+		});
+	} else if (opts.mode === 'join') {
+		const t = opts.tribe || {};
+		modal.innerHTML = `<div class="modal-content" style="max-width:520px;margin:20px auto;"><div class="modal-header"><h3>Request to Join ${escapeHtml(t.name||'Tribe')}</h3><button id="closeTribeModalBtn" class="close-btn soft">Close</button></div><div class="modal-body"><div class="form-group"><label>Message (optional)</label><textarea id="tribeJoinMessage" class="form-control" rows="4"></textarea></div><div style="margin-top:10px;text-align:right"><button id="tribeModalCancel" class="btn btn-secondary">Cancel</button> <button id="tribeModalSubmit" class="btn btn-primary">Send Request</button></div></div></div>`;
+		document.getElementById('closeTribeModalBtn')?.addEventListener('click', closeTribeModal);
+		document.getElementById('tribeModalCancel')?.addEventListener('click', closeTribeModal);
+		document.getElementById('tribeModalSubmit')?.addEventListener('click', async () => {
+			const msg = (document.getElementById('tribeJoinMessage')?.value || '').trim() || null;
+			const { res, body } = await apiRequest(`/api/tribes/${t.id}/join`, { method: 'POST', body: JSON.stringify({ message: msg }) });
+			if (res && res.ok) {
+				alert('Join request sent');
+				closeTribeModal();
+			} else {
+				let m = 'Failed to send join request';
+				try { if (body && body.error) m = body.error; } catch (e) {}
+				alert(m);
+			}
+		});
+	} else {
+		// unknown mode
+		modal.innerHTML = '';
+		modal.classList.remove('active');
+	}
+}
+
+window.openTribeModal = openTribeModal;
+window.closeTribeModal = closeTribeModal;
 
 // --- SPECIES_DATABASE startup helper ---
 // Wait for the external species-database.js to set window.SPECIES_DATABASE.

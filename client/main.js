@@ -192,8 +192,8 @@ document.addEventListener('DOMContentLoaded', () => {
 			if (showReg) showReg.addEventListener('click', (e) => { e.preventDefault(); showRegisterPage(); });
 			const authBtn = document.getElementById('authBtn');
 			if (authBtn) authBtn.addEventListener('click', handleAuthClick);
-			const openTribeBtn = document.getElementById('openTribeBtn');
-			if (openTribeBtn) openTribeBtn.addEventListener('click', (e) => { e.preventDefault(); if (typeof openTribeModal === 'function') { openTribeModal(); } else if (typeof showTribeSettings === 'function') { showTribeSettings(); } });
+			const openTribeManagerBtn = document.getElementById('openTribeManagerBtn');
+			if (openTribeManagerBtn) openTribeManagerBtn.addEventListener('click', (e) => { e.preventDefault(); if (typeof loadTribeManagerPage === 'function') { loadTribeManagerPage(); } });
 			const goToBossPlannerBtn = document.getElementById('goToBossPlannerBtn');
 			if (goToBossPlannerBtn) goToBossPlannerBtn.addEventListener('click', (e) => { e.preventDefault(); if (typeof goToBossPlanner === 'function') goToBossPlanner(); });
 			const goToMyProfileBtn = document.getElementById('goToMyProfileBtn');
@@ -248,68 +248,36 @@ document.addEventListener('DOMContentLoaded', () => {
 	}
 });
 
-// Ensure tribe modal container exists and provide modal handlers
-(function ensureTribeModal() {
-	try {
-		if (typeof document !== 'undefined' && !document.getElementById('tribeModal')) {
-			const div = document.createElement('div');
-			div.id = 'tribeModal';
-			div.className = 'modal';
-			div.setAttribute('aria-hidden', 'true');
-			document.body.appendChild(div);
-		}
-	} catch (e) { /* ignore non-browser */ }
-})();
+// Tribe modal and legacy modal-based settings removed. Use the new Tribe Manager page.
 
-function openTribeModal() {
-	const modal = document.getElementById('tribeModal');
-	if (!modal) return console.warn('tribeModal missing');
-	const s = JSON.parse(localStorage.getItem('arkTribeSettings') || '{}');
-	modal.innerHTML = `
-		<div class="modal-content">
-			<div class="modal-header"><h2 class="modal-title">🏛️ Tribe Settings</h2><button class="close-btn" id="closeTribeModalBtn">&times;</button></div>
-			<div class="modal-body">
-				<div class="section-title">🏛️ Tribe Setup</div>
-				<p style="margin-bottom: 12px; color:#94a3b8;">Personalize your breeding database. These settings are saved locally.</p>
-				<div class="form-row cols-1"><div class="form-group"><label class="form-label">Tribe Leader</label><input class="form-control" id="tribeLeaderInput" value="${(s.tribeLeader||'')}" placeholder="Your username"></div></div>
-				<div class="form-row cols-2"><div class="form-group"><label class="form-label">Server Type</label><select class="form-control" id="serverTypeInput"><option${(s.serverType==='Official'?' selected':'')}>Official</option><option${(s.serverType==='Unofficial'?' selected':'')}>Unofficial</option><option${(s.serverType==='Single Player'?' selected':'')}>Single Player</option></select></div>
-				<div class="form-group"><label class="form-label">Primary Map</label><input class="form-control" id="primaryMapInput" value="${(s.primaryMap||'')}"></div></div>
-				<div class="form-row cols-1"><div class="form-group"><label class="form-label">Breeding Goals</label><textarea id="breedingGoalsInput" class="form-control" rows="3">${(s.breedingGoals||'')}</textarea></div></div>
-				<div class="form-row cols-2"><div class="form-group"><label class="form-label">Tribe Name</label><input class="form-control" id="tribeNameInputModal" value="${(s.tribeName||'')}"></div><div class="form-group"><label class="form-label">Favorite Creature</label><input class="form-control" id="favoriteCreatureInput" value="${(s.favoriteCreature||'')}"></div></div>
+// New Tribe Manager page loader: implement robust tribe features here.
+function loadTribeManagerPage() {
+	const main = document.getElementById('appMainContent');
+	if (!main) return;
+	main.innerHTML = `
+		<section class="tribe-manager-page">
+			<div class="page-header"><h1>Tribe Manager</h1><div class="section-sub">Create, manage and configure tribes (owner/admin tools)</div></div>
+			<div style="display:flex;gap:12px;margin-top:12px;">
+				<div style="flex:1;min-width:420px;">
+					<div style="margin-bottom:10px;display:flex;gap:8px;align-items:center;"><input id="tribeSearch" class="form-control" placeholder="Search tribes"><button id="createTribeBtn" class="btn btn-primary">Create Tribe</button></div>
+					<div id="tribeList" class="species-grid"></div>
+				</div>
+				<div style="width:420px;"><div id="tribeDetail" style="border-left:1px solid rgba(255,255,255,0.03);padding-left:12px;"></div></div>
 			</div>
-			<div class="modal-footer"><button class="btn btn-primary" id="saveTribeSettingsBtn">Save Settings</button></div>
-		</div>
+		</section>
 	`;
-	document.getElementById('closeTribeModalBtn')?.addEventListener('click', closeTribeModal);
-	document.getElementById('saveTribeSettingsBtn')?.addEventListener('click', saveTribeSettings);
-	modal.classList.add('active'); modal.setAttribute('aria-hidden','false');
+	document.getElementById('tribeSearch')?.addEventListener('input', debounce(fetchAndRenderTribes, 220));
+	document.getElementById('createTribeBtn')?.addEventListener('click', async () => {
+		const name = (prompt('Tribe name')||'').trim(); if (!name) return; const main_map = (prompt('Main base map (optional)')||null); const desc = (prompt('Description (optional)')||null);
+		const { res } = await apiRequest('/api/tribes', { method: 'POST', body: JSON.stringify({ name, main_map, description: desc }) });
+		if (res.ok) { alert('Tribe created'); fetchAndRenderTribes(); } else alert('Failed to create tribe');
+	});
+	fetchAndRenderTribes();
+
+	// Reuse existing fetchAndRenderTribes from earlier code (should be present in file)
 }
 
-function closeTribeModal() {
-	const modal = document.getElementById('tribeModal'); if (!modal) return; modal.classList.remove('active'); modal.setAttribute('aria-hidden','true'); modal.innerHTML = '';
-}
-
-function saveTribeSettings() {
-	try {
-		const settings = {
-			tribeLeader: (document.getElementById('tribeLeaderInput')?.value || '').trim(),
-			serverType: (document.getElementById('serverTypeInput')?.value || '').trim(),
-			primaryMap: (document.getElementById('primaryMapInput')?.value || '').trim(),
-			breedingGoals: (document.getElementById('breedingGoalsInput')?.value || '').trim(),
-			tribeName: (document.getElementById('tribeNameInputModal')?.value || '').trim(),
-			favoriteCreature: (document.getElementById('favoriteCreatureInput')?.value || '').trim()
-		};
-		localStorage.setItem('arkTribeSettings', JSON.stringify(settings));
-		// Also mirror some quick-access keys
-		if (settings.tribeName) localStorage.setItem('tribeName', settings.tribeName);
-		closeTribeModal();
-		try { updateTribeHeader(); } catch (e) {}
-	} catch (e) { console.error('saveTribeSettings failed', e); alert('Failed to save tribe settings'); }
-}
-
-window.openTribeModal = openTribeModal;
-window.closeTribeModal = closeTribeModal;
-window.saveTribeSettings = saveTribeSettings;
+window.loadTribeManagerPage = loadTribeManagerPage;
 
 // --- SPECIES_DATABASE startup helper ---
 // Wait for the external species-database.js to set window.SPECIES_DATABASE.
@@ -989,133 +957,7 @@ function loadMyTribeColumn(tribeId) {
 	} catch (e) { console.warn('loadMyTribeColumn failed', e); }
 }
 
-// --- My Tribe page ---
-function loadMyTribePage() {
-	const main = document.getElementById('appMainContent');
-	if (!main) return;
-	main.innerHTML = `
-		<section class="tribe-page">
-			<div class="page-header"><h1>My Tribe</h1><div class="section-sub">View and manage tribes you belong to</div></div>
-			<div style="display:flex;gap:12px;margin-top:12px;">
-				<div style="flex:1;min-width:420px;">
-					<div style="margin-bottom:10px;display:flex;gap:8px;align-items:center;"><input id="tribeSearch" class="form-control" placeholder="Search tribes"><button id="createTribeBtn" class="btn btn-primary">Create Tribe</button></div>
-					<div id="tribeList" class="species-grid"></div>
-				</div>
-				<div style="width:420px;">
-					<div id="tribeDetail" style="border-left:1px solid rgba(255,255,255,0.03);padding-left:12px;"></div>
-				</div>
-			</div>
-		</section>
-	`;
-	document.getElementById('tribeSearch')?.addEventListener('input', debounce(fetchAndRenderTribes, 220));
-	document.getElementById('createTribeBtn')?.addEventListener('click', () => {
-		// Open a modal to create a tribe instead of using prompt()
-		const modal = document.getElementById('tribeModal');
-		if (!modal) return alert('Modal area missing');
-		modal.classList.add('active'); modal.setAttribute('aria-hidden','false');
-		modal.innerHTML = `
-			<div class="modal-content" style="max-width:520px;margin:20px auto;">
-				<div class="modal-header"><h3>Create Tribe</h3><button id="closeCreateTribe" class="close-btn soft">Close</button></div>
-				<div class="modal-body">
-					<div class="form-group"><label class="form-label">Tribe name</label><input id="createTribeName" class="form-control" type="text"></div>
-					<div class="form-group"><label class="form-label">Main base map (optional)</label><input id="createTribeMap" class="form-control" type="text"></div>
-					<div class="form-group"><label class="form-label">Description (optional)</label><textarea id="createTribeDesc" class="form-control" rows="3"></textarea></div>
-				</div>
-				<div class="modal-footer"><button id="submitCreateTribe" class="btn btn-primary">Create</button> <button id="cancelCreateTribe" class="btn btn-secondary">Cancel</button></div>
-			</div>
-		`;
-		document.getElementById('closeCreateTribe')?.addEventListener('click', ()=>{ modal.classList.remove('active'); modal.innerHTML=''; modal.setAttribute('aria-hidden','true'); });
-		document.getElementById('cancelCreateTribe')?.addEventListener('click', ()=>{ modal.classList.remove('active'); modal.innerHTML=''; modal.setAttribute('aria-hidden','true'); });
-		document.getElementById('submitCreateTribe')?.addEventListener('click', async () => {
-			const name = (document.getElementById('createTribeName')?.value || '').trim();
-			const main_map = (document.getElementById('createTribeMap')?.value || '').trim() || null;
-			const description = (document.getElementById('createTribeDesc')?.value || '').trim() || null;
-			if (!name) return alert('Please enter a tribe name');
-			const { res } = await apiRequest('/api/tribes', { method: 'POST', body: JSON.stringify({ name, main_map, description }) });
-			if (res.ok) {
-				modal.classList.remove('active'); modal.innerHTML=''; modal.setAttribute('aria-hidden','true');
-				alert('Tribe created');
-				try { fetchAndRenderTribes(); } catch (e) { /* ignore */ }
-			} else {
-				alert('Failed to create tribe');
-			}
-		});
-	});
-	fetchAndRenderTribes();
-	function fetchAndRenderTribes() {
-		const q = (document.getElementById('tribeSearch')?.value || '').trim();
-		apiRequest('/api/tribes' + (q ? ('?q=' + encodeURIComponent(q)) : ''), { method: 'GET' }).then(({ res, body }) => {
-			const list = document.getElementById('tribeList'); if (!res.ok) { list.innerHTML = '<div class="no-species-found">Failed to load tribes</div>'; return; }
-			list.innerHTML = '';
-			(body || []).forEach(t => {
-				const item = document.createElement('div'); item.className = 'species-card';
-				item.innerHTML = `<div class="species-card-header"><div class="species-info"><div class="species-name">${t.name}</div><div class="species-meta">${t.main_map || ''}</div></div></div><div class="species-card-body"><div style="color:#94a3b8">${t.description || ''}</div></div>`;
-				const viewBtn = document.createElement('button'); viewBtn.className = 'btn btn-secondary'; viewBtn.textContent = 'View'; viewBtn.style.marginTop = '8px';
-				viewBtn.onclick = async () => {
-					// load tribe details
-					const { res: r2, body: b2 } = await apiRequest('/api/tribes/' + t.id, { method: 'GET' });
-					if (!r2.ok) return alert('Failed to load tribe details');
-					const detail = document.getElementById('tribeDetail'); detail.innerHTML = '';
-					detail.innerHTML = `<h2>${b2.name}</h2><div style="color:#94a3b8">${b2.main_map || ''}</div><p style="margin-top:8px">${b2.description || ''}</p><h3>Members</h3><div id="tribeMembersList"></div><div style="margin-top:8px;"><button id="requestJoinBtn" class="btn btn-primary">Request to Join</button></div><h3 style="margin-top:12px">Vault</h3><div id="tribeDetailVault"></div>`;
-					const membersEl = document.getElementById('tribeMembersList'); membersEl.innerHTML = '';
-					(b2.members || []).forEach(m => { const row = document.createElement('div'); row.textContent = `${m.nickname || m.email || ('user:' + m.user_id)} — ${m.role}`; membersEl.appendChild(row); });
-					// Admin search UI (visible only to owner/admin)
-					const meRole = (b2.my_role || 'member');
-					if (meRole === 'owner' || meRole === 'admin') {
-						const searchWrap = document.createElement('div'); searchWrap.style.marginTop = '8px';
-						searchWrap.innerHTML = `<div style="display:flex;gap:8px;align-items:center"><input id="tribeUserSearch" class="form-control" placeholder="Search users by nickname or email"><div id="tribeUserResults" style="min-width:160px"></div></div>`;
-						membersEl.parentNode.insertBefore(searchWrap, membersEl.nextSibling);
-						const searchInput = searchWrap.querySelector('#tribeUserSearch'); const resultsEl = searchWrap.querySelector('#tribeUserResults');
-						let userSearchTimer = null;
-						searchInput.addEventListener('input', (e)=>{ clearTimeout(userSearchTimer); userSearchTimer = setTimeout(async ()=>{
-							const q = (searchInput.value||'').trim(); resultsEl.innerHTML = ''; if (!q) return;
-							const resp = await apiRequest('/api/users/search?q=' + encodeURIComponent(q), { method: 'GET' });
-							if (!resp.res.ok) return resultsEl.innerHTML = '<div style="color:#94a3b8">Search failed</div>';
-							const users = resp.body || [];
-							users.slice(0,6).forEach(u => {
-								const btn = document.createElement('button'); btn.className = 'btn btn-secondary'; btn.style.display='block'; btn.style.marginTop='6px'; btn.textContent = `${u.nickname||u.email||('user:'+u.id)}`;
-								btn.onclick = async ()=>{
-									const addResp = await apiRequest('/api/tribes/' + t.id + '/members', { method: 'POST', body: JSON.stringify({ user_id: u.id, role: 'member' }) });
-									if (!addResp.res.ok) return alert('Failed to add member');
-									alert('Member added');
-									// reload tribe details
-									viewBtn.click();
-								};
-								resultsEl.appendChild(btn);
-							});
-						}, 250); });
-					}
-
-					document.getElementById('requestJoinBtn').addEventListener('click', async () => {
-						const modal = document.getElementById('tribeModal'); if (!modal) return alert('Modal missing');
-						modal.classList.add('active'); modal.setAttribute('aria-hidden','false');
-						modal.innerHTML = `<div class="modal-content" style="max-width:520px;margin:20px auto;"><div class="modal-header"><h3>Request to Join ${b2.name}</h3><button id="closeJoinReq" class="close-btn soft">Close</button></div><div class="modal-body"><div style="display:flex;flex-direction:column;gap:8px"><textarea id="joinMsg" class="form-control" placeholder="Message to tribe admins (optional)"></textarea><div style="display:flex;gap:8px;justify-content:flex-end"><button id="cancelJoinReq" class="btn btn-secondary">Cancel</button><button id="submitJoinReq" class="btn btn-primary">Send Request</button></div></div></div></div>`;
-						document.getElementById('closeJoinReq').addEventListener('click', ()=>{ modal.classList.remove('active'); modal.innerHTML=''; modal.setAttribute('aria-hidden','true'); });
-						document.getElementById('cancelJoinReq').addEventListener('click', ()=>{ modal.classList.remove('active'); modal.innerHTML=''; modal.setAttribute('aria-hidden','true'); });
-						document.getElementById('submitJoinReq').addEventListener('click', async ()=>{
-							const msg = document.getElementById('joinMsg').value.trim() || null;
-							const { res: rj } = await apiRequest('/api/tribes/' + t.id + '/join', { method: 'POST', body: JSON.stringify({ message: msg }) });
-							if (rj.ok) alert('Join request sent'); else alert('Failed to send join request');
-							modal.classList.remove('active'); modal.innerHTML=''; modal.setAttribute('aria-hidden','true');
-						});
-					});
-					// load vault for this tribe if user is member
-					apiRequest('/api/tribes/' + t.id + '/creatures', { method: 'GET' }).then(({ res: rv, body: bv }) => {
-						const vault = document.getElementById('tribeDetailVault'); if (!rv.ok) { vault.innerHTML = '<div style="color:#94a3b8">Vault (members only)</div>'; return; }
-						vault.innerHTML = '';
-						(bv || []).forEach(tc => { const el = document.createElement('div'); el.className = 'species-card'; el.innerHTML = `<div class="species-card-body"><strong>${tc.name||tc.species||'Creature'}</strong><div style="color:#94a3b8">${(tc.baseStats?Object.keys(tc.baseStats).slice(0,3).map(k=>`${k}:${tc.baseStats[k]||0}`).join(' • '):'')}</div></div>`; vault.appendChild(el); });
-					});
-					// update tribe column on My Nuggies if visible
-					try { loadMyTribeColumn(t.id); } catch (e) {}
-				};
-				item.querySelector('.species-card-body')?.appendChild(viewBtn);
-				list.appendChild(item);
-			});
-		});
-	}
-}
-
-window.loadMyTribePage = loadMyTribePage;
+// Legacy My Tribe page removed. Use loadTribeManagerPage for tribe features.
 
 function loadTradingPage() {
 	const main = document.getElementById('appMainContent');
@@ -1384,36 +1226,7 @@ function renderRegisterForm() {
 	if (cancelBtn) cancelBtn.addEventListener('click', (e) => { e.preventDefault(); showLoginPage(); });
 }
 
-function showTribeSettings() {
-	const main = document.getElementById('appMainContent');
-	if (!main) return;
-	main.innerHTML = `
-		<section class="tribe-settings">
-			<h2>Tribe Settings</h2>
-			<div class="form-group">
-				<label class="form-label">Tribe Name</label>
-				<input id="tribeNameInput" class="form-control" value="${(localStorage.getItem('tribeName')||'My Tribe')}">
-			</div>
-			<div class="form-group">
-				<label class="form-label">Tribe Description</label>
-				<textarea id="tribeDesc" class="form-control">${(localStorage.getItem('tribeDesc')||'')}</textarea>
-			</div>
-			<div class="modal-actions">
-				<button id="saveTribeBtn" class="btn btn-primary">Save</button>
-				<button id="backToMainBtn" class="btn btn-secondary">Back</button>
-			</div>
-		</section>
-	`;
-
-	document.getElementById('saveTribeBtn').addEventListener('click', () => {
-		const name = document.getElementById('tribeNameInput').value.trim();
-		const desc = document.getElementById('tribeDesc').value.trim();
-		localStorage.setItem('tribeName', name);
-		localStorage.setItem('tribeDesc', desc);
-		updateTribeHeader();
-	});
-	document.getElementById('backToMainBtn').addEventListener('click', () => loadSpeciesPage());
-}
+// Legacy tribe settings page removed. Use loadTribeManagerPage for tribe features.
 
 function updateStatsDashboard() {
 	// Keep it lightweight: compute a few quick metrics and render into header placeholders

@@ -111,22 +111,7 @@ function updateTribeHeader() {
 		const el = document.getElementById('tribeHeader');
 		if (el) el.textContent = tribeName;
 	} catch (e) {
-		modal.innerHTML = `
-			<div class="modal-content" style="max-width:520px;margin:20px auto;">
-				<div class="modal-header"><h3>Create Tribe</h3><button id="closeCreateTribe" class="close-btn soft">Close</button></div>
-				<div class="modal-body">
-					<div style="display:flex;flex-direction:column;gap:8px">
-						<input id="newTribeName" class="form-control" placeholder="Tribe name">
-						<input id="newTribeMap" class="form-control" placeholder="Main base map (optional)">
-						<textarea id="newTribeDesc" class="form-control" placeholder="Description (optional)"></textarea>
-						<div style="display:flex;gap:8px;justify-content:flex-end">
-							<button id="cancelCreateTribe" class="btn btn-secondary">Cancel</button>
-							<button id="submitCreateTribe" class="btn btn-primary">Create</button>
-						</div>
-					</div>
-				</div>
-			</div>
-		`;
+		console.warn('[SPA] updateTribeHeader failed', e);
 	}
 }
 function goToCreatures() {
@@ -406,6 +391,7 @@ function canonicalRarityForSpecies(species) {
 // --- Login/Register Handlers (API calls) ---
 async function handleLogin(event) {
 	event.preventDefault();
+	console.log('[SPA] handleLogin invoked');
 	// identifier can be email or nickname
 	const identifier = (document.getElementById('loginEmail')?.value || '').trim();
 	const password = (document.getElementById('loginPassword')?.value || '').trim();
@@ -419,6 +405,7 @@ async function handleLogin(event) {
 		return false;
 	}
 	try {
+		console.log('[SPA] sending login request to server for', identifier);
 		const res = await fetch('https://nuggie.onrender.com/api/login', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
@@ -463,7 +450,8 @@ async function handleLogin(event) {
 			errorDiv.style.display = 'block';
 		}
 	} catch (e) {
-		errorDiv.textContent = 'Network error.';
+		console.error('[SPA] login network error', e);
+		errorDiv.textContent = 'Network error. See console for details.';
 		errorDiv.style.display = 'block';
 	}
 	return false;

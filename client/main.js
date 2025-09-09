@@ -649,10 +649,29 @@ async function apiRequest(path, opts = {}) {
 	let base = opts.base || (typeof window !== 'undefined' ? (window.__API_BASE || window.location.origin) : '');
 	// Normalize: remove trailing slash if present so base + path is consistent
 	try { if (base.endsWith('/')) base = base.slice(0, -1); } catch (e) {}
-	const res = await fetch(base + path, Object.assign({}, opts, { headers, credentials: 'include' }));
+	const url = base + path;
+	const method = (opts.method || 'GET').toUpperCase();
+	try {
+		console.debug('[SPA] apiRequest ->', method, url, opts && opts.body ? { bodyPreview: (opts.body || '').slice(0,200) } : undefined);
+	} catch (e) {}
+	const res = await fetch(url, Object.assign({}, opts, { headers, credentials: 'include' }));
 	const ct = res.headers.get('content-type') || '';
+	// read raw text then try JSON.parse if appropriate. This gives us visibility when body is empty or HTML.
+	let raw = null;
+	try { raw = await res.text(); } catch (e) { raw = null; }
 	let body = null;
-	try { body = ct.includes('application/json') ? await res.json() : await res.text(); } catch (e) { body = null; }
+	try {
+		if (raw && ct.toLowerCase().includes('application/json')) body = JSON.parse(raw);
+		else body = raw;
+	} catch (e) {
+		body = raw;
+	}
+	if (!res.ok || (res.ok && (path === '/api/login' || path === '/api/register') && (!body || (typeof body === 'string' && body.trim() === '')))) {
+		// log helpful debugging info for auth-related failures or non-ok responses
+		try {
+			console.warn('[SPA] apiRequest response', { url, method, status: res.status, contentType: ct, bodyPreview: (raw || '').slice(0,1000) });
+		} catch (e) {}
+	}
 	return { res, body };
 }
 

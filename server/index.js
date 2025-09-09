@@ -2,6 +2,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const compression = require('compression');
 const sqlite3 = require('sqlite3').verbose();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
@@ -13,6 +14,8 @@ const SECRET = process.env.JWT_SECRET || 'your_jwt_secret'; // Override via JWT_
 // Enable CORS for credentialed cross-origin requests.
 // Echo the request Origin so previews and different subdomains are accepted.
 // Allow Authorization header for Bearer token flows and Content-Type for JSON.
+// Gzip/Brotli compression for responses (reduces bandwidth)
+app.use(compression());
 app.use(cors({ origin: true, credentials: true, allowedHeaders: ['Content-Type', 'Authorization'] }));
 app.use(bodyParser.json());
 
@@ -23,7 +26,23 @@ if (serveClient) {
   const path = require('path');
   const clientDir = path.join(__dirname, '..', 'client');
   try {
-    app.use(express.static(clientDir));
+    // Serve static assets with conservative caching. index.html is always no-cache
+    app.use(express.static(clientDir, {
+      // default maxAge for static files (overridden in setHeaders for specific files)
+      maxAge: '1d',
+      setHeaders: (res, filePath) => {
+        if (filePath.endsWith('index.html')) {
+          // Always fetch latest html so SPA updates are visible immediately
+          res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+        } else if (/\.(js|css)$/.test(filePath)) {
+          // Short caching for JS/CSS since we don't fingerprint files here
+          res.setHeader('Cache-Control', 'public, max-age=86400'); // 1 day
+        } else if (/\.(png|jpg|jpeg|svg|gif|webp)$/.test(filePath)) {
+          res.setHeader('Cache-Control', 'public, max-age=604800'); // 7 days
+        }
+      }
+    }));
+
     // SPA fallback: serve index.html for non-api routes
     app.get('*', (req, res, next) => {
       if (req.path.startsWith('/api')) return next();

@@ -216,7 +216,7 @@
                     <div style="font-size:20px;font-weight:700;">${creature.name} <span style="font-size:12px;color:#9ca3af;margin-left:6px;">${creature.gender || ''}</span></div>
                     <div style="color:#9ca3af;margin-top:6px;">Level ${creature.level || 1} • ${creature.species || ''}</div>
                   </div>
-                  <div style="margin-left:auto;">${(window.BadgeSystem && BadgeSystem.generateBadgeHTML) ? (BadgeSystem.generateBadgeHTML(creature) || '') : ''}</div>
+                  <div style="margin-left:auto;">${(window.BadgeSystem && BadgeSystem.generateBadgeDetailHTML) ? (BadgeSystem.generateBadgeDetailHTML(creature) || BadgeSystem.generateBadgeHTML(creature) || '') : ((window.BadgeSystem && BadgeSystem.generateBadgeHTML) ? BadgeSystem.generateBadgeHTML(creature) : '')}</div>
                 </div>
                 ${creature.notes ? `<div style="margin-top:10px;color:#cbd5e1;line-height:1.4;">${creature.notes}</div>` : ''}
               </div>
@@ -574,6 +574,14 @@ function saveCreatureFromForm() {
       updatedAt: new Date().toISOString()
     };
 
+    // Compute achievements and attach to creature object for display and persistence
+    try {
+      if (window.BadgeSystem && typeof window.BadgeSystem.calculateAchievements === 'function') {
+        const achievements = BadgeSystem.calculateAchievements(creatureData) || [];
+        creatureData.achievements = achievements;
+      }
+    } catch (e) { /* ignore achievement calc errors */ }
+
     if (appState.editingCreature) {
       const idx = appState.creatures.findIndex(c => c.id === appState.editingCreature);
       if (idx >= 0) appState.creatures[idx] = creatureData;
@@ -615,12 +623,13 @@ function loadCreaturesGrid(speciesFilter, searchTerm) {
     const stats = creature.baseStats || {};
     const muts = creature.mutations || {};
 
-    card.innerHTML = `
+  card.innerHTML = `
       <div class="creature-card-header">
         ${creature.image ? `<img class="creature-image" src="${creature.image}" alt="${creature.name}">` : `<div class="creature-image-placeholder">${(typeof SPECIES_DATABASE !== 'undefined' && SPECIES_DATABASE[creature.species]?.icon) || '🦖'}</div>`}
-        <div class="creature-card-main">
+          <div class="creature-card-main">
           <div class="creature-name">${creature.name}</div>
           <div class="creature-meta">Level ${creature.level || 1} • ${creature.gender || ''} • ${creature.species || ''}</div>
+          <div class="creature-badges">${(window.BadgeSystem && BadgeSystem.generateBadgeDetailHTML) ? BadgeSystem.generateBadgeDetailHTML(creature) : ((window.BadgeSystem && BadgeSystem.generateBadgeHTML) ? BadgeSystem.generateBadgeHTML(creature) : '')}</div>
           <div class="creature-stats">
             <div class="stat-item"><div class="stat-label">❤️</div><div class="stat-value">${(stats.Health||0)}/${(muts.Health||0)}/${(creature.domesticLevels?.Health||0)}</div></div>
             <div class="stat-item"><div class="stat-label">🏃</div><div class="stat-value">${(stats.Stamina||0)}/${(muts.Stamina||0)}/${(creature.domesticLevels?.Stamina||0)}</div></div>
@@ -630,7 +639,7 @@ function loadCreaturesGrid(speciesFilter, searchTerm) {
             <div class="stat-item"><div class="stat-label">🗡️</div><div class="stat-value">${(stats.Melee||0)}/${(muts.Melee||0)}/${(creature.domesticLevels?.Melee||0)}</div></div>
           </div>
         </div>
-        <div class="creature-card-actions">
+  <div class="creature-card-actions">
           <button class="btn btn-secondary edit-creature" data-id="${creature.id}">Edit</button>
           <button class="btn btn-danger delete-creature" data-id="${creature.id}">Delete</button>
         </div>

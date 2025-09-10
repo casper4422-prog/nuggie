@@ -394,8 +394,8 @@ function openBadgesModal() {
 		<div class="modal-content" style="max-width:860px;margin:20px auto;">
 			<div class="modal-header"><h3>Achievements & Badges</h3><button id="closeBadgesModalBtn" class="close-btn">&times;</button></div>
 			<div class="modal-body" style="max-height:70vh;overflow:auto;">
-				<section style="margin-bottom:12px;"><h4>Prized Bloodline</h4>
-					<p>All-or-nothing check across five core base stats: Health, Stamina, Food, Weight and Melee. Mutations and domestic levels are <strong>excluded</strong> for this badge — only wild base points count.</p>
+						<section style="margin-bottom:12px;"><h4>Prized Bloodline</h4>
+							<p>All-or-nothing check across five core base stats: Health, Stamina, Food, Weight and Melee. Mutations and domestic levels are <strong>excluded</strong> for this badge — only base stat points count.</p>
 					<ul>
 						<li><strong>Bronze</strong>: all five core stats ≥ 45</li>
 						<li><strong>Silver</strong>: all five core stats ≥ 50</li>
@@ -432,18 +432,7 @@ function openBadgesModal() {
 					</ul>
 				</section>
 
-				<section style="margin-bottom:12px;"><h4>Mutation Master</h4>
-					<p>Counts mutation points (1 mutation = 2 effective levels in other systems). Tiers:</p>
-					<ul>
-						<li>Bronze: total mutations ≥ 5</li>
-						<li>Silver: total mutations ≥ 10</li>
-						<li>Gold: total mutations ≥ 15</li>
-					</ul>
-				</section>
-
-				<section style="margin-bottom:12px;"><h4>Tank</h4>
-					<p>High effective Health check (uses total = base + mutations + domestic levels). Tiers: Bronze 100, Silver 175, Gold 250.</p>
-				</section>
+			<!-- Mutation Master and Tank badges removed as requested -->
 
 				<section style="margin-bottom:6px;color:#94a3b8;font-size:13px;"><strong>Notes:</strong>
 					<ul>

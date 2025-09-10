@@ -174,6 +174,44 @@
           return `<span class="badge ${cls}" role="img" aria-label="${aria}" title="${title}">${emoji}</span>`;
         }).join(' ');
       } catch (e) { return ''; }
+    },
+
+    // Return a fuller textual badge list for detail views (emoji + full name)
+    generateBadgeDetailHTML(creature){
+      try {
+        const achievements = BadgeSystem.calculateAchievements(creature) || [];
+        if (!achievements || achievements.length === 0) return '';
+        function emojiFor(a){
+          const id = (a.id || '').toString().toLowerCase();
+          const tier = (a.tier || '').toString().toLowerCase();
+          if (id === 'prized_bloodline'){
+            if (tier === 'diamond') return '💎';
+            if (tier === 'gold') return '🥇';
+            if (tier === 'silver') return '🥈';
+            return '🥉';
+          }
+          if (id === 'boss_tank') return '🛡️';
+          if (id === 'boss_gamma_ready') return '⭐';
+          if (id === 'boss_beta_ready') return '⭐⭐';
+          if (id === 'boss_alpha_ready') return '⭐⭐⭐';
+          if (id === 'boss_titan_slayer') return '⭐⭐⭐⭐';
+          if (id === 'boss_dps') return '⚔️';
+          if (id === 'boss_juggernaut') return '💪';
+          if (id === 'boss_bruiser') return '🪓';
+          if (id.indexOf('underdog') === 0) {
+            if (tier === 'titan') return '🐾⭐⭐⭐';
+            if (tier === 'alpha') return '🐾⭐⭐';
+            if (tier === 'beta') return '🐾⭐';
+            return '🐾';
+          }
+          return '🏆';
+        }
+        return achievements.map(a => {
+          const emoji = emojiFor(a);
+          const label = (typeof escapeHtml === 'function') ? escapeHtml(`${a.name}${a.tier ? ` (${a.tier})` : ''}`) : `${a.name}${a.tier ? ` (${a.tier})` : ''}`;
+          return `<div class="badge-detail-item" title="${label}"><span class="badge-emoji" aria-hidden="true">${emoji}</span> <span class="badge-text">${label}</span></div>`;
+        }).join('');
+      } catch (e) { return ''; }
     }
   };
 

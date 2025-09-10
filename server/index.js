@@ -180,6 +180,24 @@ db.serialize(() => {
     created_at TEXT DEFAULT (datetime('now'))
   )`);
 
+  // Per-user boss planner saved data (JSON blob)
+  db.run(`CREATE TABLE IF NOT EXISTS boss_planner (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    data TEXT NOT NULL,
+    updated_at TEXT DEFAULT (datetime('now')),
+    FOREIGN KEY(user_id) REFERENCES users(id)
+  )`);
+
+  // Per-user arena creature lists (stored as JSON mapping arenaId -> [creature objects])
+  db.run(`CREATE TABLE IF NOT EXISTS arena_collections (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    data TEXT NOT NULL,
+    updated_at TEXT DEFAULT (datetime('now')),
+    FOREIGN KEY(user_id) REFERENCES users(id)
+  )`);
+
   // Ensure nickname column exists for older databases (safe check)
   db.all("PRAGMA table_info(users)", (err, cols) => {
     if (err || !Array.isArray(cols)) return;
@@ -774,6 +792,56 @@ app.put('/api/boss/timers/:id/cancel', authenticateToken, (req, res) => {
     if (row.created_by_user_id !== req.user.userId) return res.status(403).json({ error: 'Not authorized' });
     db.run('UPDATE boss_timers SET status = ? WHERE id = ?', ['cancelled', id], function(err2) {
       if (err2) return res.status(500).json({ error: 'Failed to cancel timer' });
+      res.json({ success: true });
+    });
+  });
+});
+
+// Get boss planner saved data for authenticated user
+app.get('/api/boss/data', authenticateToken, (req, res) => {
+  db.get('SELECT id, data, updated_at FROM boss_planner WHERE user_id = ? ORDER BY updated_at DESC LIMIT 1', [req.user.userId], (err, row) => {
+    if (err) return res.status(500).json({ error: 'Failed to load boss data' });
+    if (!row) return res.json({});
+    try { return res.json({ id: row.id, data: JSON.parse(row.data || '{}'), updated_at: row.updated_at }); } catch (e) { return res.status(500).json({ error: 'Failed to parse boss data' }); }
+  });
+});
+
+// Upsert boss planner data for authenticated user
+app.put('/api/boss/data', authenticateToken, (req, res) => {
+  const { data } = req.body || {};
+  if (!data) return res.status(400).json({ error: 'Missing data' });
+  const payload = JSON.stringify(data);
+  // Try update first
+  db.run('UPDATE boss_planner SET data = ?, updated_at = datetime(\'now\') WHERE user_id = ?', [payload, req.user.userId], function(err) {
+    if (err) return res.status(500).json({ error: 'Failed to save' });
+    if (this.changes && this.changes > 0) return res.json({ success: true });
+    // else insert
+    db.run('INSERT INTO boss_planner (user_id, data) VALUES (?, ?)', [req.user.userId, payload], function(err2) {
+      if (err2) return res.status(500).json({ error: 'Failed to save' });
+      res.json({ success: true });
+    });
+  });
+});
+
+// Get per-user arena creature collections
+app.get('/api/arena/creatures', authenticateToken, (req, res) => {
+  db.get('SELECT id, data, updated_at FROM arena_collections WHERE user_id = ? ORDER BY updated_at DESC LIMIT 1', [req.user.userId], (err, row) => {
+    if (err) return res.status(500).json({ error: 'Failed to load arena collections' });
+    if (!row) return res.json({});
+    try { return res.json({ id: row.id, data: JSON.parse(row.data || '{}'), updated_at: row.updated_at }); } catch (e) { return res.status(500).json({ error: 'Failed to parse arena collections' }); }
+  });
+});
+
+// Upsert per-user arena creature collections
+app.put('/api/arena/creatures', authenticateToken, (req, res) => {
+  const { data } = req.body || {};
+  if (!data) return res.status(400).json({ error: 'Missing data' });
+  const payload = JSON.stringify(data);
+  db.run('UPDATE arena_collections SET data = ?, updated_at = datetime(\'now\') WHERE user_id = ?', [payload, req.user.userId], function(err) {
+    if (err) return res.status(500).json({ error: 'Failed to save' });
+    if (this.changes && this.changes > 0) return res.json({ success: true });
+    db.run('INSERT INTO arena_collections (user_id, data) VALUES (?, ?)', [req.user.userId, payload], function(err2) {
+      if (err2) return res.status(500).json({ error: 'Failed to save' });
       res.json({ success: true });
     });
   });

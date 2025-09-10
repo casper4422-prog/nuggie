@@ -558,8 +558,10 @@ async function handleLogin(event) {
 			try { document.documentElement.setAttribute('data-ready', 'true'); } catch (e) {}
 			showMainApp();
 			updateTribeHeader();
-			// Sync server-stored creatures for this user
+			// Sync server-stored creatures and planner/arena data for this user
 			try { await loadServerCreatures(); } catch (e) { console.warn('loadServerCreatures after login failed', e); }
+			try { await loadServerBossData(); } catch (e) { console.warn('loadServerBossData after login failed', e); }
+			try { await loadServerArenaCollections(); } catch (e) { console.warn('loadServerArenaCollections after login failed', e); }
 			// Wait for species DB to be available before rendering species page
 			try { await waitForSpeciesDB(3000, 50); } catch (e) {}
 			try { loadSpeciesPage(); } catch (e) {}
@@ -1369,13 +1371,15 @@ function loadBossPlanner() {
 	renderArenaGrid();
 }
 
-// Boss Planner storage helpers
-const BOSS_STORAGE_KEY = 'bossPlanner.v1';
+// Boss Planner storage helpers (namespaced per-user)
+const BOSS_STORAGE_KEY_BASE = 'bossPlanner.v1';
 function getBossData() {
-	try { const raw = localStorage.getItem(BOSS_STORAGE_KEY); return raw ? JSON.parse(raw) : []; } catch (e) { console.warn('bossPlanner: failed to read storage', e); return []; }
+	try { const raw = localStorage.getItem(getUserKey(BOSS_STORAGE_KEY_BASE)); return raw ? JSON.parse(raw) : []; } catch (e) { console.warn('bossPlanner: failed to read storage', e); return []; }
 }
 function saveBossData(data) {
-	try { localStorage.setItem(BOSS_STORAGE_KEY, JSON.stringify(data)); } catch (e) { console.warn('bossPlanner: failed to save', e); }
+	try { localStorage.setItem(getUserKey(BOSS_STORAGE_KEY_BASE), JSON.stringify(data)); } catch (e) { console.warn('bossPlanner: failed to save', e); }
+	// also sync to server when logged in
+	try { if (localStorage.getItem('token')) saveBossDataToServer(data); } catch (e) {}
 }
 
 // Arena and boss definitions used for the Boss Planner UI (grouped by arena)
@@ -1414,20 +1418,20 @@ const ARENAS = [
 	{ id: 'extinction_king_titan', arena: 'Extinction - King Titan', map: 'Extinction', bosses: [{ id: 'king_titan', name: 'King Titan', notes: 'Final Titan boss; keep fight centered.' }] }
 ];
 
-// Assignment storage: maps bossId -> array of creature ids
-const ASSIGNMENT_KEY = 'bossPlanner.assignments.v1';
-function getAssignments() { try { return JSON.parse(localStorage.getItem(ASSIGNMENT_KEY) || '{}'); } catch (e) { return {}; } }
-function saveAssignments(a) { try { localStorage.setItem(ASSIGNMENT_KEY, JSON.stringify(a)); } catch (e) {} }
+// Assignment storage: maps bossId -> array of creature ids (namespaced per-user)
+const ASSIGNMENT_KEY_BASE = 'bossPlanner.assignments.v1';
+function getAssignments() { try { return JSON.parse(localStorage.getItem(getUserKey(ASSIGNMENT_KEY_BASE)) || '{}'); } catch (e) { return {}; } }
+function saveAssignments(a) { try { localStorage.setItem(getUserKey(ASSIGNMENT_KEY_BASE), JSON.stringify(a)); } catch (e) {} }
 
-// Invites storage (keeps invited user ids per boss locally until server-side invites implemented)
-const INVITE_STORAGE_KEY = 'bossPlanner.invites.v1';
-function getInvites() { try { return JSON.parse(localStorage.getItem(INVITE_STORAGE_KEY) || '{}'); } catch (e) { return {}; } }
-function saveInvites(v) { try { localStorage.setItem(INVITE_STORAGE_KEY, JSON.stringify(v)); } catch (e) {} }
+// Invites storage (keeps invited user ids per boss locally until server-side invites implemented) - namespaced per-user
+const INVITE_STORAGE_KEY_BASE = 'bossPlanner.invites.v1';
+function getInvites() { try { return JSON.parse(localStorage.getItem(getUserKey(INVITE_STORAGE_KEY_BASE)) || '{}'); } catch (e) { return {}; } }
+function saveInvites(v) { try { localStorage.setItem(getUserKey(INVITE_STORAGE_KEY_BASE), JSON.stringify(v)); } catch (e) {} }
 
-// Timers storage (per-boss scheduled timestamp)
-const TIMER_STORAGE_KEY = 'bossPlanner.timers.v1';
-function getTimers() { try { return JSON.parse(localStorage.getItem(TIMER_STORAGE_KEY) || '{}'); } catch (e) { return {}; } }
-function saveTimers(t) { try { localStorage.setItem(TIMER_STORAGE_KEY, JSON.stringify(t)); } catch (e) {} }
+// Timers storage (per-boss scheduled timestamp) - namespaced per-user
+const TIMER_STORAGE_KEY_BASE = 'bossPlanner.timers.v1';
+function getTimers() { try { return JSON.parse(localStorage.getItem(getUserKey(TIMER_STORAGE_KEY_BASE)) || '{}'); } catch (e) { return {}; } }
+function saveTimers(t) { try { localStorage.setItem(getUserKey(TIMER_STORAGE_KEY_BASE), JSON.stringify(t)); } catch (e) {} }
 
 function getUserCreatures() {
 	try {
@@ -1448,10 +1452,88 @@ function getCreatureStorageKey() {
 	} catch (e) { return 'arkCreatures:anon'; }
 }
 
-// Arena-specific creature storage: key maps arenaId -> array of creature objects
-const ARENA_CREATURES_KEY = 'arenaCreatures.v1';
-function getArenaCreatures() { try { return JSON.parse(localStorage.getItem(ARENA_CREATURES_KEY) || '{}'); } catch (e) { return {}; } }
-function saveArenaCreatures(obj) { try { localStorage.setItem(ARENA_CREATURES_KEY, JSON.stringify(obj)); } catch (e) {} }
+// Return a per-user storage key for any base key. Uses userEmail/userNickname for scoping.
+function getUserKey(baseKey) {
+	try {
+		const email = (localStorage.getItem('userEmail') || '').toString().toLowerCase();
+		const nick = (localStorage.getItem('userNickname') || '').toString().toLowerCase();
+		const user = email || nick || '';
+		const safe = user ? encodeURIComponent(user).replace(/%/g,'') : 'anon';
+		return `${baseKey}:${safe}`;
+	} catch (e) { return `${baseKey}:anon`; }
+}
+
+// Migrate legacy global keys into per-user namespaced keys on first startup for this user
+function migrateLegacyKeysToUser() {
+	try {
+		const mappings = [
+			{ global: 'arkCreatures', user: getCreatureStorageKey() },
+			{ global: 'arkTribeSettings', user: getUserKey('arkTribeSettings') },
+			{ global: 'bossPlanner.v1', user: getUserKey(BOSS_STORAGE_KEY_BASE) },
+			{ global: 'bossPlanner.assignments.v1', user: getUserKey(ASSIGNMENT_KEY_BASE) },
+			{ global: 'bossPlanner.invites.v1', user: getUserKey(INVITE_STORAGE_KEY_BASE) },
+			{ global: 'bossPlanner.timers.v1', user: getUserKey(TIMER_STORAGE_KEY_BASE) },
+			{ global: 'arenaCreatures.v1', user: getUserKey(ARENA_CREATURES_KEY_BASE) }
+		];
+		mappings.forEach(m => {
+			try {
+				const globalVal = localStorage.getItem(m.global);
+				const userVal = localStorage.getItem(m.user);
+				if (globalVal && (!userVal || userVal === 'null')) {
+					localStorage.setItem(m.user, globalVal);
+					console.info('migrated', m.global, '->', m.user);
+				}
+			} catch (e) { /* ignore per-key errors */ }
+		});
+	} catch (e) { console.warn('migration failed', e); }
+}
+
+// Arena-specific creature storage: key maps arenaId -> array of creature objects (namespaced per-user)
+const ARENA_CREATURES_KEY_BASE = 'arenaCreatures.v1';
+function getArenaCreatures() { try { return JSON.parse(localStorage.getItem(getUserKey(ARENA_CREATURES_KEY_BASE)) || '{}'); } catch (e) { return {}; } }
+function saveArenaCreatures(obj) { try { localStorage.setItem(getUserKey(ARENA_CREATURES_KEY_BASE), JSON.stringify(obj)); } catch (e) {} }
+function saveArenaCreaturesWithSync(obj) { try { saveArenaCreatures(obj); } catch (e) {} try { if (localStorage.getItem('token')) saveArenaCollectionsToServer(obj); } catch (e) {} }
+
+// Sync helpers for boss planner and arena collections
+async function loadServerBossData() {
+	try {
+		if (!localStorage.getItem('token')) return null;
+		const { res, body } = await apiRequest('/api/boss/data', { method: 'GET' });
+		if (res.ok && body && body.data) {
+			try { localStorage.setItem(getUserKey(BOSS_STORAGE_KEY_BASE), JSON.stringify(body.data)); } catch (e) {}
+			return body.data;
+		}
+	} catch (e) { console.warn('loadServerBossData failed', e); }
+	return null;
+}
+
+async function saveBossDataToServer(data) {
+	try {
+		if (!localStorage.getItem('token')) return false;
+		await apiRequest('/api/boss/data', { method: 'PUT', body: JSON.stringify({ data }) });
+		return true;
+	} catch (e) { console.warn('saveBossDataToServer failed', e); return false; }
+}
+
+async function loadServerArenaCollections() {
+	try {
+		if (!localStorage.getItem('token')) return null;
+		const { res, body } = await apiRequest('/api/arena/creatures', { method: 'GET' });
+		if (res.ok && body && body.data) {
+			try { localStorage.setItem(getUserKey(ARENA_CREATURES_KEY_BASE), JSON.stringify(body.data)); } catch (e) {}
+			return body.data;
+		}
+	} catch (e) { console.warn('loadServerArenaCollections failed', e); }
+	return null;
+}
+
+async function saveArenaCollectionsToServer(data) {
+	try {
+		if (!localStorage.getItem('token')) return false;
+		await apiRequest('/api/arena/creatures', { method: 'PUT', body: JSON.stringify({ data }) });
+		return true;
+	} catch (e) { console.warn('saveArenaCollectionsToServer failed', e); return false; }
+}
 
 function renderArenaCreatureList(arenaId) {
 	const wrap = document.getElementById('arenaCreatureList'); if (!wrap) return;
@@ -1462,7 +1544,7 @@ function renderArenaCreatureList(arenaId) {
 		const item = document.createElement('div'); item.className = 'species-card'; item.style = 'padding:8px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between';
 		item.innerHTML = `<div style="display:flex;gap:8px;align-items:center"><div style="width:56px;height:56px;border-radius:6px;overflow:hidden;background:#f7fafc">${isValidImageUrl(c.image)?'<img src="'+c.image+'" style="width:56px;height:56px;object-fit:cover">':(c.icon||'🦖')}</div><div><div style="font-weight:700">${escapeHtml(c.name||c.species||'Creature')}</div><div style="font-size:12px;color:#666">${escapeHtml(c.species||'')}</div></div></div><div><button class="btn btn-small btn-secondary remove-arena-creature">Remove</button></div>`;
 		const btn = item.querySelector('.remove-arena-creature'); btn?.addEventListener('click', () => {
-			const all = getArenaCreatures(); all[arenaId] = (all[arenaId]||[]).filter(x => String(x.id) !== String(c.id)); saveArenaCreatures(all); renderArenaCreatureList(arenaId);
+			const all = getArenaCreatures(); all[arenaId] = (all[arenaId]||[]).filter(x => String(x.id) !== String(c.id)); saveArenaCreaturesWithSync(all); renderArenaCreatureList(arenaId);
 		});
 		wrap.appendChild(item);
 	});
@@ -1487,8 +1569,8 @@ function openAddCreatureModal(arenaId) {
 	document.getElementById('addSelectedToArenaBtn')?.addEventListener('click', () => {
 		const checks = Array.from(document.querySelectorAll('.add-arena-checkbox')).filter(x=>x.checked).map(x=>x.getAttribute('data-id'));
 		if (!checks.length) return alert('Select at least one creature');
-		const my = getUserCreatures(); const selected = my.filter(c => checks.includes(String(c.id)));
-		const all = getArenaCreatures(); all[arenaId] = (all[arenaId]||[]).concat(selected.map(c=>({ ...c }))); saveArenaCreatures(all);
+	const my = getUserCreatures(); const selected = my.filter(c => checks.includes(String(c.id)));
+	const all = getArenaCreatures(); all[arenaId] = (all[arenaId]||[]).concat(selected.map(c=>({ ...c }))); saveArenaCreaturesWithSync(all);
 		modal.classList.remove('active'); modal.innerHTML=''; modal.setAttribute('aria-hidden','true'); renderArenaCreatureList(arenaId);
 	});
 }
@@ -1896,9 +1978,11 @@ function updateStatsDashboard() {
 // Global Application State
 let appState;
 try {
+	// Migrate legacy global localStorage keys into per-user keys before loading app state
+	try { migrateLegacyKeysToUser(); } catch (e) { }
 	appState = {
-		creatures: JSON.parse(localStorage.getItem('arkCreatures') || '[]'),
-		tribeSettings: JSON.parse(localStorage.getItem('arkTribeSettings') || '{}'),
+		creatures: JSON.parse(localStorage.getItem(getCreatureStorageKey()) || '[]'),
+		tribeSettings: JSON.parse(localStorage.getItem(getUserKey('arkTribeSettings')) || '{}'),
 		currentSpecies: null,
 		editingCreature: null,
 		selectedCreature: null
@@ -2151,8 +2235,8 @@ function saveCreature(payload) {
 			if (idx >= 0) appState.creatures[idx] = creature; else appState.creatures.push(creature);
 		}
 
-		// Persist and refresh UI
-		localStorage.setItem('arkCreatures', JSON.stringify(appState.creatures || []));
+	// Persist and refresh UI (per-user)
+	try { localStorage.setItem(getCreatureStorageKey(), JSON.stringify(appState.creatures || [])); } catch (e) {}
 		// Close modal if open
 		try { if (typeof closeCreatureModal === 'function') closeCreatureModal(); } catch (e) {}
 		try { loadSpeciesPage(); } catch (e) {}

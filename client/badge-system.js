@@ -138,27 +138,66 @@
       } catch (e) { return []; }
     },
 
-    // Return a small HTML snippet for a creature's badges (safe if none)
+    // Return a small HTML snippet for a creature's badges using emojis (accessible)
     generateBadgeHTML(creature){
       try {
         const achievements = BadgeSystem.calculateAchievements(creature) || [];
         if (!achievements || achievements.length === 0) return '';
-        // Render up to 3 small badges
-        return achievements.slice(0,3).map(a => {
-          // Map semantic tiers to visual classes used by CSS
+
+        // Helper: map an achievement id + tier to a single emoji (or short emoji string)
+        function emojiFor(a){
+          const id = (a.id || '').toString().toLowerCase();
           const tier = (a.tier || '').toString().toLowerCase();
-          const visualMap = {
-            'bronze': 'badge-bronze', 'silver': 'badge-silver', 'gold': 'badge-gold',
-            'gamma': 'badge-bronze', 'beta': 'badge-silver', 'alpha': 'badge-gold', 'titan': 'badge-gold'
-          };
+
+          // Prized uses tier-specific medals / diamond
+          if (id === 'prized_bloodline'){
+            if (tier === 'diamond') return '💎';
+            if (tier === 'gold') return '🥇';
+            if (tier === 'silver') return '🥈';
+            return '🥉';
+          }
+
+          // Mutation Master and Tank
+          if (id === 'mutation_master') return '🧬';
+          if (id === 'tank' || id === 'boss_tank') return '🛡️';
+
+          // Boss difficulty tiers: represent by star count
+          if (id === 'boss_gamma_ready') return '⭐';
+          if (id === 'boss_beta_ready') return '⭐⭐';
+          if (id === 'boss_alpha_ready') return '⭐⭐⭐';
+          if (id === 'boss_titan_slayer') return '⭐⭐⭐⭐';
+
+          // Boss roles
+          if (id === 'boss_dps') return '⚔️';
+          if (id === 'boss_juggernaut') return '💪';
+          if (id === 'boss_bruiser') return '🪓';
+
+          // Underdog badges: paw + optional stars by tier
+          if (id.indexOf('underdog') === 0) {
+            if (tier === 'titan') return '🐾⭐⭐⭐';
+            if (tier === 'alpha') return '🐾⭐⭐';
+            if (tier === 'beta') return '🐾⭐';
+            return '🐾';
+          }
+
+          // Fallback: a trophy
+          return '🏆';
+        }
+
+        // Map semantic tiers to visual classes used by CSS (preserve styling hooks)
+        const visualMap = {
+          'bronze': 'badge-bronze', 'silver': 'badge-silver', 'gold': 'badge-gold',
+          'gamma': 'badge-bronze', 'beta': 'badge-silver', 'alpha': 'badge-gold', 'titan': 'badge-gold'
+        };
+
+        // Render up to 3 emoji badges, keep full text in title/aria-label for screen-readers
+        return achievements.slice(0,3).map(a => {
+          const tier = (a.tier || '').toString().toLowerCase();
           const cls = visualMap[tier] || `badge-${tier || 'bronze'}`;
-          // Build compact label: prefer short tier name for boss/underdog, else use first word of name
-          let label = '';
-          if (['gamma','beta','alpha','titan'].includes(tier)) label = `${tier.toUpperCase()} ${a.name.split(' ')[0]}`;
-          else if (a.tier) label = `${a.tier.toUpperCase()} ${a.name.split(' ')[0]}`;
-          else label = a.name.split(' ')[0];
-          const safeLabel = (typeof escapeHtml === 'function') ? escapeHtml(label) : String(label);
-          return `<span class="badge ${cls}" title="${a.name} (${a.tier || ''})">${safeLabel}</span>`;
+          const emoji = emojiFor(a);
+          const title = (typeof escapeHtml === 'function') ? escapeHtml(`${a.name}${a.tier ? ` (${a.tier})` : ''}`) : `${a.name}${a.tier ? ` (${a.tier})` : ''}`;
+          const aria = (typeof escapeHtml === 'function') ? escapeHtml(`${a.name} ${a.tier || ''}`) : `${a.name} ${a.tier || ''}`;
+          return `<span class="badge ${cls}" role="img" aria-label="${aria}" title="${title}">${emoji}</span>`;
         }).join(' ');
       } catch (e) { return ''; }
     }

@@ -385,6 +385,83 @@ function openTribeModal(opts = {}) {
 window.openTribeModal = openTribeModal;
 window.closeTribeModal = closeTribeModal;
 
+// Open a comprehensive Achievements / Badges modal explaining all rules
+function openBadgesModal() {
+	const modal = document.getElementById('creatureModal');
+	if (!modal) return alert('Modal container missing');
+	modal.classList.add('active'); modal.setAttribute('aria-hidden', 'false');
+	modal.innerHTML = `
+		<div class="modal-content" style="max-width:860px;margin:20px auto;">
+			<div class="modal-header"><h3>Achievements & Badges</h3><button id="closeBadgesModalBtn" class="close-btn">&times;</button></div>
+			<div class="modal-body" style="max-height:70vh;overflow:auto;">
+				<section style="margin-bottom:12px;"><h4>Prized Bloodline</h4>
+					<p>All-or-nothing check across five core base stats: Health, Stamina, Food, Weight and Melee. Mutations and domestic levels are <strong>excluded</strong> for this badge — only wild base points count.</p>
+					<ul>
+						<li><strong>Bronze</strong>: all five core stats ≥ 45</li>
+						<li><strong>Silver</strong>: all five core stats ≥ 50</li>
+						<li><strong>Gold</strong>: all five core stats ≥ 55</li>
+						<li><strong>Diamond</strong>: all five core stats ≥ 60 — triggers a server-wide announcement</li>
+					</ul>
+				</section>
+
+				<section style="margin-bottom:12px;"><h4>Boss Ready</h4>
+					<p>Uses <em>total points</em> = Base + (Mutations × 2) + Domestic Levels. Unless otherwise noted, both Health and Melee must meet thresholds for difficulty tiers.</p>
+					<ul>
+						<li><strong>Gamma Ready</strong>: Health ≥ 75 and Melee ≥ 75</li>
+						<li><strong>Beta Ready</strong>: Health ≥ 100 and Melee ≥ 100</li>
+						<li><strong>Alpha Ready</strong>: Health ≥ 125 and Melee ≥ 125</li>
+						<li><strong>Titan Slayer</strong>: Health ≥ 150 and Melee ≥ 150</li>
+					</ul>
+					<p>Specialized role badges (independent checks):</p>
+					<ul>
+						<li><strong>Boss Tank</strong>: Health ≥ 175 (Melee not required)</li>
+						<li><strong>Boss DPS</strong>: Melee ≥ 175 (Health not required)</li>
+						<li><strong>Boss Juggernaut</strong>: Health ≥ 125 and Stamina ≥ 125</li>
+						<li><strong>Boss Bruiser</strong>: Health ≥ 125 and Weight ≥ 125</li>
+					</ul>
+				</section>
+
+				<section style="margin-bottom:12px;"><h4>Boss Underdog</h4>
+					<p>Recognizes non-meta species bred to boss-viable levels. Uses the same total-points formula as Boss Ready but with higher thresholds. Certain canonical meta-boss species are ineligible.</p>
+					<p><strong>Ineligible (revised meta-boss list):</strong> Rex, Giganotosaurus, Carcharodontosaurus, Therizinosaurus, Deinonychus, Megatherium, Yutyrannus, Daeodon, Woolly Rhino, Shadowmane, Reaper, Rock Drake.</p>
+					<ul>
+						<li><strong>Underdog Champion (Gamma)</strong>: Health ≥ 90 and Melee ≥ 90</li>
+						<li><strong>Underdog Hero (Beta)</strong>: Health ≥ 115 and Melee ≥ 115</li>
+						<li><strong>Underdog Legend (Alpha)</strong>: Health ≥ 140 and Melee ≥ 140</li>
+						<li><strong>Underdog Titan</strong>: Health ≥ 160 and Melee ≥ 160</li>
+					</ul>
+				</section>
+
+				<section style="margin-bottom:12px;"><h4>Mutation Master</h4>
+					<p>Counts mutation points (1 mutation = 2 effective levels in other systems). Tiers:</p>
+					<ul>
+						<li>Bronze: total mutations ≥ 5</li>
+						<li>Silver: total mutations ≥ 10</li>
+						<li>Gold: total mutations ≥ 15</li>
+					</ul>
+				</section>
+
+				<section style="margin-bottom:12px;"><h4>Tank</h4>
+					<p>High effective Health check (uses total = base + mutations + domestic levels). Tiers: Bronze 100, Silver 175, Gold 250.</p>
+				</section>
+
+				<section style="margin-bottom:6px;color:#94a3b8;font-size:13px;"><strong>Notes:</strong>
+					<ul>
+						<li>All thresholds are implemented client-side by default; the server stores achievements if provided by the client and will create a Diamond announcement when detected.</li>
+						<li>Mutations are treated as 2 levels for Boss/Underdog calculations.</li>
+						<li>Prized Bloodline ignores mutations/domestic levels — only raw wild base points count.</li>
+						<li>If you want achievements to be authoritative, we can add server-side recomputation/validation to prevent spoofing.</li>
+					</ul>
+				</section>
+			</div>
+			<div class="modal-footer"><button id="closeBadgesModalFoot" class="btn btn-secondary">Close</button></div>
+		</div>
+	`;
+	document.getElementById('closeBadgesModalBtn')?.addEventListener('click', closeTribeModal);
+	document.getElementById('closeBadgesModalFoot')?.addEventListener('click', closeTribeModal);
+}
+window.openBadgesModal = openBadgesModal;
+
 // --- SPECIES_DATABASE startup helper ---
 // Wait for the external species-database.js to set window.SPECIES_DATABASE.
 // Avoid TDZ and race conditions by polling with a short timeout.
@@ -975,10 +1052,10 @@ function loadMyNuggiesPage() {
 		      <h1>My Nuggies</h1>
 		      <div class="creature-page-meta" id="myNuggiesMeta">Your saved creatures</div>
 		    </div>
-		    <div class="creature-page-actions">
-		      <button class="btn btn-primary" id="addMyNuggieBtn">➕ Add Creature</button>
-		      <button class="btn btn-secondary" id="backToMainFromMyNuggies">← Back to Species</button>
-		    </div>
+				<div class="creature-page-actions">
+					<button class="btn btn-primary" id="openBadgesBtn">🏆 Badges</button>
+					<button class="btn btn-secondary" id="backToMainFromMyNuggies">← Back to Species</button>
+				</div>
 		  </div>
 		  <div class="creature-page-filters" style="display:flex;gap:8px;align-items:center;margin:12px 0;">
 		    <input id="myNuggiesSearch" class="form-control" placeholder="Search by name or species" style="flex:1;min-width:140px;">
@@ -996,8 +1073,8 @@ function loadMyNuggiesPage() {
 	`;
 
 	// Wire actions
-	const addBtn = document.getElementById('addMyNuggieBtn');
-	if (addBtn) addBtn.onclick = () => { try { window.appState.currentSpecies = null; } catch (e) {} ; openCreatureModal(null); };
+	const badgesBtn = document.getElementById('openBadgesBtn');
+	if (badgesBtn) badgesBtn.onclick = () => { try { openBadgesModal(); } catch (e) { console.warn('openBadgesModal failed', e); } };
 	const backBtn = document.getElementById('backToMainFromMyNuggies');
 	if (backBtn) backBtn.onclick = () => { if (typeof window.loadSpeciesPage === 'function') window.loadSpeciesPage(); };
 

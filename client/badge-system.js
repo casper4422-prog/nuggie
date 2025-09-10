@@ -34,30 +34,7 @@
       return ((basePoints || 0) + mutationLevels + (levels || 0)) * (scaling || 1);
     },
 
-    // New achievement: Mutation Master (sum of mutation points)
-    calculateMutationMaster(creature){
-      const muts = creature?.mutations || {};
-      const total = Object.values(muts).reduce((s,v)=>s + (Number(v)||0), 0);
-      // Assumption: small game-friendly thresholds: bronze 5, silver 10, gold 15
-      if (total >= 15) return { id: 'mutation_master', name: 'Mutation Master', qualified: true, tier: 'gold', value: total };
-      if (total >= 10) return { id: 'mutation_master', name: 'Mutation Master', qualified: true, tier: 'silver', value: total };
-      if (total >= 5) return { id: 'mutation_master', name: 'Mutation Master', qualified: true, tier: 'bronze', value: total };
-      return { id: 'mutation_master', name: 'Mutation Master', qualified: false, tier: null, value: total };
-    },
-
-    // New achievement: Tank (high effective health)
-    calculateTank(creature){
-      // Use calculateTotal so mutations count as 2 levels (consistent with boss/underdog calculations)
-      const base = Number(creature?.baseStats?.Health || 0);
-      const muts = Number(creature?.mutations?.Health || 0);
-      const dom = Number(creature?.domesticLevels?.Health || 0);
-      const effective = BadgeSystem.calculateTotal(base, muts, dom);
-      // Assumption: reasonable thresholds to award badges in early-mid progression
-      if (effective >= 250) return { id: 'tank', name: 'Tank', qualified: true, tier: 'gold', value: effective };
-      if (effective >= 175) return { id: 'tank', name: 'Tank', qualified: true, tier: 'silver', value: effective };
-      if (effective >= 100) return { id: 'tank', name: 'Tank', qualified: true, tier: 'bronze', value: effective };
-      return { id: 'tank', name: 'Tank', qualified: false, tier: null, value: effective };
-    },
+  // Mutation Master and Tank achievements removed per request
 
     // Boss Ready calculations per provided rules (uses total = base + mutations*2 + domesticLevels)
     calculateBossReady(creature){
@@ -123,9 +100,7 @@
   // Prized is a single-object result
   const prized = BadgeSystem.calculatePrizedBloodline(creature);
   if (prized && prized.qualified) ach.push(prized);
-  // Mutation Master and Tank
-  const mm = BadgeSystem.calculateMutationMaster(creature); if (mm && mm.qualified) ach.push(mm);
-  const tk = BadgeSystem.calculateTank(creature); if (tk && tk.qualified) ach.push(tk);
+  // (Mutation Master and Tank removed)
   // Boss Ready may return multiple badges
   const bossBadges = BadgeSystem.calculateBossReady(creature) || [];
   bossBadges.forEach(b => { if (b && b.qualified) ach.push(b); });
@@ -157,9 +132,8 @@
             return '🥉';
           }
 
-          // Mutation Master and Tank
-          if (id === 'mutation_master') return '🧬';
-          if (id === 'tank' || id === 'boss_tank') return '🛡️';
+          // Tank (only boss-specific tank badge uses shield emoji)
+          if (id === 'boss_tank') return '🛡️';
 
           // Boss difficulty tiers: represent by star count
           if (id === 'boss_gamma_ready') return '⭐';

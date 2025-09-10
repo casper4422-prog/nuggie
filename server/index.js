@@ -171,6 +171,15 @@ db.serialize(() => {
     FOREIGN KEY(created_by_user_id) REFERENCES users(id)
   )`);
 
+  // Announcements (global events like Diamond Prized)
+  db.run(`CREATE TABLE IF NOT EXISTS announcements (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    type TEXT NOT NULL,
+    payload TEXT NOT NULL,
+    created_by INTEGER,
+    created_at TEXT DEFAULT (datetime('now'))
+  )`);
+
   // Ensure nickname column exists for older databases (safe check)
   db.all("PRAGMA table_info(users)", (err, cols) => {
     if (err || !Array.isArray(cols)) return;
@@ -239,9 +248,35 @@ function authenticateToken(req, res, next) {
 // Save creature card
 app.post('/api/creature', authenticateToken, (req, res) => {
   const { data } = req.body;
-  db.run('INSERT INTO creature_cards (user_id, data) VALUES (?, ?)', [req.user.userId, JSON.stringify(data)], function(err) {
+  const payloadStr = JSON.stringify(data || {});
+  db.run('INSERT INTO creature_cards (user_id, data) VALUES (?, ?)', [req.user.userId, payloadStr], function(err) {
     if (err) return res.status(500).json({ error: 'Failed to save' });
-    res.status(201).json({ success: true, id: this.lastID });
+    const newId = this.lastID;
+    // If creature has achievements and any is prized diamond, create announcement and notifications
+    try {
+      const achievements = (data && data.achievements) || [];
+      const hasDiamond = achievements.some(a => (a.id === 'prized_bloodline' && a.tier === 'diamond') || (a.id === 'prized_bloodline' && a.meta && a.meta.announce));
+      if (hasDiamond) {
+        const annPayload = JSON.stringify({ creatureId: newId, userId: req.user.userId, creatureName: (data && data.name) || null });
+        db.run('INSERT INTO announcements (type, payload, created_by) VALUES (?, ?, ?)', ['diamond_prized', annPayload, req.user.userId], function(err) {
+          if (!err) {
+            const annId = this.lastID;
+            // notify all users (simple approach); in future restrict to followers/tribe
+            db.all('SELECT id FROM users', [], (err, rows) => {
+              if (!err && Array.isArray(rows)) {
+                const stmt = db.prepare('INSERT INTO notifications (user_id, actor_user_id, type, payload, read) VALUES (?, ?, ?, ?, 0)');
+                rows.forEach(r => {
+                  try { stmt.run(r.id, req.user.userId, 'announcement', annPayload); } catch (e) {}
+                });
+                try { stmt.finalize(); } catch (e){}
+              }
+            });
+          }
+        });
+      }
+    } catch (e) { /* ignore announcement errors */ }
+
+    res.status(201).json({ success: true, id: newId });
   });
 });
 
@@ -249,9 +284,31 @@ app.post('/api/creature', authenticateToken, (req, res) => {
 app.put('/api/creature/:id', authenticateToken, (req, res) => {
   const id = req.params.id;
   const { data } = req.body;
-  db.run('UPDATE creature_cards SET data = ? WHERE id = ? AND user_id = ?', [JSON.stringify(data), id, req.user.userId], function(err) {
+  const payloadStr = JSON.stringify(data || {});
+  db.run('UPDATE creature_cards SET data = ? WHERE id = ? AND user_id = ?', [payloadStr, id, req.user.userId], function(err) {
     if (err) return res.status(500).json({ error: 'Failed to update' });
     if (this.changes === 0) return res.status(404).json({ error: 'Not found or not owned' });
+    // announcement on update as well
+    try {
+      const achievements = (data && data.achievements) || [];
+      const hasDiamond = achievements.some(a => (a.id === 'prized_bloodline' && a.tier === 'diamond') || (a.id === 'prized_bloodline' && a.meta && a.meta.announce));
+      if (hasDiamond) {
+        const annPayload = JSON.stringify({ creatureId: id, userId: req.user.userId, creatureName: (data && data.name) || null });
+        db.run('INSERT INTO announcements (type, payload, created_by) VALUES (?, ?, ?)', ['diamond_prized', annPayload, req.user.userId], function(err) {
+          if (!err) {
+            db.all('SELECT id FROM users', [], (err, rows) => {
+              if (!err && Array.isArray(rows)) {
+                const stmt = db.prepare('INSERT INTO notifications (user_id, actor_user_id, type, payload, read) VALUES (?, ?, ?, ?, 0)');
+                rows.forEach(r => {
+                  try { stmt.run(r.id, req.user.userId, 'announcement', annPayload); } catch (e) {}
+                });
+                try { stmt.finalize(); } catch (e){}
+              }
+            });
+          }
+        });
+      }
+    } catch (e) { }
     res.json({ success: true });
   });
 });

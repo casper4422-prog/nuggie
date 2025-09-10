@@ -591,7 +591,7 @@ function saveCreatureFromForm() {
     }
 
     // persist and refresh via main app hooks if present
-    try { localStorage.setItem('arkCreatures', JSON.stringify(appState.creatures || [])); } catch (e) {}
+  try { localStorage.setItem(getCreatureStorageKey(), JSON.stringify(appState.creatures || [])); } catch (e) {}
     try { if (typeof saveData === 'function') saveData(); } catch (e) {}
     try { if (typeof closeCreatureModal === 'function') closeCreatureModal(); } catch (e) {}
     try { if (typeof loadSpeciesPage === 'function') loadSpeciesPage(); } catch (e) {}
@@ -662,7 +662,7 @@ function deleteCreature(id) {
   if (idx === -1) return;
   if (!confirm('Delete this creature?')) return;
   appState.creatures.splice(idx,1);
-  try { localStorage.setItem('arkCreatures', JSON.stringify(appState.creatures || [])); } catch (e) {}
+  try { localStorage.setItem(getCreatureStorageKey(), JSON.stringify(appState.creatures || [])); } catch (e) {}
   try { loadCreaturesGrid(appState.currentSpecies); } catch (e) {}
   try { updateStatsDashboard(); } catch (e) {}
   // If this was a server-owned creature (numeric id), notify server to delete

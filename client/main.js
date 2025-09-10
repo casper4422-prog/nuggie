@@ -723,7 +723,7 @@ async function loadServerCreatures() {
 			// Merge: prefer server copy for logged-in users
 			window.appState = window.appState || { creatures: [] };
 			window.appState.creatures = serverCreatures;
-			try { localStorage.setItem('arkCreatures', JSON.stringify(window.appState.creatures)); } catch (e) {}
+			try { localStorage.setItem(getCreatureStorageKey(), JSON.stringify(window.appState.creatures)); } catch (e) {}
 			try { if (typeof loadSpeciesPage === 'function') loadSpeciesPage(); } catch (e) {}
 		}
 	} catch (e) { console.warn('loadServerCreatures failed', e); }
@@ -747,7 +747,7 @@ async function saveDataToServer() {
 				await apiRequest(`/api/creature/${c.id}`, { method: 'PUT', body: JSON.stringify({ data: c }) });
 			}
 		}
-		try { localStorage.setItem('arkCreatures', JSON.stringify(window.appState.creatures)); } catch (e) {}
+		try { localStorage.setItem(getCreatureStorageKey(), JSON.stringify(window.appState.creatures)); } catch (e) {}
 	} catch (e) { console.warn('saveDataToServer failed', e); }
 }
 
@@ -766,7 +766,7 @@ window.deleteCreatureOnServer = deleteCreatureOnServer;
 
 // Global saveData used by legacy code — write localStorage and sync to server when logged in
 window.saveData = function() {
-	try { localStorage.setItem('arkCreatures', JSON.stringify(window.appState && window.appState.creatures || [])); } catch (e) {}
+		try { localStorage.setItem(getCreatureStorageKey(), JSON.stringify(window.appState && window.appState.creatures || [])); } catch (e) {}
 	try { if (typeof window.saveDataToServer === 'function' && localStorage.getItem('token')) window.saveDataToServer(); } catch (e) {}
 };
 
@@ -1432,9 +1432,20 @@ function saveTimers(t) { try { localStorage.setItem(TIMER_STORAGE_KEY, JSON.stri
 function getUserCreatures() {
 	try {
 		if (window.appState && Array.isArray(window.appState.creatures) && window.appState.creatures.length) return window.appState.creatures;
-		const raw = localStorage.getItem('arkCreatures'); if (!raw) return [];
+		const raw = localStorage.getItem(getCreatureStorageKey()); if (!raw) return [];
 		return JSON.parse(raw || '[]');
 	} catch (e) { return []; }
+}
+
+// Return a per-user storage key for creatures so different accounts don't mix local data.
+function getCreatureStorageKey() {
+	try {
+		const email = (localStorage.getItem('userEmail') || '').toString().toLowerCase();
+		const nick = (localStorage.getItem('userNickname') || '').toString().toLowerCase();
+		const user = email || nick || '';
+		const safe = user ? encodeURIComponent(user).replace(/%/g,'') : 'anon';
+		return `arkCreatures:${safe}`;
+	} catch (e) { return 'arkCreatures:anon'; }
 }
 
 // Arena-specific creature storage: key maps arenaId -> array of creature objects

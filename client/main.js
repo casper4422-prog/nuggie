@@ -620,30 +620,24 @@ async function handleRegister(event) {
 		return false;
 	}
 	try {
-	const { res, body } = await apiRequest('/api/register', { method: 'POST', body: JSON.stringify({ email, password, nickname }) });
-	// normalize body to variable used later
-	const data = body;
-		async function readBody(resp) {
-			const ct = resp.headers.get('content-type') || '';
-			try {
-				if (ct.includes('application/json')) return await resp.json();
-				return await resp.text();
-			} catch (e) { return await resp.text().catch(() => null); }
-		}
-	// previous code expected 'data' after parsing; we already have it above
-	if (res.ok && (data === true || (data && data.success))) {
-			// If server returned a token, sign in immediately. Otherwise, prefill login and attempt auto-login
+		const { res, body } = await apiRequest('/api/register', { method: 'POST', body: JSON.stringify({ email, password, nickname }) });
+		const data = body;
+		// Success path: server may return { success: true } or include a token/user
+		if (res.ok && (data === true || (data && (data.success || data.token)))) {
 			if (data && data.token) {
 				localStorage.setItem('token', data.token);
 				try { if (data.user) { localStorage.setItem('userEmail', data.user.email || ''); localStorage.setItem('userNickname', data.user.nickname || ''); } } catch (e) {}
 				try { document.documentElement.setAttribute('data-ready', 'true'); } catch (e) {}
 				showMainApp();
 				updateTribeHeader();
+				try { await loadServerCreatures(); } catch (e) {}
+				try { await loadServerBossData(); } catch (e) {}
+				try { await loadServerArenaCollections(); } catch (e) {}
 				try { loadSpeciesPage(); } catch (e) {}
 				try { updateStatsDashboard(); } catch (e) {}
 				try { updateAuthUI(); } catch (e) {}
 			} else {
-				// No token: show login page and prefill credentials, then attempt login automatically
+				// No token: guide user to login form and prefill credentials for convenience
 				showLoginPage();
 				setTimeout(async () => {
 					try {
@@ -651,9 +645,8 @@ async function handleRegister(event) {
 						const lp = document.getElementById('loginPassword');
 						if (le) le.value = email;
 						if (lp) lp.value = password;
-						// Call handleLogin to perform login flow without requiring a manual refresh
-						try { await handleLogin(new Event('submit')); } catch (e) { /* ignore, user can login manually */ }
-					} catch (e) { /* no-op */ }
+						try { await handleLogin(new Event('submit')); } catch (e) {}
+					} catch (e) {}
 				}, 50);
 			}
 		} else {
@@ -668,6 +661,7 @@ async function handleRegister(event) {
 			errorDiv.style.display = 'block';
 		}
 	} catch (e) {
+		console.error('[SPA] register network error', e);
 		errorDiv.textContent = 'Network error.';
 		errorDiv.style.display = 'block';
 	}
@@ -678,9 +672,11 @@ window.handleRegister = handleRegister;
 // --- API helper and server-sync for creature persistence ---
 async function apiRequest(path, opts = {}) {
 	const token = localStorage.getItem('token');
-	const headers = opts.headers || {};
+	const headers = Object.assign({}, opts.headers || {});
 	if (token) headers['Authorization'] = 'Bearer ' + token;
-	headers['Content-Type'] = headers['Content-Type'] || 'application/json';
+	// Ask for JSON responses; only set Content-Type when we have a body to send
+	headers['Accept'] = headers['Accept'] || 'application/json';
+	if (opts.body && !headers['Content-Type']) headers['Content-Type'] = 'application/json';
 	// Resolve base with safe fallbacks: opts.base -> window.__API_BASE -> same-origin
 	let base = '';
 	try {
@@ -695,19 +691,26 @@ async function apiRequest(path, opts = {}) {
 	} catch (e) {}
 	const res = await fetch(url, Object.assign({}, opts, { headers, credentials: 'include' }));
 	const ct = res.headers.get('content-type') || '';
-	// read raw text then try JSON.parse if appropriate. This gives us visibility when body is empty or HTML.
+	// read raw text then try to parse JSON even when Content-Type is missing
 	let raw = null;
 	try { raw = await res.text(); } catch (e) { raw = null; }
 	let body = null;
 	try {
-		if (raw && ct.toLowerCase().includes('application/json')) body = JSON.parse(raw);
-		else body = raw;
+		if (raw && ct.toLowerCase().includes('application/json')) {
+			body = JSON.parse(raw);
+		} else if (raw && raw.trim() && (raw.trim().startsWith('{') || raw.trim().startsWith('['))) {
+			// attempt to parse JSON even if content-type header is absent
+			try { body = JSON.parse(raw); } catch (e) { body = raw; }
+		} else {
+			body = raw;
+		}
 	} catch (e) {
 		body = raw;
 	}
-	// No cross-origin canonical fallback to avoid CORS errors; rely on same-origin or explicitly set window.__API_BASE
-	if (!res.ok || (res.ok && (path === '/api/login' || path === '/api/register') && (!body || (typeof body === 'string' && body.trim() === '')))) {
-		// log helpful debugging info for auth-related failures or non-ok responses
+
+	// Only warn for non-ok responses or when login/register returned an unexpected empty body.
+	const authEmpty = (path === '/api/login' || path === '/api/register') && (body === null || (typeof body === 'string' && body.trim() === ''));
+	if (!res.ok || authEmpty) {
 		try {
 			console.warn('[SPA] apiRequest response', { url, method, status: res.status, contentType: ct, bodyPreview: (raw || '').slice(0,1000) });
 		} catch (e) {}

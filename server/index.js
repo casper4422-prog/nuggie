@@ -227,7 +227,8 @@ app.post('/api/register', (req, res) => {
         // return token + user info
         const userId = this.lastID;
         const token = jwt.sign({ userId }, SECRET, { expiresIn: '1d' });
-        return res.json({ success: true, token, user: { id: userId, email: emailVal, nickname: nickVal } });
+    res.setHeader('Content-Type', 'application/json');
+    return res.json({ success: true, token, user: { id: userId, email: emailVal, nickname: nickVal } });
       });
     });
   });
@@ -243,7 +244,8 @@ app.post('/api/login', (req, res) => {
     bcrypt.compare(password, user.password, (err, result) => {
       if (result) {
         const token = jwt.sign({ userId: user.id }, SECRET, { expiresIn: '1d' });
-        res.json({ token, user: { id: user.id, email: user.email, nickname: user.nickname } });
+    res.setHeader('Content-Type', 'application/json');
+    return res.json({ token, user: { id: user.id, email: user.email, nickname: user.nickname } });
       } else {
         res.status(400).json({ error: 'Invalid credentials' });
       }
@@ -294,7 +296,8 @@ app.post('/api/creature', authenticateToken, (req, res) => {
       }
     } catch (e) { /* ignore announcement errors */ }
 
-    res.status(201).json({ success: true, id: newId });
+    res.setHeader('Content-Type', 'application/json');
+    return res.status(201).json({ success: true, id: newId });
   });
 });
 
@@ -356,7 +359,8 @@ app.post('/api/trades', authenticateToken, (req, res) => {
   db.run('INSERT INTO trades (user_id, creature_card_id, creature_data, wanted, price, status) VALUES (?, ?, ?, ?, ?, ?)',
     [req.user.userId, creature_card_id || null, JSON.stringify(creature_data), wanted || null, price || null, 'open'], function(err) {
       if (err) return res.status(500).json({ error: 'Failed to create trade' });
-      res.status(201).json({ success: true, id: this.lastID });
+    res.setHeader('Content-Type', 'application/json');
+    return res.status(201).json({ success: true, id: this.lastID });
     });
 });
 
@@ -383,7 +387,8 @@ app.get('/api/trades', (req, res) => {
           } catch (e) { return false; }
         });
       }
-      res.json(items);
+    res.setHeader('Content-Type', 'application/json');
+    return res.json(items);
     } catch (e) { res.status(500).json({ error: 'Failed to parse trades' }); }
   });
 });

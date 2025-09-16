@@ -19,6 +19,14 @@ app.use(compression());
 app.use(cors({ origin: true, credentials: true, allowedHeaders: ['Content-Type', 'Authorization'] }));
 app.use(bodyParser.json());
 
+// Temporary debug endpoint: echoes headers and parsed body back as JSON
+// Use this to verify whether external hosts/proxies forward request bodies correctly.
+app.post('/api/debug/echo', (req, res) => {
+  try { console.log('[API] /api/debug/echo incoming', { headers: req.headers || {}, bodyPreview: (() => { try { return JSON.stringify(req.body).slice(0,200); } catch(e){ return String(req.body); } })() }); } catch(e){}
+  try { res.setHeader('Content-Type', 'application/json'); } catch(e){}
+  return res.json({ ok: true, headers: req.headers || {}, body: req.body || null });
+});
+
 // Optional: serve the client static files from the same server for simple deployments.
 // Set SERVE_CLIENT=false to disable when frontend is hosted separately.
 const serveClient = (process.env.SERVE_CLIENT || 'true') === 'true';

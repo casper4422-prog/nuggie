@@ -212,23 +212,44 @@ db.serialize(() => {
 
 // Register endpoint
 app.post('/api/register', (req, res) => {
-  const { email, password, nickname } = req.body;
-  if (!email || !password) return res.status(400).json({ error: 'Missing email or password' });
+  // Log incoming request for diagnostics (helps detect proxies or body-parsing issues)
+  try { console.log('[API] /api/register incoming', { headers: req.headers || {}, bodyPreview: (() => { try { return JSON.stringify(req.body).slice(0,200); } catch(e){ return String(req.body); } })() }); } catch(e){}
+  const { email, password, nickname } = req.body || {};
+  if (!email || !password) {
+    res.setHeader('Content-Type', 'application/json');
+    return res.status(400).json({ error: 'Missing email or password' });
+  }
   const emailVal = (email || '').trim();
   const nickVal = nickname ? String(nickname).trim() : null;
   // Check for existing email or nickname (case-insensitive)
   db.get('SELECT id FROM users WHERE email = ? COLLATE NOCASE OR (nickname IS NOT NULL AND nickname = ? COLLATE NOCASE)', [emailVal, nickVal], (err, row) => {
-    if (err) return res.status(500).json({ error: 'Server error' });
-    if (row) return res.status(400).json({ error: 'Email or nickname already exists' });
+    if (err) {
+      res.setHeader('Content-Type', 'application/json');
+      console.warn('[API] /api/register db lookup error', err && err.message ? err.message : err);
+      return res.status(500).json({ error: 'Server error' });
+    }
+    if (row) {
+      res.setHeader('Content-Type', 'application/json');
+      return res.status(400).json({ error: 'Email or nickname already exists' });
+    }
     bcrypt.hash(password, 10, (err, hash) => {
-      if (err) return res.status(500).json({ error: 'Server error' });
+      if (err) {
+        res.setHeader('Content-Type', 'application/json');
+        console.warn('[API] /api/register bcrypt error', err && err.message ? err.message : err);
+        return res.status(500).json({ error: 'Server error' });
+      }
       db.run('INSERT INTO users (email, password, nickname) VALUES (?, ?, ?)', [emailVal, hash, nickVal], function(err) {
-        if (err) return res.status(500).json({ error: 'Failed to create user' });
+        if (err) {
+          res.setHeader('Content-Type', 'application/json');
+          console.warn('[API] /api/register insert error', err && err.message ? err.message : err);
+          return res.status(500).json({ error: 'Failed to create user' });
+        }
         // return token + user info
         const userId = this.lastID;
         const token = jwt.sign({ userId }, SECRET, { expiresIn: '1d' });
-    res.setHeader('Content-Type', 'application/json');
-    return res.json({ success: true, token, user: { id: userId, email: emailVal, nickname: nickVal } });
+        try { res.setHeader('Content-Type', 'application/json'); } catch(e){}
+        try { console.log('[API] /api/register success for userId', userId); } catch(e){}
+        return res.json({ success: true, token, user: { id: userId, email: emailVal, nickname: nickVal } });
       });
     });
   });

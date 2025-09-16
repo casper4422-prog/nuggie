@@ -636,20 +636,6 @@ async function handleRegister(event) {
 				try { loadSpeciesPage(); } catch (e) {}
 				try { updateStatsDashboard(); } catch (e) {}
 				try { updateAuthUI(); } catch (e) {}
-			} else if (res.ok && (!data || (typeof data === 'string' && data.trim() === ''))) {
-				// Temporary hotfix: some deployments return 200 with empty body on register.
-				// Treat as success by pre-filling login and attempting auto-login.
-				console.warn('[SPA] register returned 200 with empty body; treating as success (temporary hotfix)');
-				showLoginPage();
-				setTimeout(async () => {
-					try {
-						const le = document.getElementById('loginEmail');
-						const lp = document.getElementById('loginPassword');
-						if (le) le.value = email;
-						if (lp) lp.value = password;
-						try { await handleLogin(new Event('submit')); } catch (e) {}
-					} catch (e) {}
-				}, 50);
 			} else {
 				// No token: guide user to login form and prefill credentials for convenience
 				showLoginPage();

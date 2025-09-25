@@ -2,6 +2,87 @@
 // We'll set the readiness marker only after our exact theme CSS is loaded
 // to avoid the original UI flashing and then being overlapped by the injected UI.
 
+function renderRegisterForm() {
+    const registerPage = document.getElementById('registerPage');
+    if (!registerPage) return;
+    registerPage.innerHTML = `
+        <div class="register-container">
+            <h1 class="register-title">Create Account</h1>
+            <form id="registerForm">
+                <div class="form-group">
+                    <label class="form-label" for="registerEmail">Email</label>
+                    <input class="form-control" id="registerEmail" type="email" required autocomplete="email" placeholder="you@example.com">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="registerNickname">Nickname (optional)</label>
+                    <input class="form-control" id="registerNickname" type="text" autocomplete="nickname" placeholder="Your display name">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="registerDiscord">Discord Name (optional)</label>
+                    <input class="form-control" id="registerDiscord" type="text" placeholder="Your Discord username">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="registerPassword">Password</label>
+                    <input class="form-control" id="registerPassword" type="password" required autocomplete="new-password">
+                </div>
+                <button type="submit" class="btn btn-primary register-btn">Register</button>
+            </form>
+            <div class="register-link">Already have an account? <a href="#" id="showLoginLink">Login</a></div>
+            <div id="registerError" class="register-error" role="status" aria-live="polite"></div>
+        </div>
+    `;
+    
+    // Add event listeners
+    const form = document.getElementById('registerForm');
+    const showLoginLink = document.getElementById('showLoginLink');
+    
+    if (form) {
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('registerEmail')?.value;
+            const nickname = document.getElementById('registerNickname')?.value;
+            const discord = document.getElementById('registerDiscord')?.value;
+            const password = document.getElementById('registerPassword')?.value;
+            const errorDiv = document.getElementById('registerError');
+            
+            if (!email || !password) {
+                if (errorDiv) errorDiv.textContent = 'Please fill out all required fields';
+                return;
+            }
+            
+            try {
+                const res = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password, nickname, discord_name: discord })
+                });
+                const data = await res.json();
+                
+                if (res.ok) {
+                    // Store credentials and show main app
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('userId', data.userId);
+                    if (data.email) localStorage.setItem('userEmail', data.email);
+                    if (data.nickname) localStorage.setItem('userNickname', data.nickname);
+                    showMainApp();
+                } else {
+                    if (errorDiv) errorDiv.textContent = data.error || 'Registration failed';
+                }
+            } catch (err) {
+                console.error('Registration error:', err);
+                if (errorDiv) errorDiv.textContent = 'Registration failed. Please try again.';
+            }
+        });
+    }
+    
+    if (showLoginLink) {
+        showLoginLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            showLoginPage();
+        });
+    }
+}
+
 // --- SPA Logic and Event Handlers (migrated from index.html) ---
 function showLoginPage() {
 	console.log('[SPA] showLoginPage called');

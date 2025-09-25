@@ -1872,28 +1872,177 @@ function openBossModal(bossId) {
 // small helper to escape HTML in strings
 function escapeHtml(s) { if (s === undefined || s === null) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
-function loadMyProfile() {
+async function loadMyProfile() {
 	const main = document.getElementById('appMainContent');
 	if (!main) return;
-	const email = localStorage.getItem('userEmail') || '';
-	const nickname = localStorage.getItem('userNickname') || '';
-	const tribe = localStorage.getItem('tribeName') || '';
+	
 	main.innerHTML = `
 		<section class="profile-page">
-			<h1>My Profile</h1>
-			<div class="profile-grid">
-				<div><label class="form-label">Email</label><div>${email}</div></div>
-				<div><label class="form-label">Nickname</label><div>${nickname}</div></div>
-				<div><label class="form-label">Tribe</label><div>${tribe}</div></div>
-			</div>
-			<div style="margin-top:12px;"><button class="btn btn-primary" id="editProfileBtn">Edit Profile</button></div>
+			<div class="loading">Loading profile...</div>
 		</section>
 	`;
-	const editBtn = document.getElementById('editProfileBtn');
-	if (editBtn) editBtn.addEventListener('click', () => alert('Profile editing not implemented yet'));
+
+	try {
+		// Fetch comprehensive profile data
+		const [profileRes, creaturesRes] = await Promise.all([
+			fetch('/api/profile', {
+				headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+			}),
+			fetch('/api/profile/creatures?limit=5', {
+				headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+			})
+		]);
+
+		if (!profileRes.ok) throw new Error('Failed to load profile');
+		
+		const profile = await profileRes.json();
+		const creatures = creaturesRes.ok ? await creaturesRes.json() : [];
+
+		// Render enhanced profile page
+		main.innerHTML = `
+			<section class="profile-page">
+				<div class="profile-header">
+					<h1>🦕 My Profile</h1>
+					<div class="profile-stats">
+						<span class="stat-item">📦 ${profile.creature_count} Creatures</span>
+						${profile.tribe ? `<span class="stat-item">🏛️ ${profile.tribe.name} (${profile.tribe.role})</span>` : '<span class="stat-item">🏛️ No Tribe</span>'}
+					</div>
+				</div>
+				
+				<div class="profile-content">
+					<div class="profile-section">
+						<h2>👤 Account Information</h2>
+						<div class="profile-grid">
+							<div class="profile-item">
+								<label class="form-label">Email</label>
+								<div class="profile-value">${profile.email}</div>
+							</div>
+							<div class="profile-item">
+								<label class="form-label">Nickname</label>
+								<div class="profile-value">${profile.nickname || 'Not set'}</div>
+							</div>
+							<div class="profile-item">
+								<label class="form-label">Discord Name</label>
+								<div class="profile-value editable-field" data-field="discord_name">
+									<span class="display-value">${profile.discord_name || 'Not set'}</span>
+									<button class="btn-small edit-btn" onclick="editField('discord_name')">✏️</button>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					${profile.tribe ? `
+						<div class="profile-section">
+							<h2>🏛️ Tribe Information</h2>
+							<div class="tribe-info">
+								<div class="tribe-details">
+									<strong>${profile.tribe.name}</strong>
+									<span class="tribe-role badge-${profile.tribe.role}">${profile.tribe.role.toUpperCase()}</span>
+								</div>
+								<button class="btn btn-secondary" onclick="goToTribe(${profile.tribe.id})">View Tribe</button>
+							</div>
+						</div>
+					` : ''}
+
+					${creatures.length > 0 ? `
+						<div class="profile-section">
+							<h2>🦖 Recent Creatures</h2>
+							<div class="recent-creatures">
+								${creatures.map(creature => `
+									<div class="creature-card-mini" onclick="viewCreature(${creature.id})">
+										<div class="creature-name">${creature.name}</div>
+										<div class="creature-details">${creature.species} • Level ${creature.level}</div>
+									</div>
+								`).join('')}
+							</div>
+							<button class="btn btn-primary" onclick="goToCreatures()" style="margin-top: 12px;">View All Creatures</button>
+						</div>
+					` : ''}
+				</div>
+				
+				<div class="profile-actions">
+					<button class="btn btn-secondary" id="editProfileBtn">Edit Profile Settings</button>
+				</div>
+			</section>
+		`;
+
+		// Attach event listeners
+		const editBtn = document.getElementById('editProfileBtn');
+		if (editBtn) editBtn.addEventListener('click', () => openProfileEditModal(profile));
+
+	} catch (error) {
+		console.error('Failed to load profile:', error);
+		main.innerHTML = `
+			<section class="profile-page">
+				<h1>My Profile</h1>
+				<div class="error-message">Failed to load profile. Please try again.</div>
+				<button class="btn btn-primary" onclick="loadMyProfile()">Retry</button>
+			</section>
+		`;
+	}
 }
 
+// Supporting functions for enhanced profile page
+async function editField(fieldName) {
+	const fieldElement = document.querySelector(`[data-field="${fieldName}"]`);
+	const displayValue = fieldElement.querySelector('.display-value');
+	const currentValue = displayValue.textContent === 'Not set' ? '' : displayValue.textContent;
 
+	const newValue = prompt(`Enter new ${fieldName.replace('_', ' ')}:`, currentValue);
+	if (newValue === null) return; // User cancelled
+
+	try {
+		const response = await fetch('/api/profile', {
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/json',
+				'Authorization': `Bearer ${localStorage.getItem('token')}`
+			},
+			body: JSON.stringify({ [fieldName]: newValue })
+		});
+
+		if (response.ok) {
+			displayValue.textContent = newValue || 'Not set';
+		} else {
+			alert('Failed to update profile');
+		}
+	} catch (error) {
+		console.error('Error updating profile:', error);
+		alert('Failed to update profile');
+	}
+}
+
+function openProfileEditModal(profile) {
+	// For now, just show the Discord name edit option
+	editField('discord_name');
+}
+
+function goToTribe(tribeId) {
+	// Navigate to tribe page (if it exists)
+	if (typeof loadTribePage === 'function') {
+		loadTribePage(tribeId);
+	} else {
+		alert(`Navigate to tribe ${tribeId} - tribe page not implemented yet`);
+	}
+}
+
+function viewCreature(creatureId) {
+	// Navigate to creature details (if it exists)
+	if (typeof viewCreatureDetails === 'function') {
+		viewCreatureDetails(creatureId);
+	} else {
+		alert(`View creature ${creatureId} - creature details not implemented yet`);
+	}
+}
+
+function goToCreatures() {
+	// Navigate to creatures list page
+	if (typeof loadCreaturesPage === 'function') {
+		loadCreaturesPage();
+	} else {
+		alert('Navigate to creatures page - not implemented yet');
+	}
+}
 
 // Render register form into #registerPage (called when user clicks Register)
 function renderRegisterForm() {

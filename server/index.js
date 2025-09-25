@@ -81,7 +81,8 @@ db.serialize(() => {
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     email TEXT UNIQUE NOT NULL,
     password TEXT NOT NULL,
-    nickname TEXT UNIQUE
+    nickname TEXT UNIQUE,
+    discord_name TEXT
   )`);
   db.run(`CREATE TABLE IF NOT EXISTS creature_cards (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -218,9 +219,18 @@ db.serialize(() => {
   db.all("PRAGMA table_info(users)", (err, cols) => {
     if (err || !Array.isArray(cols)) return;
     const hasNickname = cols.some(c => c.name === 'nickname');
+    const hasDiscordName = cols.some(c => c.name === 'discord_name');
+    
     if (!hasNickname) {
       db.run('ALTER TABLE users ADD COLUMN nickname TEXT UNIQUE', (aerr) => {
         if (aerr) console.warn('Failed to add nickname column:', aerr.message || aerr);
+      });
+    }
+    
+    if (!hasDiscordName) {
+      db.run('ALTER TABLE users ADD COLUMN discord_name TEXT', (aerr) => {
+        if (aerr) console.warn('Failed to add discord_name column:', aerr.message || aerr);
+        else console.log('Added discord_name column to users table');
       });
     }
   });
@@ -559,6 +569,98 @@ app.get('/api/users/search', authenticateToken, (req, res) => {
   db.all('SELECT id, email, nickname FROM users WHERE email LIKE ? COLLATE NOCASE OR nickname LIKE ? COLLATE NOCASE LIMIT 50', [like, like], (err, rows) => {
     if (err) return res.status(500).json({ error: 'User search failed' });
     res.json(rows || []);
+  });
+});
+
+// --- Profile endpoints ---
+// Get user profile with extended information
+app.get('/api/profile', authenticateToken, (req, res) => {
+  const userId = req.user.userId;
+  
+  // Get user info
+  db.get('SELECT id, email, nickname, discord_name FROM users WHERE id = ?', [userId], (err, user) => {
+    if (err) return res.status(500).json({ error: 'Failed to fetch profile' });
+    if (!user) return res.status(404).json({ error: 'User not found' });
+    
+    // Get tribe membership info
+    db.get(`
+      SELECT t.name as tribe_name, tm.role as tribe_role, t.id as tribe_id
+      FROM tribe_memberships tm 
+      JOIN tribes t ON tm.tribe_id = t.id 
+      WHERE tm.user_id = ?
+    `, [userId], (tribeErr, tribeInfo) => {
+      if (tribeErr) console.warn('Failed to fetch tribe info:', tribeErr);
+      
+      // Get creature count
+      db.get('SELECT COUNT(*) as creature_count FROM creature_cards WHERE user_id = ?', [userId], (creatureErr, creatureCount) => {
+        if (creatureErr) console.warn('Failed to fetch creature count:', creatureErr);
+        
+        res.json({
+          id: user.id,
+          email: user.email,
+          nickname: user.nickname,
+          discord_name: user.discord_name,
+          tribe: tribeInfo ? {
+            name: tribeInfo.tribe_name,
+            role: tribeInfo.tribe_role,
+            id: tribeInfo.tribe_id
+          } : null,
+          creature_count: creatureCount ? creatureCount.creature_count : 0
+        });
+      });
+    });
+  });
+});
+
+// Update user profile
+app.put('/api/profile', authenticateToken, (req, res) => {
+  const userId = req.user.userId;
+  const { discord_name } = req.body || {};
+  
+  // For now, only allow updating discord_name (email/nickname changes would need more validation)
+  db.run('UPDATE users SET discord_name = ? WHERE id = ?', [discord_name || null, userId], (err) => {
+    if (err) return res.status(500).json({ error: 'Failed to update profile' });
+    res.json({ success: true });
+  });
+});
+
+// Get user's recent creatures (for quick access)
+app.get('/api/profile/creatures', authenticateToken, (req, res) => {
+  const userId = req.user.userId;
+  const limit = parseInt(req.query.limit) || 5;
+  
+  db.all(`
+    SELECT id, data, created_at 
+    FROM creature_cards 
+    WHERE user_id = ? 
+    ORDER BY created_at DESC 
+    LIMIT ?
+  `, [userId, limit], (err, creatures) => {
+    if (err) return res.status(500).json({ error: 'Failed to fetch creatures' });
+    
+    // Parse creature data
+    const parsed = creatures.map(c => {
+      try {
+        const data = JSON.parse(c.data);
+        return {
+          id: c.id,
+          name: data.name || 'Unnamed',
+          species: data.species || 'Unknown',
+          level: data.level || 1,
+          created_at: c.created_at
+        };
+      } catch (e) {
+        return {
+          id: c.id,
+          name: 'Invalid Data',
+          species: 'Unknown',
+          level: 1,
+          created_at: c.created_at
+        };
+      }
+    });
+    
+    res.json(parsed);
   });
 });
 

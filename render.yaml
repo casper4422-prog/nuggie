@@ -1,0 +1,26 @@
+services:
+  # Web Service - Backend API + Frontend Static Files
+  - type: web
+    name: nuggie-app
+    runtime: node
+    repo: https://github.com/casper4422-prog/nuggie
+    branch: main
+    rootDir: server
+    buildCommand: npm install && npm audit fix --force
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        generateValue: true
+      - key: SERVE_CLIENT
+        value: true
+      - key: PORT
+        value: 10000
+    disk:
+      name: nuggie-data
+      mountPath: /opt/render/project/src/data
+      sizeGB: 1
+
+# SQLite database will be stored in the persistent disk
+# Render will create a persistent disk at /opt/render/project/src/data

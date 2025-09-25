@@ -55,9 +55,25 @@ if (serveClient) {
 // Note: client is served separately in production (no static mounting here)
 
 // Initialize SQLite DB
-const db = new sqlite3.Database('database.sqlite', (err) => {
+// In production on Render, use a data directory to persist the database
+const dbPath = process.env.NODE_ENV === 'production' 
+  ? '/opt/render/project/src/data/database.sqlite'
+  : 'database.sqlite';
+
+// Ensure data directory exists in production
+if (process.env.NODE_ENV === 'production') {
+  const fs = require('fs');
+  const path = require('path');
+  const dataDir = path.dirname(dbPath);
+  if (!fs.existsSync(dataDir)) {
+    fs.mkdirSync(dataDir, { recursive: true });
+    console.log(`Created data directory: ${dataDir}`);
+  }
+}
+
+const db = new sqlite3.Database(dbPath, (err) => {
   if (err) throw err;
-  console.log('Connected to SQLite database.');
+  console.log(`Connected to SQLite database at ${dbPath}`);
 });
 
 db.serialize(() => {

@@ -1498,6 +1498,12 @@ function saveTimers(t) { try { localStorage.setItem(getUserKey(TIMER_STORAGE_KEY
 
 function getUserCreatures() {
 	try {
+		return window.appState.creatures || [];
+	} catch (e) {
+		console.warn('Failed to get user creatures', e);
+		return [];
+	}
+}
 		if (window.appState && Array.isArray(window.appState.creatures) && window.appState.creatures.length) return window.appState.creatures;
 		const raw = localStorage.getItem(getCreatureStorageKey()); if (!raw) return [];
 		return JSON.parse(raw || '[]');
@@ -1930,9 +1936,6 @@ function openBossModal(bossId) {
 }
 
 // --- Friends Page ---
-async function loadFriendsPage() {
-	console.log('loadFriendsPage called');
-window.loadFriendsPage = loadFriendsPage;
 // Tribe Manager: show friends and allow assigning to tribe
 async function renderTribeFriendsList() {
 	const tribeDiv = document.getElementById('tribeFriendsList');
@@ -1963,212 +1966,3 @@ async function renderTribeFriendsList() {
 		tribeDiv.innerHTML = '<div class="error-message">Failed to load tribe friends.</div>';
 	}
 }
-	const main = document.getElementById('appMainContent');
-	if (!main) return;
-	main.innerHTML = `
-		<section class="friends-page">
-			<h1>👥 Friends</h1>
-			<div class="friends-tabs">
-				<button class="btn btn-tab" id="tabFriendsList">Friends List</button>
-				<button class="btn btn-tab" id="tabTribeManager">Tribe Manager</button>
-			</div>
-			<div id="friendsTabContent"></div>
-		</section>
-	`;
-	// Default to Friends List tab
-	renderFriendsTab('list');
-	document.getElementById('tabFriendsList').addEventListener('click', () => renderFriendsTab('list'));
-	document.getElementById('tabTribeManager').addEventListener('click', () => renderFriendsTab('tribe'));
-
-	// Tab content rendering
-	async function renderFriendsTab(tab) {
-		const tabContent = document.getElementById('friendsTabContent');
-		if (!tabContent) return;
-		if (tab === 'list') {
-			tabContent.innerHTML = `
-				<div class="friends-actions">
-					<input type="text" id="friendSearchInput" class="form-control" placeholder="Search users by email, nickname, or Discord...">
-					<button class="btn btn-primary" id="friendSearchBtn">Search</button>
-				</div>
-				<div id="friendSearchResults"></div>
-				<h2 style="margin-top:32px;">Your Friends</h2>
-				<div id="friendsList"></div>
-				<h2 style="margin-top:32px;">Pending Requests</h2>
-				<div id="pendingRequests"></div>
-			`;
-			document.getElementById('friendSearchBtn').addEventListener('click', doFriendSearch);
-			document.getElementById('friendSearchInput').addEventListener('keydown', e => { if (e.key === 'Enter') doFriendSearch(); });
-			await renderFriendsList();
-			await renderPendingRequests();
-		} else if (tab === 'tribe') {
-			tabContent.innerHTML = `
-				<h2>Tribe Manager</h2>
-				<div id="tribeFriendsList"></div>
-			`;
-			await renderTribeFriendsList();
-		}
-	}
-}
-
-async function doFriendSearch() {
-	const input = document.getElementById('friendSearchInput');
-	const resultsDiv = document.getElementById('friendSearchResults');
-	if (!input || !resultsDiv) return;
-	const q = input.value.trim();
-	if (!q) { resultsDiv.innerHTML = ''; return; }
-	resultsDiv.innerHTML = '<div class="loading">Searching...</div>';
-	try {
-		const res = await fetch(`/api/users/search?q=${encodeURIComponent(q)}`, {
-			headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
-		});
-		const users = await res.json();
-		if (!Array.isArray(users) || users.length === 0) {
-			resultsDiv.innerHTML = '<div class="error-message">No users found.</div>';
-			return;
-		}
-		resultsDiv.innerHTML = users.map(u => `
-			<div class="friend-search-result">
-				<div class="friend-info">
-					<strong>${u.nickname || u.email}</strong>
-					<span class="friend-meta">${u.discord_name ? `Discord: ${u.discord_name}` : ''}</span>
-				</div>
-				${renderFriendActionButton(u)}
-			</div>
-		`).join('');
-	} catch (e) {
-		resultsDiv.innerHTML = '<div class="error-message">Search failed.</div>';
-	}
-}
-
-function renderFriendActionButton(user) {
-	if (user.friend_status === 'accepted') {
-		return '<span class="friend-status">Already Friends</span>';
-	} else if (user.friend_status === 'pending') {
-		return '<span class="friend-status">Request Pending</span>';
-	} else {
-		return `<button class="btn btn-secondary" onclick="sendFriendRequest(${user.id})">Add Friend</button>`;
-	}
-}
-
-async function sendFriendRequest(friendUserId) {
-	try {
-		const res = await fetch('/api/friends/request', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				'Authorization': `Bearer ${localStorage.getItem('token')}`
-			},
-			body: JSON.stringify({ friend_user_id: friendUserId })
-		});
-		if (res.ok) {
-			alert('Friend request sent!');
-			doFriendSearch();
-			await renderPendingRequests();
-		} else {
-			const err = await res.json();
-			alert(err.error || 'Failed to send friend request');
-		}
-	} catch (e) {
-		alert('Failed to send friend request');
-	}
-}
-
-async function renderFriendsList() {
-	const listDiv = document.getElementById('friendsList');
-	if (!listDiv) return;
-	listDiv.innerHTML = '<div class="loading">Loading friends...</div>';
-	try {
-		const res = await fetch('/api/friends', {
-			headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
-		});
-		const friends = await res.json();
-		if (!Array.isArray(friends) || friends.length === 0) {
-			listDiv.innerHTML = '<div class="error-message">No friends yet.</div>';
-			return;
-		}
-		listDiv.innerHTML = friends.map(f => `
-			<div class="friend-list-item">
-				<div class="friend-info">
-					<strong>${f.friend_nickname || f.friend_email}</strong>
-					<span class="friend-meta">${f.friend_discord_name ? `Discord: ${f.friend_discord_name}` : ''}</span>
-				</div>
-				<button class="btn btn-danger btn-small" onclick="removeFriend(${f.id})">Remove</button>
-				<button class="btn btn-secondary btn-small" onclick="viewFriendCreatures(${f.friend_id})">View Creatures</button>
-			</div>
-		`).join('');
-	} catch (e) {
-		listDiv.innerHTML = '<div class="error-message">Failed to load friends.</div>';
-	}
-}
-
-async function renderPendingRequests() {
-	const listDiv = document.getElementById('pendingRequests');
-	if (!listDiv) return;
-	listDiv.innerHTML = '<div class="loading">Loading requests...</div>';
-	try {
-		const res = await fetch('/api/friends?status=pending', {
-			headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
-		});
-		const requests = await res.json();
-		if (!Array.isArray(requests) || requests.length === 0) {
-			listDiv.innerHTML = '<div class="error-message">No pending requests.</div>';
-			return;
-		}
-		listDiv.innerHTML = requests.map(r => `
-			<div class="friend-list-item">
-				<div class="friend-info">
-					<strong>${r.friend_nickname || r.friend_email}</strong>
-					<span class="friend-meta">${r.friend_discord_name ? `Discord: ${r.friend_discord_name}` : ''}</span>
-				</div>
-				<button class="btn btn-primary btn-small" onclick="respondToFriendRequest(${r.id}, 'accept')">Accept</button>
-				<button class="btn btn-danger btn-small" onclick="respondToFriendRequest(${r.id}, 'reject')">Reject</button>
-			</div>
-		`).join('');
-	} catch (e) {
-		listDiv.innerHTML = '<div class="error-message">Failed to load requests.</div>';
-	}
-}
-
-async function respondToFriendRequest(friendshipId, action) {
-	try {
-		const res = await fetch(`/api/friends/${friendshipId}`, {
-			method: 'PUT',
-			headers: {
-				'Content-Type': 'application/json',
-				'Authorization': `Bearer ${localStorage.getItem('token')}`
-			},
-			body: JSON.stringify({ action })
-		});
-		if (res.ok) {
-			await renderFriendsList();
-			await renderPendingRequests();
-		} else {
-			alert('Failed to respond to request');
-		}
-	} catch (e) {
-		alert('Failed to respond to request');
-	}
-}
-
-async function removeFriend(friendshipId) {
-	if (!confirm('Remove this friend?')) return;
-	try {
-		const res = await fetch(`/api/friends/${friendshipId}`, {
-			method: 'DELETE',
-			headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
-		});
-		if (res.ok) {
-			await renderFriendsList();
-		} else {
-			alert('Failed to remove friend');
-		}
-	} catch (e) {
-		alert('Failed to remove friend');
-	}
-}
-
-function viewFriendCreatures(friendUserId) {
-	// For now, just alert. Later, implement a modal or page to show friend's creatures.
-	alert('View creatures for user ID: ' + friendUserId);
-}
-window.loadFriendsPage = loadFriendsPage;

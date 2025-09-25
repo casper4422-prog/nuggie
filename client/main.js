@@ -1300,42 +1300,44 @@ function loadTradingPage() {
 						`;
 						// If owner, allow delete and view offers; otherwise allow making an offer
 						if (isLoggedIn() && owner) {
-							const del = document.createElement('button'); del.className = 'btn btn-danger'; del.textContent = 'Remove'; del.style.marginTop = '8px';
-							del.onclick = async () => { await apiRequest('/api/trades/' + trade.id, { method: 'DELETE' }); fetchAndRenderTrades(); };
-							const viewOffers = document.createElement('button'); viewOffers.className = 'btn btn-secondary'; viewOffers.textContent = 'View Offers'; viewOffers.style.marginLeft = '8px';
-										viewOffers.onclick = async () => {
-								// fetch offers for this trade and show in modal with accept/reject buttons
-								const { res, body } = await apiRequest('/api/trades/' + trade.id + '/offers', { method: 'GET' });
-								const modal = document.getElementById('creatureModal'); if (!modal) return alert('Modal container missing');
-											if (!res.ok) return alert('Failed to load offers');
-											// smaller modal and softer close button
-											modal.classList.add('active'); modal.setAttribute('aria-hidden','false');
-											modal.innerHTML = `<div class="modal-content" style="max-width:680px;margin:20px auto;"><div class="modal-header"><h3>Offers for ${trade.creature.name || trade.creature.species}</h3><button id="closeOffersModal" class="close-btn soft">Close</button></div><div class="modal-body" id="offersList"></div></div>`;
-								document.getElementById('closeOffersModal').addEventListener('click', () => { modal.classList.remove('active'); modal.innerHTML = ''; modal.setAttribute('aria-hidden','true'); });
-								const list = document.getElementById('offersList'); list.innerHTML = '';
-								(body || []).forEach(o => {
-									const row = document.createElement('div'); row.style.borderTop = '1px solid rgba(255,255,255,0.03)'; row.style.padding = '8px 0';
-									// show from nickname when available
-									const fromLabel = o.from_nickname ? `${o.from_nickname} (id:${o.from_user_id})` : `User ${o.from_user_id}`;
-									let offeredPreview = '';
-									try {
-										if (o.offered_creature_data && Object.keys(o.offered_creature_data).length) {
-											const oc = o.offered_creature_data;
-											offeredPreview = `<div style="margin-top:6px;padding:8px;border:1px solid rgba(255,255,255,0.03);border-radius:6px;background:rgba(255,255,255,0.01);"><div><strong>${oc.name||oc.species||'Creature'}</strong> • ${oc.species||''}</div><div style="color:#94a3b8;margin-top:6px;">${(oc.baseStats? Object.keys(oc.baseStats).slice(0,3).map(k=>`${k}:${oc.baseStats[k]||0}`).join(' • '):'')}</div></div>`;
-										}
-									} catch (e) { offeredPreview = ''; }
-									row.innerHTML = `<div><strong>From:</strong> ${fromLabel} • <strong>Price:</strong> ${o.offered_price || 'N/A'}</div><div style="color:#cbd5e1;">${o.message || ''}</div>${offeredPreview}`;
-									const acceptBtn = document.createElement('button'); acceptBtn.className = 'btn btn-primary'; acceptBtn.textContent = 'Accept'; acceptBtn.style.marginRight = '8px';
-									const rejectBtn = document.createElement('button'); rejectBtn.className = 'btn btn-secondary'; rejectBtn.textContent = 'Reject';
-									acceptBtn.onclick = async () => { await apiRequest('/api/offers/' + o.id, { method: 'PUT', body: JSON.stringify({ status: 'accepted' }) }); alert('Offer accepted'); modal.classList.remove('active'); modal.innerHTML = ''; fetchAndRenderTrades(); };
-									rejectBtn.onclick = async () => { await apiRequest('/api/offers/' + o.id, { method: 'PUT', body: JSON.stringify({ status: 'rejected' }) }); alert('Offer rejected'); fetchAndRenderTrades(); };
-									row.appendChild(acceptBtn); row.appendChild(rejectBtn); list.appendChild(row);
-								}); // end offers forEach
+							try {
+								const del = document.createElement('button'); del.className = 'btn btn-danger'; del.textContent = 'Remove'; del.style.marginTop = '8px';
+								del.onclick = async () => { await apiRequest('/api/trades/' + trade.id, { method: 'DELETE' }); fetchAndRenderTrades(); };
+								const viewOffers = document.createElement('button'); viewOffers.className = 'btn btn-secondary'; viewOffers.textContent = 'View Offers'; viewOffers.style.marginLeft = '8px';
+								viewOffers.onclick = async () => {
+									// fetch offers for this trade and show in modal with accept/reject buttons
+									const { res, body } = await apiRequest('/api/trades/' + trade.id + '/offers', { method: 'GET' });
+									const modal = document.getElementById('creatureModal'); if (!modal) return alert('Modal container missing');
+									if (!res.ok) return alert('Failed to load offers');
+									// smaller modal and softer close button
+									modal.classList.add('active'); modal.setAttribute('aria-hidden','false');
+									modal.innerHTML = `<div class="modal-content" style="max-width:680px;margin:20px auto;"><div class="modal-header"><h3>Offers for ${trade.creature.name || trade.creature.species}</h3><button id="closeOffersModal" class="close-btn soft">Close</button></div><div class="modal-body" id="offersList"></div></div>`;
+									document.getElementById('closeOffersModal').addEventListener('click', () => { modal.classList.remove('active'); modal.innerHTML = ''; modal.setAttribute('aria-hidden','true'); });
+									const list = document.getElementById('offersList'); list.innerHTML = '';
+									(body || []).forEach(o => {
+										const row = document.createElement('div'); row.style.borderTop = '1px solid rgba(255,255,255,0.03)'; row.style.padding = '8px 0';
+										// show from nickname when available
+										const fromLabel = o.from_nickname ? `${o.from_nickname} (id:${o.from_user_id})` : `User ${o.from_user_id}`;
+										let offeredPreview = '';
+										try {
+											if (o.offered_creature_data && Object.keys(o.offered_creature_data).length) {
+												const oc = o.offered_creature_data;
+												offeredPreview = `<div style=\"margin-top:6px;padding:8px;border:1px solid rgba(255,255,255,0.03);border-radius:6px;background:rgba(255,255,255,0.01);\"><div><strong>${oc.name||oc.species||'Creature'}</strong> • ${oc.species||''}</div><div style=\"color:#94a3b8;margin-top:6px;\">${(oc.baseStats? Object.keys(oc.baseStats).slice(0,3).map(k=>`${k}:${oc.baseStats[k]||0}`).join(' • '):'')}</div></div>`;
+											}
+										} catch (e) { offeredPreview = ''; }
+										row.innerHTML = `<div><strong>From:</strong> ${fromLabel} • <strong>Price:</strong> ${o.offered_price || 'N/A'}</div><div style=\"color:#cbd5e1;\">${o.message || ''}</div>${offeredPreview}`;
+										const acceptBtn = document.createElement('button'); acceptBtn.className = 'btn btn-primary'; acceptBtn.textContent = 'Accept'; acceptBtn.style.marginRight = '8px';
+										const rejectBtn = document.createElement('button'); rejectBtn.className = 'btn btn-secondary'; rejectBtn.textContent = 'Reject';
+										acceptBtn.onclick = async () => { await apiRequest('/api/offers/' + o.id, { method: 'PUT', body: JSON.stringify({ status: 'accepted' }) }); alert('Offer accepted'); modal.classList.remove('active'); modal.innerHTML = ''; fetchAndRenderTrades(); };
+										rejectBtn.onclick = async () => { await apiRequest('/api/offers/' + o.id, { method: 'PUT', body: JSON.stringify({ status: 'rejected' }) }); alert('Offer rejected'); fetchAndRenderTrades(); };
+										row.appendChild(acceptBtn); row.appendChild(rejectBtn); list.appendChild(row);
+									}); // end offers forEach
+								};
+								item.querySelector('.species-card-body')?.appendChild(del);
+								item.querySelector('.species-card-body')?.appendChild(viewOffers);
 							} catch (err) {
 								console.warn('open trade failed', err);
 							}
-							item.querySelector('.species-card-body')?.appendChild(del);
-							item.querySelector('.species-card-body')?.appendChild(viewOffers);
 						} else {
 							const offerBtn = document.createElement('button');
 							offerBtn.className = 'btn btn-primary';
@@ -1345,7 +1347,7 @@ function loadTradingPage() {
 								const modal = document.getElementById('creatureModal');
 								if (!modal) return alert('Modal missing');
 								// simplified modal: remove price field (not needed), narrower, softer close label
-								modal.innerHTML = `<div class="modal-content" style="max-width:640px;margin:20px auto;"><div class="modal-header"><h3>Make Offer</h3><button id="closeMakeOffer" class="close-btn soft">Close</button></div><div class="modal-body"><div class="form-group"><label class="form-label">Offered Creature (optional)</label><select id="offerCreatureSelect" class="form-control">${(window.appState.creatures||[]).map(c=>`<option value=\"${c.id}\">${c.name} (${c.species})</option>`).join('')}</select></div><div class="form-group"><label class="form-label">Message</label><input id="offerMessageInput" class="form-control" type="text"></div></div><div class="modal-footer"><button class="btn btn-primary" id="sendOfferBtn">Send Offer</button></div></div>`;
+								modal.innerHTML = `<div class=\"modal-content\" style=\"max-width:640px;margin:20px auto;\"><div class=\"modal-header\"><h3>Make Offer</h3><button id=\"closeMakeOffer\" class=\"close-btn soft\">Close</button></div><div class=\"modal-body\"><div class=\"form-group\"><label class=\"form-label\">Offered Creature (optional)</label><select id=\"offerCreatureSelect\" class=\"form-control\">${(window.appState.creatures||[]).map(c=>`<option value=\"${c.id}\">${c.name} (${c.species})</option>`).join('')}</select></div><div class=\"form-group\"><label class=\"form-label\">Message</label><input id=\"offerMessageInput\" class=\"form-control\" type=\"text\"></div></div><div class=\"modal-footer\"><button class=\"btn btn-primary\" id=\"sendOfferBtn\">Send Offer</button></div></div>`;
 								modal.classList.add('active');
 								modal.setAttribute('aria-hidden','false');
 								document.getElementById('closeMakeOffer').addEventListener('click', ()=>{
@@ -1929,6 +1931,8 @@ function openBossModal(bossId) {
 
 // --- Friends Page ---
 async function loadFriendsPage() {
+	console.log('loadFriendsPage called');
+window.loadFriendsPage = loadFriendsPage;
 // Tribe Manager: show friends and allow assigning to tribe
 async function renderTribeFriendsList() {
 	const tribeDiv = document.getElementById('tribeFriendsList');

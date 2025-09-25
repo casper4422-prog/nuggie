@@ -215,6 +215,19 @@ db.serialize(() => {
     FOREIGN KEY(user_id) REFERENCES users(id)
   )`);
 
+  // Friends system table
+  db.run(`CREATE TABLE IF NOT EXISTS friends (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    friend_user_id INTEGER NOT NULL,
+    status TEXT DEFAULT 'pending', -- pending, accepted, blocked
+    created_at TEXT DEFAULT (datetime('now')),
+    updated_at TEXT DEFAULT (datetime('now')),
+    FOREIGN KEY(user_id) REFERENCES users(id),
+    FOREIGN KEY(friend_user_id) REFERENCES users(id),
+    UNIQUE(user_id, friend_user_id)
+  )`);
+
   // Ensure nickname column exists for older databases (safe check)
   db.all("PRAGMA table_info(users)", (err, cols) => {
     if (err || !Array.isArray(cols)) return;
@@ -561,17 +574,6 @@ app.get('/api/offers', authenticateToken, (req, res) => {
   });
 });
 
-// User search (by email or nickname) - used by tribe admins to find users to add
-app.get('/api/users/search', authenticateToken, (req, res) => {
-  const q = (req.query.q || '').trim();
-  if (!q) return res.json([]);
-  const like = `%${q}%`;
-  db.all('SELECT id, email, nickname FROM users WHERE email LIKE ? COLLATE NOCASE OR nickname LIKE ? COLLATE NOCASE LIMIT 50', [like, like], (err, rows) => {
-    if (err) return res.status(500).json({ error: 'User search failed' });
-    res.json(rows || []);
-  });
-});
-
 // --- Profile endpoints ---
 // Get user profile with extended information
 app.get('/api/profile', authenticateToken, (req, res) => {
@@ -595,17 +597,27 @@ app.get('/api/profile', authenticateToken, (req, res) => {
       db.get('SELECT COUNT(*) as creature_count FROM creature_cards WHERE user_id = ?', [userId], (creatureErr, creatureCount) => {
         if (creatureErr) console.warn('Failed to fetch creature count:', creatureErr);
         
-        res.json({
-          id: user.id,
-          email: user.email,
-          nickname: user.nickname,
-          discord_name: user.discord_name,
-          tribe: tribeInfo ? {
-            name: tribeInfo.tribe_name,
-            role: tribeInfo.tribe_role,
-            id: tribeInfo.tribe_id
-          } : null,
-          creature_count: creatureCount ? creatureCount.creature_count : 0
+        // Get friend count
+        db.get(`
+          SELECT COUNT(*) as friend_count 
+          FROM friends 
+          WHERE (user_id = ? OR friend_user_id = ?) AND status = 'accepted'
+        `, [userId, userId], (friendErr, friendCount) => {
+          if (friendErr) console.warn('Failed to fetch friend count:', friendErr);
+          
+          res.json({
+            id: user.id,
+            email: user.email,
+            nickname: user.nickname,
+            discord_name: user.discord_name,
+            tribe: tribeInfo ? {
+              name: tribeInfo.tribe_name,
+              role: tribeInfo.tribe_role,
+              id: tribeInfo.tribe_id
+            } : null,
+            creature_count: creatureCount ? creatureCount.creature_count : 0,
+            friend_count: friendCount ? friendCount.friend_count : 0
+          });
         });
       });
     });
@@ -661,6 +673,153 @@ app.get('/api/profile/creatures', authenticateToken, (req, res) => {
     });
     
     res.json(parsed);
+  });
+});
+
+// --- Friends System API Endpoints ---
+
+// Send friend request
+app.post('/api/friends/request', authenticateToken, (req, res) => {
+  const userId = req.user.userId;
+  const { friend_user_id } = req.body;
+  
+  if (!friend_user_id || friend_user_id == userId) {
+    return res.status(400).json({ error: 'Invalid friend user ID' });
+  }
+
+  // Check if friendship already exists
+  db.get(`
+    SELECT * FROM friends 
+    WHERE (user_id = ? AND friend_user_id = ?) 
+       OR (user_id = ? AND friend_user_id = ?)
+  `, [userId, friend_user_id, friend_user_id, userId], (err, existing) => {
+    if (err) return res.status(500).json({ error: 'Database error' });
+    if (existing) return res.status(400).json({ error: 'Friend relationship already exists' });
+
+    // Create friend request
+    db.run(`
+      INSERT INTO friends (user_id, friend_user_id, status) 
+      VALUES (?, ?, 'pending')
+    `, [userId, friend_user_id], function(err) {
+      if (err) return res.status(500).json({ error: 'Failed to send friend request' });
+      res.json({ success: true, id: this.lastID });
+    });
+  });
+});
+
+// Get friends list
+app.get('/api/friends', authenticateToken, (req, res) => {
+  const userId = req.user.userId;
+  const status = req.query.status || 'accepted'; // accepted, pending, all
+
+  let statusCondition = '';
+  if (status === 'pending') {
+    statusCondition = `AND f.status = 'pending' AND f.friend_user_id = ${userId}`;
+  } else if (status === 'accepted') {
+    statusCondition = `AND f.status = 'accepted'`;
+  }
+
+  db.all(`
+    SELECT 
+      f.id,
+      f.status,
+      f.created_at,
+      u.id as friend_id,
+      u.email as friend_email,
+      u.nickname as friend_nickname,
+      u.discord_name as friend_discord_name
+    FROM friends f
+    JOIN users u ON (
+      CASE 
+        WHEN f.user_id = ? THEN u.id = f.friend_user_id
+        ELSE u.id = f.user_id
+      END
+    )
+    WHERE (f.user_id = ? OR f.friend_user_id = ?) ${statusCondition}
+    ORDER BY f.updated_at DESC
+  `, [userId, userId, userId], (err, friends) => {
+    if (err) return res.status(500).json({ error: 'Failed to fetch friends' });
+    res.json(friends || []);
+  });
+});
+
+// Accept/reject friend request
+app.put('/api/friends/:id', authenticateToken, (req, res) => {
+  const userId = req.user.userId;
+  const friendshipId = req.params.id;
+  const { action } = req.body; // 'accept' or 'reject'
+
+  if (!['accept', 'reject'].includes(action)) {
+    return res.status(400).json({ error: 'Invalid action' });
+  }
+
+  // Verify this is a pending request to the current user
+  db.get(`
+    SELECT * FROM friends 
+    WHERE id = ? AND friend_user_id = ? AND status = 'pending'
+  `, [friendshipId, userId], (err, friendship) => {
+    if (err) return res.status(500).json({ error: 'Database error' });
+    if (!friendship) return res.status(404).json({ error: 'Friend request not found' });
+
+    if (action === 'accept') {
+      db.run(`
+        UPDATE friends 
+        SET status = 'accepted', updated_at = datetime('now') 
+        WHERE id = ?
+      `, [friendshipId], (err) => {
+        if (err) return res.status(500).json({ error: 'Failed to accept friend request' });
+        res.json({ success: true });
+      });
+    } else {
+      db.run('DELETE FROM friends WHERE id = ?', [friendshipId], (err) => {
+        if (err) return res.status(500).json({ error: 'Failed to reject friend request' });
+        res.json({ success: true });
+      });
+    }
+  });
+});
+
+// Remove friend
+app.delete('/api/friends/:id', authenticateToken, (req, res) => {
+  const userId = req.user.userId;
+  const friendshipId = req.params.id;
+
+  db.run(`
+    DELETE FROM friends 
+    WHERE id = ? AND (user_id = ? OR friend_user_id = ?)
+  `, [friendshipId, userId, userId], function(err) {
+    if (err) return res.status(500).json({ error: 'Failed to remove friend' });
+    if (this.changes === 0) return res.status(404).json({ error: 'Friendship not found' });
+    res.json({ success: true });
+  });
+});
+
+// Enhanced user search with friend status
+app.get('/api/users/search', authenticateToken, (req, res) => {
+  const userId = req.user.userId;
+  const q = (req.query.q || '').trim();
+  if (!q) return res.json([]);
+  
+  const like = `%${q}%`;
+  db.all(`
+    SELECT 
+      u.id, 
+      u.email, 
+      u.nickname, 
+      u.discord_name,
+      f.status as friend_status
+    FROM users u
+    LEFT JOIN friends f ON (
+      (f.user_id = ? AND f.friend_user_id = u.id) OR 
+      (f.friend_user_id = ? AND f.user_id = u.id)
+    )
+    WHERE (u.email LIKE ? COLLATE NOCASE OR u.nickname LIKE ? COLLATE NOCASE)
+    AND u.id != ?
+    ORDER BY u.nickname ASC, u.email ASC
+    LIMIT 50
+  `, [userId, userId, like, like, userId], (err, rows) => {
+    if (err) return res.status(500).json({ error: 'User search failed' });
+    res.json(rows || []);
   });
 });
 

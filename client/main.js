@@ -1,3 +1,43 @@
+// Tribe assignment actions
+window.addToTribe = async function(friendUserId) {
+	try {
+		const res = await fetch('/api/tribe/add', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				'Authorization': `Bearer ${localStorage.getItem('token')}`
+			},
+			body: JSON.stringify({ user_id: friendUserId })
+		});
+		if (res.ok) {
+			await renderTribeFriendsList();
+		} else {
+			alert('Failed to add friend to tribe');
+		}
+	} catch (e) {
+		alert('Failed to add friend to tribe');
+	}
+};
+
+window.removeFromTribe = async function(friendUserId) {
+	try {
+		const res = await fetch('/api/tribe/remove', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				'Authorization': `Bearer ${localStorage.getItem('token')}`
+			},
+			body: JSON.stringify({ user_id: friendUserId })
+		});
+		if (res.ok) {
+			await renderTribeFriendsList();
+		} else {
+			alert('Failed to remove friend from tribe');
+		}
+	} catch (e) {
+		alert('Failed to remove friend from tribe');
+	}
+};
 // We'll set the readiness marker only after our exact theme CSS is loaded
 // to avoid the original UI flashing and then being overlapped by the injected UI.
 
@@ -168,6 +208,8 @@ document.addEventListener('DOMContentLoaded', () => {
 			if (goToBossPlannerBtn) goToBossPlannerBtn.addEventListener('click', (e) => { e.preventDefault(); if (typeof goToBossPlanner === 'function') goToBossPlanner(); });
 			const goToMyProfileBtn = document.getElementById('goToMyProfileBtn');
 			if (goToMyProfileBtn) goToMyProfileBtn.addEventListener('click', (e) => { e.preventDefault(); if (typeof goToMyProfile === 'function') goToMyProfile(); });
+			const goToFriendsBtn = document.getElementById('goToFriendsBtn');
+			if (goToFriendsBtn) goToFriendsBtn.addEventListener('click', (e) => { e.preventDefault(); if (typeof loadFriendsPage === 'function') loadFriendsPage(); });
 			const goToCreaturesBtn = document.getElementById('goToCreaturesBtn');
 			if (goToCreaturesBtn) goToCreaturesBtn.addEventListener('click', goToCreatures);
 			const goToMyNuggiesBtn = document.getElementById('goToMyNuggiesBtn');
@@ -243,6 +285,7 @@ function loadTribeManagerPage() {
 
 	// Reuse existing fetchAndRenderTribes from earlier code (should be present in file)
 }
+// End of fetchAndRenderTrades or trading section
 
 window.loadTribeManagerPage = loadTribeManagerPage;
 
@@ -773,7 +816,7 @@ window.deleteCreatureOnServer = deleteCreatureOnServer;
 window.saveData = function() {
 		try { localStorage.setItem(getCreatureStorageKey(), JSON.stringify(window.appState && window.appState.creatures || [])); } catch (e) {}
 	try { if (typeof window.saveDataToServer === 'function' && localStorage.getItem('token')) window.saveDataToServer(); } catch (e) {}
-};
+}
 
 // --- Navigation/Page Loading ---
 function isValidImageUrl(url) {
@@ -984,7 +1027,7 @@ function filterSpecies() {
 	});
 
 	if (filteredCount === 0) {
-		grid.innerHTML = '<div class="no-species-found">No species found.</div>';
+		grid.innerHTML = '<div class="no-species-found">No species found</div>';
 	}
 }
 
@@ -1207,7 +1250,8 @@ function loadTradingPage() {
 		if (statMax) q.statMax = statMax;
 		if (statusFilter?.value) q.status = statusFilter.value;
 		const qs = new URLSearchParams(q).toString();
-			apiRequest('/api/trades' + (qs ? ('?' + qs) : ''), { method: 'GET' }).then(({ res, body }) => {
+		apiRequest('/api/trades' + (qs ? ('?' + qs) : ''), { method: 'GET' })
+		.then(({ res, body }) => {
 			const grid = document.getElementById('tradesGrid');
 			if (!res.ok) { grid.innerHTML = '<div class="no-species-found">Failed to load trades</div>'; return; }
 			if (!Array.isArray(body) || body.length === 0) { grid.innerHTML = '<div class="no-species-found">No trades found</div>'; return; }
@@ -1241,7 +1285,6 @@ function loadTradingPage() {
 					});
 					filteredBody.forEach(trade => {
 				const item = document.createElement('div');
-				item.className = 'species-card';
 						const owner = isLoggedIn() && localUserId && Number(trade.user_id) === Number(localUserId);
 								// Render creature summary with full base stats (matching My Nuggies style)
 								const statsHtml = (() => {
@@ -1287,34 +1330,49 @@ function loadTradingPage() {
 									acceptBtn.onclick = async () => { await apiRequest('/api/offers/' + o.id, { method: 'PUT', body: JSON.stringify({ status: 'accepted' }) }); alert('Offer accepted'); modal.classList.remove('active'); modal.innerHTML = ''; fetchAndRenderTrades(); };
 									rejectBtn.onclick = async () => { await apiRequest('/api/offers/' + o.id, { method: 'PUT', body: JSON.stringify({ status: 'rejected' }) }); alert('Offer rejected'); fetchAndRenderTrades(); };
 									row.appendChild(acceptBtn); row.appendChild(rejectBtn); list.appendChild(row);
-								});
-							};
+								}); // end offers forEach
+							} catch (err) {
+								console.warn('open trade failed', err);
+							}
 							item.querySelector('.species-card-body')?.appendChild(del);
 							item.querySelector('.species-card-body')?.appendChild(viewOffers);
 						} else {
-							const offerBtn = document.createElement('button'); offerBtn.className = 'btn btn-primary'; offerBtn.textContent = 'Make Offer'; offerBtn.style.marginTop = '8px';
-										offerBtn.onclick = () => {
-								const modal = document.getElementById('creatureModal'); if (!modal) return alert('Modal missing');
-											// simplified modal: remove price field (not needed), narrower, softer close label
-											modal.innerHTML = `<div class="modal-content" style="max-width:640px;margin:20px auto;"><div class="modal-header"><h3>Make Offer</h3><button id="closeMakeOffer" class="close-btn soft">Close</button></div><div class="modal-body"><div class="form-group"><label class="form-label">Offered Creature (optional)</label><select id="offerCreatureSelect" class="form-control">${(window.appState.creatures||[]).map(c=>`<option value="${c.id}">${c.name} (${c.species})</option>`).join('')}</select></div><div class="form-group"><label class="form-label">Message</label><input id="offerMessageInput" class="form-control" type="text"></div></div><div class="modal-footer"><button class="btn btn-primary" id="sendOfferBtn">Send Offer</button></div></div>`;
-								modal.classList.add('active'); modal.setAttribute('aria-hidden','false');
-											document.getElementById('closeMakeOffer').addEventListener('click', ()=>{ modal.classList.remove('active'); modal.innerHTML=''; modal.setAttribute('aria-hidden','true'); });
+							const offerBtn = document.createElement('button');
+							offerBtn.className = 'btn btn-primary';
+							offerBtn.textContent = 'Make Offer';
+							offerBtn.style.marginTop = '8px';
+							offerBtn.onclick = () => {
+								const modal = document.getElementById('creatureModal');
+								if (!modal) return alert('Modal missing');
+								// simplified modal: remove price field (not needed), narrower, softer close label
+								modal.innerHTML = `<div class="modal-content" style="max-width:640px;margin:20px auto;"><div class="modal-header"><h3>Make Offer</h3><button id="closeMakeOffer" class="close-btn soft">Close</button></div><div class="modal-body"><div class="form-group"><label class="form-label">Offered Creature (optional)</label><select id="offerCreatureSelect" class="form-control">${(window.appState.creatures||[]).map(c=>`<option value=\"${c.id}\">${c.name} (${c.species})</option>`).join('')}</select></div><div class="form-group"><label class="form-label">Message</label><input id="offerMessageInput" class="form-control" type="text"></div></div><div class="modal-footer"><button class="btn btn-primary" id="sendOfferBtn">Send Offer</button></div></div>`;
+								modal.classList.add('active');
+								modal.setAttribute('aria-hidden','false');
+								document.getElementById('closeMakeOffer').addEventListener('click', ()=>{
+									modal.classList.remove('active');
+									modal.innerHTML='';
+									modal.setAttribute('aria-hidden','true');
+								});
 								document.getElementById('sendOfferBtn').addEventListener('click', async ()=>{
 									const offeredCreatureId = document.getElementById('offerCreatureSelect')?.value || null;
-									const offeredPrice = parseFloat(document.getElementById('offerPriceInput')?.value) || null;
 									const message = document.getElementById('offerMessageInput')?.value || null;
 									const creatureData = (window.appState.creatures||[]).find(c=>String(c.id)===String(offeredCreatureId)) || null;
-									await apiRequest('/api/trades/' + trade.id + '/offers', { method: 'POST', body: JSON.stringify({ offered_creature_id: (!String(offeredCreatureId).startsWith('creature_') ? Number(offeredCreatureId) : null), offered_creature_data: creatureData, offered_price: offeredPrice, message }) });
-									modal.classList.remove('active'); modal.innerHTML=''; modal.setAttribute('aria-hidden','true');
+									await apiRequest('/api/trades/' + trade.id + '/offers', { method: 'POST', body: JSON.stringify({ offered_creature_id: (!String(offeredCreatureId).startsWith('creature_') ? Number(offeredCreatureId) : null), offered_creature_data: creatureData, message }) });
+									modal.classList.remove('active');
+									modal.innerHTML='';
+									modal.setAttribute('aria-hidden','true');
 									alert('Offer sent');
 								});
 							};
 							item.querySelector('.species-card-body')?.appendChild(offerBtn);
 						}
-				grid.appendChild(item);
-			});
-		}).catch(err => { const grid = document.getElementById('tradesGrid'); if (grid) grid.innerHTML = '<div class="no-species-found">Failed to load trades</div>'; });
-	}
+						grid.appendChild(item);
+					}); // end forEach
+				})
+				.catch(err => {
+					const grid = document.getElementById('tradesGrid');
+					if (grid) grid.innerHTML = '<div class="no-species-found">Failed to load trades</div>';
+				});
 
 	refreshBtn?.addEventListener('click', fetchAndRenderTrades);
 	tradeSearch?.addEventListener('input', debounce(fetchAndRenderTrades, 180));
@@ -1328,8 +1386,8 @@ function loadTradingPage() {
 			const myCreatures = (window.appState.creatures || []).slice();
 			modal.innerHTML = `<div class="modal-content" style="max-width:680px;margin:20px auto;"><div class="modal-header"><h3>Create Trade</h3><button id="closeTradeModal" class="close-btn soft">Close</button></div><div class="modal-body"><div><label class="form-label">Select Creature</label><select id="tradeCreatureSelect" class="form-control">${myCreatures.map(c => `<option value="${c.id}">${c.name} (${c.species})</option>`).join('')}</select></div><div class="form-group"><label class="form-label">Wanted (optional)</label><input id="tradeWantedInput" class="form-control" type="text"></div></div><div class="modal-footer"><button class="btn btn-primary" id="postTradeBtn">Post</button></div></div>`;
 			modal.classList.add('active'); modal.setAttribute('aria-hidden','false');
-			document.getElementById('closeTradeModal').addEventListener('click', () => { modal.classList.remove('active'); modal.innerHTML = ''; modal.setAttribute('aria-hidden','true'); });
-			document.getElementById('postTradeBtn').addEventListener('click', async () => {
+			document.getElementById('closeTradeModal')?.addEventListener('click', () => { modal.classList.remove('active'); modal.innerHTML = ''; modal.setAttribute('aria-hidden','true'); });
+			document.getElementById('postTradeBtn')?.addEventListener('click', async () => {
 				const selectedId = document.getElementById('tradeCreatureSelect')?.value;
 				const wanted = document.getElementById('tradeWantedInput')?.value || null;
 				const creature = myCreatures.find(c => String(c.id) === String(selectedId));
@@ -1668,7 +1726,7 @@ function openArenaPage(arenaId) {
 	}
 	(arena.bosses||[]).forEach(b => {
 		const card = document.createElement('div'); card.className='boss-card'; card.style='background:#fff;border:1px solid #eee;padding:10px;border-radius:8px;display:flex;flex-direction:column;gap:8px;cursor:pointer';
-		const h = document.createElement('div'); h.style='display:flex;align-items:center;justify-content:space-between'; h.innerHTML = `<div><strong>${escapeHtml(b.name||'Untitled')}</strong><div style="font-size:12px;color:#666">${escapeHtml(b.notes||'')}</div></div>`;
+		const h = document.createElement('div'); h.style='display:flex;align-items:center;justify-content:space-between'; h.innerHTML = `<div><strong>${escapeHtml(b.name||'Untitled')}</strong><div style="font-size:12px;color:#666">Level: ${escapeHtml(String(b.level||''))} • Party: ${escapeHtml(String(b.partySize||''))}</div></div><div><button class="btn btn-small edit-btn">Edit</button> <button class="btn btn-small danger delete-btn">Delete</button></div></div>`;
 		card.appendChild(h);
 		card.addEventListener('click', () => {
 			// open assignment panel in right column
@@ -1684,7 +1742,7 @@ function renderArenaBosses(arena) {
 	const assignments = getAssignments();
 	(arena.bosses||[]).forEach(b => {
 		const card = document.createElement('div'); card.className='boss-card'; card.style='background:#fff;border:1px solid #eee;padding:10px;border-radius:8px;display:flex;flex-direction:column;gap:8px;';
-		const h = document.createElement('div'); h.style='display:flex;align-items:center;justify-content:space-between'; h.innerHTML = `<div><strong>${escapeHtml(b.name||'Untitled')}</strong><div style="font-size:12px;color:#666">${escapeHtml(b.notes||'')}</div></div>`;
+		const h = document.createElement('div'); h.style='display:flex;align-items:center;justify-content:space-between'; h.innerHTML = `<div><strong>${escapeHtml(b.name||'Untitled')}</strong><div style="font-size:12px;color:#666">Level: ${escapeHtml(String(b.level||''))} • Party: ${escapeHtml(String(b.partySize||''))}</div></div>`;
 		const assignCount = (assignments[b.id] || []).length;
 		const actions = document.createElement('div'); actions.style='display:flex;gap:6px;align-items:center';
 		const assignBtn = document.createElement('button'); assignBtn.className='btn btn-primary'; assignBtn.textContent = 'Assign Creatures';
@@ -1700,7 +1758,7 @@ function renderArenaBosses(arena) {
 function openBossAssignment(boss) {
 	const detail = document.getElementById('arenaBossDetail'); if (!detail) return;
 	const assignments = getAssignments();
-	const assigned = new Set(assignments[boss.id] || []);
+	const assigned = new Set((assignments[boss.id] || []).slice());
 	const creatures = getUserCreatures();
 	// Build the planning page: left = assign creatures, right = invites + timer
 	detail.innerHTML = `<div style="display:flex;gap:12px;align-items:flex-start"><div style="flex:1"><div style="display:flex;align-items:center;justify-content:space-between"><div><h3 style="margin:0">${escapeHtml(boss.name||'Untitled')}</h3><div style="color:#666">${escapeHtml(boss.notes||'')}</div></div><div><button id="backToArenaBtn" class="btn btn-secondary">← Back</button></div></div><div style="margin-top:10px"><strong>Assign your saved creature cards to this boss</strong></div><div id="assignGrid" style="margin-top:10px;display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;max-height:56vh;overflow:auto;padding-right:6px"></div><div style="margin-top:8px"><button id="saveAssignBtn" class="btn btn-primary">Save Assignments</button> <button id="clearAssignBtn" class="btn btn-secondary">Clear</button></div></div><div style="width:360px;flex:0 0 360px;background:#fff;border:1px solid #eee;border-radius:8px;padding:12px;"><h4 style="margin-top:0">Invites</h4><div style="font-size:13px;color:#666;margin-bottom:8px">Invite tribemates or other users to join this fight (local invites until server-side invites are available)</div><div style="display:flex;gap:8px;margin-bottom:8px"><input id="userSearchInput" class="form-control" placeholder="Search users by email or nickname"> <button id="userSearchBtn" class="btn btn-secondary">Search</button></div><div id="userSearchResults" style="max-height:160px;overflow:auto;margin-bottom:8px"></div><div><strong>Invited</strong><div id="invitedList" style="margin-top:8px;max-height:120px;overflow:auto"></div></div><hr><h4>Timer</h4><div style="font-size:13px;color:#666;margin-bottom:6px">Set a countdown to alert invited users locally when the fight is about to begin.</div><div style="display:flex;gap:8px;align-items:center;margin-bottom:8px"><input id="timerMinutes" class="form-control" type="number" min="0" placeholder="Minutes"> <button id="startTimerBtn" class="btn btn-primary">Start</button> <button id="stopTimerBtn" class="btn btn-secondary">Stop</button></div><div id="timerDisplay" style="font-weight:700;color:#d946ef"></div></div></div>`;
@@ -1745,7 +1803,7 @@ function openBossAssignment(boss) {
 	renderInvited();
 
 	async function doUserSearch(q) {
-		resultsEl.innerHTML = '<div style="color:#666">Searching...</div>';
+		resultsEl.innerHTML = '<div class="loading">Searching...</div>';
 		if (!q) { resultsEl.innerHTML = ''; return; }
 		if (!isLoggedIn()) { resultsEl.innerHTML = '<div style="color:#cbd5e1">Sign in to search users</div>'; return; }
 		try {
@@ -1756,7 +1814,7 @@ function openBossAssignment(boss) {
 			arr.forEach(u => {
 				const r = document.createElement('div'); r.style='padding:6px;border-bottom:1px solid #f4f4f4;display:flex;justify-content:space-between;align-items:center';
 				r.innerHTML = `<div><strong>${escapeHtml(u.nickname||u.email||('User '+u.id))}</strong><div style="font-size:12px;color:#666">${escapeHtml(u.email||'')}</div></div>`;
-				const inv = document.createElement('button'); inv.className='btn btn-secondary'; inv.textContent = 'Invite'; inv.addEventListener('click', async ()=>{ 
+				const inv = document.createElement('button'); inv.className='btn btn-secondary'; inv.textContent = 'Invite'; inv.addEventListener('click', async () => { 
 					// call server to create invite and rely on notifications
 					try {
 						const payload = { bossId: boss.id, invitedUserId: u.id, message: 'Join boss fight: ' + (boss.name||'Boss') };
@@ -1869,564 +1927,244 @@ function openBossModal(bossId) {
 	});
 }
 
-// small helper to escape HTML in strings
-function escapeHtml(s) { if (s === undefined || s === null) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-
-async function loadMyProfile() {
+// --- Friends Page ---
+async function loadFriendsPage() {
+// Tribe Manager: show friends and allow assigning to tribe
+async function renderTribeFriendsList() {
+	const tribeDiv = document.getElementById('tribeFriendsList');
+	if (!tribeDiv) return;
+	tribeDiv.innerHTML = '<div class="loading">Loading friends...</div>';
+	try {
+		const res = await fetch('/api/friends', {
+			headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+		});
+		const friends = await res.json();
+		if (!Array.isArray(friends) || friends.length === 0) {
+			tribeDiv.innerHTML = '<div class="error-message">No friends to assign to your tribe.</div>';
+			return;
+		}
+		// Fetch tribe assignments (assume /api/tribe/members returns user IDs)
+		const tribeRes = await fetch('/api/tribe/members', {
+			headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+		});
+		const tribeMembers = await tribeRes.json();
+		tribeDiv.innerHTML = friends.map(f => {
+			const isInTribe = Array.isArray(tribeMembers) && tribeMembers.includes(f.friend_user_id);
+			return `<div class="tribe-friend-item">
+				<span><strong>${f.friend_nickname || f.friend_email}</strong> ${f.friend_discord_name ? `<span class='friend-meta'>Discord: ${f.friend_discord_name}</span>` : ''}</span>
+				<button class="btn btn-sm ${isInTribe ? 'btn-danger' : 'btn-primary'}" onclick="${isInTribe ? `removeFromTribe(${f.friend_user_id})` : `addToTribe(${f.friend_user_id})`}">${isInTribe ? 'Remove from Tribe' : 'Add to Tribe'}</button>
+			</div>`;
+		}).join('');
+	} catch (e) {
+		tribeDiv.innerHTML = '<div class="error-message">Failed to load tribe friends.</div>';
+	}
+}
 	const main = document.getElementById('appMainContent');
 	if (!main) return;
-	
 	main.innerHTML = `
-		<section class="profile-page">
-			<div class="loading">Loading profile...</div>
+		<section class="friends-page">
+			<h1>👥 Friends</h1>
+			<div class="friends-tabs">
+				<button class="btn btn-tab" id="tabFriendsList">Friends List</button>
+				<button class="btn btn-tab" id="tabTribeManager">Tribe Manager</button>
+			</div>
+			<div id="friendsTabContent"></div>
 		</section>
 	`;
+	// Default to Friends List tab
+	renderFriendsTab('list');
+	document.getElementById('tabFriendsList').addEventListener('click', () => renderFriendsTab('list'));
+	document.getElementById('tabTribeManager').addEventListener('click', () => renderFriendsTab('tribe'));
 
-	try {
-		// Fetch comprehensive profile data
-		const [profileRes, creaturesRes] = await Promise.all([
-			fetch('/api/profile', {
-				headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
-			}),
-			fetch('/api/profile/creatures?limit=5', {
-				headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
-			})
-		]);
-
-		if (!profileRes.ok) throw new Error('Failed to load profile');
-		
-		const profile = await profileRes.json();
-		const creatures = creaturesRes.ok ? await creaturesRes.json() : [];
-
-		// Render enhanced profile page
-		main.innerHTML = `
-			<section class="profile-page">
-				<div class="profile-header">
-					<h1>🦕 My Profile</h1>
-					<div class="profile-stats">
-						<span class="stat-item">📦 ${profile.creature_count} Creatures</span>
-						${profile.tribe ? `<span class="stat-item">🏛️ ${profile.tribe.name} (${profile.tribe.role})</span>` : '<span class="stat-item">🏛️ No Tribe</span>'}
-					</div>
+	// Tab content rendering
+	async function renderFriendsTab(tab) {
+		const tabContent = document.getElementById('friendsTabContent');
+		if (!tabContent) return;
+		if (tab === 'list') {
+			tabContent.innerHTML = `
+				<div class="friends-actions">
+					<input type="text" id="friendSearchInput" class="form-control" placeholder="Search users by email, nickname, or Discord...">
+					<button class="btn btn-primary" id="friendSearchBtn">Search</button>
 				</div>
-				
-				<div class="profile-content">
-					<div class="profile-section">
-						<h2>👤 Account Information</h2>
-						<div class="profile-grid">
-							<div class="profile-item">
-								<label class="form-label">Email</label>
-								<div class="profile-value">${profile.email}</div>
-							</div>
-							<div class="profile-item">
-								<label class="form-label">Nickname</label>
-								<div class="profile-value">${profile.nickname || 'Not set'}</div>
-							</div>
-							<div class="profile-item">
-								<label class="form-label">Discord Name</label>
-								<div class="profile-value editable-field" data-field="discord_name">
-									<span class="display-value">${profile.discord_name || 'Not set'}</span>
-									<button class="btn-small edit-btn" onclick="editField('discord_name')">✏️</button>
-								</div>
-							</div>
-						</div>
-					</div>
-
-					${profile.tribe ? `
-						<div class="profile-section">
-							<h2>🏛️ Tribe Information</h2>
-							<div class="tribe-info">
-								<div class="tribe-details">
-									<strong>${profile.tribe.name}</strong>
-									<span class="tribe-role badge-${profile.tribe.role}">${profile.tribe.role.toUpperCase()}</span>
-								</div>
-								<button class="btn btn-secondary" onclick="goToTribe(${profile.tribe.id})">View Tribe</button>
-							</div>
-						</div>
-					` : ''}
-
-					${creatures.length > 0 ? `
-						<div class="profile-section">
-							<h2>🦖 Recent Creatures</h2>
-							<div class="recent-creatures">
-								${creatures.map(creature => `
-									<div class="creature-card-mini" onclick="viewCreature(${creature.id})">
-										<div class="creature-name">${creature.name}</div>
-										<div class="creature-details">${creature.species} • Level ${creature.level}</div>
-									</div>
-								`).join('')}
-							</div>
-							<button class="btn btn-primary" onclick="goToCreatures()" style="margin-top: 12px;">View All Creatures</button>
-						</div>
-					` : ''}
-				</div>
-				
-				<div class="profile-actions">
-					<button class="btn btn-secondary" id="editProfileBtn">Edit Profile Settings</button>
-				</div>
-			</section>
-		`;
-
-		// Attach event listeners
-		const editBtn = document.getElementById('editProfileBtn');
-		if (editBtn) editBtn.addEventListener('click', () => openProfileEditModal(profile));
-
-	} catch (error) {
-		console.error('Failed to load profile:', error);
-		main.innerHTML = `
-			<section class="profile-page">
-				<h1>My Profile</h1>
-				<div class="error-message">Failed to load profile. Please try again.</div>
-				<button class="btn btn-primary" onclick="loadMyProfile()">Retry</button>
-			</section>
-		`;
+				<div id="friendSearchResults"></div>
+				<h2 style="margin-top:32px;">Your Friends</h2>
+				<div id="friendsList"></div>
+				<h2 style="margin-top:32px;">Pending Requests</h2>
+				<div id="pendingRequests"></div>
+			`;
+			document.getElementById('friendSearchBtn').addEventListener('click', doFriendSearch);
+			document.getElementById('friendSearchInput').addEventListener('keydown', e => { if (e.key === 'Enter') doFriendSearch(); });
+			await renderFriendsList();
+			await renderPendingRequests();
+		} else if (tab === 'tribe') {
+			tabContent.innerHTML = `
+				<h2>Tribe Manager</h2>
+				<div id="tribeFriendsList"></div>
+			`;
+			await renderTribeFriendsList();
+		}
 	}
 }
 
-// Supporting functions for enhanced profile page
-async function editField(fieldName) {
-	const fieldElement = document.querySelector(`[data-field="${fieldName}"]`);
-	const displayValue = fieldElement.querySelector('.display-value');
-	const currentValue = displayValue.textContent === 'Not set' ? '' : displayValue.textContent;
-
-	const newValue = prompt(`Enter new ${fieldName.replace('_', ' ')}:`, currentValue);
-	if (newValue === null) return; // User cancelled
-
+async function doFriendSearch() {
+	const input = document.getElementById('friendSearchInput');
+	const resultsDiv = document.getElementById('friendSearchResults');
+	if (!input || !resultsDiv) return;
+	const q = input.value.trim();
+	if (!q) { resultsDiv.innerHTML = ''; return; }
+	resultsDiv.innerHTML = '<div class="loading">Searching...</div>';
 	try {
-		const response = await fetch('/api/profile', {
+		const res = await fetch(`/api/users/search?q=${encodeURIComponent(q)}`, {
+			headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+		});
+		const users = await res.json();
+		if (!Array.isArray(users) || users.length === 0) {
+			resultsDiv.innerHTML = '<div class="error-message">No users found.</div>';
+			return;
+		}
+		resultsDiv.innerHTML = users.map(u => `
+			<div class="friend-search-result">
+				<div class="friend-info">
+					<strong>${u.nickname || u.email}</strong>
+					<span class="friend-meta">${u.discord_name ? `Discord: ${u.discord_name}` : ''}</span>
+				</div>
+				${renderFriendActionButton(u)}
+			</div>
+		`).join('');
+	} catch (e) {
+		resultsDiv.innerHTML = '<div class="error-message">Search failed.</div>';
+	}
+}
+
+function renderFriendActionButton(user) {
+	if (user.friend_status === 'accepted') {
+		return '<span class="friend-status">Already Friends</span>';
+	} else if (user.friend_status === 'pending') {
+		return '<span class="friend-status">Request Pending</span>';
+	} else {
+		return `<button class="btn btn-secondary" onclick="sendFriendRequest(${user.id})">Add Friend</button>`;
+	}
+}
+
+async function sendFriendRequest(friendUserId) {
+	try {
+		const res = await fetch('/api/friends/request', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				'Authorization': `Bearer ${localStorage.getItem('token')}`
+			},
+			body: JSON.stringify({ friend_user_id: friendUserId })
+		});
+		if (res.ok) {
+			alert('Friend request sent!');
+			doFriendSearch();
+			await renderPendingRequests();
+		} else {
+			const err = await res.json();
+			alert(err.error || 'Failed to send friend request');
+		}
+	} catch (e) {
+		alert('Failed to send friend request');
+	}
+}
+
+async function renderFriendsList() {
+	const listDiv = document.getElementById('friendsList');
+	if (!listDiv) return;
+	listDiv.innerHTML = '<div class="loading">Loading friends...</div>';
+	try {
+		const res = await fetch('/api/friends', {
+			headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+		});
+		const friends = await res.json();
+		if (!Array.isArray(friends) || friends.length === 0) {
+			listDiv.innerHTML = '<div class="error-message">No friends yet.</div>';
+			return;
+		}
+		listDiv.innerHTML = friends.map(f => `
+			<div class="friend-list-item">
+				<div class="friend-info">
+					<strong>${f.friend_nickname || f.friend_email}</strong>
+					<span class="friend-meta">${f.friend_discord_name ? `Discord: ${f.friend_discord_name}` : ''}</span>
+				</div>
+				<button class="btn btn-danger btn-small" onclick="removeFriend(${f.id})">Remove</button>
+				<button class="btn btn-secondary btn-small" onclick="viewFriendCreatures(${f.friend_id})">View Creatures</button>
+			</div>
+		`).join('');
+	} catch (e) {
+		listDiv.innerHTML = '<div class="error-message">Failed to load friends.</div>';
+	}
+}
+
+async function renderPendingRequests() {
+	const listDiv = document.getElementById('pendingRequests');
+	if (!listDiv) return;
+	listDiv.innerHTML = '<div class="loading">Loading requests...</div>';
+	try {
+		const res = await fetch('/api/friends?status=pending', {
+			headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+		});
+		const requests = await res.json();
+		if (!Array.isArray(requests) || requests.length === 0) {
+			listDiv.innerHTML = '<div class="error-message">No pending requests.</div>';
+			return;
+		}
+		listDiv.innerHTML = requests.map(r => `
+			<div class="friend-list-item">
+				<div class="friend-info">
+					<strong>${r.friend_nickname || r.friend_email}</strong>
+					<span class="friend-meta">${r.friend_discord_name ? `Discord: ${r.friend_discord_name}` : ''}</span>
+				</div>
+				<button class="btn btn-primary btn-small" onclick="respondToFriendRequest(${r.id}, 'accept')">Accept</button>
+				<button class="btn btn-danger btn-small" onclick="respondToFriendRequest(${r.id}, 'reject')">Reject</button>
+			</div>
+		`).join('');
+	} catch (e) {
+		listDiv.innerHTML = '<div class="error-message">Failed to load requests.</div>';
+	}
+}
+
+async function respondToFriendRequest(friendshipId, action) {
+	try {
+		const res = await fetch(`/api/friends/${friendshipId}`, {
 			method: 'PUT',
 			headers: {
 				'Content-Type': 'application/json',
 				'Authorization': `Bearer ${localStorage.getItem('token')}`
 			},
-			body: JSON.stringify({ [fieldName]: newValue })
+			body: JSON.stringify({ action })
 		});
-
-		if (response.ok) {
-			displayValue.textContent = newValue || 'Not set';
+		if (res.ok) {
+			await renderFriendsList();
+			await renderPendingRequests();
 		} else {
-			alert('Failed to update profile');
+			alert('Failed to respond to request');
 		}
-	} catch (error) {
-		console.error('Error updating profile:', error);
-		alert('Failed to update profile');
+	} catch (e) {
+		alert('Failed to respond to request');
 	}
 }
 
-function openProfileEditModal(profile) {
-	// For now, just show the Discord name edit option
-	editField('discord_name');
-}
-
-function goToTribe(tribeId) {
-	// Navigate to tribe page (if it exists)
-	if (typeof loadTribePage === 'function') {
-		loadTribePage(tribeId);
-	} else {
-		alert(`Navigate to tribe ${tribeId} - tribe page not implemented yet`);
-	}
-}
-
-function viewCreature(creatureId) {
-	// Navigate to creature details (if it exists)
-	if (typeof viewCreatureDetails === 'function') {
-		viewCreatureDetails(creatureId);
-	} else {
-		alert(`View creature ${creatureId} - creature details not implemented yet`);
-	}
-}
-
-function goToCreatures() {
-	// Navigate to creatures list page
-	if (typeof loadCreaturesPage === 'function') {
-		loadCreaturesPage();
-	} else {
-		alert('Navigate to creatures page - not implemented yet');
-	}
-}
-
-// Render register form into #registerPage (called when user clicks Register)
-function renderRegisterForm() {
-	const register = document.getElementById('registerPage');
-	if (!register) return;
-	register.innerHTML = `
-		<div class="register-container">
-			<h2 class="register-title">Create an account</h2>
-			<form id="registerForm">
-				<div class="form-group">
-					<label class="form-label" for="registerEmail">Email</label>
-					<input id="registerEmail" class="form-control" type="email" required autocomplete="username">
-				</div>
-				<div class="form-group">
-					<label class="form-label" for="registerNickname">Nickname</label>
-					<input id="registerNickname" class="form-control" type="text" required autocomplete="off" placeholder="Choose a unique nickname">
-				</div>
-				<div class="form-group">
-					<label class="form-label" for="registerPassword">Password</label>
-					<input id="registerPassword" class="form-control" type="password" required autocomplete="new-password">
-				</div>
-				<div class="form-group">
-					<label class="form-label" for="registerConfirmPassword">Confirm Password</label>
-					<input id="registerConfirmPassword" class="form-control" type="password" required>
-				</div>
-				<div id="registerError" class="register-error" role="status" aria-live="polite"></div>
-				<button type="submit" class="btn btn-primary register-btn">Register</button>
-				<button type="button" class="btn btn-secondary" id="cancelRegisterBtn">Cancel</button>
-			</form>
-		</div>
-	`;
-
-	// Wire events
-	const registerForm = document.getElementById('registerForm');
-	if (registerForm) registerForm.addEventListener('submit', handleRegister);
-	const cancelBtn = document.getElementById('cancelRegisterBtn');
-	if (cancelBtn) cancelBtn.addEventListener('click', (e) => { e.preventDefault(); showLoginPage(); });
-}
-
-// Legacy tribe settings page removed. Use loadTribeManagerPage for tribe features.
-
-function updateStatsDashboard() {
-	// Keep it lightweight: compute a few quick metrics and render into header placeholders
-	const creatures = appState.creatures || [];
-	const total = creatures.length;
-	const speciesCount = new Set(creatures.map(c => c.species)).size;
-	const prized = creatures.filter(c => (window.BadgeSystem && BadgeSystem.calculatePrizedBloodline(c).qualified) ).length;
-	// Count species that have at least one Boss Ready badge (alpha/beta/...) among their creatures
-	let bossReadySpeciesCount = 0;
-	let underdogCount = 0;
+async function removeFriend(friendshipId) {
+	if (!confirm('Remove this friend?')) return;
 	try {
-		const bySpecies = {};
-		(creatures || []).forEach(c => { try { bySpecies[c.species] = bySpecies[c.species] || []; bySpecies[c.species].push(c); } catch(e){} });
-		Object.keys(bySpecies).forEach(spec => {
-			const list = bySpecies[spec] || [];
-			if (list.some(cc => (window.BadgeSystem && (BadgeSystem.calculateBossReady(cc) || []).length > 0))) bossReadySpeciesCount++;
-			// Underdog badges are per-creature; count unique creatures with underdog badges
-			list.forEach(cc => { if (window.BadgeSystem && (BadgeSystem.calculateUnderdog(cc) || []).length > 0) underdogCount++; });
+		const res = await fetch(`/api/friends/${friendshipId}`, {
+			method: 'DELETE',
+			headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
 		});
-	} catch (e) { /* ignore dashboard calc failures */ }
-	const highest = creatures.length ? Math.max(...creatures.map(c => c.level || 1)) : 1;
-
-	// Ensure placeholders exist; create them if not
-	let statsBar = document.getElementById('statsBar');
-	if (!statsBar) {
-		const header = document.querySelector('.header-content') || document.body;
-		statsBar = document.createElement('div');
-		statsBar.id = 'statsBar';
-		statsBar.className = 'stats-bar';
-		statsBar.innerHTML = `<div class="stats-item">Total: <span id="totalCreatures">${total}</span></div>
-			<div class="stats-item">Species: <span id="speciesTracked">${speciesCount}</span></div>
-			<div class="stats-item">Prized: <span id="prizedBloodlines">${prized}</span></div>
-			<div class="stats-item">Boss Ready Species: <span id="bossReadySpecies">${bossReadySpeciesCount}</span></div>
-			<div class="stats-item">Underdog Creatures: <span id="underdogCount">${underdogCount}</span></div>
-			<div class="stats-item">Highest Lvl: <span id="highestLevel">${highest}</span></div>`;
-		header.appendChild(statsBar);
-	} else {
-		document.getElementById('totalCreatures').textContent = total;
-		document.getElementById('speciesTracked').textContent = speciesCount;
-		document.getElementById('prizedBloodlines').textContent = prized;
-		document.getElementById('highestLevel').textContent = highest;
-	}
-}
-
-// Global Application State
-let appState;
-try {
-	// Migrate legacy global localStorage keys into per-user keys before loading app state
-	try { migrateLegacyKeysToUser(); } catch (e) { }
-	appState = {
-		creatures: JSON.parse(localStorage.getItem(getCreatureStorageKey()) || '[]'),
-		tribeSettings: JSON.parse(localStorage.getItem(getUserKey('arkTribeSettings')) || '{}'),
-		currentSpecies: null,
-		editingCreature: null,
-		selectedCreature: null
-	};
-	console.log('App state loaded successfully', appState);
-} catch (error) {
-	console.error('Error loading app state from localStorage:', error);
-	appState = {
-		creatures: [],
-		tribeSettings: {},
-		currentSpecies: null,
-		editingCreature: null,
-		selectedCreature: null
-	};
-}
-window.appState = appState;
-
-// Notifications: client helpers
-async function fetchNotifications() {
-	try {
-		const { res, body } = await apiRequest('/api/notifications', { method: 'GET' });
-		if (!res.ok) return [];
-		return Array.isArray(body) ? body : [];
-	} catch (e) { return []; }
-}
-
-async function markNotificationRead(id) {
-	try {
-		await apiRequest('/api/notifications/' + id + '/read', { method: 'PUT' });
-	} catch (e) { /* ignore */ }
-}
-
-async function showNotificationsInbox() {
-	const modal = document.getElementById('creatureModal'); if (!modal) return alert('Modal missing');
-	const notes = await fetchNotifications();
-	modal.classList.add('active'); modal.setAttribute('aria-hidden','false');
-	modal.innerHTML = `<div class="modal-content" style="max-width:720px;margin:20px auto;"><div class="modal-header"><h3>Inbox</h3><button id="closeInbox" class="close-btn soft">Close</button></div><div class="modal-body" id="inboxList" style="max-height:480px;overflow:auto"></div></div>`;
-	document.getElementById('closeInbox').addEventListener('click', ()=>{ modal.classList.remove('active'); modal.innerHTML=''; modal.setAttribute('aria-hidden','true'); });
-	const list = document.getElementById('inboxList'); list.innerHTML = '';
-	if (!notes || notes.length === 0) { list.innerHTML = '<div class="no-species-found">No notifications</div>'; return; }
-		notes.forEach(n => {
-		const row = document.createElement('div'); row.style.borderTop = '1px solid rgba(255,255,255,0.03)'; row.style.padding = '8px 0';
-		const actor = n.actor_nickname ? `${n.actor_nickname} (id:${n.actor_user_id})` : `User ${n.actor_user_id}`;
-		row.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center"><div><strong>${n.type.replace('_',' ')}</strong> from ${actor}</div><div style="font-size:12px;color:#94a3b8">${n.created_at}</div></div><div style="color:#cbd5e1;margin-top:6px">${JSON.stringify(n.payload || {})}</div>`;
-		// actions container to hold buttons
-		const actions = document.createElement('div'); actions.style.marginTop = '6px';
-		if (!n.read) {
-			const markBtn = document.createElement('button'); markBtn.className = 'btn btn-primary'; markBtn.textContent = 'Mark Read'; markBtn.style.marginRight = '8px';
-			markBtn.onclick = async () => { await markNotificationRead(n.id); markBtn.remove(); try { const idx = notes.findIndex(x=>x.id===n.id); if (idx>=0) notes[idx].read=true; } catch(e){} };
-			actions.appendChild(markBtn);
+		if (res.ok) {
+			await renderFriendsList();
+		} else {
+			alert('Failed to remove friend');
 		}
-		// If this is a tribe join request, show quick Accept/Reject for admins
-		try {
-			const p = n.payload || {};
-			if (n.type === 'tribe_join_request' && p.joinRequestId) {
-				const accept = document.createElement('button'); accept.className='btn btn-primary'; accept.textContent='Accept'; accept.style.marginLeft='8px';
-				const reject = document.createElement('button'); reject.className='btn btn-secondary'; reject.textContent='Reject'; reject.style.marginLeft='8px';
-				accept.onclick = async () => {
-					const resp = await apiRequest('/api/tribes/join_requests/' + p.joinRequestId, { method: 'PUT', body: JSON.stringify({ status: 'accepted', targetRole: 'member' }) });
-					if (!resp.res.ok) return alert('Failed to accept');
-					await markNotificationRead(n.id);
-					// re-render the inbox modal contents
-					try { await showNotificationsInbox(); } catch (e) {}
-				};
-				reject.onclick = async () => {
-					const resp = await apiRequest('/api/tribes/join_requests/' + p.joinRequestId, { method: 'PUT', body: JSON.stringify({ status: 'rejected' }) });
-					if (!resp.res.ok) return alert('Failed to reject');
-					await markNotificationRead(n.id);
-					try { await showNotificationsInbox(); } catch (e) {}
-				};
-				actions.appendChild(accept); actions.appendChild(reject);
-			}
-		} catch (e) {}
-		row.appendChild(actions);
-		list.appendChild(row);
-	});
-}
-window.showNotificationsInbox = showNotificationsInbox;
-
-// Render a dedicated Inbox page inside #appMainContent
-async function loadInboxPage() {
-	const main = document.getElementById('appMainContent'); if (!main) return;
-	main.innerHTML = `
-		<section class="inbox-page">
-			<div class="page-header"><h1>Inbox</h1><div class="section-sub">Notifications and messages</div></div>
-			<div style="margin:12px 0;display:flex;gap:10px;align-items:center;"><button id="refreshInboxBtn" class="btn btn-secondary">Refresh</button><button id="clearReadBtn" class="btn btn-secondary">Clear Read</button></div>
-			<div id="inboxListPage" style="margin-top:12px;"></div>
-		</section>
-	`;
-	document.getElementById('refreshInboxBtn')?.addEventListener('click', async () => { await renderInboxList(); });
-	document.getElementById('clearReadBtn')?.addEventListener('click', async () => {
-		// Remove read notifications from UI (server retains them). Client-side remove for now.
-		const notes = await fetchNotifications();
-		const toRemove = notes.filter(n => n.read).map(n => n.id);
-		// Optimistically mark as read on server for each (no unread endpoint to delete). We'll mark them read to hide.
-		for (const id of toRemove) { try { await markNotificationRead(id); } catch (e) {} }
-		await renderInboxList();
-	});
-	await renderInboxList();
-
-	async function renderInboxList() {
-		const container = document.getElementById('inboxListPage'); if (!container) return;
-		container.innerHTML = '';
-		const notes = await fetchNotifications();
-		if (!notes || notes.length === 0) { container.innerHTML = '<div class="no-species-found">No notifications</div>'; updateInboxBadge(0); return; }
-		updateInboxBadge(notes.filter(n=>!n.read).length);
-		notes.forEach(n => {
-			const row = document.createElement('div'); row.className = 'inbox-row'; row.style.borderTop = '1px solid rgba(255,255,255,0.03)'; row.style.padding = '12px 0';
-			const when = document.createElement('div'); when.style.fontSize='12px'; when.style.color='#94a3b8'; when.textContent = n.created_at;
-			const actor = n.actor_nickname ? `${n.actor_nickname}` : `User ${n.actor_user_id}`;
-			const title = document.createElement('div'); title.innerHTML = `<strong>${friendlyType(n.type)}</strong> from ${actor}`;
-			const body = document.createElement('div'); body.style.marginTop='6px'; body.style.color='#cbd5e1'; body.innerHTML = formatNotification(n);
-			row.appendChild(title); row.appendChild(when); row.appendChild(body);
-			const actions = document.createElement('div'); actions.style.marginTop='8px';
-			if (!n.read) {
-				const markBtn = document.createElement('button'); markBtn.className='btn btn-primary'; markBtn.textContent='Mark Read'; markBtn.onclick = async ()=>{ await markNotificationRead(n.id); markBtn.remove(); try{ n.read=true; updateInboxBadge((await fetchNotifications()).filter(x=>!x.read).length); }catch(e){} };
-				actions.appendChild(markBtn);
-			}
-			// If payload contains tradeId/offerId, add button to open trade or offer
-			try {
-				const p = n.payload || {};
-				if (p.tradeId) {
-					const openBtn = document.createElement('button');
-					openBtn.className = 'btn btn-secondary';
-					openBtn.textContent = 'Open Trade';
-					openBtn.style.marginLeft = '8px';
-					openBtn.onclick = async () => {
-						try {
-							const t = await apiRequest('/api/trades/' + p.tradeId, { method: 'GET' });
-							if (!t.res.ok) return alert('Failed to open trade');
-							const trade = t.body;
-							loadTradingPage();
-							setTimeout(() => {
-								try {
-									const el = Array.from(document.querySelectorAll('.species-card')).find(c => c.querySelector('.species-name') && (c.querySelector('.species-name').textContent.includes(trade.creature.name || trade.creature.species)));
-									if (el) { el.style.outline = '3px solid #fde68a'; setTimeout(() => el.style.outline = '', 3000); }
-								} catch (e) { /* ignore */ }
-							}, 400);
-						} catch (err) {
-							console.warn('open trade failed', err);
-						}
-					};
-					actions.appendChild(openBtn);
-				}
-				if (p.offerId) {
-					const openOffer = document.createElement('button');
-					openOffer.className = 'btn btn-secondary';
-					openOffer.textContent = 'Open Offer';
-					openOffer.style.marginLeft = '8px';
-					openOffer.onclick = async () => {
-						// Open the trading page and then show the offers modal for the referenced trade
-						if (!p.tradeId) return alert('No trade referenced');
-						loadTradingPage();
-						setTimeout(async () => {
-							try {
-								const resp = await apiRequest('/api/trades/' + p.tradeId + '/offers', { method: 'GET' });
-								if (!resp.res.ok) return alert('Failed to load offers');
-								const offers = resp.body || [];
-								const modal = document.getElementById('creatureModal'); if (!modal) return alert('Modal missing');
-								modal.classList.add('active'); modal.setAttribute('aria-hidden','false');
-								modal.innerHTML = `<div class="modal-content" style="max-width:680px;margin:20px auto;"><div class="modal-header"><h3>Offers</h3><button id="closeOffersModal" class="close-btn soft">Close</button></div><div id="offersListPage" class="modal-body"></div></div>`;
-								document.getElementById('closeOffersModal').addEventListener('click', ()=>{ modal.classList.remove('active'); modal.innerHTML=''; modal.setAttribute('aria-hidden','true'); });
-								const listEl = document.getElementById('offersListPage'); listEl.innerHTML = '';
-								(offers||[]).forEach(o => {
-									const r = document.createElement('div'); r.style.padding = '8px';
-									r.innerHTML = `<div><strong>From:</strong> ${o.from_nickname||o.from_user_id} • ${o.message||''}</div>`;
-									listEl.appendChild(r);
-								});
-							} catch (err) {
-								console.warn('Failed to open offers from inbox', err);
-							}
-						}, 500);
-					};
-					actions.appendChild(openOffer);
-				}
-			} catch (e) {}
-			row.appendChild(actions);
-			container.appendChild(row);
-		});
-	}
-
-	function friendlyType(t) { if (!t) return 'Notification'; return t.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase()); }
-
-	function formatNotification(n) {
-		try {
-			const p = n.payload || {};
-			if (n.type === 'offer') {
-				const from = n.actor_nickname || `User ${n.actor_user_id}`;
-				return `${from} made an offer${p.tradeId ? ' on your listing' : ''}${p.message ? ': "' + escapeHtml(p.message) + '"' : ''}`;
-			}
-			if (n.type === 'offer_accepted') return `Your offer (id:${p.offerId||''}) was accepted.`;
-			if (n.type === 'offer_rejected' || n.type === 'rejected') return `Your offer (id:${p.offerId||''}) was rejected.`;
-			// fallback: show payload JSON
-			return `<pre style="white-space:pre-wrap;word-break:break-word">${escapeHtml(JSON.stringify(p))}</pre>`;
-		} catch (e) { return JSON.stringify(n.payload || {}); }
-	}
-
-	function escapeHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-}
-window.loadInboxPage = loadInboxPage;
-
-// Update badge helper used by inbox rendering
-function updateInboxBadge(count) {
-	try {
-		const b = document.getElementById('inboxBadge'); if (!b) return; if (!count || count <= 0) { b.style.display='none'; } else { b.style.display='inline-block'; b.textContent = String(count); }
-	} catch (e) {}
-}
-
-// --- SPECIES_DATABASE wiring (non-destructive) ---
-// Ensure fallback storage exists; avoid touching any variable named SPECIES_DATABASE
-if (typeof window !== 'undefined') {
-	if (window.SPECIES_DATABASE && Object.keys(window.SPECIES_DATABASE || {}).length > 0) {
-		window.__SPECIES_DB = window.SPECIES_DATABASE;
-	} else {
-		window.__SPECIES_DB = window.__SPECIES_DB || {};
+	} catch (e) {
+		alert('Failed to remove friend');
 	}
 }
 
-// saveCreature: accepts either a full creature object or a wrapper from creatures.js
-function saveCreature(payload) {
-	try {
-		// payload may be { species, editing } (from creatures.js) or a full creature object
-		if (!payload) return console.warn('saveCreature called with no payload');
-
-		// If payload contains a full creature object
-		if (payload && payload.id && payload.name) {
-			// direct save
-			const existingIndex = appState.creatures.findIndex(c => c.id === payload.id);
-			if (existingIndex >= 0) appState.creatures[existingIndex] = payload;
-			else appState.creatures.push(payload);
-		} else if (payload && payload.species) {
-			// creatures.js will dispatch an event; expect main.js to read fields from the modal
-			const name = document.getElementById('creatureName')?.value?.trim();
-			if (!name) { alert('Please enter a creature name'); return; }
-			const creature = {
-				id: payload.editing || ('creature_' + Date.now() + '_' + Math.random().toString(36).substr(2,9)),
-				name,
-				species: payload.species,
-				gender: document.getElementById('creatureGender')?.value || '',
-				level: parseInt(document.getElementById('creatureLevel')?.value) || 1,
-				baseStats: {},
-				mutations: {},
-				domesticLevels: {},
-				notes: document.getElementById('creatureNotes')?.value || '',
-				createdAt: new Date().toISOString(),
-				updatedAt: new Date().toISOString()
-			};
-			// If editing, replace
-			const idx = appState.creatures.findIndex(c => c.id === creature.id);
-			if (idx >= 0) appState.creatures[idx] = creature; else appState.creatures.push(creature);
-		}
-
-	// Persist and refresh UI (per-user)
-	try { localStorage.setItem(getCreatureStorageKey(), JSON.stringify(appState.creatures || [])); } catch (e) {}
-		// Close modal if open
-		try { if (typeof closeCreatureModal === 'function') closeCreatureModal(); } catch (e) {}
-		try { loadSpeciesPage(); } catch (e) {}
-		try { updateStatsDashboard(); } catch (e) {}
-	} catch (err) {
-		console.error('saveCreature failed', err);
-	}
+function viewFriendCreatures(friendUserId) {
+	// For now, just alert. Later, implement a modal or page to show friend's creatures.
+	alert('View creatures for user ID: ' + friendUserId);
 }
-window.saveCreature = saveCreature;
-
-// Resilient startup fallback: if the page remains hidden or the login UI
-// wasn't shown (due to an earlier error), force the app shell visible and
-// show the login page after a short timeout. This avoids leaving users with
-// a blank screen if any early init step throws.
-setTimeout(() => {
-	try {
-		const docEl = document.documentElement;
-		// If data-ready wasn't set by the aggressive cleanup, set it now.
-		if (docEl.getAttribute('data-ready') !== 'true') {
-			console.warn('[SPA] startup fallback: forcing data-ready=true');
-			try { docEl.setAttribute('data-ready', 'true'); } catch (e) {}
-		}
-
-		// Ensure visibility style isn't accidentally hiding the page
-		try { docEl.style.visibility = ''; } catch (e) {}
-
-		// If landing page is present but still hidden, explicitly show it
-		const landing = document.getElementById('landingPage');
-		const register = document.getElementById('registerPage');
-		const mainApp = document.getElementById('mainApp');
-		if (landing && getComputedStyle(landing).display === 'none') {
-			if (typeof isLoggedIn === 'function' && isLoggedIn()) {
-				try { showMainApp(); } catch (e) { console.warn('[SPA] showMainApp failed', e); }
-			} else {
-				try { showLoginPage(); } catch (e) { console.warn('[SPA] showLoginPage failed', e); }
-			}
-		}
-	} catch (err) {
-		console.warn('[SPA] startup fallback encountered an error', err);
-	}
-}, 700);
+window.loadFriendsPage = loadFriendsPage;

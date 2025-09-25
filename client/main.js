@@ -1,43 +1,4 @@
-// Tribe assignment actions
-window.addToTribe = async function(friendUserId) {
-	try {
-		const res = await fetch('/api/tribe/add', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				'Authorization': `Bearer ${localStorage.getItem('token')}`
-			},
-			body: JSON.stringify({ user_id: friendUserId })
-		});
-		if (res.ok) {
-			await renderTribeFriendsList();
-		} else {
-			alert('Failed to add friend to tribe');
-		}
-	} catch (e) {
-		alert('Failed to add friend to tribe');
-	}
-};
-
-window.removeFromTribe = async function(friendUserId) {
-	try {
-		const res = await fetch('/api/tribe/remove', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				'Authorization': `Bearer ${localStorage.getItem('token')}`
-			},
-			body: JSON.stringify({ user_id: friendUserId })
-		});
-		if (res.ok) {
-			await renderTribeFriendsList();
-		} else {
-			alert('Failed to remove friend from tribe');
-		}
-	} catch (e) {
-		alert('Failed to remove friend from tribe');
-	}
-};
+// Begin main application logic
 // We'll set the readiness marker only after our exact theme CSS is loaded
 // to avoid the original UI flashing and then being overlapped by the injected UI.
 
@@ -1497,17 +1458,17 @@ function getTimers() { try { return JSON.parse(localStorage.getItem(getUserKey(T
 function saveTimers(t) { try { localStorage.setItem(getUserKey(TIMER_STORAGE_KEY_BASE), JSON.stringify(t)); } catch (e) {} }
 
 function getUserCreatures() {
-	try {
-		return window.appState.creatures || [];
-	} catch (e) {
-		console.warn('Failed to get user creatures', e);
-		return [];
-	}
-}
-		if (window.appState && Array.isArray(window.appState.creatures) && window.appState.creatures.length) return window.appState.creatures;
-		const raw = localStorage.getItem(getCreatureStorageKey()); if (!raw) return [];
-		return JSON.parse(raw || '[]');
-	} catch (e) { return []; }
+    try {
+        if (window.appState && Array.isArray(window.appState.creatures) && window.appState.creatures.length) {
+            return window.appState.creatures;
+        }
+        const raw = localStorage.getItem(getCreatureStorageKey());
+        if (!raw) return [];
+        return JSON.parse(raw || '[]');
+    } catch (e) {
+        console.warn('Failed to get user creatures', e);
+        return [];
+    }
 }
 
 // Return a per-user storage key for creatures so different accounts don't mix local data.
@@ -1935,34 +1896,4 @@ function openBossModal(bossId) {
 	});
 }
 
-// --- Friends Page ---
-// Tribe Manager: show friends and allow assigning to tribe
-async function renderTribeFriendsList() {
-	const tribeDiv = document.getElementById('tribeFriendsList');
-	if (!tribeDiv) return;
-	tribeDiv.innerHTML = '<div class="loading">Loading friends...</div>';
-	try {
-		const res = await fetch('/api/friends', {
-			headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
-		});
-		const friends = await res.json();
-		if (!Array.isArray(friends) || friends.length === 0) {
-			tribeDiv.innerHTML = '<div class="error-message">No friends to assign to your tribe.</div>';
-			return;
-		}
-		// Fetch tribe assignments (assume /api/tribe/members returns user IDs)
-		const tribeRes = await fetch('/api/tribe/members', {
-			headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
-		});
-		const tribeMembers = await tribeRes.json();
-		tribeDiv.innerHTML = friends.map(f => {
-			const isInTribe = Array.isArray(tribeMembers) && tribeMembers.includes(f.friend_user_id);
-			return `<div class="tribe-friend-item">
-				<span><strong>${f.friend_nickname || f.friend_email}</strong> ${f.friend_discord_name ? `<span class='friend-meta'>Discord: ${f.friend_discord_name}</span>` : ''}</span>
-				<button class="btn btn-sm ${isInTribe ? 'btn-danger' : 'btn-primary'}" onclick="${isInTribe ? `removeFromTribe(${f.friend_user_id})` : `addToTribe(${f.friend_user_id})`}">${isInTribe ? 'Remove from Tribe' : 'Add to Tribe'}</button>
-			</div>`;
-		}).join('');
-	} catch (e) {
-		tribeDiv.innerHTML = '<div class="error-message">Failed to load tribe friends.</div>';
-	}
 }

@@ -179,6 +179,57 @@ window.goToTrading = goToTrading;
 function goToBossPlanner() { loadBossPlanner(); }
 window.goToBossPlanner = goToBossPlanner;
 function goToMyProfile() { loadMyProfile(); }
+// Profile page
+function loadMyProfile() {
+    const main = document.getElementById('appMainContent');
+    if (!main) return;
+
+    // Get user info from localStorage
+    const userId = localStorage.getItem('userId');
+    const email = localStorage.getItem('userEmail');
+    const nickname = localStorage.getItem('userNickname');
+    const token = localStorage.getItem('token');
+
+    if (!userId || !token) {
+        showLoginPage();
+        return;
+    }
+
+    main.innerHTML = `
+        <section class="profile-page">
+            <div class="page-header">
+                <h1>My Profile</h1>
+                <div class="section-sub">Manage your account settings and preferences</div>
+            </div>
+            <div class="profile-content">
+                <div class="profile-info">
+                    <div class="info-group">
+                        <label>Email</label>
+                        <div class="info-value">${email || 'Not set'}</div>
+                    </div>
+                    <div class="info-group">
+                        <label>Nickname</label>
+                        <div class="info-value">${nickname || 'Not set'}</div>
+                    </div>
+                    <div class="info-group">
+                        <label>User ID</label>
+                        <div class="info-value">${userId}</div>
+                    </div>
+                </div>
+                <div class="profile-actions">
+                    <button id="logoutBtn" class="btn btn-danger">Logout</button>
+                </div>
+            </div>
+        </section>
+    `;
+
+    // Add logout handler
+    document.getElementById('logoutBtn')?.addEventListener('click', () => {
+        localStorage.clear();
+        showLoginPage();
+    });
+}
+
 window.goToMyProfile = goToMyProfile;
 window.goToCreatures = goToCreatures;
 window.goToMyNuggies = goToMyNuggies;
@@ -877,27 +928,98 @@ function renderCreatureImage(creature, className = '') {
 }
 
 async function loadSpeciesPage() {
-	// Render the species page with search and filters and a species grid
-	document.getElementById('appMainContent').innerHTML = `
-		<section class="species-section">
-			<div class="species-header-controls">
-				<div class="species-search">
-					<input id="searchInput" class="form-control" placeholder="Search species by name, category or diet">
-				</div>
-				<div class="species-filters">
-					<select id="categoryFilter" class="form-control">
-						<option value="">All Categories</option>
-						<option value="herbivore">Herbivore</option>
-						<option value="carnivore">Carnivore</option>
-						<option value="aquatic">Aquatic</option>
-						<option value="flyer">Flyer</option>
-					</select>
-					<select id="rarityFilter" class="form-control">
-						<option value="">All Rarities</option>
-						<option value="common">Common</option>
-						<option value="uncommon">Uncommon</option>
-						<option value="rare">Rare</option>
-						<option value="very rare">Very Rare</option>
+    const main = document.getElementById('appMainContent');
+    if (!main) return;
+
+    // Render the species page with search and filters and a species grid
+    main.innerHTML = `
+        <section class="species-section">
+            <div class="species-header-controls">
+                <div class="species-search">
+                    <input id="searchInput" class="form-control" placeholder="Search species by name, category or diet">
+                </div>
+                <div class="species-filters">
+                    <select id="categoryFilter" class="form-control">
+                        <option value="">All Categories</option>
+                        <option value="herbivore">Herbivore</option>
+                        <option value="carnivore">Carnivore</option>
+                        <option value="aquatic">Aquatic</option>
+                        <option value="flyer">Flyer</option>
+                    </select>
+                    <select id="rarityFilter" class="form-control">
+                        <option value="">All Rarities</option>
+                        <option value="common">Common</option>
+                        <option value="uncommon">Uncommon</option>
+                        <option value="rare">Rare</option>
+                        <option value="very rare">Very Rare</option>
+                        <option value="unique">Unique</option>
+                    </select>
+                </div>
+            </div>
+            <div id="speciesGrid" class="species-grid"></div>
+        </section>
+    `;
+
+    try {
+        // Load species database
+        const species = await import('./species-database.js');
+        if (!species || !species.default) {
+            console.error('Failed to load species database');
+            return;
+        }
+
+        const speciesGrid = document.getElementById('speciesGrid');
+        if (!speciesGrid) return;
+
+        // Render species cards
+        const renderCards = () => {
+            const searchTerm = (document.getElementById('searchInput')?.value || '').toLowerCase();
+            const category = document.getElementById('categoryFilter')?.value;
+            const rarity = document.getElementById('rarityFilter')?.value;
+
+            const filteredSpecies = species.default.filter(s => {
+                if (searchTerm && !s.name.toLowerCase().includes(searchTerm) && 
+                    !s.category?.toLowerCase().includes(searchTerm) &&
+                    !s.diet?.toLowerCase().includes(searchTerm)) {
+                    return false;
+                }
+                if (category && s.category?.toLowerCase() !== category.toLowerCase()) {
+                    return false;
+                }
+                if (rarity && s.rarity?.toLowerCase() !== rarity.toLowerCase()) {
+                    return false;
+                }
+                return true;
+            });
+
+            speciesGrid.innerHTML = filteredSpecies.map(s => `
+                <div class="species-card" data-species-id="${s.id}">
+                    <div class="species-card-content">
+                        <div class="species-icon">${s.icon || '🦖'}</div>
+                        <div class="species-info">
+                            <div class="species-name">${s.name}</div>
+                            <div class="species-meta">${s.category || ''} · ${s.rarity || 'Common'}</div>
+                            <div class="species-stats">
+                                ${s.baseStats ? Object.entries(s.baseStats)
+                                    .map(([key, value]) => `<span class="stat">${key}: ${value}</span>`)
+                                    .join('') : ''}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        };
+
+        // Set up event listeners for filtering
+        document.getElementById('searchInput')?.addEventListener('input', debounce(renderCards, 200));
+        document.getElementById('categoryFilter')?.addEventListener('change', renderCards);
+        document.getElementById('rarityFilter')?.addEventListener('change', renderCards);
+
+        // Initial render
+        renderCards();
+    } catch (error) {
+        console.error('Error loading species page:', error);
+    }
 						<option value="extinct">Extinct</option>
 					</select>
 					<button id="clearFiltersBtn" class="btn btn-secondary">Clear</button>
@@ -1448,29 +1570,83 @@ function loadTradingPage() {
 }
 
 function loadBossPlanner() {
-	const main = document.getElementById('appMainContent');
-	if (!main) return;
-	main.innerHTML = `
-		<section class="boss-planner-page">
-			<div class="page-header"><h1>Boss Planner</h1><div class="section-sub">Plan boss fights, rewards and party composition</div></div>
-			<div style="margin-top:12px;display:flex;gap:12px;align-items:center;">
-				<input id="bossSearch" class="form-control" placeholder="Search bosses..." style="max-width:320px;"> 
-				<select id="bossMapFilter" class="form-control" style="max-width:220px;"><option value="">All Maps</option><option>The Island</option><option>Scorched Earth</option><option>The Center</option><option>Aberration</option><option>Ragnarok</option><option>Astraeos</option><option>Extinction</option></select>
-				<span style="margin-left:auto;color:#666;font-size:13px">Stored locally (per browser)</span>
-			</div>
-			<div style="margin-top:18px;">
-				<!-- Arena grid will render here (full width) -->
-				<div id="arenaGrid" style="padding:12px;display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;max-height:72vh;overflow:auto"></div>
-			</div>
-			<!-- Reuse creatureModal for editor -->
-		</section>
-	`;
+    const main = document.getElementById('appMainContent');
+    if (!main) return;
 
-	// (Removed unused toolbar buttons: Seed Defaults, Add Boss, View Arenas, Export, Import)
+    main.innerHTML = `
+        <section class="boss-planner-page">
+            <div class="page-header">
+                <h1>Boss Planner</h1>
+                <div class="section-sub">Plan boss fights, rewards and party composition</div>
+            </div>
+            <div class="boss-controls">
+                <input id="bossSearch" class="form-control" placeholder="Search bosses..." style="max-width:320px;"> 
+                <select id="bossMapFilter" class="form-control" style="max-width:220px;">
+                    <option value="">All Maps</option>
+                    <option>The Island</option>
+                    <option>Scorched Earth</option>
+                    <option>The Center</option>
+                    <option>Aberration</option>
+                    <option>Ragnarok</option>
+                    <option>Astraeos</option>
+                    <option>Extinction</option>
+                </select>
+                <span class="boss-storage-note">Stored locally (per browser)</span>
+            </div>
+            <div id="bossGrid" class="boss-grid"></div>
+        </section>
+    `;
 
-	// Search & filter (map filter will still filter boss data when using legacy list)
-	document.getElementById('bossSearch')?.addEventListener('input', debounce(() => { renderArenaGrid(); renderBossList && renderBossList(); }, 220));
-	document.getElementById('bossMapFilter')?.addEventListener('change', () => { renderArenaGrid(); renderBossList && renderBossList(); });
+    // Initialize listeners
+    document.getElementById('bossSearch')?.addEventListener('input', debounce(() => {
+        const searchTerm = document.getElementById('bossSearch')?.value.toLowerCase() || '';
+        const mapFilter = document.getElementById('bossMapFilter')?.value || '';
+        
+        const bossGrid = document.getElementById('bossGrid');
+        if (!bossGrid) return;
+
+        // Simulated boss data (replace with actual data structure)
+        const bosses = [
+            { id: 'megapithecus', name: 'Megapithecus', map: 'The Island', difficulty: 'Alpha' },
+            { id: 'broodmother', name: 'Broodmother Lysrix', map: 'The Island', difficulty: 'Beta' },
+            { id: 'dragon', name: 'Dragon', map: 'The Island', difficulty: 'Gamma' },
+            // Add more bosses here
+        ];
+
+        const filteredBosses = bosses.filter(boss => {
+            if (searchTerm && !boss.name.toLowerCase().includes(searchTerm)) {
+                return false;
+            }
+            if (mapFilter && boss.map !== mapFilter) {
+                return false;
+            }
+            return true;
+        });
+
+        bossGrid.innerHTML = filteredBosses.map(boss => `
+            <div class="boss-card" data-boss-id="${boss.id}">
+                <div class="boss-card-header">
+                    <h3>${boss.name}</h3>
+                    <span class="boss-difficulty ${boss.difficulty.toLowerCase()}">${boss.difficulty}</span>
+                </div>
+                <div class="boss-card-content">
+                    <div class="boss-map">${boss.map}</div>
+                    <button class="btn btn-primary plan-fight">Plan Fight</button>
+                </div>
+            </div>
+        `).join('');
+
+        // Add click handlers for "Plan Fight" buttons
+        document.querySelectorAll('.plan-fight').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const bossId = e.target.closest('.boss-card').dataset.bossId;
+                showBossPlannerModal(bossId);
+            });
+        });
+    }, 220));
+
+    // Initial render (trigger search with empty term)
+    document.getElementById('bossSearch')?.dispatchEvent(new Event('input'));
 
 	// Render arenas by default
 	renderArenaGrid();

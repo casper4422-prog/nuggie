@@ -10,6 +10,8 @@ function debounce(func, wait) {
         timeout = setTimeout(later, wait);
     };
 }
+    };
+}
 
 // Initialize API configuration
 window.__API_BASE = window.__API_BASE || 'http://localhost:3000'; // Default to localhost if not set
@@ -24,16 +26,31 @@ window.appState = window.appState || {
 
 // Initialize the application
 async function initializeApp() {
+    if (!window.appState) {
+        window.appState = {
+            initialized: false,
+            authenticated: false,
+            creatures: [],
+            currentView: null
+        };
+    }
+
     try {
         // Check if user is already authenticated
         const token = localStorage.getItem('token');
         if (token) {
             // Verify token is still valid
-            const { res } = await apiRequest('/api/auth/verify', { 
-                method: 'GET',
-                headers: { 'Authorization': 'Bearer ' + token }
-            });
-            window.appState.authenticated = res.ok;
+            try {
+                const { res } = await apiRequest('/api/auth/verify', { 
+                    method: 'GET',
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+                window.appState.authenticated = res.ok;
+            } catch (e) {
+                console.error('Token verification failed:', e);
+                window.appState.authenticated = false;
+                localStorage.removeItem('token');
+            }
         }
 
         // Load species database
@@ -1297,19 +1314,6 @@ function filterSpecies() {
         </div>
     `).join('') : '<div class="no-results">No species found matching your criteria</div>';
 }
-
-// Utility Functions
-const debounce = (fn, wait) => {
-    let timeout;
-    return function executedFunction(...args) {
-        const later = () => {
-            clearTimeout(timeout);
-            fn(...args);
-        };
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-    };
-};
 
 // Species Management Functions
 async function getSpeciesData() {

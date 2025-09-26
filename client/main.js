@@ -371,7 +371,7 @@ function renderLoginForm() {
         <div class="login-container">
             <div class="login-form">
                 <h2>Welcome to Nuggie</h2>
-                <form id="loginForm" onsubmit="return handleLogin(event)">
+                <form id="loginForm">
                     <div class="form-group">
                         <label for="username">Username</label>
                         <input type="text" id="username" name="username" required>
@@ -388,6 +388,12 @@ function renderLoginForm() {
             </div>
         </div>
     `;
+    
+    // Add event listener after rendering the form
+    document.getElementById('loginForm').addEventListener('submit', async (event) => {
+        event.preventDefault();
+        await handleLogin(event);
+    });
 }
 
 async function handleLogin(event) {
@@ -415,8 +421,6 @@ async function handleLogin(event) {
         console.error('Login error:', error);
         alert('An error occurred during login. Please try again.');
     }
-    
-    return false;
 }
 
 document.addEventListener('DOMContentLoaded', async () => {

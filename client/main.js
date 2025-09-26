@@ -927,22 +927,23 @@ function renderCreatureImage(creature, className = '') {
   }
 }
 
-// Application state
-const appState = {
-    tribeSettings: { leader: null },
-    species: null
-};
+// Species database state and management
+let speciesData = null;
 
 // Load and cache species database
 async function loadSpeciesDatabase() {
     try {
         const module = await import('./species-database.js');
-        appState.species = module.default || [];
-        return appState.species;
+        speciesData = module.default || {};
+        return speciesData;
     } catch (error) {
         console.error('Failed to load species database:', error);
-        return [];
+        return {};
     }
+}
+
+function getSpeciesDB() {
+    return speciesData;
 }
 
 async function loadSpeciesPage() {
@@ -959,19 +960,9 @@ async function loadSpeciesPage() {
                 <div class="species-filters">
                     <select id="categoryFilter" class="form-control">
                         <option value="">All Categories</option>
-                        <option value="herbivore">Herbivore</option>
-                        <option value="carnivore">Carnivore</option>
-                        <option value="aquatic">Aquatic</option>
-                        <option value="flyer">Flyer</option>
                     </select>
                     <select id="rarityFilter" class="form-control">
                         <option value="">All Rarities</option>
-                        <option value="common">Common</option>
-                        <option value="uncommon">Uncommon</option>
-                        <option value="rare">Rare</option>
-                        <option value="very rare">Very Rare</option>
-                        <option value="unique">Unique</option>
-                        <option value="extinct">Extinct</option>
                     </select>
                     <button id="clearFiltersBtn" class="btn btn-secondary">Clear</button>
                 </div>
@@ -981,7 +972,7 @@ async function loadSpeciesPage() {
     `;
 
     // Load species data if not already loaded
-    if (!appState.species) {
+    if (!speciesData) {
         const speciesGrid = document.getElementById('speciesGrid');
         if (speciesGrid) {
             speciesGrid.innerHTML = '<div class="loading">Loading species database...</div>';
@@ -989,16 +980,58 @@ async function loadSpeciesPage() {
         await loadSpeciesDatabase();
     }
 
+    // Helper to capitalize strings
+    const capitalize = (s) => (s || '').toString().replace(/\b\w/g, c => c.toUpperCase());
+
+    // Collect unique categories and rarities
+    const categories = new Set();
+    const rarities = new Set();
+    Object.values(speciesData || {}).forEach(s => {
+        if (s.category) categories.add(s.category.toLowerCase());
+        if (s.rarity) rarities.add(s.rarity.toLowerCase());
+    });
+
+    // Populate filters
+    const categoryFilter = document.getElementById('categoryFilter');
+    if (categoryFilter) {
+        const options = ['<option value="">All Categories</option>'];
+        Array.from(categories).sort().forEach(cat => {
+            options.push(`<option value="${cat}">${capitalize(cat)}</option>`);
+        });
+        categoryFilter.innerHTML = options.join('');
+    }
+
+    const rarityFilter = document.getElementById('rarityFilter');
+    if (rarityFilter) {
+        const canonicalRarities = [
+            'common',
+            'uncommon',
+            'rare',
+            'very rare',
+            'unique',
+            'extinct'
+        ].filter(r => rarities.has(r));
+
+        const options = ['<option value="">All Rarities</option>'];
+        canonicalRarities.forEach(rarity => {
+            options.push(`<option value="${rarity}">${capitalize(rarity)}</option>`);
+        });
+        rarityFilter.innerHTML = options.join('');
+    }
+
     // Set up filtering functionality
     function filterSpecies() {
         const speciesGrid = document.getElementById('speciesGrid');
-        if (!speciesGrid || !appState.species) return;
+        if (!speciesGrid || !speciesData) {
+            speciesGrid.innerHTML = '<div class="no-species-found">Species database unavailable.</div>';
+            return;
+        }
 
         const searchTerm = (document.getElementById('searchInput')?.value || '').toLowerCase();
         const category = document.getElementById('categoryFilter')?.value?.toLowerCase();
         const rarity = document.getElementById('rarityFilter')?.value?.toLowerCase();
 
-        const filteredSpecies = appState.species.filter(s => {
+        const filteredSpecies = Object.values(speciesData).filter(s => {
             if (searchTerm && !s.name?.toLowerCase().includes(searchTerm) && 
                 !s.category?.toLowerCase().includes(searchTerm) &&
                 !s.diet?.toLowerCase().includes(searchTerm)) {
@@ -1033,8 +1066,6 @@ async function loadSpeciesPage() {
 
     // Wire up event handlers
     const searchInput = document.getElementById('searchInput');
-    const categoryFilter = document.getElementById('categoryFilter');
-    const rarityFilter = document.getElementById('rarityFilter');
     const clearBtn = document.getElementById('clearFiltersBtn');
 
     if (searchInput) searchInput.addEventListener('input', debounce(filterSpecies, 180));
@@ -1051,42 +1082,13 @@ async function loadSpeciesPage() {
 
     // Initial render
     filterSpecies();
-				const categoryFilterEl = document.getElementById('categoryFilter');
-				const rarityFilterEl = document.getElementById('rarityFilter');
-				if (categoryFilterEl) {
-					const opts = ['<option value="">All Categories</option>'].concat(Array.from(cats).sort().map(c => `<option value="${c}">${capitalize(c)}</option>`));
-					categoryFilterEl.innerHTML = opts.join('');
-				}
-				if (rarityFilterEl) {
-					// Use the canonical rarity options in the requested order.
-					const canonical = [
-						{ k: 'common', label: 'Common' },
-						{ k: 'uncommon', label: 'Uncommon' },
-						{ k: 'rare', label: 'Rare' },
-						{ k: 'legendary', label: 'Legendary' },
-						{ k: 'mythic', label: 'Mythic' },
-						{ k: 'boss', label: 'Boss', category: 'boss' }
-					];
-					const opts = ['<option value="">All Rarities</option>'].concat(canonical.map(r => `<option value="${r.k}" ${r.category ? 'data-category="'+r.category+'"' : ''}>${r.label}</option>`));
-					rarityFilterEl.innerHTML = opts.join('');
-				}
-				// Re-attach filter handlers if necessary
-				if (document.getElementById('categoryFilter')) document.getElementById('categoryFilter').addEventListener('change', filterSpecies);
-				if (document.getElementById('rarityFilter')) document.getElementById('rarityFilter').addEventListener('change', filterSpecies);
-				// Finally run the filter to populate the grid
-				filterSpecies();
-			});
-		} catch (err) { console.warn('populateFilters failed', err); filterSpecies(); }
-	})();
-}
-
 // Debounce helper
 function debounce(fn, ms) {
-	let t;
-	return (...args) => {
-		clearTimeout(t);
-		t = setTimeout(() => fn.apply(null, args), ms);
-	};
+    let t;
+    return (...args) => {
+        clearTimeout(t);
+        t = setTimeout(() => fn.apply(null, args), ms);
+    };
 }
 
 function filterSpecies() {

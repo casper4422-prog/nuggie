@@ -1,3 +1,16 @@
+// Utility Functions
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
 // Begin main application logic
 // We'll set the readiness marker only after our exact theme CSS is loaded
 // to avoid the original UI flashing and then being overlapped by the injected UI.
@@ -184,8 +197,50 @@ function goToTrading() {
 	loadTradingPage();
 }
 window.goToTrading = goToTrading;
-function goToBossPlanner() { loadBossPlanner(); }
+// Boss Planner Implementation
+function loadBossPlanner() {
+    const main = document.getElementById('appMainContent');
+    if (!main) return;
+
+    main.innerHTML = `
+        <section class="boss-planner-page">
+            <div class="page-header">
+                <h1>Boss Planner</h1>
+                <div class="section-sub">Plan boss fights, rewards and party composition</div>
+            </div>
+            <div class="boss-controls">
+                <input id="bossSearch" class="form-control" placeholder="Search bosses..." style="max-width:320px;"> 
+                <select id="bossMapFilter" class="form-control" style="max-width:220px;">
+                    <option value="">All Maps</option>
+                    <option>The Island</option>
+                    <option>Scorched Earth</option>
+                    <option>The Center</option>
+                    <option>Aberration</option>
+                    <option>Ragnarok</option>
+                    <option>Astraeos</option>
+                    <option>Extinction</option>
+                </select>
+                <button id="addBossBtn" class="btn btn-primary">Add Boss</button>
+            </div>
+            <div id="bossGrid" class="boss-grid"></div>
+        </section>
+    `;
+
+    // Initialize event handlers
+    document.getElementById('bossSearch')?.addEventListener('input', debounce(renderBossGrid, 200));
+    document.getElementById('bossMapFilter')?.addEventListener('change', renderBossGrid);
+    document.getElementById('addBossBtn')?.addEventListener('click', () => showBossModal());
+
+    // Initial render
+    renderBossGrid();
+}
+
+function goToBossPlanner() { 
+    loadBossPlanner(); 
+}
+
 window.goToBossPlanner = goToBossPlanner;
+window.loadBossPlanner = loadBossPlanner;
 function goToMyProfile() { loadMyProfile(); }
 // Profile page
 function loadMyProfile() {
@@ -982,15 +1037,26 @@ async function loadSpeciesPage() {
         </section>
     `;
 
-    // Get species data from global SPECIES_DATABASE
-    const speciesDB = getSpeciesDB();
-    if (!Object.keys(speciesDB).length) {
-        const speciesGrid = document.getElementById('speciesGrid');
-        if (speciesGrid) {
-            speciesGrid.innerHTML = '<div class="loading">No species data available</div>';
+    // Initialize the species grid
+    const speciesGrid = document.getElementById('speciesGrid');
+    
+    // Ensure species database is loaded
+    try {
+        await waitForSpeciesDB(3000, 50);
+        const speciesDB = window.SPECIES_DATABASE || {};
+        
+        if (!Object.keys(speciesDB).length) {
+            if (speciesGrid) {
+                speciesGrid.innerHTML = '<div class="error">No species data available</div>';
+            }
             return;
         }
-        await loadSpeciesDatabase();
+    } catch (e) {
+        console.error('Failed to load species database:', e);
+        if (speciesGrid) {
+            speciesGrid.innerHTML = '<div class="error">Failed to load species database</div>';
+        }
+        return;
     }
 
     // Helper to capitalize strings

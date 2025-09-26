@@ -927,6 +927,24 @@ function renderCreatureImage(creature, className = '') {
   }
 }
 
+// Application state
+const appState = {
+    tribeSettings: { leader: null },
+    species: null
+};
+
+// Load and cache species database
+async function loadSpeciesDatabase() {
+    try {
+        const module = await import('./species-database.js');
+        appState.species = module.default || [];
+        return appState.species;
+    } catch (error) {
+        console.error('Failed to load species database:', error);
+        return [];
+    }
+}
+
 async function loadSpeciesPage() {
     const main = document.getElementById('appMainContent');
     if (!main) return;
@@ -953,130 +971,86 @@ async function loadSpeciesPage() {
                         <option value="rare">Rare</option>
                         <option value="very rare">Very Rare</option>
                         <option value="unique">Unique</option>
+                        <option value="extinct">Extinct</option>
                     </select>
+                    <button id="clearFiltersBtn" class="btn btn-secondary">Clear</button>
                 </div>
             </div>
-            <div id="speciesGrid" class="species-grid"></div>
+            <div id="speciesGrid" class="species-grid" aria-live="polite"></div>
         </section>
     `;
 
-    try {
-        // Load species database
-        const species = await import('./species-database.js');
-        if (!species || !species.default) {
-            console.error('Failed to load species database');
-            return;
-        }
-
+    // Load species data if not already loaded
+    if (!appState.species) {
         const speciesGrid = document.getElementById('speciesGrid');
-        if (!speciesGrid) return;
+        if (speciesGrid) {
+            speciesGrid.innerHTML = '<div class="loading">Loading species database...</div>';
+        }
+        await loadSpeciesDatabase();
+    }
 
-        // Render species cards
-        const renderCards = () => {
-            const searchTerm = (document.getElementById('searchInput')?.value || '').toLowerCase();
-            const category = document.getElementById('categoryFilter')?.value;
-            const rarity = document.getElementById('rarityFilter')?.value;
+    // Set up filtering functionality
+    function filterSpecies() {
+        const speciesGrid = document.getElementById('speciesGrid');
+        if (!speciesGrid || !appState.species) return;
 
-            const filteredSpecies = species.default.filter(s => {
-                if (searchTerm && !s.name.toLowerCase().includes(searchTerm) && 
-                    !s.category?.toLowerCase().includes(searchTerm) &&
-                    !s.diet?.toLowerCase().includes(searchTerm)) {
-                    return false;
-                }
-                if (category && s.category?.toLowerCase() !== category.toLowerCase()) {
-                    return false;
-                }
-                if (rarity && s.rarity?.toLowerCase() !== rarity.toLowerCase()) {
-                    return false;
-                }
-                return true;
-            });
+        const searchTerm = (document.getElementById('searchInput')?.value || '').toLowerCase();
+        const category = document.getElementById('categoryFilter')?.value?.toLowerCase();
+        const rarity = document.getElementById('rarityFilter')?.value?.toLowerCase();
 
-            speciesGrid.innerHTML = filteredSpecies.map(s => `
-                <div class="species-card" data-species-id="${s.id}">
-                    <div class="species-card-content">
-                        <div class="species-icon">${s.icon || '🦖'}</div>
-                        <div class="species-info">
-                            <div class="species-name">${s.name}</div>
-                            <div class="species-meta">${s.category || ''} · ${s.rarity || 'Common'}</div>
-                            <div class="species-stats">
-                                ${s.baseStats ? Object.entries(s.baseStats)
-                                    .map(([key, value]) => `<span class="stat">${key}: ${value}</span>`)
-                                    .join('') : ''}
-                            </div>
+        const filteredSpecies = appState.species.filter(s => {
+            if (searchTerm && !s.name?.toLowerCase().includes(searchTerm) && 
+                !s.category?.toLowerCase().includes(searchTerm) &&
+                !s.diet?.toLowerCase().includes(searchTerm)) {
+                return false;
+            }
+            if (category && s.category?.toLowerCase() !== category) {
+                return false;
+            }
+            if (rarity && s.rarity?.toLowerCase() !== rarity) {
+                return false;
+            }
+            return true;
+        });
+
+        speciesGrid.innerHTML = filteredSpecies.length ? filteredSpecies.map(s => `
+            <div class="species-card" data-species-id="${s.id || ''}">
+                <div class="species-card-content">
+                    <div class="species-icon">${s.icon || '🦖'}</div>
+                    <div class="species-info">
+                        <div class="species-name">${s.name || 'Unknown Species'}</div>
+                        <div class="species-meta">${s.category || ''} · ${s.rarity || 'Common'}</div>
+                        <div class="species-stats">
+                            ${s.baseStats ? Object.entries(s.baseStats)
+                                .map(([key, value]) => `<span class="stat">${key}: ${value}</span>`)
+                                .join('') : ''}
                         </div>
                     </div>
                 </div>
-            `).join('');
-        };
-
-        // Set up event listeners for filtering
-        document.getElementById('searchInput')?.addEventListener('input', debounce(renderCards, 200));
-        document.getElementById('categoryFilter')?.addEventListener('change', renderCards);
-        document.getElementById('rarityFilter')?.addEventListener('change', renderCards);
-
-        // Initial render
-        renderCards();
-    } catch (error) {
-        console.error('Error loading species page:', error);
+            </div>
+        `).join('') : '<div class="no-results">No species found matching your criteria</div>';
     }
-						<option value="extinct">Extinct</option>
-					</select>
-					<button id="clearFiltersBtn" class="btn btn-secondary">Clear</button>
-				</div>
-			</div>
 
-			<div id="speciesGrid" class="species-grid" aria-live="polite"></div>
-		</section>
-	`;
+    // Wire up event handlers
+    const searchInput = document.getElementById('searchInput');
+    const categoryFilter = document.getElementById('categoryFilter');
+    const rarityFilter = document.getElementById('rarityFilter');
+    const clearBtn = document.getElementById('clearFiltersBtn');
 
-	// Fill tribe info in case other parts rely on it
-	const leaderEl = document.getElementById('tribeLeaderInfo');
-	if (leaderEl) leaderEl.textContent = appState.tribeSettings.leader || 'N/A';
+    if (searchInput) searchInput.addEventListener('input', debounce(filterSpecies, 180));
+    if (categoryFilter) categoryFilter.addEventListener('change', filterSpecies);
+    if (rarityFilter) rarityFilter.addEventListener('change', filterSpecies);
+    if (clearBtn) {
+        clearBtn.addEventListener('click', () => {
+            if (searchInput) searchInput.value = '';
+            if (categoryFilter) categoryFilter.value = '';
+            if (rarityFilter) rarityFilter.value = '';
+            filterSpecies();
+        });
+    }
 
-	// Wire events
-	const searchInput = document.getElementById('searchInput');
-	const categoryFilter = document.getElementById('categoryFilter');
-	const rarityFilter = document.getElementById('rarityFilter');
-	const clearBtn = document.getElementById('clearFiltersBtn');
-
-	if (searchInput) searchInput.addEventListener('input', debounce(filterSpecies, 180));
-	if (categoryFilter) categoryFilter.addEventListener('change', filterSpecies);
-	if (rarityFilter) rarityFilter.addEventListener('change', filterSpecies);
-	if (clearBtn) clearBtn.addEventListener('click', () => {
-		if (searchInput) searchInput.value = '';
-		if (categoryFilter) categoryFilter.value = '';
-		if (rarityFilter) rarityFilter.value = '';
-		filterSpecies();
-	});
-
-	// Initial population
-	// If the species DB is empty, wait briefly for it to resolve then populate
-	try {
-		const initialCount = Object.keys(getSpeciesDB() || {}).length;
-		if (initialCount === 0) {
-			const grid = document.getElementById('speciesGrid');
-			if (grid) grid.innerHTML = '<div class="no-species-found">Species database loading...</div>';
-			await waitForSpeciesDB(3000, 50);
-			console.log('[SPA] species DB probe complete, re-rendering species list');
-		}
-	} catch (e) { console.warn('[SPA] error while waiting for species DB', e); }
-
-	// Populate filters based on the resolved species DB so UI only shows valid options
-	(function populateFilters() {
-		const capitalize = (s) => (s || '').toString().replace(/\b\w/g, c => c.toUpperCase());
-		try {
-			waitForSpeciesDB(2000, 40).then(() => {
-				const db = getSpeciesDB() || {};
-				const list = Object.values(db || {});
-				const cats = new Set();
-				const rarities = new Set();
-				list.forEach(s => {
-					if (!s) return;
-					if (s.category) cats.add((s.category+'').toLowerCase());
-					if (s.tags && Array.isArray(s.tags)) s.tags.forEach(t => cats.add((t+'').toLowerCase()));
-					if (s.rarity) rarities.add((s.rarity+'').toLowerCase());
-				});
+    // Initial render
+    filterSpecies();
 				const categoryFilterEl = document.getElementById('categoryFilter');
 				const rarityFilterEl = document.getElementById('rarityFilter');
 				if (categoryFilterEl) {

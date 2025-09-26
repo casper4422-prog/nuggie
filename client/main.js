@@ -1393,64 +1393,137 @@ async function getSpeciesData() {
     }
 }
 
-// Initialize species filtering with debounce
-const debouncedFilterSpecies = debounce(() => {
-    const searchTerm = document.getElementById('speciesSearch')?.value?.toLowerCase() || '';
-    const speciesData = window.SPECIES_DATABASE || {};
-    const speciesContainer = document.getElementById('speciesGrid');
-    
-    if (!speciesContainer) {
-        console.error('[Species] Species container not found');
+// Species filtering and rendering system
+function renderSpeciesGrid(species) {
+    const grid = document.getElementById('speciesGrid');
+    if (!grid) {
+        console.error('[Species] Grid element not found');
         return;
     }
+
+    if (!species || !species.length) {
+        grid.innerHTML = '<div class="no-species-found">No species found matching your criteria.</div>';
+        return;
+    }
+
+    grid.innerHTML = species.map(s => `
+        <div class="species-card" data-species-id="${s.id || ''}" role="button" tabindex="0">
+            <div class="species-card-content">
+                <div class="species-icon">${s.icon || '🦖'}</div>
+                <div class="species-info">
+                    <div class="species-name">${s.name || 'Unknown Species'}</div>
+                    <div class="species-meta">${s.category || ''} · ${s.rarity || 'Common'}</div>
+                    <div class="species-stats">
+                        ${s.baseStats ? Object.entries(s.baseStats)
+                            .map(([key, value]) => `<span class="stat">${key}: ${value}</span>`)
+                            .join('') : ''}
+                    </div>
+                </div>
+            </div>
+        </div>
+    `).join('');
+
+    // Add click handlers
+    grid.querySelectorAll('.species-card').forEach(card => {
+        card.addEventListener('click', () => {
+            const speciesName = card.querySelector('.species-name')?.textContent;
+            if (speciesName && typeof window.goToCreatures === 'function') {
+                window.goToCreatures(speciesName);
+            }
+        });
+    });
+}
+
+// Species filtering function
+function filterSpecies(immediate = false) {
+    const searchTerm = document.getElementById('speciesSearch')?.value?.toLowerCase() || '';
+    const categoryFilter = document.getElementById('categoryFilter')?.value?.toLowerCase() || '';
+    const rarityFilter = document.getElementById('rarityFilter')?.value?.toLowerCase() || '';
+    
+    const speciesData = window.SPECIES_DATABASE || {};
     
     const filteredSpecies = Object.values(speciesData).filter(species => {
-        const nameMatch = species.name.toLowerCase().includes(searchTerm);
-        const elementMatch = species.element?.toLowerCase().includes(searchTerm);
-        const descMatch = species.description?.toLowerCase().includes(searchTerm);
-        return nameMatch || elementMatch || descMatch;
+        if (!species || !species.name) return false;
+
+        // Search term matching
+        const matchesSearch = !searchTerm || (
+            (species.name && species.name.toLowerCase().includes(searchTerm)) ||
+            (species.category && species.category.toLowerCase().includes(searchTerm)) ||
+            (species.diet && species.diet.toLowerCase().includes(searchTerm)) ||
+            (species.description && species.description.toLowerCase().includes(searchTerm))
+        );
+
+        // Category matching
+        let matchesCategory = true;
+        if (categoryFilter) {
+            const categoryText = [
+                species.category || '',
+                species.diet || '',
+                ...(Array.isArray(species.tags) ? species.tags : [])
+            ].join(' ').toLowerCase();
+
+            if (categoryFilter === 'flyer') {
+                const hasFlightSpeed = species.speeds?.flying > 0;
+                matchesCategory = hasFlightSpeed || 
+                    categoryText.includes('fly') || 
+                    categoryText.includes('flying') || 
+                    categoryText.includes('wing');
+            } else {
+                matchesCategory = categoryText.includes(categoryFilter);
+            }
+        }
+
+        // Rarity matching
+        let matchesRarity = true;
+        if (rarityFilter) {
+            const speciesRarity = canonicalRarityForSpecies(species).toLowerCase();
+            matchesRarity = speciesRarity === rarityFilter;
+        }
+
+        return matchesSearch && matchesCategory && matchesRarity;
     });
 
     renderSpeciesGrid(filteredSpecies);
-}, 250);
+}
 
-// Attach event listeners for species filtering
+// Create debounced version for input events
+const debouncedFilterSpecies = debounce(filterSpecies, 250);
+
+// Initialize species filtering
 function initializeSpeciesFilters() {
     const searchInput = document.getElementById('speciesSearch');
+    const categorySelect = document.getElementById('categoryFilter');
+    const raritySelect = document.getElementById('rarityFilter');
+
+    // Remove any existing listeners first
+    [searchInput, categorySelect, raritySelect].forEach(element => {
+        if (element) {
+            element.removeEventListener('input', debouncedFilterSpecies);
+            element.removeEventListener('change', debouncedFilterSpecies);
+        }
+    });
+
+    // Add new listeners
     if (searchInput) {
         searchInput.addEventListener('input', debouncedFilterSpecies);
     }
-}
-
-// Main filter function that triggers the debounced version
-function filterSpecies() {
-    if (document.getElementById('speciesGrid')) {
-        debouncedFilterSpecies();
+    if (categorySelect) {
+        categorySelect.addEventListener('change', () => filterSpecies(true));
     }
+    if (raritySelect) {
+        raritySelect.addEventListener('change', () => filterSpecies(true));
+    }
+
+    // Initial filtering
+    filterSpecies(true);
 }
 
-// Make sure to initialize filters when the species page loads
+// Initialize on page load if needed
 document.addEventListener('DOMContentLoaded', () => {
     if (window.location.hash === '#species') {
         initializeSpeciesFilters();
     }
 });
-	const searchTerm = (document.getElementById('searchInput')?.value || '').toLowerCase();
-	const categoryFilter = (document.getElementById('categoryFilter')?.value || '').toLowerCase();
-	const rarityFilter = (document.getElementById('rarityFilter')?.value || '').toLowerCase();
-
-	const grid = document.getElementById('speciesGrid');
-	if (!grid) return;
-	if (!Object.keys(getSpeciesDB() || {}).length) {
-		grid.innerHTML = '<div class="no-species-found">Species database unavailable.</div>';
-		return;
-	}
-
-	grid.innerHTML = '';
-	let filteredCount = 0;
-
-	speciesValues().forEach(species => {
-		if (!species || !species.name) return;
 
 		const matchesSearch = !searchTerm || (
 			(species.name && species.name.toLowerCase().includes(searchTerm)) ||
@@ -1504,16 +1577,7 @@ document.addEventListener('DOMContentLoaded', () => {
 					card.onclick = () => { console.warn('openCreaturePage not available'); };
 				}
 				grid.appendChild(card);
-				filteredCount++;
-			}
-		}
-	});
-
-	if (filteredCount === 0) {
-		grid.innerHTML = '<div class="no-species-found">No species found</div>';
-	}
-}
-
+// Helper function to create a species card
 function createSpeciesCard(species, creatureCount) {
 	if (!species || !species.name) return null;
 	const card = document.createElement('div');

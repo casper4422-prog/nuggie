@@ -253,43 +253,71 @@ db.serialize(() => {
 app.post('/api/register', (req, res) => {
   // Log incoming request for diagnostics (helps detect proxies or body-parsing issues)
   try { console.log('[API] /api/register incoming', { headers: req.headers || {}, bodyPreview: (() => { try { return JSON.stringify(req.body).slice(0,200); } catch(e){ return String(req.body); } })() }); } catch(e){}
-  const { email, password, nickname } = req.body || {};
+  const { email, password, nickname, discord_name } = req.body || {};
+  
+  // Validate required fields
   if (!email || !password) {
     res.setHeader('Content-Type', 'application/json');
     return res.status(400).json({ error: 'Missing email or password' });
   }
+
+  // Clean input values
   const emailVal = (email || '').trim();
   const nickVal = nickname ? String(nickname).trim() : null;
+  const discordVal = discord_name ? String(discord_name).trim() : null;
+
+  // Basic validation
+  if (!emailVal.includes('@')) {
+    return res.status(400).json({ error: 'Invalid email format' });
+  }
+
   // Check for existing email or nickname (case-insensitive)
-  db.get('SELECT id FROM users WHERE email = ? COLLATE NOCASE OR (nickname IS NOT NULL AND nickname = ? COLLATE NOCASE)', [emailVal, nickVal], (err, row) => {
+  const checkQuery = nickVal 
+    ? 'SELECT id FROM users WHERE email = ? COLLATE NOCASE OR (nickname IS NOT NULL AND nickname = ? COLLATE NOCASE)'
+    : 'SELECT id FROM users WHERE email = ? COLLATE NOCASE';
+  const checkParams = nickVal ? [emailVal, nickVal] : [emailVal];
+
+  db.get(checkQuery, checkParams, (err, row) => {
     if (err) {
-      res.setHeader('Content-Type', 'application/json');
       console.warn('[API] /api/register db lookup error', err && err.message ? err.message : err);
-      return res.status(500).json({ error: 'Server error' });
+      return res.status(500).json({ error: 'Server error during lookup' });
     }
     if (row) {
-      res.setHeader('Content-Type', 'application/json');
       return res.status(400).json({ error: 'Email or nickname already exists' });
     }
+
+    // Hash password and create user
     bcrypt.hash(password, 10, (err, hash) => {
       if (err) {
-        res.setHeader('Content-Type', 'application/json');
         console.warn('[API] /api/register bcrypt error', err && err.message ? err.message : err);
-        return res.status(500).json({ error: 'Server error' });
+        return res.status(500).json({ error: 'Server error during password processing' });
       }
-      db.run('INSERT INTO users (email, password, nickname) VALUES (?, ?, ?)', [emailVal, hash, nickVal], function(err) {
-        if (err) {
-          res.setHeader('Content-Type', 'application/json');
-          console.warn('[API] /api/register insert error', err && err.message ? err.message : err);
-          return res.status(500).json({ error: 'Failed to create user' });
+
+      // Insert new user with all fields
+      db.run(
+        'INSERT INTO users (email, password, nickname, discord_name) VALUES (?, ?, ?, ?)', 
+        [emailVal, hash, nickVal, discordVal], 
+        function(err) {
+          if (err) {
+            console.warn('[API] /api/register insert error', err && err.message ? err.message : err);
+            return res.status(500).json({ error: 'Failed to create user' });
+          }
+
+          // Generate token and return user info
+          const userId = this.lastID;
+          const token = jwt.sign({ userId }, SECRET, { expiresIn: '1d' });
+          console.log('[API] /api/register success for userId', userId);
+          
+          return res.json({ 
+            success: true, 
+            token, 
+            userId,
+            email: emailVal,
+            nickname: nickVal,
+            discord_name: discordVal
+          });
         }
-        // return token + user info
-        const userId = this.lastID;
-        const token = jwt.sign({ userId }, SECRET, { expiresIn: '1d' });
-        try { res.setHeader('Content-Type', 'application/json'); } catch(e){}
-        try { console.log('[API] /api/register success for userId', userId); } catch(e){}
-        return res.json({ success: true, token, user: { id: userId, email: emailVal, nickname: nickVal } });
-      });
+      );
     });
   });
 });

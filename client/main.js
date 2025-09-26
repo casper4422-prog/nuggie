@@ -166,8 +166,16 @@ function updateTribeHeader() {
 		console.warn('[SPA] updateTribeHeader failed', e);
 	}
 }
-function goToCreatures() {
-	loadSpeciesPage();
+async function goToCreatures() {
+    try {
+        const main = document.getElementById('appMainContent');
+        if (main) main.innerHTML = '<div class="loading">Loading species database...</div>';
+        await loadSpeciesPage();
+    } catch (e) {
+        console.error('Failed to load species page:', e);
+        const main = document.getElementById('appMainContent');
+        if (main) main.innerHTML = '<div class="error">Failed to load species database</div>';
+    }
 }
 function goToMyNuggies() {
 	loadMyNuggiesPage();
@@ -927,26 +935,29 @@ function renderCreatureImage(creature, className = '') {
   }
 }
 
-// Species database state and management
-let speciesData = null;
+// Use global SPECIES_DATABASE for species data management
+// This is populated by species-database.js which is loaded in index.html
+function speciesValues() {
+    const db = getSpeciesDB();
+    return Object.values(db || {});
+}
 
-// Load and cache species database
-async function loadSpeciesDatabase() {
-    try {
-        const module = await import('./species-database.js');
-        speciesData = module.default || {};
-        return speciesData;
-    } catch (error) {
-        console.error('Failed to load species database:', error);
-        return {};
+// Initialize species database and ensure it's loaded
+function initializeSpeciesDB() {
+    if (!window.SPECIES_DATABASE) {
+        window.SPECIES_DATABASE = {};
+        console.warn('Species database not loaded yet');
     }
 }
 
+// Ensure we're using the global SPECIES_DATABASE
 function getSpeciesDB() {
-    return speciesData;
+    return (typeof window !== 'undefined' && window.SPECIES_DATABASE) ? window.SPECIES_DATABASE : {};
 }
 
 async function loadSpeciesPage() {
+    // First ensure species database is loaded
+    await waitForSpeciesDB(2000, 50);
     const main = document.getElementById('appMainContent');
     if (!main) return;
 
@@ -971,11 +982,13 @@ async function loadSpeciesPage() {
         </section>
     `;
 
-    // Load species data if not already loaded
-    if (!speciesData) {
+    // Get species data from global SPECIES_DATABASE
+    const speciesDB = getSpeciesDB();
+    if (!Object.keys(speciesDB).length) {
         const speciesGrid = document.getElementById('speciesGrid');
         if (speciesGrid) {
-            speciesGrid.innerHTML = '<div class="loading">Loading species database...</div>';
+            speciesGrid.innerHTML = '<div class="loading">No species data available</div>';
+            return;
         }
         await loadSpeciesDatabase();
     }

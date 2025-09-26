@@ -1297,11 +1297,73 @@ function filterSpecies() {
         </div>
     `).join('') : '<div class="no-results">No species found matching your criteria</div>';
 }
-        t = setTimeout(() => fn.apply(null, args), ms);
+
+// Utility Functions
+const debounce = (fn, wait) => {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            fn(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
     };
+};
+
+// Species Management Functions
+async function getSpeciesData() {
+    try {
+        await waitForSpeciesDB(2000, 50);
+        return window.SPECIES_DATABASE || {};
+    } catch (e) {
+        console.error('Failed to load species data:', e);
+        return {};
+    }
 }
 
+// Initialize species filtering with debounce
+const debouncedFilterSpecies = debounce(() => {
+    const searchTerm = document.getElementById('speciesSearch')?.value?.toLowerCase() || '';
+    const speciesData = window.SPECIES_DATABASE || {};
+    const speciesContainer = document.getElementById('speciesGrid');
+    
+    if (!speciesContainer) {
+        console.error('[Species] Species container not found');
+        return;
+    }
+    
+    const filteredSpecies = Object.values(speciesData).filter(species => {
+        const nameMatch = species.name.toLowerCase().includes(searchTerm);
+        const elementMatch = species.element?.toLowerCase().includes(searchTerm);
+        const descMatch = species.description?.toLowerCase().includes(searchTerm);
+        return nameMatch || elementMatch || descMatch;
+    });
+
+    renderSpeciesGrid(filteredSpecies);
+}, 250);
+
+// Attach event listeners for species filtering
+function initializeSpeciesFilters() {
+    const searchInput = document.getElementById('speciesSearch');
+    if (searchInput) {
+        searchInput.addEventListener('input', debouncedFilterSpecies);
+    }
+}
+
+// Main filter function that triggers the debounced version
 function filterSpecies() {
+    if (document.getElementById('speciesGrid')) {
+        debouncedFilterSpecies();
+    }
+}
+
+// Make sure to initialize filters when the species page loads
+document.addEventListener('DOMContentLoaded', () => {
+    if (window.location.hash === '#species') {
+        initializeSpeciesFilters();
+    }
+});
 	const searchTerm = (document.getElementById('searchInput')?.value || '').toLowerCase();
 	const categoryFilter = (document.getElementById('categoryFilter')?.value || '').toLowerCase();
 	const rarityFilter = (document.getElementById('rarityFilter')?.value || '').toLowerCase();

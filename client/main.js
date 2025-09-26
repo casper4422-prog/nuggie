@@ -2272,39 +2272,64 @@ function getUserKey(baseKey) {
 		const user = email || nick || '';
 		const safe = user ? encodeURIComponent(user).replace(/%/g,'') : 'anon';
 		return `${baseKey}:${safe}`;
-	} catch (e) { return `${baseKey}:anon`; }
-}
-
-// Migrate legacy global keys into per-user namespaced keys on first startup for this user
-function migrateLegacyKeysToUser() {
-	try {
-		const mappings = [
-			{ global: 'arkCreatures', user: getCreatureStorageKey() },
-			{ global: 'arkTribeSettings', user: getUserKey('arkTribeSettings') },
-			{ global: 'bossPlanner.v1', user: getUserKey(BOSS_STORAGE_KEY_BASE) },
-			{ global: 'bossPlanner.assignments.v1', user: getUserKey(ASSIGNMENT_KEY_BASE) },
-			{ global: 'bossPlanner.invites.v1', user: getUserKey(INVITE_STORAGE_KEY_BASE) },
-			{ global: 'bossPlanner.timers.v1', user: getUserKey(TIMER_STORAGE_KEY_BASE) },
-			{ global: 'arenaCreatures.v1', user: getUserKey(ARENA_CREATURES_KEY_BASE) }
-		];
-		mappings.forEach(m => {
-			try {
-				const globalVal = localStorage.getItem(m.global);
-				const userVal = localStorage.getItem(m.user);
-				if (globalVal && (!userVal || userVal === 'null')) {
-					localStorage.setItem(m.user, globalVal);
-					console.info('migrated', m.global, '->', m.user);
-				}
-			} catch (e) { /* ignore per-key errors */ }
-		});
-	} catch (e) { console.warn('migration failed', e); }
+    } catch (e) { return `${baseKey}:anon`; }
 }
 
 // Arena-specific creature storage: key maps arenaId -> array of creature objects (namespaced per-user)
 const ARENA_CREATURES_KEY_BASE = 'arenaCreatures.v1';
-function getArenaCreatures() { try { return JSON.parse(localStorage.getItem(getUserKey(ARENA_CREATURES_KEY_BASE)) || '{}'); } catch (e) { return {}; } }
-function saveArenaCreatures(obj) { try { localStorage.setItem(getUserKey(ARENA_CREATURES_KEY_BASE), JSON.stringify(obj)); } catch (e) {} }
-function saveArenaCreaturesWithSync(obj) { try { saveArenaCreatures(obj); } catch (e) {} try { if (localStorage.getItem('token')) saveArenaCollectionsToServer(obj); } catch (e) {} }
+
+function getArenaCreatures() { 
+    try { 
+        return JSON.parse(localStorage.getItem(getUserKey(ARENA_CREATURES_KEY_BASE)) || '{}'); 
+    } catch (e) { 
+        return {}; 
+    } 
+}
+
+function saveArenaCreatures(obj) { 
+    try { 
+        localStorage.setItem(getUserKey(ARENA_CREATURES_KEY_BASE), JSON.stringify(obj)); 
+    } catch (e) { 
+        console.error('Failed to save arena creatures:', e); 
+    } 
+}
+
+function saveArenaCreaturesWithSync(obj) { 
+    try { 
+        saveArenaCreatures(obj); 
+        if (localStorage.getItem('token')) {
+            saveArenaCollectionsToServer(obj);
+        }
+    } catch (e) { 
+        console.error('Failed to sync arena creatures:', e); 
+    } 
+}
+
+// Data migration system
+function migrateLegacyKeysToUser() {
+    const mappings = [
+        { global: 'arkCreatures', user: getCreatureStorageKey() },
+        { global: 'arkTribeSettings', user: getUserKey('arkTribeSettings') },
+        { global: 'bossPlanner.v1', user: getUserKey(BOSS_STORAGE_KEY_BASE) },
+        { global: 'bossPlanner.assignments.v1', user: getUserKey(ASSIGNMENT_KEY_BASE) },
+        { global: 'bossPlanner.invites.v1', user: getUserKey(INVITE_STORAGE_KEY_BASE) },
+        { global: 'bossPlanner.timers.v1', user: getUserKey(TIMER_STORAGE_KEY_BASE) },
+        { global: 'arenaCreatures.v1', user: getUserKey(ARENA_CREATURES_KEY_BASE) }
+    ];
+
+    mappings.forEach(m => {
+        try {
+            const globalVal = localStorage.getItem(m.global);
+            const userVal = localStorage.getItem(m.user);
+            if (globalVal && (!userVal || userVal === 'null')) {
+                localStorage.setItem(m.user, globalVal);
+                console.info('[Migration] Migrated', m.global, '->', m.user);
+            }
+        } catch (e) { 
+            console.warn('[Migration] Failed to migrate key:', m.global, e); 
+        }
+    });
+}
 
 // Sync helpers for boss planner and arena collections
 async function loadServerBossData() {
@@ -2709,5 +2734,24 @@ window.renderBossList = renderBossList;
 window.openArenaPage = openArenaPage;
 window.renderArenaGrid = renderArenaGrid;
 
-// Migration helper
-migrateLegacyKeysToUser();
+// Run migrations and initialize app
+document.addEventListener('DOMContentLoaded', async () => {
+    console.log('[App] Starting initialization...');
+    
+    // Run data migrations first
+    console.log('[Migration] Running data migrations...');
+    try {
+        migrateLegacyKeysToUser();
+        console.log('[Migration] Completed successfully');
+    } catch (e) {
+        console.error('[Migration] Failed:', e);
+    }
+    
+    // Initialize the app
+    try {
+        await initializeApp();
+        console.log('[App] Initialization complete');
+    } catch (e) {
+        console.error('[App] Initialization failed:', e);
+    }
+});

@@ -2197,21 +2197,44 @@ function openBossAssignment(boss) {
 	}
 
 	startBtn?.addEventListener('click', async () => {
-		const m = parseInt(minutesInput?.value) || 0; if (m <= 0) return alert('Enter minutes > 0');
-		// create timer on server
+		const m = parseInt(minutesInput?.value) || 0; 
+		if (m <= 0) return alert('Enter minutes > 0');
+		
+		// Create timer on server first
 		try {
 			const when = new Date(Date.now() + m * 60000).toISOString();
 			const resp = await apiRequest('/api/boss/timers', { method: 'POST', body: JSON.stringify({ bossId: boss.id, scheduledAt: when }) });
 			if (!resp.res.ok) return alert('Failed to schedule timer');
-			// also save locally for UI convenience
-			const timers = getTimers(); timers[boss.id] = when; saveTimers(timers); renderTimer();
+			
+			// On success, save locally and start UI updates
+			const timers = getTimers();
+			timers[boss.id] = when;
+			saveTimers(timers);
+			
 			if (timerInterval) clearInterval(timerInterval);
 			timerInterval = setInterval(renderTimer, 1000);
-		} catch (e) { alert('Failed to schedule timer'); }
+			renderTimer();
+		} catch (e) {
+			alert('Failed to schedule timer');
+		}
 	});
-	stopBtn?.addEventListener('click', () => { const timers = getTimers(); delete timers[boss.id]; saveTimers(timers); if (timerInterval) clearInterval(timerInterval); timerInterval = null; renderTimer(); });
-	// if there is an active timer, start rendering
-	if (getTimers()[boss.id]) { if (timerInterval) clearInterval(timerInterval); timerInterval = setInterval(renderTimer, 1000); renderTimer(); }
+
+	stopBtn?.addEventListener('click', () => {
+		const timers = getTimers();
+		delete timers[boss.id];
+		saveTimers(timers);
+		if (timerInterval) clearInterval(timerInterval);
+		timerInterval = null;
+		renderTimer();
+	});
+
+	// Start timer updates if there's an active timer
+	if (getTimers()[boss.id]) {
+		if (timerInterval) clearInterval(timerInterval);
+		timerInterval = setInterval(renderTimer, 1000);
+		renderTimer();
+	}
+} // Close openBossAssignment function
 }
 
 function showBossDetail(id) {
@@ -2270,3 +2293,14 @@ function openBossModal(bossId) {
 		saveBossData(all); modal.classList.remove('active'); modal.innerHTML=''; modal.setAttribute('aria-hidden','true'); renderBossList();
 	});
 }
+
+// Expose boss planner functions to window for debugging
+window.loadBossPlanner = loadBossPlanner;
+window.openBossModal = openBossModal;
+window.showBossDetail = showBossDetail;
+window.renderBossList = renderBossList;
+window.openArenaPage = openArenaPage;
+window.renderArenaGrid = renderArenaGrid;
+
+// Migration helper
+migrateLegacyKeysToUser();

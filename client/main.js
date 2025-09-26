@@ -1070,20 +1070,26 @@ async function loadSpeciesPage() {
         
         await waitForSpeciesDB(2000, 50);
         
-    const main = document.getElementById('appMainContent');
-    if (!main) {
-        console.error('[SPA] Main content element not found');
-        return;
-    }
-    } catch (e) {
-        console.error('[SPA] Error in loadSpeciesPage:', e);
         const main = document.getElementById('appMainContent');
-        if (main) {
-            main.innerHTML = '<div class="error">Failed to load species page. Please try again.</div>';
+        if (!main) {
+            console.error('[SPA] Main content element not found');
+            return;
         }
-        return;
-    }    // Render the species page with search and filters and a species grid
-    main.innerHTML = `
+
+        console.log('[SPA] Rendering species page...');
+        
+        // Show loading state
+        main.innerHTML = '<div class="loading">Loading species data...</div>';
+        
+        // Get species data
+        const speciesDB = window.SPECIES_DATABASE || {};
+        if (!Object.keys(speciesDB).length) {
+            main.innerHTML = '<div class="error">No species data available.</div>';
+            return;
+        }
+
+        // Render the species page with search and filters and a species grid
+        main.innerHTML = `
         <section class="species-section">
             <div class="species-header-controls">
                 <div class="species-search">
@@ -1225,13 +1231,72 @@ async function loadSpeciesPage() {
         });
     }
 
-    // Initial render
-    filterSpecies();
-// Debounce helper
-function debounce(fn, ms) {
-    let t;
-    return (...args) => {
-        clearTimeout(t);
+        // Initial render
+        filterSpecies();
+        
+    } catch (e) {
+        console.error('[SPA] Error rendering species page:', e);
+        const main = document.getElementById('appMainContent');
+        if (main) {
+            main.innerHTML = '<div class="error">Failed to render species page. Please try again.</div>';
+        }
+    }
+}
+
+// Helper function to filter species data
+function filterSpecies() {
+    const grid = document.getElementById('speciesGrid');
+    if (!grid) {
+        console.error('[SPA] Species grid not found');
+        return;
+    }
+
+    const searchTerm = (document.getElementById('searchInput')?.value || '').toLowerCase();
+    const category = (document.getElementById('categoryFilter')?.value || '').toLowerCase();
+    const rarity = (document.getElementById('rarityFilter')?.value || '').toLowerCase();
+
+    const speciesDB = window.SPECIES_DATABASE || {};
+    const species = Object.values(speciesDB);
+
+    const filtered = species.filter(s => {
+        if (!s || !s.name) return false;
+        
+        if (searchTerm && !s.name.toLowerCase().includes(searchTerm) &&
+            !s.category?.toLowerCase().includes(searchTerm) &&
+            !s.diet?.toLowerCase().includes(searchTerm)) {
+            return false;
+        }
+        
+        if (category && s.category?.toLowerCase() !== category) {
+            return false;
+        }
+        
+        if (rarity && s.rarity?.toLowerCase() !== rarity) {
+            return false;
+        }
+        
+        return true;
+    });
+
+    console.log(`[SPA] Filtered species: ${filtered.length} of ${species.length}`);
+
+    grid.innerHTML = filtered.length ? filtered.map(s => `
+        <div class="species-card" onclick="window.goToCreatures('${s.name}')" data-species-id="${s.id || ''}">
+            <div class="species-card-content">
+                <div class="species-icon">${s.icon || '🦖'}</div>
+                <div class="species-info">
+                    <div class="species-name">${s.name || 'Unknown Species'}</div>
+                    <div class="species-meta">${s.category || ''} · ${s.rarity || 'Common'}</div>
+                    <div class="species-stats">
+                        ${s.baseStats ? Object.entries(s.baseStats)
+                            .map(([key, value]) => `<span class="stat">${key}: ${value}</span>`)
+                            .join('') : ''}
+                    </div>
+                </div>
+            </div>
+        </div>
+    `).join('') : '<div class="no-results">No species found matching your criteria</div>';
+}
         t = setTimeout(() => fn.apply(null, args), ms);
     };
 }

@@ -11,6 +11,53 @@ function debounce(func, wait) {
     };
 }
 
+// Initialize API configuration
+window.__API_BASE = window.__API_BASE || 'http://localhost:3000'; // Default to localhost if not set
+
+// Application State Management
+window.appState = window.appState || {
+    initialized: false,
+    authenticated: false,
+    creatures: [],
+    errors: []
+};
+
+// Initialize the application
+async function initializeApp() {
+    try {
+        // Check if user is already authenticated
+        const token = localStorage.getItem('token');
+        if (token) {
+            // Verify token is still valid
+            const { res } = await apiRequest('/api/auth/verify', { 
+                method: 'GET',
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            window.appState.authenticated = res.ok;
+        }
+
+        // Load species database
+        await waitForSpeciesDB(3000, 50);
+        
+        // Load user's creatures if authenticated
+        if (window.appState.authenticated) {
+            try {
+                const { res, body } = await apiRequest('/api/creature', { method: 'GET' });
+                if (res.ok && Array.isArray(body)) {
+                    window.appState.creatures = body;
+                }
+            } catch (e) {
+                console.error('Failed to load user creatures:', e);
+            }
+        }
+
+        window.appState.initialized = true;
+    } catch (e) {
+        console.error('Failed to initialize app:', e);
+        window.appState.errors.push(e);
+    }
+}
+
 // Begin main application logic
 // We'll set the readiness marker only after our exact theme CSS is loaded
 // to avoid the original UI flashing and then being overlapped by the injected UI.
@@ -297,8 +344,11 @@ window.goToMyProfile = goToMyProfile;
 window.goToCreatures = goToCreatures;
 window.goToMyNuggies = goToMyNuggies;
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
 	console.log('[SPA] DOMContentLoaded fired');
+	
+	// Initialize the application
+	await initializeApp();
 
 	// Helper: resolve base path for assets relative to this script
 	function resolveBasePath() {
@@ -1011,12 +1061,28 @@ function getSpeciesDB() {
 }
 
 async function loadSpeciesPage() {
-    // First ensure species database is loaded
-    await waitForSpeciesDB(2000, 50);
+    try {
+        // First ensure app and species database are initialized
+        if (!window.appState?.initialized) {
+            console.log('[SPA] Waiting for app initialization...');
+            await initializeApp();
+        }
+        
+        await waitForSpeciesDB(2000, 50);
+        
     const main = document.getElementById('appMainContent');
-    if (!main) return;
-
-    // Render the species page with search and filters and a species grid
+    if (!main) {
+        console.error('[SPA] Main content element not found');
+        return;
+    }
+    } catch (e) {
+        console.error('[SPA] Error in loadSpeciesPage:', e);
+        const main = document.getElementById('appMainContent');
+        if (main) {
+            main.innerHTML = '<div class="error">Failed to load species page. Please try again.</div>';
+        }
+        return;
+    }    // Render the species page with search and filters and a species grid
     main.innerHTML = `
         <section class="species-section">
             <div class="species-header-controls">

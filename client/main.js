@@ -361,23 +361,29 @@ window.goToMyNuggies = goToMyNuggies;
 
 // Login page handling
 function renderLoginForm() {
+    // Clear any existing content
     const main = document.getElementById('appMainContent');
     if (!main) {
         console.error('[SPA] Main content element not found');
         return;
     }
 
-    main.innerHTML = `
-        <div class="login-container">
-            <div class="login-form">
-                <h2>Welcome to Nuggie</h2>
-                <form id="loginForm">
-                    <div class="form-group">
-                        <label for="username">Username</label>
-                        <input type="text" id="username" name="username" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="password">Password</label>
+    // First, clear any existing content
+    main.innerHTML = '';
+
+    // Create and append the login container
+    const loginContainer = document.createElement('div');
+    loginContainer.className = 'login-container';
+    loginContainer.innerHTML = `
+        <div class="login-form">
+            <h2>Welcome to Nuggie</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required autocomplete="username">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
                         <input type="password" id="password" name="password" required>
                     </div>
                     <button type="submit" class="btn-primary">Login</button>

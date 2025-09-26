@@ -10,8 +10,6 @@ function debounce(func, wait) {
         timeout = setTimeout(later, wait);
     };
 }
-    };
-}
 
 // Initialize API configuration
 window.__API_BASE = window.__API_BASE || 'http://localhost:3000'; // Default to localhost if not set

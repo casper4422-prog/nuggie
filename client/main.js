@@ -361,11 +361,76 @@ window.goToMyProfile = goToMyProfile;
 window.goToCreatures = goToCreatures;
 window.goToMyNuggies = goToMyNuggies;
 
+// Login page handling
+function renderLoginForm() {
+    const main = document.getElementById('appMainContent');
+    if (!main) {
+        console.error('[SPA] Main content element not found');
+        return;
+    }
+
+    main.innerHTML = `
+        <div class="login-container">
+            <div class="login-form">
+                <h2>Welcome to Nuggie</h2>
+                <form id="loginForm" onsubmit="return handleLogin(event)">
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" id="username" name="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" required>
+                    </div>
+                    <button type="submit" class="btn-primary">Login</button>
+                </form>
+                <p class="register-link">
+                    Don't have an account? <a href="#" onclick="showRegisterForm()">Register here</a>
+                </p>
+            </div>
+        </div>
+    `;
+}
+
+async function handleLogin(event) {
+    event.preventDefault();
+    
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+    
+    try {
+        const { res, body } = await apiRequest('/api/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password })
+        });
+
+        if (res.ok && body.token) {
+            localStorage.setItem('token', body.token);
+            window.appState.authenticated = true;
+            window.location.hash = '#profile';
+            await initializeApp();
+        } else {
+            alert('Login failed. Please check your credentials.');
+        }
+    } catch (error) {
+        console.error('Login error:', error);
+        alert('An error occurred during login. Please try again.');
+    }
+    
+    return false;
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
 	console.log('[SPA] DOMContentLoaded fired');
 	
 	// Initialize the application
 	await initializeApp();
+	
+	// Show login form if not authenticated
+	if (!window.appState.authenticated) {
+	    renderLoginForm();
+	}
 
 	// Helper: resolve base path for assets relative to this script
 	function resolveBasePath() {

@@ -1151,3 +1151,15 @@ function renderArenaGrid() {
     // Placeholder for arena grid rendering logic
     alert('Arena grid rendering is under construction.');
 }
+
+// --- Initialization on DOMContentLoaded ---
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('Initializing application...');
+
+    // Example initialization logic
+    renderBossList();
+    renderArenaGrid();
+
+    // Ensure UI components are visible
+    document.body.style.display = 'block';
+});

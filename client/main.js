@@ -374,60 +374,33 @@ function renderLoginForm() {
     // Create and append the login container
     const loginContainer = document.createElement('div');
     loginContainer.className = 'login-container';
-    loginContainer.innerHTML = `
-        <div class="login-form">
-            <h2>Welcome to Nuggie</h2>
-            <form id="loginForm">
-                <div class="form-group">
-                    <label for="username">Username</label>
-                    <input type="text" id="username" name="username" required autocomplete="username">
-                </div>
-                <div class="form-group">
-                    <label for="password">Password</label>
-                        <input type="password" id="password" name="password" required>
-                    </div>
-                    <button type="submit" class="btn-primary">Login</button>
-                </form>
-                <p class="register-link">
-                    Don't have an account? <a href="#" onclick="showRegisterForm()">Register here</a>
-                </p>
-            </div>
-        </div>
-    `;
+	loginContainer.innerHTML = `
+		<div class="login-form">
+			<h2>Welcome to Nuggie</h2>
+			<form id="loginForm">
+				<div class="form-group">
+					<label for="loginEmail">Email or Nickname</label>
+					<input type="text" id="loginEmail" name="loginEmail" required autocomplete="username">
+				</div>
+				<div class="form-group">
+					<label for="loginPassword">Password</label>
+					<input type="password" id="loginPassword" name="loginPassword" required autocomplete="current-password">
+				</div>
+				<button type="submit" class="btn-primary">Login</button>
+			</form>
+			<p class="register-link">
+				Don't have an account? <a href="#" id="showRegisterInline">Register here</a>
+			</p>
+		</div>
+	`;
     
-    // Add event listener after rendering the form
-    document.getElementById('loginForm').addEventListener('submit', async (event) => {
-        event.preventDefault();
-        await handleLogin(event);
-    });
+	// Add event listener after rendering the form
+	const formEl = document.getElementById('loginForm');
+	if (formEl) formEl.addEventListener('submit', async (event) => { event.preventDefault(); if (typeof handleLogin === 'function') await handleLogin(event); });
+	const regLink = document.getElementById('showRegisterInline'); if (regLink) regLink.addEventListener('click', (e) => { e.preventDefault(); showRegisterPage(); });
 }
 
-async function handleLogin(event) {
-    event.preventDefault();
-    
-    const username = document.getElementById('username').value;
-    const password = document.getElementById('password').value;
-    
-    try {
-        const { res, body } = await apiRequest('/api/auth/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username, password })
-        });
-
-        if (res.ok && body.token) {
-            localStorage.setItem('token', body.token);
-            window.appState.authenticated = true;
-            window.location.hash = '#profile';
-            await initializeApp();
-        } else {
-            alert('Login failed. Please check your credentials.');
-        }
-    } catch (error) {
-        console.error('Login error:', error);
-        alert('An error occurred during login. Please try again.');
-    }
-}
+// The primary handleLogin implementation is defined later (more robust). Older simple handler removed.
 
 document.addEventListener('DOMContentLoaded', async () => {
 	console.log('[SPA] DOMContentLoaded fired');
@@ -1530,59 +1503,6 @@ document.addEventListener('DOMContentLoaded', () => {
         initializeSpeciesFilters();
     }
 });
-
-		const matchesSearch = !searchTerm || (
-			(species.name && species.name.toLowerCase().includes(searchTerm)) ||
-			(species.category && species.category.toLowerCase().includes(searchTerm)) ||
-			(species.diet && species.diet.toLowerCase().includes(searchTerm)) ||
-			(species.description && species.description.toLowerCase().includes(searchTerm))
-		);
-
-		// Category matching: accept contains/includes (handles multi-value categories or tags),
-		// and special-case 'flyer' to detect flying species via speeds or category/tag mentions.
-		let matchesCategory = true;
-		if (categoryFilter) {
-			try {
-				const cat = (species.category || '') + '';
-				const diet = (species.diet || '') + '';
-				const tags = (species.tags && Array.isArray(species.tags)) ? species.tags.join(' ') : '';
-				const hay = (cat + ' ' + diet + ' ' + tags).toLowerCase();
-				if (categoryFilter === 'flyer') {
-					const flying = (species.speeds && (Number(species.speeds.flying) || 0)) || 0;
-					matchesCategory = flying > 0 || hay.includes('fly') || hay.includes('flying') || hay.includes('wing');
-				} else {
-					matchesCategory = hay.includes(categoryFilter);
-				}
-			} catch (e) { matchesCategory = true; }
-		}
-
-		// Rarity matching: normalize species rarity into our canonical set and match against the selected filter.
-		let matchesRarity = true;
-		if (rarityFilter) {
-			try {
-				const selected = (rarityFilter || '').toString().toLowerCase();
-				// Compute canonical rarity for this species
-				const sR = canonicalRarityForSpecies(species);
-				// Boss species should only match when 'boss' is selected
-				if (selected === 'boss') {
-					matchesRarity = (sR === 'boss');
-				} else {
-					matchesRarity = (sR === selected);
-				}
-			} catch (e) { matchesRarity = true; }
-		}
-
-		if (matchesSearch && matchesCategory && matchesRarity) {
-			const creatureCount = (appState.creatures || []).filter(c => c.species === species.name).length;
-			const card = createSpeciesCard(species, creatureCount);
-			if (card) {
-				// Guard click handlers that may reference functions defined in creatures.js
-				if (typeof openCreaturePage === 'function') {
-					card.onclick = () => openCreaturePage(species.name);
-				} else {
-					card.onclick = () => { console.warn('openCreaturePage not available'); };
-				}
-				grid.appendChild(card);
 // Helper function to create a species card
 function createSpeciesCard(species, creatureCount) {
 	if (!species || !species.name) return null;
@@ -2673,7 +2593,6 @@ function openBossAssignment(boss) {
 		renderTimer();
 	}
 } // Close openBossAssignment function
-}
 
 function showBossDetail(id) {
 	const detailEl = document.getElementById('bossDetail'); if (!detailEl) return;

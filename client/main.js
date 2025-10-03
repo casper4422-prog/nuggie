@@ -360,7 +360,7 @@ function renderBossGrid() {
     });
 }
 
-function showBossModal(boss = null) {
+function openBossModal(boss = null) {
     const modal = document.createElement('div');
     modal.className = 'modal';
     modal.innerHTML = `

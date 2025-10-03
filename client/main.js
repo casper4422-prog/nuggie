@@ -1078,3 +1078,76 @@ function filterSpecies() {
         </div>
     `).join('') : '<div class="no-results">No species found matching your criteria</div>';
 }
+
+// Boss detail and arena functions
+function showBossDetail(bossId) {
+    const bosses = getBossData();
+    const boss = bosses.find(b => b.id === bossId);
+    if (!boss) {
+        console.error(`Boss with ID ${bossId} not found.`);
+        return;
+    }
+
+    const detailModal = document.createElement('div');
+    detailModal.className = 'modal';
+    detailModal.innerHTML = `
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>${boss.name} Details</h2>
+                <button type="button" class="close" id="closeDetailModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Map:</strong> ${boss.map}</p>
+                <p><strong>Difficulty:</strong> ${boss.difficulty}</p>
+                <p><strong>Level:</strong> ${boss.level}</p>
+                <p><strong>Party Size:</strong> ${boss.partySize}</p>
+                <p><strong>Notes:</strong> ${boss.notes}</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="closeDetailBtn">Close</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(detailModal);
+
+    setTimeout(() => detailModal.classList.add('show'), 10);
+
+    document.getElementById('closeDetailModal')?.addEventListener('click', () => {
+        detailModal.classList.remove('show');
+        setTimeout(() => detailModal.remove(), 200);
+    });
+    document.getElementById('closeDetailBtn')?.addEventListener('click', () => {
+        detailModal.classList.remove('show');
+        setTimeout(() => detailModal.remove(), 200);
+    });
+}
+
+function renderBossList() {
+    const bosses = getBossData();
+    const bossListContainer = document.getElementById('bossListContainer');
+    if (!bossListContainer) {
+        console.error('Boss list container not found.');
+        return;
+    }
+
+    bossListContainer.innerHTML = bosses.map(boss => `
+        <div class="boss-item">
+            <h3>${boss.name}</h3>
+            <p><strong>Map:</strong> ${boss.map}</p>
+            <p><strong>Difficulty:</strong> ${boss.difficulty}</p>
+            <button class="btn btn-primary" onclick="showBossDetail('${boss.id}')">View Details</button>
+        </div>
+    `).join('');
+}
+
+function openArenaPage(arenaId) {
+    console.log(`Opening arena page for arena ID: ${arenaId}`);
+    // Placeholder for arena page logic
+    alert(`Arena page for ${arenaId} is under construction.`);
+}
+
+function renderArenaGrid() {
+    console.log('Rendering arena grid...');
+    // Placeholder for arena grid rendering logic
+    alert('Arena grid rendering is under construction.');
+}

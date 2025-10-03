@@ -435,8 +435,18 @@ app.delete('/api/creature/:id', authenticateToken, (req, res) => {
 // Get all creature cards for user
 app.get('/api/creature', authenticateToken, (req, res) => {
   db.all('SELECT id, data FROM creature_cards WHERE user_id = ?', [req.user.userId], (err, rows) => {
-    if (err) return res.status(500).json({ error: 'Failed to load' });
-    res.json(rows.map(row => ({ id: row.id, ...JSON.parse(row.data) })));
+    if (err) {
+      console.error('Database error:', err);
+      return res.status(500).json({ error: 'Failed to load' });
+    }
+    try {
+      const parsedRows = rows.map(row => ({ id: row.id, ...JSON.parse(row.data) }));
+      console.log('Fetched creature cards:', parsedRows);
+      res.json(parsedRows);
+    } catch (parseError) {
+      console.error('JSON parse error:', parseError);
+      return res.status(500).json({ error: 'Failed to parse creature data' });
+    }
   });
 });
 

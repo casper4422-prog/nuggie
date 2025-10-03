@@ -302,12 +302,20 @@ function loadBossPlanner() {
 
 function renderBossGrid() {
     const bossGrid = document.getElementById('bossGrid');
-    if (!bossGrid) return;
+    if (!bossGrid) {
+        console.error('Boss grid container not found.');
+        return;
+    }
 
     const searchTerm = document.getElementById('bossSearch')?.value.toLowerCase() || '';
     const mapFilter = document.getElementById('bossMapFilter')?.value || '';
-    
+
     const bosses = getBossData();
+    if (!Array.isArray(bosses)) {
+        console.error('Invalid boss data. Expected an array.');
+        return;
+    }
+
     const filteredBosses = bosses.filter(boss => {
         if (searchTerm && !boss.name.toLowerCase().includes(searchTerm)) {
             return false;
@@ -1130,6 +1138,11 @@ function renderBossList() {
         return;
     }
 
+    if (!Array.isArray(bosses)) {
+        console.error('Invalid boss data. Expected an array.');
+        return;
+    }
+
     bossListContainer.innerHTML = bosses.map(boss => `
         <div class="boss-item">
             <h3>${boss.name}</h3>
@@ -1140,51 +1153,14 @@ function renderBossList() {
     `).join('');
 }
 
-function openArenaPage(arenaId) {
-    console.log(`Opening arena page for arena ID: ${arenaId}`);
-    // Placeholder for arena page logic
-    alert(`Arena page for ${arenaId} is under construction.`);
-}
-
-function renderArenaGrid() {
-    console.log('Rendering arena grid...');
-    // Placeholder for arena grid rendering logic
-    alert('Arena grid rendering is under construction.');
-}
-
 // --- Initialization on DOMContentLoaded ---
 document.addEventListener('DOMContentLoaded', () => {
     console.log('Initializing application...');
 
-    // Example initialization logic
-    renderBossList();
-    renderArenaGrid();
-
     // Ensure UI components are visible
     document.body.style.display = 'block';
-});
 
-function getBossData() {
-    // Placeholder for boss data retrieval logic
-    // Replace this with actual data fetching logic (e.g., from a database or API)
-    return [
-        {
-            id: 'boss_1',
-            name: 'Alpha Dragon',
-            map: 'The Island',
-            difficulty: 'alpha',
-            level: 100,
-            partySize: 10,
-            notes: 'Requires high DPS and coordination.'
-        },
-        {
-            id: 'boss_2',
-            name: 'Beta Broodmother',
-            map: 'Aberration',
-            difficulty: 'beta',
-            level: 75,
-            partySize: 8,
-            notes: 'Watch out for poison attacks.'
-        }
-    ];
-}
+    // Initialize boss rendering
+    renderBossGrid();
+    renderBossList();
+});

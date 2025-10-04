@@ -1183,6 +1183,17 @@ document.addEventListener('DOMContentLoaded', () => {
     renderBossList();
 });
 
+document.getElementById('showRegisterLink')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    const registerPage = document.getElementById('registerPage');
+    const landingPage = document.getElementById('landingPage');
+    if (registerPage && landingPage) {
+        landingPage.classList.add('hidden');
+        registerPage.classList.remove('hidden');
+        registerPage.setAttribute('aria-hidden', 'false');
+    }
+});
+
 function getBossData() {
     // Placeholder for boss data retrieval logic
     // Replace this with actual data fetching logic (e.g., from a database or API)

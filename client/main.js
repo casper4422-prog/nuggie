@@ -1176,6 +1176,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Ensure UI components are visible
     document.body.style.display = 'block';
+    document.documentElement.setAttribute('data-ready', 'true');
 
     // Initialize boss rendering
     renderBossGrid();

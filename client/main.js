@@ -12,7 +12,7 @@ function debounce(func, wait) {
 }
 
 // Initialize API configuration
-window.__API_BASE = window.__API_BASE || 'http://localhost:3000'; // Default to localhost if not set
+window.__API_BASE = window.__API_BASE || 'http://localhost:3001'; // Default to localhost if not set
 
 // Application State Management
 window.appState = window.appState || {
@@ -1207,3 +1207,115 @@ async function saveBossData(bosses) {
         console.error('Error saving bosses:', e);
     }
 }
+
+// Initialize the application when DOM is ready
+document.addEventListener('DOMContentLoaded', async () => {
+    await initializeApp();
+    
+    // Set up initial event listeners
+    const loginForm = document.getElementById('loginForm');
+    const showRegisterLink = document.getElementById('showRegisterLink');
+    
+    if (loginForm) {
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail')?.value;
+            const password = document.getElementById('loginPassword')?.value;
+            const errorDiv = document.getElementById('loginError');
+            
+            if (!email || !password) {
+                if (errorDiv) errorDiv.textContent = 'Please enter email and password';
+                return;
+            }
+            
+            try {
+                const res = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                const data = await res.json();
+                console.log('Login response:', res.status, data);
+                
+                if (res.ok) {
+                    console.log('Login successful, showing main app');
+                    // Store credentials and show main app
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('userId', data.userId);
+                    if (data.email) localStorage.setItem('userEmail', data.email);
+                    if (data.nickname) localStorage.setItem('userNickname', data.nickname);
+                    // Ensure the document is visible and the main app is shown
+                    try { document.documentElement.setAttribute('data-ready', 'true'); } catch (e) {}
+                    showMainApp();
+                    updateTribeHeader();
+                    // Sync server-stored creatures and planner/arena data for this user
+                    try { await loadServerCreatures(); } catch (e) { console.warn('loadServerCreatures after login failed', e); }
+                    try { await loadServerBossData(); } catch (e) { console.warn('loadServerBossData after login failed', e); }
+                    try { await loadServerArenaCollections(); } catch (e) { console.warn('loadServerArenaCollections after login failed', e); }
+                    // Wait for species DB to be available before rendering species page
+                    try { await waitForSpeciesDB(3000, 50); } catch (e) {}
+                    try { loadSpeciesPage(); } catch (e) {}
+                    // Refresh stats and auth UI after login
+                    try { updateStatsDashboard(); } catch (e) {}
+                    try { updateAuthUI(); } catch (e) {}
+                } else {
+                    console.log('Login failed:', data.error);
+                    if (errorDiv) errorDiv.textContent = data.error || 'Login failed';
+                }
+            } catch (err) {
+                console.error('Login error:', err);
+                if (errorDiv) errorDiv.textContent = 'Login failed. Please try again.';
+            }
+        });
+    }
+    
+    if (showRegisterLink) {
+        showRegisterLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            renderRegisterForm();
+            showRegisterPage();
+        });
+    }
+    
+    // Set up other initial event listeners
+    const authBtn = document.getElementById('authBtn');
+    if (authBtn) {
+        authBtn.addEventListener('click', handleAuthClick);
+    }
+    
+    // Header button listeners
+    const goToMyProfileBtn = document.getElementById('goToMyProfileBtn');
+    if (goToMyProfileBtn) {
+        goToMyProfileBtn.addEventListener('click', goToMyNuggies);
+    }
+    
+    const goToFriendsBtn = document.getElementById('goToFriendsBtn');
+    if (goToFriendsBtn) {
+        goToFriendsBtn.addEventListener('click', () => loadFriendsPage());
+    }
+    
+    const goToCreaturesBtn = document.getElementById('goToCreaturesBtn');
+    if (goToCreaturesBtn) {
+        goToCreaturesBtn.addEventListener('click', goToCreatures);
+    }
+    
+    const goToMyNuggiesBtn = document.getElementById('goToMyNuggiesBtn');
+    if (goToMyNuggiesBtn) {
+        goToMyNuggiesBtn.addEventListener('click', goToMyNuggies);
+    }
+    
+    const goToTradingBtn = document.getElementById('goToTradingBtn');
+    if (goToTradingBtn) {
+        goToTradingBtn.addEventListener('click', goToTrading);
+    }
+    
+    const goToBossPlannerBtn = document.getElementById('goToBossPlannerBtn');
+    if (goToBossPlannerBtn) {
+        goToBossPlannerBtn.addEventListener('click', () => loadBossPlanner());
+    }
+    
+    const openTribeManagerBtn = document.getElementById('openTribeManagerBtn');
+    if (openTribeManagerBtn) {
+        openTribeManagerBtn.addEventListener('click', () => loadFriendsPage());
+    }
+});

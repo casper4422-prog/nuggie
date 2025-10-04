@@ -232,77 +232,613 @@ body {
 .hidden {
     display: none !important;
 }
-.upload-image-label {
-    font-size: 12px;
-}
-.stat-info {
-    margin-bottom: 16px;
-    color: #94a3b8;
-    font-size: 14px;
-}
 
-/* Species grid and card styles */
-.species-section {
+/* Landing and Register Page Styles */
+.landing-page, .register-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
     padding: 20px;
 }
-.species-header-controls {
+
+.landing-container, .register-container {
+    background: rgba(30, 41, 59, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    border-radius: 16px;
+    padding: 40px;
+    max-width: 400px;
+    width: 100%;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.landing-title, .register-title {
+    text-align: center;
+    margin-bottom: 32px;
+    color: #f1f5f9;
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.login-btn, .register-btn {
+    width: 100%;
+    padding: 12px;
+    background: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.login-btn:hover, .register-btn:hover {
+    background: #2563eb;
+}
+
+.login-link, .register-link {
+    margin-top: 1rem;
+    text-align: center;
+    color: #cbd5e1;
+    font-size: 0.875rem;
+}
+
+.login-link a, .register-link a {
+    color: #3b82f6;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.login-link a:hover, .register-link a:hover {
+    text-decoration: underline;
+}
+
+.login-error, .register-error {
+    margin-top: 1rem;
+    color: #ef4444;
+    text-align: center;
+    font-size: 0.875rem;
+}
+
+/* Creature Detail Modal & Stat Table Styles (extracted) */
+.creature-detail-header {
     display: flex;
-    gap: 12px;
+    gap: 24px;
+    margin-bottom: 24px;
+}
+.creature-detail-image-col {
+    flex-shrink: 0;
+}
+.creature-detail-image {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 12px;
+}
+.creature-detail-image-placeholder {
+    width: 120px;
+    height: 120px;
+    background: linear-gradient(135deg, #1e293b, #334155);
+    border-radius: 12px;
+    display: flex;
     align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+}
+.creature-detail-content-col {
+    flex: 1;
+}
+.creature-detail-title-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
     margin-bottom: 16px;
 }
-.species-search { flex: 1; }
-.species-filters { display: flex; gap: 8px; }
-.species-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 14px;
+.creature-detail-title {
+    margin: 0;
+    font-size: 24px;
 }
-.species-card {
-    background: linear-gradient(180deg, rgba(17,24,39,0.6), rgba(15,23,42,0.6));
-    border: 1px solid rgba(255,255,255,0.04);
-    padding: 12px;
-    border-radius: 10px;
-    box-shadow: 0 6px 18px rgba(2,6,23,0.6);
-    transition: transform 0.12s ease, box-shadow 0.12s ease;
-    cursor: pointer;
+.creature-gender-badge {
+    background: rgba(59, 130, 246, 0.2);
+    color: #3b82f6;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+}
+.creature-detail-badges-row {
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
 }
-.species-card:focus, .species-card:hover { transform: translateY(-6px); box-shadow: 0 10px 26px rgba(2,6,23,0.7); outline: none; }
-.species-card-header { display:flex; align-items:center; gap:12px; }
-.species-icon { font-size: 36px; width:48px; height:48px; display:flex; align-items:center; justify-content:center; border-radius:8px; background: rgba(255,255,255,0.02); }
-.species-info { flex: 1; }
-.species-name { font-weight:700; color:#e2e8f0; }
-.species-meta { color:#94a3b8; font-size:12px; }
-.species-count { color:#94a3b8; font-size:12px; }
-.species-card-body { margin-top:10px; display:flex; flex-direction:column; gap:8px; }
-.species-desc { color:#cbd5e1; font-size:13px; min-height:36px; }
-.species-stats { display:flex; gap:8px; }
-.stat-row { background: rgba(255,255,255,0.02); padding:6px 8px; border-radius:8px; font-size:12px; color:#cbd5e1; display:flex; align-items:center; gap:6px; }
-.species-badges { display:flex; gap:6px; flex-wrap:wrap; }
-
-/* Hide header placeholder buttons (if any placeholders remain) */
-.header-actions .btn[disabled], .header-actions .btn.placeholder { opacity: 0.65; pointer-events: none; }
-
-/* Page container: center main app content and add consistent horizontal padding
-   so pages align visually with the header and aren't edge-to-edge. */
-#appMainContent {
-    box-sizing: border-box;
-    padding: 24px 20px; /* vertical + horizontal padding */
-    max-width: 1120px; /* center content and limit line length on large screens */
-    margin: 0 auto; /* horizontal centering */
-    width: 100%;
+.creature-detail-meta {
+    color: #94a3b8;
+    margin-bottom: 16px;
 }
-
-/* Merged from main-additional.css */
-.tribe-setup-desc {
-    margin-bottom: 24px;
+.creature-detail-notes {
     color: #94a3b8;
 }
+.creature-detail-stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+}
+.creature-detail-stats-title {
+    color: #3b82f6;
+    margin-bottom: 16px;
+}
+.creature-detail-domestic {
+    margin-top: 24px;
+}
+.stat-no-data {
+    color: #64748b;
+}
+.stat-table-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+}
+.stat-table-cell {
+    text-align: center;
+    padding: 12px;
+    background: rgba(15, 23, 42, 0.6);
+    border-radius: 8px;
+}
+.stat-table-label {
+    font-size: 12px;
+    color: #64748b;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+}
+.stat-table-value {
+    font-size: 16px;
+    font-weight: 600;
+    color: #3b82f6;
+}
+/* Extracted from inline styles in index.html */
+.no-species-found {
+    text-align: center;
+    color: #94a3b8;
+    margin: 40px 0;
+}
 
-.creature-page-hidden {
+.no-creatures-yet {
+    font-size: 18px;
+    margin-bottom: 8px;
+}
+
+.creature-image-list {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+}
+
+.creature-image-list-placeholder {
+    width: 60px;
+    height: 60px;
+    font-size: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.no-badge-qualification {
+    color: #64748b;
+}
+/* Dino Nuggie Manager - Main Stylesheet (extracted from inline styles)
+   Place this file in the same directory as index.html and link it in the <head>.
+*/
+
+/* Layout for landing/login/register pages */
+#landingPage, #registerPage {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100vw;
+    background: none;
+}
+
+.landing-container, .register-container {
+    background: rgba(15,23,42,0.95);
+    padding: 40px 32px;
+    border-radius: 16px;
+    box-shadow: 0 4px 32px #0003;
+    max-width: 400px;
+    width: 100%;
+    margin: auto;
+}
+
+.landing-title, .register-title {
+    text-align: center;
+    color: #3b82f6;
+    margin-bottom: 24px;
+}
+
+.login-btn, .register-btn {
+    width: 100%;
+    margin-top: 16px;
+}
+
+.login-link, .register-link {
+    margin-top: 12px;
+    text-align: center;
+}
+
+.login-error, .register-error {
+    color: #ef4444;
+    margin-top: 8px;
     display: none;
+}
+
+
+.tribe-header {
+    font-size: 28px;
+    font-weight: 700;
+    color: #3b82f6;
+}
+
+#creaturePage {
+    display: none;
+}
+
+/* Safari/iOS support for backdrop-filter */
+.header {
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+}
+.modal {
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+}
+
+/* Utility classes */
+.hidden {
+    display: none !important;
+}
+
+/* Landing and Register Page Styles */
+.landing-page, .register-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    padding: 20px;
+}
+
+.landing-container, .register-container {
+    background: rgba(30, 41, 59, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    border-radius: 16px;
+    padding: 40px;
+    max-width: 400px;
+    width: 100%;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.landing-title, .register-title {
+    text-align: center;
+    margin-bottom: 32px;
+    color: #f1f5f9;
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.login-btn, .register-btn {
+    width: 100%;
+    padding: 12px;
+    background: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.login-btn:hover, .register-btn:hover {
+    background: #2563eb;
+}
+
+.login-link, .register-link {
+    margin-top: 1rem;
+    text-align: center;
+    color: #cbd5e1;
+    font-size: 0.875rem;
+}
+
+.login-link a, .register-link a {
+    color: #3b82f6;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.login-link a:hover, .register-link a:hover {
+    text-decoration: underline;
+}
+
+.login-error, .register-error {
+    margin-top: 1rem;
+    color: #ef4444;
+    text-align: center;
+    font-size: 0.875rem;
+}
+
+/* Creature Detail Modal & Stat Table Styles (extracted) */
+.creature-detail-header {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 24px;
+}
+.creature-detail-image-col {
+    flex-shrink: 0;
+}
+.creature-detail-image {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 12px;
+}
+.creature-detail-image-placeholder {
+    width: 120px;
+    height: 120px;
+    background: linear-gradient(135deg, #1e293b, #334155);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+}
+.creature-detail-content-col {
+    flex: 1;
+}
+.creature-detail-title-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+.creature-detail-title {
+    margin: 0;
+    font-size: 24px;
+}
+.creature-gender-badge {
+    background: rgba(59, 130, 246, 0.2);
+    color: #3b82f6;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+}
+.creature-detail-badges-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+.creature-detail-meta {
+    color: #94a3b8;
+    margin-bottom: 16px;
+}
+.creature-detail-notes {
+    color: #94a3b8;
+}
+.creature-detail-stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+}
+.creature-detail-stats-title {
+    color: #3b82f6;
+    margin-bottom: 16px;
+}
+.creature-detail-domestic {
+    margin-top: 24px;
+}
+.stat-no-data {
+    color: #64748b;
+}
+.stat-table-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+}
+.stat-table-cell {
+    text-align: center;
+    padding: 12px;
+    background: rgba(15, 23, 42, 0.6);
+    border-radius: 8px;
+}
+.stat-table-label {
+    font-size: 12px;
+    color: #64748b;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+}
+.stat-table-value {
+    font-size: 16px;
+    font-weight: 600;
+    color: #3b82f6;
+}
+/* Extracted from inline styles in index.html */
+.no-species-found {
+    text-align: center;
+    color: #94a3b8;
+    margin: 40px 0;
+}
+
+.no-creatures-yet {
+    font-size: 18px;
+    margin-bottom: 8px;
+}
+
+.creature-image-list {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+}
+
+.creature-image-list-placeholder {
+    width: 60px;
+    height: 60px;
+    font-size: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.no-badge-qualification {
+    color: #64748b;
+}
+/* Dino Nuggie Manager - Main Stylesheet (extracted from inline styles)
+   Place this file in the same directory as index.html and link it in the <head>.
+*/
+
+/* Layout for landing/login/register pages */
+#landingPage, #registerPage {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100vw;
+    background: none;
+}
+
+.landing-container, .register-container {
+    background: rgba(15,23,42,0.95);
+    padding: 40px 32px;
+    border-radius: 16px;
+    box-shadow: 0 4px 32px #0003;
+    max-width: 400px;
+    width: 100%;
+    margin: auto;
+}
+
+.landing-title, .register-title {
+    text-align: center;
+    color: #3b82f6;
+    margin-bottom: 24px;
+}
+
+.login-btn, .register-btn {
+    width: 100%;
+    margin-top: 16px;
+}
+
+.login-link, .register-link {
+    margin-top: 12px;
+    text-align: center;
+}
+
+.login-error, .register-error {
+    color: #ef4444;
+    margin-top: 8px;
+    display: none;
+}
+
+
+.tribe-header {
+    font-size: 28px;
+    font-weight: 700;
+    color: #3b82f6;
+}
+
+#creaturePage {
+    display: none;
+}
+
+/* Safari/iOS support for backdrop-filter */
+.header {
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+}
+.modal {
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+}
+
+/* Utility classes */
+.hidden {
+    display: none !important;
+}
+
+/* Landing and Register Page Styles */
+.landing-page, .register-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    padding: 20px;
+}
+
+.landing-container, .register-container {
+    background: rgba(30, 41, 59, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    border-radius: 16px;
+    padding: 40px;
+    max-width: 400px;
+    width: 100%;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.landing-title, .register-title {
+    text-align: center;
+    margin-bottom: 32px;
+    color: #f1f5f9;
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.login-btn, .register-btn {
+    width: 100%;
+    padding: 12px;
+    background: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.login-btn:hover, .register-btn:hover {
+    background: #2563eb;
+}
+
+.login-link, .register-link {
+    margin-top: 1rem;
+    text-align: center;
+    color: #cbd5e1;
+    font-size: 0.875rem;
+}
+
+.login-link a, .register-link a {
+    color: #3b82f6;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.login-link a:hover, .register-link a:hover {
+    text-decoration: underline;
+}
+
+.login-error, .register-error {
+    margin-top: 1rem;
+    color: #ef4444;
+    text-align: center;
+    font-size: 0.875rem;
 }
 
 /* Enhanced Profile Page Styles */

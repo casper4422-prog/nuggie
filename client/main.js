@@ -276,7 +276,7 @@ function goToTrading() {
 }
 window.goToTrading = goToTrading;
 // Boss Planner Implementation
-function loadBossPlanner() {
+async function loadBossPlanner() {
     const main = document.getElementById('appMainContent');
     if (!main) return;
 
@@ -305,25 +305,24 @@ function loadBossPlanner() {
     `;
 
     // Load boss data
-    const bosses = getBossData();
+    const bosses = await getBossData();
 
     // Initialize event handlers
-    document.getElementById('bossSearch')?.addEventListener('input', debounce(renderBossGrid, 200));
-    document.getElementById('bossMapFilter')?.addEventListener('change', renderBossGrid);
-    document.getElementById('addBossBtn')?.addEventListener('click', () => showBossModal());
+    document.getElementById('bossSearch')?.addEventListener('input', debounce(() => renderBossGrid(bosses), 200));
+    document.getElementById('bossMapFilter')?.addEventListener('change', () => renderBossGrid(bosses));
+    document.getElementById('addBossBtn')?.addEventListener('click', () => openBossModal());
 
     // Initial render
-    renderBossGrid();
+    renderBossGrid(bosses);
 }
 
-function renderBossGrid() {
+function renderBossGrid(bosses) {
     const bossGrid = document.getElementById('bossGrid');
     if (!bossGrid) return;
 
     const searchTerm = document.getElementById('bossSearch')?.value.toLowerCase() || '';
     const mapFilter = document.getElementById('bossMapFilter')?.value || '';
     
-    const bosses = getBossData();
     const filteredBosses = bosses.filter(boss => {
         if (searchTerm && !boss.name.toLowerCase().includes(searchTerm)) {
             return false;
@@ -360,7 +359,7 @@ function renderBossGrid() {
         btn.addEventListener('click', (e) => {
             const bossId = e.target.dataset.bossId;
             const boss = bosses.find(b => b.id === bossId);
-            if (boss) showBossModal(boss);
+            if (boss) openBossModal(boss);
         });
     });
 
@@ -370,7 +369,7 @@ function renderBossGrid() {
             if (confirm('Are you sure you want to delete this boss?')) {
                 const newData = bosses.filter(b => b.id !== bossId);
                 saveBossData(newData);
-                renderBossGrid();
+                renderBossGrid(newData);
             }
         });
     });
@@ -454,7 +453,7 @@ function openBossModal(boss = null) {
             notes: document.getElementById('bossNotesInput')?.value || ''
         };
 
-        const bosses = getBossData();
+        const bosses = window.currentBosses || [];
         if (boss) {
             // Update existing
             const index = bosses.findIndex(b => b.id === boss.id);
@@ -468,7 +467,7 @@ function openBossModal(boss = null) {
 
         saveBossData(bosses);
         closeModal();
-        renderBossGrid();
+        renderBossGrid(bosses);
     });
 }
 
@@ -1168,27 +1167,43 @@ function renderArenaGrid() {
     alert('Arena grid rendering is under construction.');
 }
 
-function getBossData() {
-    // Placeholder for boss data retrieval logic
-    // Replace this with actual data fetching logic (e.g., from a database or API)
-    return [
-        {
-            id: 'boss_1',
-            name: 'Alpha Dragon',
-            map: 'The Island',
-            difficulty: 'alpha',
-            level: 100,
-            partySize: 10,
-            notes: 'Requires high DPS and coordination.'
-        },
-        {
-            id: 'boss_2',
-            name: 'Beta Broodmother',
-            map: 'Aberration',
-            difficulty: 'beta',
-            level: 75,
-            partySize: 8,
-            notes: 'Watch out for poison attacks.'
+async function getBossData() {
+    try {
+        const response = await fetch('/api/bosses', {
+            method: 'GET',
+            headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+        });
+
+        if (response.ok) {
+            return await response.json();
+        } else {
+            console.error('Failed to fetch bosses from backend');
+            return [];
         }
-    ];
+    } catch (e) {
+        console.error('Error fetching boss data:', e);
+        return [];
+    }
+}
+
+async function saveBossData(bosses) {
+    try {
+        // Assuming we save all bosses, or handle individually. For simplicity, replace all.
+        const response = await fetch('/api/bosses', {
+            method: 'PUT', // Or POST if replacing
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            },
+            body: JSON.stringify(bosses)
+        });
+
+        if (!response.ok) {
+            console.error('Failed to save bosses');
+        } else {
+            window.currentBosses = bosses;
+        }
+    } catch (e) {
+        console.error('Error saving bosses:', e);
+    }
 }

@@ -41,8 +41,16 @@ async function renderFriendsTab(tab) {
     } else if (tab === 'tribe') {
         tabContent.innerHTML = `
             <h2>Tribe Manager</h2>
+            <div id="tribeStatus"></div>
+            <div class="tribe-actions">
+                <button class="btn btn-primary" id="createTribeBtn">Create New Tribe</button>
+                <button class="btn btn-secondary" id="joinTribeBtn">Join Tribe</button>
+            </div>
             <div id="tribeFriendsList"></div>
         `;
+        document.getElementById('createTribeBtn').addEventListener('click', () => showCreateTribeModal());
+        document.getElementById('joinTribeBtn').addEventListener('click', () => showJoinTribeModal());
+        await renderTribeStatus();
         await renderTribeFriendsList();
     }
 }
@@ -284,6 +292,136 @@ async function removeFromTribe(friendUserId) {
     } catch (e) {
         alert('Failed to remove from tribe');
     }
+}
+
+// Render tribe status
+async function renderTribeStatus() {
+    const statusDiv = document.getElementById('tribeStatus');
+    if (!statusDiv) return;
+
+    try {
+        const response = await fetch('/api/tribe', {
+            method: 'GET',
+            headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+        });
+
+        if (response.ok) {
+            const tribe = await response.json();
+            statusDiv.innerHTML = `<p>You are in tribe: <strong>${tribe.name}</strong></p>`;
+        } else {
+            statusDiv.innerHTML = '<p>You are not in a tribe.</p>';
+        }
+    } catch (e) {
+        statusDiv.innerHTML = '<p>Unable to load tribe status.</p>';
+    }
+}
+
+// Show create tribe modal
+function showCreateTribeModal() {
+    const modal = document.createElement('div');
+    modal.className = 'modal';
+    modal.innerHTML = `
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Create New Tribe</h2>
+                <button class="close-btn" id="closeCreateTribe">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Tribe Name</label>
+                    <input type="text" id="tribeNameInput" class="form-control" placeholder="Enter tribe name">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancelCreateTribe">Cancel</button>
+                <button class="btn btn-primary" id="submitCreateTribe">Create</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+    modal.classList.add('active');
+
+    document.getElementById('closeCreateTribe').addEventListener('click', () => modal.remove());
+    document.getElementById('cancelCreateTribe').addEventListener('click', () => modal.remove());
+    document.getElementById('submitCreateTribe').addEventListener('click', async () => {
+        const name = document.getElementById('tribeNameInput').value.trim();
+        if (!name) return alert('Please enter a tribe name.');
+
+        try {
+            const response = await fetch('/api/tribe', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                },
+                body: JSON.stringify({ name })
+            });
+
+            if (response.ok) {
+                alert('Tribe created successfully!');
+                modal.remove();
+                await renderTribeStatus();
+                await renderTribeFriendsList();
+            } else {
+                alert('Failed to create tribe.');
+            }
+        } catch (e) {
+            alert('Error creating tribe.');
+        }
+    });
+}
+
+// Show join tribe modal
+function showJoinTribeModal() {
+    const modal = document.createElement('div');
+    modal.className = 'modal';
+    modal.innerHTML = `
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Join Tribe</h2>
+                <button class="close-btn" id="closeJoinTribe">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Tribe Name or ID</label>
+                    <input type="text" id="joinTribeInput" class="form-control" placeholder="Enter tribe name or ID">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancelJoinTribe">Cancel</button>
+                <button class="btn btn-primary" id="submitJoinTribe">Request to Join</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+    modal.classList.add('active');
+
+    document.getElementById('closeJoinTribe').addEventListener('click', () => modal.remove());
+    document.getElementById('cancelJoinTribe').addEventListener('click', () => modal.remove());
+    document.getElementById('submitJoinTribe').addEventListener('click', async () => {
+        const tribeIdentifier = document.getElementById('joinTribeInput').value.trim();
+        if (!tribeIdentifier) return alert('Please enter a tribe name or ID.');
+
+        try {
+            const response = await fetch('/api/tribe/join', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                },
+                body: JSON.stringify({ tribeIdentifier })
+            });
+
+            if (response.ok) {
+                alert('Join request sent!');
+                modal.remove();
+            } else {
+                alert('Failed to send join request.');
+            }
+        } catch (e) {
+            alert('Error sending join request.');
+        }
+    });
 }
 
 // Make functions available globally

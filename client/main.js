@@ -1153,6 +1153,16 @@ function renderBossList() {
     `).join('');
 }
 
+// Arena functions
+function openArenaPage(arenaId) {
+    console.log(`Opening arena page for arena ID: ${arenaId}`);
+    // Placeholder for arena page logic
+    alert(`Arena page for ${arenaId} is under construction.`);
+}
+
+// Expose the function to the window object
+window.openArenaPage = openArenaPage;
+
 // --- Initialization on DOMContentLoaded ---
 document.addEventListener('DOMContentLoaded', () => {
     console.log('Initializing application...');

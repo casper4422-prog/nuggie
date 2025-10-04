@@ -132,8 +132,10 @@ function renderRegisterForm() {
                     body: JSON.stringify({ email, password, nickname, discord_name: discord })
                 });
                 const data = await res.json();
+                console.log('Registration response:', res.status, data);
                 
                 if (res.ok) {
+                    console.log('Registration successful, showing main app');
                     // Store credentials and show main app
                     localStorage.setItem('token', data.token);
                     localStorage.setItem('userId', data.userId);
@@ -154,6 +156,7 @@ function renderRegisterForm() {
                     try { updateStatsDashboard(); } catch (e) {}
                     try { updateAuthUI(); } catch (e) {}
                 } else {
+                    console.log('Registration failed:', data.error);
                     if (errorDiv) errorDiv.textContent = data.error || 'Registration failed';
                 }
             } catch (err) {
@@ -1163,4 +1166,29 @@ function renderArenaGrid() {
     console.log('Rendering arena grid...');
     // Placeholder for arena grid rendering logic
     alert('Arena grid rendering is under construction.');
+}
+
+function getBossData() {
+    // Placeholder for boss data retrieval logic
+    // Replace this with actual data fetching logic (e.g., from a database or API)
+    return [
+        {
+            id: 'boss_1',
+            name: 'Alpha Dragon',
+            map: 'The Island',
+            difficulty: 'alpha',
+            level: 100,
+            partySize: 10,
+            notes: 'Requires high DPS and coordination.'
+        },
+        {
+            id: 'boss_2',
+            name: 'Beta Broodmother',
+            map: 'Aberration',
+            difficulty: 'beta',
+            level: 75,
+            partySize: 8,
+            notes: 'Watch out for poison attacks.'
+        }
+    ];
 }

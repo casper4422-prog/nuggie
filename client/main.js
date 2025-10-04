@@ -153,7 +153,13 @@ function renderRegisterForm() {
     if (showLoginLink) {
         showLoginLink.addEventListener('click', (e) => {
             e.preventDefault();
-            showLoginPage();
+            const registerPage = document.getElementById('registerPage');
+            const landingPage = document.getElementById('landingPage');
+            if (registerPage && landingPage) {
+                registerPage.classList.add('hidden');
+                landingPage.classList.remove('hidden');
+                registerPage.setAttribute('aria-hidden', 'true');
+            }
         });
     }
 }

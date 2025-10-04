@@ -1160,8 +1160,15 @@ function openArenaPage(arenaId) {
     alert(`Arena page for ${arenaId} is under construction.`);
 }
 
+function renderArenaGrid() {
+    console.log('Rendering arena grid...');
+    // Placeholder for arena grid rendering logic
+    alert('Arena grid rendering is under construction.');
+}
+
 // Expose the function to the window object
 window.openArenaPage = openArenaPage;
+window.renderArenaGrid = renderArenaGrid;
 
 // --- Initialization on DOMContentLoaded ---
 document.addEventListener('DOMContentLoaded', () => {

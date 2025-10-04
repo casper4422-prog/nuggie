@@ -215,17 +215,38 @@ function isLoggedIn() {
 
 // Show main application UI (called after successful login)
 function showMainApp() {
-	try {
-		const landing = document.getElementById('landingPage');
-		const register = document.getElementById('registerPage');
-		const mainApp = document.getElementById('mainApp');
-		if (landing) { landing.classList.add('hidden'); landing.style.display = 'none'; landing.setAttribute('aria-hidden', 'true'); }
-		if (register) { register.classList.add('hidden'); register.style.display = 'none'; register.setAttribute('aria-hidden', 'true'); }
-		if (mainApp) { mainApp.classList.remove('hidden'); mainApp.style.display = ''; mainApp.setAttribute('aria-hidden', 'false'); }
-		// Ensure the app main content exists
-		const appMain = document.getElementById('appMainContent');
-		if (appMain) appMain.style.display = '';
-	} catch (e) { console.warn('showMainApp failed', e); }
+    try {
+        console.log('[SPA] showMainApp invoked');
+        const landing = document.getElementById('landingPage');
+        const register = document.getElementById('registerPage');
+        const mainApp = document.getElementById('mainApp');
+        if (landing) {
+            landing.classList.add('hidden');
+            landing.style.display = 'none';
+            landing.setAttribute('aria-hidden', 'true');
+            console.log('[SPA] landingPage hidden');
+        }
+        if (register) {
+            register.classList.add('hidden');
+            register.style.display = 'none';
+            register.setAttribute('aria-hidden', 'true');
+            console.log('[SPA] registerPage hidden');
+        }
+        if (mainApp) {
+            mainApp.classList.remove('hidden');
+            mainApp.style.display = '';
+            mainApp.setAttribute('aria-hidden', 'false');
+            console.log('[SPA] mainApp shown');
+        }
+        // Ensure the app main content exists
+        const appMain = document.getElementById('appMainContent');
+        if (appMain) {
+            appMain.style.display = '';
+            console.log('[SPA] appMainContent shown');
+        }
+    } catch (e) {
+        console.warn('showMainApp failed', e);
+    }
 }
 window.showMainApp = showMainApp;
 function handleAuthClick() {
@@ -237,15 +258,25 @@ function handleAuthClick() {
 }
 window.handleAuthClick = handleAuthClick;
 
-function updateTribeHeader() {
-	// Replace with actual tribe name from user profile if available
-	const tribeName = localStorage.getItem('tribeName') || 'My Tribe';
-	try {
-		const el = document.getElementById('tribeHeader');
-		if (el) el.textContent = tribeName;
-	} catch (e) {
-		console.warn('[SPA] updateTribeHeader failed', e);
-	}
+async function updateTribeHeader() {
+    try {
+        const response = await fetch('/api/tribe', {
+            method: 'GET',
+            headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+        });
+
+        if (!response.ok) {
+            console.error('Failed to fetch tribe data', await response.json());
+            return;
+        }
+
+        const tribeData = await response.json();
+        const tribeName = tribeData.name || 'My Tribe';
+        const el = document.getElementById('tribeHeader');
+        if (el) el.textContent = tribeName;
+    } catch (e) {
+        console.warn('[SPA] updateTribeHeader failed', e);
+    }
 }
 async function goToCreatures() {
     try {
@@ -295,188 +326,49 @@ function loadBossPlanner() {
     `;
 
     // Load boss data
-    const bosses = getBossData();
-
-    // Initialize event handlers
-    document.getElementById('bossSearch')?.addEventListener('input', debounce(renderBossGrid, 200));
-    document.getElementById('bossMapFilter')?.addEventListener('change', renderBossGrid);
-    document.getElementById('addBossBtn')?.addEventListener('click', () => showBossModal());
-
-    // Initial render
-    renderBossGrid();
+    fetchBossData();
 }
 
-function renderBossGrid() {
+async function fetchBossData() {
     const bossGrid = document.getElementById('bossGrid');
-    if (!bossGrid) {
-        console.error('Boss grid container not found.');
-        return;
-    }
+    if (!bossGrid) return;
 
-    const searchTerm = document.getElementById('bossSearch')?.value.toLowerCase() || '';
-    const mapFilter = document.getElementById('bossMapFilter')?.value || '';
+    bossGrid.innerHTML = '<div class="loading">Loading bosses...</div>';
 
-    const bosses = getBossData();
-    if (!Array.isArray(bosses)) {
-        console.error('Invalid boss data. Expected an array.');
-        return;
-    }
-
-    const filteredBosses = bosses.filter(boss => {
-        if (searchTerm && !boss.name.toLowerCase().includes(searchTerm)) {
-            return false;
-        }
-        if (mapFilter && boss.map !== mapFilter) {
-            return false;
-        }
-        return true;
-    });
-
-    bossGrid.innerHTML = filteredBosses.length ? filteredBosses.map(boss => `
-        <div class="boss-card" data-boss-id="${boss.id}">
-            <div class="boss-card-header">
-                <h3>${boss.name || 'Unnamed Boss'}</h3>
-                <span class="boss-difficulty ${boss.difficulty?.toLowerCase() || 'alpha'}">${boss.difficulty || 'Alpha'}</span>
-            </div>
-            <div class="boss-card-content">
-                <div class="boss-map">${boss.map || 'Unknown Map'}</div>
-                <div class="boss-info">
-                    ${boss.level ? `<div class="boss-level">Level ${boss.level}</div>` : ''}
-                    ${boss.partySize ? `<div class="boss-party">Party: ${boss.partySize}</div>` : ''}
-                </div>
-                ${boss.notes ? `<div class="boss-notes">${boss.notes}</div>` : ''}
-                <div class="boss-actions">
-                    <button class="btn btn-primary edit-boss" data-boss-id="${boss.id}">Edit</button>
-                    <button class="btn btn-danger delete-boss" data-boss-id="${boss.id}">Delete</button>
-                </div>
-            </div>
-        </div>
-    `).join('') : '<div class="no-results">No bosses found matching your criteria</div>';
-
-    // Add event listeners
-    document.querySelectorAll('.edit-boss').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            const bossId = e.target.dataset.bossId;
-            const boss = bosses.find(b => b.id === bossId);
-            if (boss) showBossModal(boss);
+    try {
+        const response = await fetch('/api/bosses', {
+            method: 'GET',
+            headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
         });
-    });
 
-    document.querySelectorAll('.delete-boss').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            const bossId = e.target.dataset.bossId;
-            if (confirm('Are you sure you want to delete this boss?')) {
-                const newData = bosses.filter(b => b.id !== bossId);
-                saveBossData(newData);
-                renderBossGrid();
-            }
-        });
-    });
+        if (!response.ok) {
+            console.error('Failed to fetch bosses', await response.json());
+            bossGrid.innerHTML = '<div class="error-message">Failed to load bosses.</div>';
+            return;
+        }
+
+        const bosses = await response.json();
+        if (!Array.isArray(bosses) || bosses.length === 0) {
+            bossGrid.innerHTML = '<div class="error-message">No bosses found.</div>';
+            return;
+        }
+
+        bossGrid.innerHTML = bosses.map(boss => `
+            <div class="boss-item">
+                <div class="boss-name">${boss.name}</div>
+                <div class="boss-map">Map: ${boss.map}</div>
+                <button class="btn btn-secondary" onclick="planBossFight('${boss.id}')">Plan Fight</button>
+            </div>
+        `).join('');
+    } catch (e) {
+        console.error('fetchBossData failed', e);
+        bossGrid.innerHTML = '<div class="error-message">An unexpected error occurred.</div>';
+    }
 }
 
-function openBossModal(boss = null) {
-    const modal = document.createElement('div');
-    modal.className = 'modal';
-    modal.innerHTML = `
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>${boss ? 'Edit' : 'Add'} Boss</h2>
-                <button type="button" class="close" id="closeBossModal">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label>Name</label>
-                    <input id="bossNameInput" class="form-control" value="${boss?.name || ''}">
-                </div>
-                <div class="form-group">
-                    <label>Map</label>
-                    <select id="bossMapInput" class="form-control">
-                        <option value="">Select a Map</option>
-                        <option ${boss?.map === 'The Island' ? 'selected' : ''}>The Island</option>
-                        <option ${boss?.map === 'Scorched Earth' ? 'selected' : ''}>Scorched Earth</option>
-                        <option ${boss?.map === 'The Center' ? 'selected' : ''}>The Center</option>
-                        <option ${boss?.map === 'Aberration' ? 'selected' : ''}>Aberration</option>
-                        <option ${boss?.map === 'Ragnarok' ? 'selected' : ''}>Ragnarok</option>
-                        <option ${boss?.map === 'Astraeos' ? 'selected' : ''}>Astraeos</option>
-                        <option ${boss?.map === 'Extinction' ? 'selected' : ''}>Extinction</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Difficulty</label>
-                    <select id="bossDifficultyInput" class="form-control">
-                        <option value="alpha" ${boss?.difficulty === 'alpha' ? 'selected' : ''}>Alpha</option>
-                        <option value="beta" ${boss?.difficulty === 'beta' ? 'selected' : ''}>Beta</option>
-                        <option value="gamma" ${boss?.difficulty === 'gamma' ? 'selected' : ''}>Gamma</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Level</label>
-                    <input type="number" id="bossLevelInput" class="form-control" value="${boss?.level || ''}">
-                </div>
-                <div class="form-group">
-                    <label>Required Party Size</label>
-                    <input type="number" id="bossPartySizeInput" class="form-control" value="${boss?.partySize || ''}">
-                </div>
-                <div class="form-group">
-                    <label>Notes</label>
-                    <textarea id="bossNotesInput" class="form-control" rows="3">${boss?.notes || ''}</textarea>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" id="cancelBossBtn">Cancel</button>
-                <button class="btn btn-primary" id="saveBossBtn">Save</button>
-            </div>
-        </div>
-    `;
-    document.body.appendChild(modal);
-
-    // Show modal
-    setTimeout(() => modal.classList.add('show'), 10);
-
-    // Wire up event handlers
-    function closeModal() {
-        modal.classList.remove('show');
-        setTimeout(() => modal.remove(), 200);
-    }
-
-    document.getElementById('closeBossModal')?.addEventListener('click', closeModal);
-    document.getElementById('cancelBossBtn')?.addEventListener('click', closeModal);
-    document.getElementById('saveBossBtn')?.addEventListener('click', () => {
-        const newBoss = {
-            id: boss?.id || `boss_${Date.now()}`,
-            name: document.getElementById('bossNameInput')?.value || '',
-            map: document.getElementById('bossMapInput')?.value || '',
-            difficulty: document.getElementById('bossDifficultyInput')?.value || 'alpha',
-            level: parseInt(document.getElementById('bossLevelInput')?.value) || null,
-            partySize: parseInt(document.getElementById('bossPartySizeInput')?.value) || null,
-            notes: document.getElementById('bossNotesInput')?.value || ''
-        };
-
-        const bosses = getBossData();
-        if (boss) {
-            // Update existing
-            const index = bosses.findIndex(b => b.id === boss.id);
-            if (index !== -1) {
-                bosses[index] = newBoss;
-            }
-        } else {
-            // Add new
-            bosses.unshift(newBoss);
-        }
-
-        saveBossData(bosses);
-        closeModal();
-        renderBossGrid();
-    });
+function planBossFight(bossId) {
+    alert(`Planning fight for boss ID: ${bossId}`);
 }
-
-// Expose boss planner functions to window for debugging
-window.loadBossPlanner = loadBossPlanner;
-window.openBossModal = openBossModal;
-window.showBossDetail = showBossDetail;
-window.renderBossList = renderBossList;
-window.openArenaPage = openArenaPage;
-window.renderArenaGrid = renderArenaGrid;
 
 // --- SPECIES_DATABASE startup helper ---
 // Wait for the external species-database.js to set window.SPECIES_DATABASE.
@@ -992,6 +884,26 @@ async function loadSpeciesPage() {
                 </div>
             </div>
         `).join('') : '<div class="no-results">No species found matching your criteria</div>';
+
+        // Add event listeners
+        document.querySelectorAll('.edit-boss').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const bossId = e.target.dataset.bossId;
+                const boss = bosses.find(b => b.id === bossId);
+                if (boss) showBossModal(boss);
+            });
+        });
+
+        document.querySelectorAll('.delete-boss').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const bossId = e.target.dataset.bossId;
+                if (confirm('Are you sure you want to delete this boss?')) {
+                    const newData = bosses.filter(b => b.id !== bossId);
+                    saveBossData(newData);
+                    renderBossGrid();
+                }
+            });
+        });
     }
 
     // Wire up event handlers

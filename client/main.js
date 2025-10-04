@@ -1088,6 +1088,49 @@ function renderArenaGrid() {
 window.openArenaPage = openArenaPage;
 window.renderArenaGrid = renderArenaGrid;
 
+// Boss grid rendering function
+function renderBossGrid() {
+    const bossGrid = document.getElementById('bossGrid');
+    if (!bossGrid) {
+        console.error('Boss grid container not found.');
+        return;
+    }
+
+    bossGrid.innerHTML = '<div class="loading">Loading bosses...</div>';
+
+    try {
+        const bosses = getBossData(); // Replace with actual data fetching logic
+        if (!Array.isArray(bosses) || bosses.length === 0) {
+            bossGrid.innerHTML = '<div class="error-message">No bosses available.</div>';
+            return;
+        }
+
+        bossGrid.innerHTML = bosses.map(boss => `
+            <div class="boss-item">
+                <div class="boss-name">${boss.name}</div>
+                <div class="boss-map">Map: ${boss.map}</div>
+                <button class="btn btn-secondary" onclick="planBossFight('${boss.id}')">Plan Fight</button>
+                <button class="btn btn-danger delete-boss" data-boss-id="${boss.id}">Delete</button>
+            </div>
+        `).join('');
+
+        // Attach event listeners for buttons
+        document.querySelectorAll('.delete-boss').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const bossId = e.target.dataset.bossId;
+                if (confirm('Are you sure you want to delete this boss?')) {
+                    const newData = bosses.filter(b => b.id !== bossId);
+                    saveBossData(newData);
+                    renderBossGrid();
+                }
+            });
+        });
+    } catch (e) {
+        console.error('Failed to render boss grid:', e);
+        bossGrid.innerHTML = '<div class="error-message">An error occurred while loading bosses.</div>';
+    }
+}
+
 // --- Initialization on DOMContentLoaded ---
 document.addEventListener('DOMContentLoaded', () => {
     console.log('Initializing application...');

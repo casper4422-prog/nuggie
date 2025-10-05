@@ -291,7 +291,7 @@ async function loadSpeciesPage() {
                 </div>
                 <div class="stat-card">
                     <div class="stat-number" id="speciesTracked">0</div>
-                    <div class="stat-label">Species Tracked</div>
+                    <div class="stat-label">Species Owned</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-number" id="bossReadySpecies">0</div>
@@ -469,7 +469,10 @@ function filterSpecies() {
         return;
     }
     
-    if (!window.SPECIES_DATABASE) {
+    // Check both possible database locations
+    const database = window.SPECIES_DATABASE || window.EXPANDED_SPECIES_DATABASE;
+    
+    if (!database) {
         console.error('Species database not found');
         grid.innerHTML = '<div class="no-species-found">Species database loading...</div>';
         return;
@@ -477,9 +480,10 @@ function filterSpecies() {
     
     grid.innerHTML = '';
     console.log('Filtering species with:', { searchTerm, categoryFilter, rarityFilter });
+    console.log('Database has', Object.keys(database).length, 'species');
 
     let filteredCount = 0;
-    Object.values(window.SPECIES_DATABASE).forEach(species => {
+    Object.values(database).forEach(species => {
         if (!species || !species.name) {
             return;
         }
@@ -516,7 +520,7 @@ function filterSpecies() {
         }
     });
 
-    console.log(`Filtered species: showing ${filteredCount} species`);
+    console.log(`Filtered species: showing ${filteredCount} species out of ${Object.keys(database).length} total`);
     
     if (filteredCount === 0) {
         grid.innerHTML = '<div class="no-species-found">No species found matching your filters.</div>';
@@ -526,7 +530,13 @@ function filterSpecies() {
 // Creature Page Management
 function openCreaturePage(speciesName) {
     window.appState.currentSpecies = speciesName;
-    const species = window.SPECIES_DATABASE[speciesName];
+    const database = window.SPECIES_DATABASE || window.EXPANDED_SPECIES_DATABASE;
+    const species = database[speciesName];
+    
+    if (!species) {
+        console.error('Species not found:', speciesName);
+        return;
+    }
     
     const main = document.getElementById('appMainContent');
     if (!main) return;
@@ -648,13 +658,15 @@ function switchTab(tabId) {
 // Update stats dashboard
 function updateStatsDashboard() {
     const creatures = window.appState?.creatures || [];
-    const speciesCount = new Set(creatures.map(c => c.species)).size;
+    const database = window.SPECIES_DATABASE || window.EXPANDED_SPECIES_DATABASE;
+    const totalSpeciesInDB = database ? Object.keys(database).length : 0;
+    const speciesOwned = new Set(creatures.map(c => c.species)).size;
     const prizedCount = 0; // Placeholder for badge system
     const highestLevel = creatures.length > 0 ? Math.max(...creatures.map(c => c.level || 1)) : 1;
     
     try {
         document.getElementById('totalCreatures').textContent = creatures.length;
-        document.getElementById('speciesTracked').textContent = speciesCount;
+        document.getElementById('speciesTracked').textContent = `${speciesOwned}/${totalSpeciesInDB}`;
         document.getElementById('bossReadySpecies').textContent = '0'; // Placeholder
         document.getElementById('prizedBloodlines').textContent = prizedCount;
         document.getElementById('highestLevel').textContent = highestLevel;
@@ -669,7 +681,6 @@ window.openCreaturePage = openCreaturePage;
 window.goBackToSpecies = goBackToSpecies;
 window.switchTab = switchTab;
 window.loadSpeciesPage = loadSpeciesPage;
-}
 
 // Load my nuggies page (placeholder)
 function loadMyNuggiesPage() {

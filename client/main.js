@@ -131,10 +131,36 @@ function renderRegisterForm() {
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email, password, nickname, discord_name: discord })
                 });
-                const data = await res.json();
+                
+                // Check if response is ok first
+                if (!res.ok) {
+                    // Try to get error message from response
+                    let errorMessage = 'Registration failed';
+                    try {
+                        const errorData = await res.json();
+                        errorMessage = errorData.error || errorMessage;
+                    } catch (e) {
+                        // If JSON parsing fails, use status text
+                        errorMessage = res.statusText || errorMessage;
+                    }
+                    console.log('Registration failed with status:', res.status, errorMessage);
+                    if (errorDiv) errorDiv.textContent = errorMessage;
+                    return;
+                }
+                
+                // Parse response JSON
+                let data;
+                try {
+                    data = await res.json();
+                } catch (e) {
+                    console.error('Failed to parse registration response JSON:', e);
+                    if (errorDiv) errorDiv.textContent = 'Server response error. Please try again.';
+                    return;
+                }
+                
                 console.log('Registration response:', res.status, data);
                 
-                if (res.ok) {
+                if (data.success || data.token) {
                     console.log('Registration successful, showing main app');
                     // Store credentials and show main app
                     localStorage.setItem('token', data.token);
@@ -1227,6 +1253,26 @@ window.loadServerCreatures = loadServerCreatures;
 window.saveDataToServer = saveDataToServer;
 window.deleteCreatureOnServer = deleteCreatureOnServer;
 
+// Placeholder functions for boss data and arena collections
+async function loadServerBossData() {
+    // Placeholder - boss data loading will be implemented later
+    console.log('loadServerBossData called (placeholder)');
+}
+
+async function loadServerArenaCollections() {
+    // Placeholder - arena collections loading will be implemented later  
+    console.log('loadServerArenaCollections called (placeholder)');
+}
+
+function updateAuthUI() {
+    // Placeholder - auth UI update will be implemented later
+    console.log('updateAuthUI called (placeholder)');
+}
+
+window.loadServerBossData = loadServerBossData;
+window.loadServerArenaCollections = loadServerArenaCollections;
+window.updateAuthUI = updateAuthUI;
+
 // Global saveData used by legacy code — write localStorage and sync to server when logged in
 window.saveData = function() {
 		try { localStorage.setItem(getCreatureStorageKey(), JSON.stringify(window.appState && window.appState.creatures || [])); } catch (e) {}
@@ -1664,10 +1710,36 @@ document.addEventListener('DOMContentLoaded', async () => {
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email, password })
                 });
-                const data = await res.json();
+                
+                // Check if response is ok first
+                if (!res.ok) {
+                    // Try to get error message from response
+                    let errorMessage = 'Login failed';
+                    try {
+                        const errorData = await res.json();
+                        errorMessage = errorData.error || errorMessage;
+                    } catch (e) {
+                        // If JSON parsing fails, use status text
+                        errorMessage = res.statusText || errorMessage;
+                    }
+                    console.log('Login failed with status:', res.status, errorMessage);
+                    if (errorDiv) errorDiv.textContent = errorMessage;
+                    return;
+                }
+                
+                // Parse response JSON
+                let data;
+                try {
+                    data = await res.json();
+                } catch (e) {
+                    console.error('Failed to parse login response JSON:', e);
+                    if (errorDiv) errorDiv.textContent = 'Server response error. Please try again.';
+                    return;
+                }
+                
                 console.log('Login response:', res.status, data);
                 
-                if (res.ok) {
+                if (data.success || data.token) {
                     console.log('Login successful, showing main app');
                     // Store credentials and show main app
                     localStorage.setItem('token', data.token);

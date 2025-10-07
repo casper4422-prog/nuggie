@@ -6,7 +6,7 @@ services:
     repo: https://github.com/casper4422-prog/nuggie
     branch: main
     rootDir: server
-    buildCommand: npm install && npm audit fix --force
+    buildCommand: npm install && cp -r ../client ./client
     startCommand: npm start
     envVars:
       - key: NODE_ENV

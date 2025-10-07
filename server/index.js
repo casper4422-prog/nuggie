@@ -8,6 +8,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 const app = express();
+// Port configuration: Render sets PORT=10000, local development defaults to 3001
 const PORT = process.env.PORT || 3001;
 const SECRET = process.env.JWT_SECRET || 'your_jwt_secret'; // Override via JWT_SECRET in production
 
@@ -24,7 +25,11 @@ app.use(express.json());
 const serveClient = (process.env.SERVE_CLIENT || 'true') === 'true';
 if (serveClient) {
   const path = require('path');
-  const clientDir = path.join(__dirname, '..', 'client');
+  // In production (Render), client files are copied to ./client during build
+  // In development, client files are at ../client
+  const clientDir = process.env.NODE_ENV === 'production' 
+    ? path.join(__dirname, 'client')
+    : path.join(__dirname, '..', 'client');
   try {
     // Serve static assets with conservative caching. index.html is always no-cache
     app.use(express.static(clientDir, {

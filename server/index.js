@@ -230,7 +230,6 @@ db.exec(`CREATE TABLE IF NOT EXISTS users (
       });
     }
   });
-});
 
 // Register endpoint
 app.post('/api/register', (req, res) => {

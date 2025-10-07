@@ -303,93 +303,6 @@ function goToTrading() {
 }
 window.goToTrading = goToTrading;
 
-// Load the main species page (your beautiful species grid)
-async function loadSpeciesPage() {
-    const main = document.getElementById('appMainContent');
-    if (!main) return;
-    
-    main.innerHTML = `
-        <div id="speciesPage">
-            <!-- Stats Dashboard -->
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-number" id="totalCreatures">0</div>
-                    <div class="stat-label">Total Creatures</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" id="speciesTracked">0</div>
-                    <div class="stat-label">Species Owned</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" id="bossReadySpecies">0</div>
-                    <div class="stat-label">Boss Ready Species</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" id="prizedBloodlines">0</div>
-                    <div class="stat-label">Prized Bloodlines</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" id="highestLevel">1</div>
-                    <div class="stat-label">Highest Level</div>
-                </div>
-            </div>
-
-            <!-- Main Content -->
-            <div class="main-content">
-                <!-- Species Controls -->
-                <div class="species-controls">
-                    <div class="search-box">
-                        <span class="search-icon">🔍</span>
-                        <input type="text" class="search-input" id="searchInput" placeholder="Search species by name or type..." oninput="filterSpecies()">
-                    </div>
-                    <select class="filter-select" id="categoryFilter" onchange="filterSpecies()">
-                        <option value="">All Categories</option>
-                        <option value="carnivore">Carnivore</option>
-                        <option value="herbivore">Herbivore</option>
-                        <option value="omnivore">Omnivore</option>
-                        <option value="flyer">Flyer</option>
-                        <option value="combat">Combat</option>
-                        <option value="utility">Utility</option>
-                        <option value="transport">Transport</option>
-                        <option value="harvesting">Harvesting</option>
-                        <option value="boss">Boss</option>
-                    </select>
-                    <select class="filter-select" id="rarityFilter" onchange="filterSpecies()">
-                        <option value="">All Rarities</option>
-                        <option value="common">Common</option>
-                        <option value="uncommon">Uncommon</option>
-                        <option value="rare">Rare</option>
-                        <option value="legendary">Legendary</option>
-                        <option value="event">Event</option>
-                        <option value="mission">Mission</option>
-                        <option value="tek">Tek</option>
-                    </select>
-                </div>
-
-                <!-- Species Grid -->
-                <div class="species-grid" id="speciesGrid">
-                    <!-- Species cards will be dynamically generated -->
-                </div>
-            </div>
-        </div>
-    `;
-    
-    // Wait for species database to load
-    await waitForSpeciesDB(3000, 50);
-    
-    // Load and render species
-    try {
-        updateStatsDashboard();
-        renderSpeciesGrid();
-    } catch (e) {
-        console.error('Failed to render species grid:', e);
-        const grid = document.getElementById('speciesGrid');
-        if (grid) {
-            grid.innerHTML = '<div class="no-species-found">Failed to load species database</div>';
-        }
-    }
-}
-
 // Species Grid Management (restored from Old Nugget)
 function renderSpeciesGrid() {
     console.log('Loading species grid...');
@@ -748,7 +661,7 @@ function setupNavigationListeners() {
                     loadTribesPage();
                     break;
                 case 'boss':
-                    loadBossPage();
+                    loadBossPlanner();
                     break;
                 case 'arena':
                     loadArenaPage();
@@ -768,7 +681,7 @@ function setupNavigationListeners() {
 
 // My Nuggies Page - Comprehensive Creature Management
 function loadMyNuggiesPage() {
-    setActiveNavButton('creatures');
+    setActiveNavButton('nuggies');
     const main = document.getElementById('appMainContent');
     if (!main) return;
     
@@ -847,7 +760,7 @@ function loadTradingPage() {
     if (!main) return;
     
     const userCreatures = window.appState?.creatures || [];
-    const mockTrades = generateMockTrades();
+    const mockTrades = []; // Empty for live site
     
     main.innerHTML = `
         <div class="trading-page">
@@ -1172,7 +1085,7 @@ function switchTradeTab(tabName) {
     if (container) {
         switch(tabName) {
             case 'marketplace':
-                container.innerHTML = renderTradingMarketplace(generateMockTrades());
+                container.innerHTML = renderTradingMarketplace([]); // Empty for live site
                 break;
             case 'my-trades':
                 container.innerHTML = '<div class="loading">Loading your trades...</div>';
@@ -1425,8 +1338,8 @@ function loadFriendsPage() {
     const main = document.getElementById('appMainContent');
     if (!main) return;
     
-    const mockFriends = generateMockFriends();
-    const pendingRequests = generatePendingRequests();
+    const mockFriends = []; // Empty for live site
+    const pendingRequests = []; // Empty for live site
     
     main.innerHTML = `
         <div class="friends-page">
@@ -2497,6 +2410,7 @@ window.cancelFriendRequest = cancelFriendRequest;
 
 // Boss Planner Implementation
 async function loadBossPlanner() {
+    setActiveNavButton('boss');
     const main = document.getElementById('appMainContent');
     if (!main) return;
 
@@ -3079,6 +2993,7 @@ function getSpeciesDB() {
 }
 
 async function loadSpeciesPage() {
+    setActiveNavButton('creatures');
     try {
         // Initialize speciesData
         const speciesData = window.SPECIES_DATABASE || {};
@@ -3569,41 +3484,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         authBtn.addEventListener('click', handleAuthClick);
     }
     
-    // Header button listeners
-    const goToMyProfileBtn = document.getElementById('goToMyProfileBtn');
-    if (goToMyProfileBtn) {
-        goToMyProfileBtn.addEventListener('click', goToMyNuggies);
-    }
-    
-    const goToFriendsBtn = document.getElementById('goToFriendsBtn');
-    if (goToFriendsBtn) {
-        goToFriendsBtn.addEventListener('click', () => loadFriendsPage());
-    }
-    
-    const goToCreaturesBtn = document.getElementById('goToCreaturesBtn');
-    if (goToCreaturesBtn) {
-        goToCreaturesBtn.addEventListener('click', () => loadSpeciesPage());
-    }
-    
-    const goToMyNuggiesBtn = document.getElementById('goToMyNuggiesBtn');
-    if (goToMyNuggiesBtn) {
-        goToMyNuggiesBtn.addEventListener('click', goToMyNuggies);
-    }
-    
-    const goToTradingBtn = document.getElementById('goToTradingBtn');
-    if (goToTradingBtn) {
-        goToTradingBtn.addEventListener('click', goToTrading);
-    }
-    
-    const goToBossPlannerBtn = document.getElementById('goToBossPlannerBtn');
-    if (goToBossPlannerBtn) {
-        goToBossPlannerBtn.addEventListener('click', () => loadBossPlanner());
-    }
-    
-    const openTribeManagerBtn = document.getElementById('openTribeManagerBtn');
-    if (openTribeManagerBtn) {
-        openTribeManagerBtn.addEventListener('click', () => loadTribesPage());
-    }
+    // Note: Navigation is handled by setupNavigationListeners() using data-page attributes
+    // Removed individual button listeners to prevent conflicts
 });
 
 // === NOTIFICATION SYSTEM ===
@@ -3656,48 +3538,7 @@ function createNotificationPanel() {
 }
 
 function getNotifications() {
-    return [
-        {
-            id: '1',
-            icon: '🏆',
-            title: 'Achievement Unlocked!',
-            message: 'You earned the "Prized Bloodline" badge for breeding a perfect creature.',
-            time: '2 minutes ago',
-            read: false
-        },
-        {
-            id: '2',
-            icon: '👥',
-            title: 'Friend Request',
-            message: 'NoobBreeder22 wants to be your friend.',
-            time: '5 minutes ago',
-            read: false
-        },
-        {
-            id: '3',
-            icon: '🔄',
-            title: 'Trade Offer',
-            message: 'New trade offer for your Rex "Thunder King".',
-            time: '1 hour ago',
-            read: true
-        },
-        {
-            id: '4',
-            icon: '🏛️',
-            title: 'Tribe Update',
-            message: 'Your tribe completed the Dragon boss fight!',
-            time: '3 hours ago',
-            read: true
-        },
-        {
-            id: '5',
-            icon: '⚔️',
-            title: 'Arena Victory!',
-            message: 'Your Spino "Blade Runner" won a ranked match and gained 25 rating points.',
-            time: '2 hours ago',
-            read: false
-        }
-    ];
+    return []; // Empty for live site - notifications will come from server
 }
 
 function markAsRead(notificationId) {

@@ -8,6 +8,13 @@
         <style>html:not([data-ready="true"]) { visibility: hidden !important; }</style>
     <link rel="stylesheet" href="main.css">
     <link rel="stylesheet" href="species-grid.css">
+    <link rel="stylesheet" href="profile.css">
+    <link rel="stylesheet" href="nuggies.css">
+    <link rel="stylesheet" href="trading.css">
+    <link rel="stylesheet" href="friends.css">
+    <link rel="stylesheet" href="tribes.css">
+    <link rel="stylesheet" href="arena.css">
+    <link rel="stylesheet" href="notifications.css">
     </head>
     <body>
         <script>
@@ -47,13 +54,14 @@
                     <div class="header-top">
                         <div class="logo"><div class="logo-icon">🦕</div> DINO NUGGIES</div>
                         <div class="header-actions">
-                            <button class="btn btn-secondary" id="goToMyProfileBtn">👤 My Profile</button>
-                            <button class="btn btn-secondary" id="goToFriendsBtn">👥 Friends</button>
-                            <button class="btn btn-secondary" id="openTribeManagerBtn">🏛️ Tribe Manager</button>
-                            <button class="btn btn-secondary" id="goToCreaturesBtn">🦖 Creatures</button>
-                            <button class="btn btn-secondary" id="goToMyNuggiesBtn">🍗 My Nuggies</button>
-                            <button class="btn btn-secondary" id="goToTradingBtn">🔁 Trading</button>
-                            <button class="btn btn-secondary" id="goToBossPlannerBtn">👑 Boss Planner</button>
+                            <button class="btn btn-secondary nav-btn" id="goToMyProfileBtn" data-page="profile">👤 My Profile</button>
+                            <button class="btn btn-secondary nav-btn" id="goToCreaturesBtn" data-page="creatures">🦖 Creatures</button>
+                            <button class="btn btn-secondary nav-btn" id="goToMyNuggiesBtn" data-page="nuggies">� My Nuggies</button>
+                            <button class="btn btn-secondary nav-btn" id="goToFriendsBtn" data-page="friends">👥 Friends</button>
+                            <button class="btn btn-secondary nav-btn" id="openTribeManagerBtn" data-page="tribe">�️ Tribe Manager</button>
+                            <button class="btn btn-secondary nav-btn" id="goToTradingBtn" data-page="trading">🔁 Trading</button>
+                            <button class="btn btn-secondary nav-btn" id="goToBossPlannerBtn" data-page="boss">👑 Boss Planner</button>
+                            <button class="btn btn-secondary nav-btn" id="goToNotificationsBtn" data-page="notifications">🔔 Notifications <span class="notification-badge" id="notificationCount"></span></button>
                             <button id="authBtn" class="btn btn-primary">Sign Out</button>
                         </div>
                     </div>

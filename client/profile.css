@@ -1,0 +1,462 @@
+/* Professional My Profile Page Styling */
+
+.profile-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    min-height: calc(100vh - 120px);
+}
+
+/* Profile Header */
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    background: linear-gradient(135deg, #333 0%, #444 100%);
+    padding: 30px;
+    border-radius: 15px;
+    margin-bottom: 30px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.profile-avatar {
+    position: relative;
+}
+
+.avatar-icon {
+    width: 120px;
+    height: 120px;
+    background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 60px;
+    border: 4px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 30px rgba(76, 175, 80, 0.3);
+}
+
+.profile-info {
+    flex: 1;
+}
+
+.profile-name {
+    color: #fff;
+    font-size: 3rem;
+    font-weight: 700;
+    margin: 0 0 10px 0;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.profile-title {
+    color: #4CAF50;
+    font-size: 1.2rem;
+    font-weight: 500;
+    margin-bottom: 20px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.profile-stats-quick {
+    display: flex;
+    gap: 30px;
+}
+
+.quick-stat {
+    text-align: center;
+}
+
+.stat-value {
+    display: block;
+    color: #fff;
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.stat-label {
+    display: block;
+    color: #ccc;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 5px;
+}
+
+/* Profile Content Grid */
+.profile-content {
+    margin-top: 30px;
+}
+
+.profile-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 25px;
+}
+
+/* Profile Cards */
+.profile-card {
+    background: linear-gradient(135deg, #2a2a2a 0%, #3a3a3a 100%);
+    border-radius: 12px;
+    padding: 25px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+.profile-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+    border-color: rgba(76, 175, 80, 0.3);
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.card-header h3 {
+    color: #fff;
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Account Information */
+.info-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.info-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.info-item:last-child {
+    border-bottom: none;
+}
+
+.info-label {
+    color: #ccc;
+    font-weight: 500;
+    min-width: 100px;
+}
+
+.info-value {
+    color: #fff;
+    font-weight: 600;
+    text-align: right;
+}
+
+/* Achievements */
+.achievement-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.achievement-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.achievement-item:hover {
+    background: rgba(76, 175, 80, 0.1);
+    transform: translateX(5px);
+}
+
+.achievement-icon {
+    font-size: 2rem;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.achievement-details {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.achievement-name {
+    color: #fff;
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.achievement-desc {
+    color: #ccc;
+    font-size: 0.9rem;
+    margin-top: 2px;
+}
+
+.achievement-time {
+    color: #888;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+}
+
+.no-achievements {
+    color: #888;
+    text-align: center;
+    padding: 30px;
+    font-style: italic;
+}
+
+/* Friends Preview */
+.friends-preview {
+    text-align: center;
+}
+
+.friend-count {
+    color: #4CAF50;
+    font-weight: 600;
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+}
+
+.friend-avatars {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.loading-text {
+    color: #888;
+    font-style: italic;
+}
+
+/* Trades Preview */
+.trades-preview {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.trade-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.trade-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.trade-status {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.trade-status.pending {
+    background: rgba(255, 193, 7, 0.2);
+    color: #ffc107;
+    border: 1px solid rgba(255, 193, 7, 0.3);
+}
+
+.trade-status.incoming {
+    background: rgba(76, 175, 80, 0.2);
+    color: #4CAF50;
+    border: 1px solid rgba(76, 175, 80, 0.3);
+}
+
+.trade-desc {
+    color: #fff;
+    flex: 1;
+    text-align: right;
+    margin-left: 15px;
+}
+
+/* Statistics Grid */
+.stats-grid-profile {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.stat-item:hover {
+    background: rgba(76, 175, 80, 0.1);
+    transform: scale(1.02);
+}
+
+.stat-icon {
+    font-size: 2rem;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.stat-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-number {
+    color: #fff;
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.stat-text {
+    color: #ccc;
+    font-size: 0.9rem;
+    margin-top: 2px;
+}
+
+/* Settings List */
+.settings-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.setting-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: left;
+    width: 100%;
+}
+
+.setting-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateX(5px);
+}
+
+.setting-item.danger {
+    color: #f44336;
+}
+
+.setting-item.danger:hover {
+    background: rgba(244, 67, 54, 0.1);
+}
+
+.setting-arrow {
+    color: #4CAF50;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .profile-page {
+        padding: 15px;
+    }
+    
+    .profile-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 20px;
+        padding: 20px;
+    }
+    
+    .profile-name {
+        font-size: 2rem;
+    }
+    
+    .profile-stats-quick {
+        justify-content: center;
+        gap: 20px;
+    }
+    
+    .profile-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .card-header {
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+    }
+    
+    .stats-grid-profile {
+        grid-template-columns: 1fr;
+    }
+    
+    .info-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+    
+    .info-value {
+        text-align: left;
+    }
+}
+
+@media (max-width: 480px) {
+    .avatar-icon {
+        width: 80px;
+        height: 80px;
+        font-size: 40px;
+    }
+    
+    .profile-name {
+        font-size: 1.5rem;
+    }
+    
+    .stat-value {
+        font-size: 1.5rem;
+    }
+    
+    .profile-card {
+        padding: 20px;
+    }
+}

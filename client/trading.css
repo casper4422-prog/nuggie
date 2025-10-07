@@ -1,0 +1,526 @@
+/* Trading Hub - Professional Marketplace Styling */
+
+.trading-page {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 20px;
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    min-height: calc(100vh - 120px);
+}
+
+/* Trading Header */
+.trading-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding: 25px 30px;
+    background: linear-gradient(135deg, #333 0%, #444 100%);
+    border-radius: 15px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.trading-header .page-title h1 {
+    color: #fff;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 0 0 8px 0;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.trade-count {
+    color: #4CAF50;
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+/* Trading Tabs */
+.trading-tabs {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 25px;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 8px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.trade-tab {
+    flex: 1;
+    padding: 12px 20px;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    color: #ccc;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.trade-tab:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+.trade-tab.active {
+    background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+    color: #fff;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+}
+
+/* Trading Controls */
+.trading-controls {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 25px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.trading-controls .search-section {
+    margin-bottom: 20px;
+}
+
+.trading-controls .search-group {
+    display: flex;
+    max-width: 400px;
+    gap: 10px;
+}
+
+.trading-controls .filter-section {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+/* Trading Content */
+.trading-content {
+    margin-top: 25px;
+}
+
+.trades-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+    gap: 20px;
+    padding: 10px 0;
+}
+
+/* Trade Cards */
+.trade-card {
+    background: linear-gradient(135deg, #2a2a2a 0%, #3a3a3a 100%);
+    border-radius: 12px;
+    padding: 25px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.trade-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+    border-color: rgba(76, 175, 80, 0.3);
+}
+
+.trade-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #4CAF50, #45a049, #4CAF50);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.trade-card:hover::before {
+    opacity: 1;
+}
+
+/* Trade Header */
+.trade-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.trader-info {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.trader-name {
+    color: #fff;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.trader-rating {
+    color: #ccc;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.trade-status {
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 5px;
+}
+
+.status-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-badge.active {
+    background: rgba(76, 175, 80, 0.2);
+    color: #4CAF50;
+    border: 1px solid rgba(76, 175, 80, 0.3);
+}
+
+.offers-count {
+    color: #ccc;
+    font-size: 0.9rem;
+}
+
+/* Trade Content */
+.trade-content {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.trade-offering,
+.trade-wanting {
+    flex: 1;
+}
+
+.trade-section-title {
+    color: #4CAF50;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+}
+
+.trade-arrow {
+    font-size: 1.5rem;
+    color: #4CAF50;
+    flex-shrink: 0;
+}
+
+/* Creature Offers */
+.creature-offer {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.creature-summary {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.creature-species {
+    color: #fff;
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.creature-name {
+    color: #4CAF50;
+    font-style: italic;
+    font-size: 0.9rem;
+}
+
+.creature-level {
+    background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+    color: #fff;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.creature-gender {
+    font-size: 1.1rem;
+}
+
+.creature-stats-mini {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+}
+
+.stat-mini {
+    background: rgba(76, 175, 80, 0.1);
+    color: #4CAF50;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.mutations-count {
+    background: rgba(255, 193, 7, 0.2);
+    color: #ffc107;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.creature-badges-mini {
+    display: flex;
+    gap: 5px;
+}
+
+.badge-mini {
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+}
+
+.badge-mini.legendary {
+    background: rgba(255, 193, 7, 0.2);
+    color: #ffc107;
+}
+
+.badge-mini.epic {
+    background: rgba(156, 39, 176, 0.2);
+    color: #9c27b0;
+}
+
+.badge-mini.mutated {
+    background: rgba(255, 87, 34, 0.2);
+    color: #ff5722;
+}
+
+/* Creature Wanted */
+.creature-wanted {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.wanted-species {
+    color: #fff;
+    font-weight: 600;
+    font-size: 1rem;
+    margin-bottom: 8px;
+}
+
+.wanted-requirements {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.wanted-req {
+    color: #ccc;
+    font-size: 0.9rem;
+}
+
+.wanted-stats {
+    color: #4CAF50;
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-top: 5px;
+}
+
+/* Resources Wanted */
+.resources-wanted {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.resource-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.resource-item:last-child {
+    border-bottom: none;
+}
+
+.resource-name {
+    color: #fff;
+    font-weight: 500;
+}
+
+.resource-quantity {
+    color: #4CAF50;
+    font-weight: 600;
+}
+
+/* Trade Footer */
+.trade-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 15px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.trade-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.trade-time,
+.trade-expires {
+    color: #888;
+    font-size: 0.8rem;
+}
+
+.trade-actions {
+    display: flex;
+    gap: 8px;
+}
+
+/* Loading and Empty States */
+.loading {
+    text-align: center;
+    padding: 60px 20px;
+    color: #ccc;
+    font-size: 1.1rem;
+    grid-column: 1 / -1;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #ccc;
+    grid-column: 1 / -1;
+}
+
+.empty-icon {
+    font-size: 4rem;
+    margin-bottom: 20px;
+    opacity: 0.5;
+}
+
+.empty-state h3 {
+    color: #fff;
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+}
+
+.empty-state p {
+    font-size: 1.1rem;
+    margin-bottom: 30px;
+    opacity: 0.8;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .trading-page {
+        padding: 15px;
+    }
+    
+    .trading-header {
+        flex-direction: column;
+        gap: 20px;
+        padding: 20px;
+        text-align: center;
+    }
+    
+    .header-actions {
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    
+    .trading-tabs {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .trading-controls .filter-section {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .trades-container {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .trade-content {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .trade-arrow {
+        transform: rotate(90deg);
+    }
+    
+    .trade-footer {
+        flex-direction: column;
+        gap: 15px;
+        align-items: stretch;
+        text-align: center;
+    }
+    
+    .trade-actions {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .trading-header .page-title h1 {
+        font-size: 2rem;
+    }
+    
+    .trade-card {
+        padding: 20px;
+    }
+    
+    .creature-stats-mini {
+        gap: 5px;
+    }
+    
+    .header-actions .btn {
+        padding: 8px 12px;
+        font-size: 0.9rem;
+    }
+    
+    .trade-tab {
+        padding: 10px 15px;
+        font-size: 0.9rem;
+    }
+}

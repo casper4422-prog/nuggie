@@ -12,7 +12,8 @@ function debounce(func, wait) {
 }
 
 // Initialize API configuration
-window.__API_BASE = window.__API_BASE || 'http://localhost:3001'; // Default to localhost if not set
+// Use same origin for live deployment, fallback to localhost for local development
+window.__API_BASE = window.__API_BASE || (window.location.hostname === 'localhost' ? 'http://localhost:3001' : window.location.origin);
 
 // Application State Management
 window.appState = window.appState || {

@@ -25,11 +25,7 @@ app.use(express.json());
 const serveClient = (process.env.SERVE_CLIENT || 'true') === 'true';
 if (serveClient) {
   const path = require('path');
-  // In production (Render), client files are copied to ./client during build
-  // In development, client files are at ../client
-  const clientDir = process.env.NODE_ENV === 'production' 
-    ? path.join(__dirname, 'client')
-    : path.join(__dirname, '..', 'client');
+  const clientDir = path.join(__dirname, '..', 'client');
   try {
     // Serve static assets with conservative caching. index.html is always no-cache
     app.use(express.static(clientDir, {

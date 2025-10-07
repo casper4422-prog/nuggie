@@ -5,9 +5,9 @@ services:
     runtime: node
     repo: https://github.com/casper4422-prog/nuggie
     branch: main
-    rootDir: server
-    buildCommand: npm install && cp -r ../client ./client
-    startCommand: npm start
+    rootDir: .
+    buildCommand: cd server && npm install
+    startCommand: cd server && npm start
     envVars:
       - key: NODE_ENV
         value: production

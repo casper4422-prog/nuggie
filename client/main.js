@@ -3496,7 +3496,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                     data = await res.json();
                 } catch (e) {
                     console.error('Failed to parse login response JSON:', e);
-                    if (errorDiv) errorDiv.textContent = 'Server response error. Please try again.';
+                    // Check if this is an empty response issue like registration
+                    if (res.ok) {
+                        console.warn('Login returned empty response from server');
+                        if (errorDiv) errorDiv.textContent = 'Login may have succeeded, but server response was incomplete. Please refresh the page.';
+                    } else {
+                        if (errorDiv) errorDiv.textContent = 'Server response error. Please try again.';
+                    }
                     return;
                 }
                 

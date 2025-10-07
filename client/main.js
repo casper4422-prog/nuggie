@@ -143,6 +143,7 @@ function renderRegisterForm() {
             
             try {
                 console.log('[SPA] sending registration request to server for', email);
+                console.log('[SPA] API base URL will be:', window.__API_BASE);
                 const { res, body } = await apiRequest('/api/register', { 
                     method: 'POST', 
                     body: JSON.stringify({ email, password, nickname, discord_name: discord })
@@ -150,6 +151,7 @@ function renderRegisterForm() {
                 const data = body;
                 
                 console.log('Registration response:', res.status, data);
+                console.log('Registration response details:', { ok: res.ok, status: res.status, url: res.url, headers: Object.fromEntries(res.headers.entries()) });
                 
                 // Handle successful registration with proper response
                 if (res.ok && data && (data.success || data.token)) {
@@ -175,9 +177,11 @@ function renderRegisterForm() {
                 } else if (res.ok && !data) {
                     // Server returned 200 but empty response - likely a server issue
                     console.warn('Registration returned empty response from server');
-                    if (errorDiv) errorDiv.textContent = 'Registration may have succeeded, but server response was incomplete. Please try logging in.';
+                    console.warn('Response details:', { status: res.status, statusText: res.statusText, url: res.url, contentType: res.headers.get('content-type') });
+                    if (errorDiv) errorDiv.textContent = 'Registration may have succeeded, but server response was incomplete. Please try logging in, or contact support if the issue persists.';
                 } else {
                     console.log('Registration failed:', data?.error || 'Unknown error');
+                    console.log('Failed response details:', { status: res.status, statusText: res.statusText, ok: res.ok, data });
                     if (errorDiv) errorDiv.textContent = data?.error || 'Registration failed. Please try again.';
                 }
             } catch (err) {

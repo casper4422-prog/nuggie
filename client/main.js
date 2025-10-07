@@ -151,6 +151,7 @@ function renderRegisterForm() {
                 
                 console.log('Registration response:', res.status, data);
                 
+                // Handle successful registration with proper response
                 if (res.ok && data && (data.success || data.token)) {
                     console.log('Registration successful, showing main app');
                     // Store credentials and show main app
@@ -171,6 +172,10 @@ function renderRegisterForm() {
                     // Refresh stats and auth UI after registration
                     try { updateStatsDashboard(); } catch (e) {}
                     try { updateAuthUI(); } catch (e) {}
+                } else if (res.ok && !data) {
+                    // Server returned 200 but empty response - likely a server issue
+                    console.warn('Registration returned empty response from server');
+                    if (errorDiv) errorDiv.textContent = 'Registration may have succeeded, but server response was incomplete. Please try logging in.';
                 } else {
                     console.log('Registration failed:', data?.error || 'Unknown error');
                     if (errorDiv) errorDiv.textContent = data?.error || 'Registration failed. Please try again.';

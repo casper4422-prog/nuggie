@@ -256,6 +256,12 @@ function showMainApp() {
 		// Ensure the app main content exists
 		const appMain = document.getElementById('appMainContent');
 		if (appMain) appMain.style.display = '';
+		
+		// Load default page (My Profile) if no specific page is already loaded
+		const mainContent = document.getElementById('mainContent');
+		if (mainContent && (!mainContent.innerHTML || mainContent.innerHTML.trim() === '')) {
+			loadMyProfilePage();
+		}
 	} catch (e) { console.warn('showMainApp failed', e); }
 }
 window.showMainApp = showMainApp;
@@ -2489,17 +2495,6 @@ window.acceptFriendRequest = acceptFriendRequest;
 window.declineFriendRequest = declineFriendRequest;
 window.cancelFriendRequest = cancelFriendRequest;
 
-// Load trading page (placeholder)
-function loadTradingPage() {
-    const main = document.getElementById('appMainContent');
-    if (!main) return;
-    main.innerHTML = `
-        <div class="main-content">
-            <h1>🔁 Trading</h1>
-            <p>Trading functionality coming soon!</p>
-        </div>
-    `;
-}
 // Boss Planner Implementation
 async function loadBossPlanner() {
     const main = document.getElementById('appMainContent');
@@ -3607,7 +3602,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     const openTribeManagerBtn = document.getElementById('openTribeManagerBtn');
     if (openTribeManagerBtn) {
-        openTribeManagerBtn.addEventListener('click', () => loadFriendsPage());
+        openTribeManagerBtn.addEventListener('click', () => loadTribesPage());
     }
 });
 

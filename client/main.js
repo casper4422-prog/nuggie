@@ -142,41 +142,16 @@ function renderRegisterForm() {
             }
             
             try {
-                const res = await fetch('/api/register', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                console.log('[SPA] sending registration request to server for', email);
+                const { res, body } = await apiRequest('/api/register', { 
+                    method: 'POST', 
                     body: JSON.stringify({ email, password, nickname, discord_name: discord })
                 });
-                
-                // Check if response is ok first
-                if (!res.ok) {
-                    // Try to get error message from response
-                    let errorMessage = 'Registration failed';
-                    try {
-                        const errorData = await res.json();
-                        errorMessage = errorData.error || errorMessage;
-                    } catch (e) {
-                        // If JSON parsing fails, use status text
-                        errorMessage = res.statusText || errorMessage;
-                    }
-                    console.log('Registration failed with status:', res.status, errorMessage);
-                    if (errorDiv) errorDiv.textContent = errorMessage;
-                    return;
-                }
-                
-                // Parse response JSON
-                let data;
-                try {
-                    data = await res.json();
-                } catch (e) {
-                    console.error('Failed to parse registration response JSON:', e);
-                    if (errorDiv) errorDiv.textContent = 'Server response error. Please try again.';
-                    return;
-                }
+                const data = body;
                 
                 console.log('Registration response:', res.status, data);
                 
-                if (data.success || data.token) {
+                if (res.ok && data && (data.success || data.token)) {
                     console.log('Registration successful, showing main app');
                     // Store credentials and show main app
                     localStorage.setItem('token', data.token);
@@ -197,8 +172,8 @@ function renderRegisterForm() {
                     try { updateStatsDashboard(); } catch (e) {}
                     try { updateAuthUI(); } catch (e) {}
                 } else {
-                    console.log('Registration failed:', data.error);
-                    if (errorDiv) errorDiv.textContent = data.error || 'Registration failed';
+                    console.log('Registration failed:', data?.error || 'Unknown error');
+                    if (errorDiv) errorDiv.textContent = data?.error || 'Registration failed. Please try again.';
                 }
             } catch (err) {
                 console.error('Registration error:', err);

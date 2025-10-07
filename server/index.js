@@ -3,7 +3,7 @@ const express = require('express');
 // use express.json() instead of body-parser
 const cors = require('cors');
 const compression = require('compression');
-const sqlite3 = require('sqlite3').verbose();
+const Database = require('better-sqlite3');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
@@ -54,36 +54,19 @@ if (serveClient) {
 
 // Note: client is served separately in production (no static mounting here)
 
-// Initialize SQLite DB
-// In production on Render, use a data directory to persist the database
-const dbPath = process.env.NODE_ENV === 'production' 
-  ? '/opt/render/project/src/data/database.sqlite'
-  : 'database.sqlite';
+// Initialize Database
+const dbPath = 'database.sqlite';
+const db = new Database(dbPath);
+console.log(`Connected to SQLite database at ${dbPath}`);
 
-// Ensure data directory exists in production
-if (process.env.NODE_ENV === 'production') {
-  const fs = require('fs');
-  const path = require('path');
-  const dataDir = path.dirname(dbPath);
-  if (!fs.existsSync(dataDir)) {
-    fs.mkdirSync(dataDir, { recursive: true });
-    console.log(`Created data directory: ${dataDir}`);
-  }
-}
-
-const db = new sqlite3.Database(dbPath, (err) => {
-  if (err) throw err;
-  console.log(`Connected to SQLite database at ${dbPath}`);
-});
-
-db.serialize(() => {
-  db.run(`CREATE TABLE IF NOT EXISTS users (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    email TEXT UNIQUE NOT NULL,
-    password TEXT NOT NULL,
-    nickname TEXT UNIQUE,
-    discord_name TEXT
-  )`);
+// Initialize tables
+db.exec(`CREATE TABLE IF NOT EXISTS users (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  email TEXT UNIQUE NOT NULL,
+  password TEXT NOT NULL,
+  nickname TEXT UNIQUE,
+  discord_name TEXT
+)`);
   db.run(`CREATE TABLE IF NOT EXISTS creature_cards (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER NOT NULL,

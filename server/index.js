@@ -3,7 +3,7 @@ const express = require('express');
 // use express.json() instead of body-parser
 const cors = require('cors');
 const compression = require('compression');
-const Database = require('better-sqlite3');
+const sqlite3 = require('sqlite3').verbose();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
@@ -55,12 +55,14 @@ if (serveClient) {
 // Note: client is served separately in production (no static mounting here)
 
 // Initialize Database
-const dbPath = 'database.sqlite';
-const db = new Database(dbPath);
+const path = require('path');
+const dbPath = path.resolve(__dirname, 'database.sqlite');
+const db = new sqlite3.Database(dbPath);
 console.log(`Connected to SQLite database at ${dbPath}`);
 
 // Initialize tables
-db.exec(`CREATE TABLE IF NOT EXISTS users (
+db.serialize(() => {
+  db.run(`CREATE TABLE IF NOT EXISTS users (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   email TEXT UNIQUE NOT NULL,
   password TEXT NOT NULL,
@@ -230,6 +232,7 @@ db.exec(`CREATE TABLE IF NOT EXISTS users (
       });
     }
   });
+});
 
 // Register endpoint
 app.post('/api/register', (req, res) => {

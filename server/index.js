@@ -1174,6 +1174,35 @@ app.put('/api/arena/creatures', authenticateToken, (req, res) => {
   });
 });
 
+// Get per-user boss fight plans
+app.get('/api/bosses', authenticateToken, (req, res) => {
+  db.get('SELECT id, data, updated_at FROM boss_planner WHERE user_id = ? ORDER BY updated_at DESC LIMIT 1', [req.user.userId], (err, row) => {
+    if (err) return res.status(500).json({ error: 'Failed to load boss data' });
+    if (!row) return res.json([]);
+    try { 
+      const bossData = JSON.parse(row.data || '[]');
+      return res.json(bossData); 
+    } catch (e) { 
+      return res.status(500).json({ error: 'Failed to parse boss data' }); 
+    }
+  });
+});
+
+// Save per-user boss fight plans
+app.put('/api/bosses', authenticateToken, (req, res) => {
+  const bosses = req.body;
+  if (!Array.isArray(bosses)) return res.status(400).json({ error: 'Expected boss array' });
+  const payload = JSON.stringify(bosses);
+  db.run('UPDATE boss_planner SET data = ?, updated_at = datetime(\'now\') WHERE user_id = ?', [payload, req.user.userId], function(err) {
+    if (err) return res.status(500).json({ error: 'Failed to save boss data' });
+    if (this.changes && this.changes > 0) return res.json({ success: true });
+    db.run('INSERT INTO boss_planner (user_id, data) VALUES (?, ?)', [req.user.userId, payload], function(err2) {
+      if (err2) return res.status(500).json({ error: 'Failed to save boss data' });
+      res.json({ success: true });
+    });
+  });
+});
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   if (!process.env.JWT_SECRET) console.warn('Using default JWT secret; set JWT_SECRET in environment for production');

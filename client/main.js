@@ -645,6 +645,9 @@ function setupNavigationListeners() {
             const pageId = this.getAttribute('data-page');
             console.log(`[Navigation] Clicked: ${pageId}`);
             
+            // Clean up any open modals before navigation
+            cleanupModals();
+            
             // Handle navigation based on page
             switch(pageId) {
                 case 'profile':
@@ -2512,7 +2515,7 @@ async function loadBossPlanner() {
     // Initialize event handlers
     document.getElementById('bossSearch')?.addEventListener('input', debounce(() => renderBossGrid(bosses), 200));
     document.getElementById('bossMapFilter')?.addEventListener('change', () => renderBossGrid(bosses));
-    document.getElementById('addBossBtn')?.addEventListener('click', () => openBossModal());
+    document.getElementById('addBossBtn')?.addEventListener('click', () => openBossTemplateModal());
 
     // Initial render
     renderBossGrid(bosses);
@@ -2675,6 +2678,52 @@ function openBossModal(boss = null) {
 
 // Expose boss planner functions to window for debugging
 window.loadBossPlanner = loadBossPlanner;
+
+// Modal cleanup function to prevent UI bugs during navigation
+function cleanupModals() {
+    // Remove any existing modals
+    const existingModals = document.querySelectorAll('.modal');
+    existingModals.forEach(modal => {
+        if (modal.parentNode) {
+            modal.parentNode.removeChild(modal);
+        }
+    });
+}
+
+// Boss template system based on ASA Boss Guide
+function getBossTemplates() {
+    return [
+        // The Island
+        { id: 'broodmother', name: 'Broodmother Lysrix', map: 'The Island', type: 'Guardian', description: 'Giant spider boss with insect minions', strategy: 'Use Megatheriums (250% damage vs insects), bring stimulants' },
+        { id: 'megapithecus', name: 'Megapithecus', map: 'The Island', type: 'Guardian', description: 'Giant ape boss (easiest guardian)', strategy: 'Avoid center pit, keep creatures away from edges' },
+        { id: 'dragon', name: 'Dragon', map: 'The Island', type: 'Guardian', description: 'Fire-breathing dragon (hardest guardian)', strategy: 'Use Woolly Rhinos for fire resistance, percentage-based damage makes Rexes less effective' },
+        { id: 'overseer', name: 'Overseer', map: 'The Island', type: 'Ascension', description: 'Final ascension boss in Tek Cave', strategy: 'Requires trophies from all three guardians' },
+        
+        // Scorched Earth
+        { id: 'manticore', name: 'Manticore', map: 'Scorched Earth', type: 'Guardian', description: 'Lion-bodied creature with wings and scorpion tail', strategy: 'Use Wyverns to rush boss, Gas Mask for torpor protection' },
+        
+        // The Center
+        { id: 'dual_arena', name: 'Broodmother & Megapithecus', map: 'The Center', type: 'Dual Boss', description: 'Fight both bosses simultaneously', strategy: 'Focus one boss at a time, 25-minute time limit' },
+        
+        // Aberration
+        { id: 'rockwell', name: 'Rockwell', map: 'Aberration', type: 'Ascension', description: 'Mutated human-plant hybrid', strategy: 'Hazard suits for radiation, Rock Drakes for mobility, lengthy fight' },
+        
+        // Ragnarok
+        { id: 'nunatak', name: 'Nunatak', map: 'Ragnarok', type: 'Ice Wyvern', description: 'Massive Ice Wyvern with guerrilla tactics', strategy: 'Use Shadowmanes for mobility, avoid freeze attacks' },
+        { id: 'iceworm_queen', name: 'Iceworm Queen', map: 'Ragnarok', type: 'Mini-Boss', description: 'Mini-boss in Frozen Dungeon', strategy: 'Fast maneuverable mounts recommended' },
+        { id: 'lava_elemental', name: 'Lava Elemental', map: 'Ragnarok', type: 'Mini-Boss', description: 'Mini-boss in Jungle Dungeon', strategy: 'Fire resistance and high-level creatures' },
+        
+        // Astraeos
+        { id: 'thodes', name: 'Thodes the Widowmaker', map: 'Astraeos', type: 'Mythology', description: 'Primary Greek mythology boss', strategy: 'Requires 6 artifacts, Greek-themed encounter' },
+        { id: 'natrix', name: 'Natrix the Devious', map: 'Astraeos', type: 'Mythology', description: 'Secondary Greek mythology boss', strategy: 'Enhanced creature variants with improved loot' },
+        
+        // Extinction
+        { id: 'desert_titan', name: 'Desert Titan', map: 'Extinction', type: 'Titan', description: 'Massive flying stingray-like creature', strategy: 'Snow Owls for mobility, stays airborne, TAMEABLE' },
+        { id: 'forest_titan', name: 'Forest Titan', map: 'Extinction', type: 'Titan', description: 'Extremely slow but powerful', strategy: 'Hit-and-run tactics, destroy corruption nodules, TAMEABLE' },
+        { id: 'ice_titan', name: 'Ice Titan', map: 'Extinction', type: 'Titan', description: 'Most agile titan with frost attacks', strategy: 'Constant movement, target ankle/shoulder/chest nodules, TAMEABLE' },
+        { id: 'king_titan', name: 'King Titan', map: 'Extinction', type: 'Final Boss', description: 'Ultimate boss requiring all other titans', strategy: 'Keep fight centered (respawns with full health if moves too far), NOT TAMEABLE' }
+    ];
+}
 window.openBossModal = openBossModal;
 window.showBossDetail = showBossDetail;
 window.renderBossList = renderBossList;
@@ -3658,3 +3707,101 @@ window.updateNotificationBadge = updateNotificationBadge;
 document.addEventListener('DOMContentLoaded', () => {
     setTimeout(updateNotificationBadge, 100);
 });
+
+// New template-based boss modal system
+function openBossTemplateModal() {
+    // Clean up any existing modals first
+    cleanupModals();
+    
+    const templates = getBossTemplates();
+    const modal = document.createElement('div');
+    modal.className = 'modal';
+    modal.id = 'bossModal';
+    
+    modal.innerHTML = `
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add Boss Fight</h2>
+                <button type="button" class="close" id="closeBossModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Choose Boss Template</label>
+                    <div class="boss-template-grid">
+                        ${templates.map(template => `
+                            <div class="boss-template-card" data-boss-id="${template.id}">
+                                <div class="template-header">
+                                    <h4>${template.name}</h4>
+                                    <span class="template-map">${template.map}</span>
+                                </div>
+                                <div class="template-type">${template.type}</div>
+                                <div class="template-description">${template.description}</div>
+                                <div class="template-strategy"><strong>Strategy:</strong> ${template.strategy}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+                <div class="form-group" style="margin-top: 20px;">
+                    <label>Difficulty</label>
+                    <select id="bossDifficultyInput" class="form-control">
+                        <option value="gamma">Gamma (Easy)</option>
+                        <option value="beta">Beta (Medium)</option>
+                        <option value="alpha">Alpha (Hard)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="addBossFromTemplate" class="btn btn-primary" disabled>Add Boss Fight</button>
+                <button id="cancelBossBtn" class="btn btn-secondary">Cancel</button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Template selection logic
+    let selectedTemplate = null;
+    const templateCards = modal.querySelectorAll('.boss-template-card');
+    const addButton = modal.querySelector('#addBossFromTemplate');
+    
+    templateCards.forEach(card => {
+        card.addEventListener('click', () => {
+            // Remove previous selection
+            templateCards.forEach(c => c.classList.remove('selected'));
+            // Add selection to clicked card
+            card.classList.add('selected');
+            selectedTemplate = templates.find(t => t.id === card.getAttribute('data-boss-id'));
+            addButton.disabled = false;
+        });
+    });
+    
+    addButton.addEventListener('click', () => {
+        if (selectedTemplate) {
+            const difficulty = modal.querySelector('#bossDifficultyInput').value;
+            const newBoss = {
+                id: Date.now(),
+                name: selectedTemplate.name,
+                map: selectedTemplate.map,
+                type: selectedTemplate.type,
+                difficulty: difficulty,
+                status: 'planned',
+                description: selectedTemplate.description,
+                strategy: selectedTemplate.strategy,
+                dateAdded: new Date().toISOString()
+            };
+            
+            const bosses = getBossData();
+            bosses.unshift(newBoss);
+            saveBossData(bosses);
+            cleanupModals();
+            renderBossGrid(bosses);
+        }
+    });
+
+    // Close button handlers
+    modal.querySelector('#closeBossModal')?.addEventListener('click', cleanupModals);
+    modal.querySelector('#cancelBossBtn')?.addEventListener('click', cleanupModals);
+}
+
+// Export new boss template modal
+window.openBossTemplateModal = openBossTemplateModal;

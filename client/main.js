@@ -640,7 +640,7 @@ function setupNavigationListeners() {
     const navButtons = document.querySelectorAll('.nav-btn');
     
     navButtons.forEach(button => {
-        button.addEventListener('click', function(e) {
+        button.addEventListener('click', async function(e) {
             e.preventDefault();
             const pageId = this.getAttribute('data-page');
             console.log(`[Navigation] Clicked: ${pageId}`);
@@ -651,7 +651,9 @@ function setupNavigationListeners() {
                     loadMyProfilePage();
                     break;
                 case 'creatures':
-                case 'nuggies':  // Handle both possible button IDs
+                    await goToCreatures(); // Fixed: Show species database for creatures button
+                    break;
+                case 'nuggies':
                     loadMyNuggiesPage();
                     break;
                 case 'species':
@@ -1195,6 +1197,40 @@ function loadTribesPage() {
                     ${userTribe ? renderMyTribe(userTribe) : renderTribeSearch(availableTribes)}
                 </div>
             </div>
+        </div>
+    `;
+}
+
+// Helper functions for Tribes page
+function getUserTribeData() {
+    // TODO: Replace with actual server data
+    return null; // For now, user has no tribe
+}
+
+function getAvailableTribes() {
+    // TODO: Replace with actual server data
+    return [
+        { id: 1, name: "Alpha Hunters", members: 15, description: "Elite boss hunting tribe" },
+        { id: 2, name: "Dino Breeders", members: 8, description: "Focused on creature breeding" },
+        { id: 3, name: "Resource Lords", members: 22, description: "Resource gathering specialists" }
+    ];
+}
+
+function renderMyTribe(tribe) {
+    return `<div class="my-tribe">Member of ${tribe.name}</div>`;
+}
+
+function renderTribeSearch(tribes) {
+    return `
+        <div class="tribe-search">
+            <h3>Available Tribes</h3>
+            ${tribes.map(tribe => `
+                <div class="tribe-card">
+                    <h4>${tribe.name}</h4>
+                    <p>${tribe.description}</p>
+                    <div class="tribe-meta">${tribe.members} members</div>
+                </div>
+            `).join('')}
         </div>
     `;
 }
@@ -2418,32 +2454,60 @@ async function loadBossPlanner() {
     const main = document.getElementById('appMainContent');
     if (!main) return;
 
-    main.innerHTML = `
-        <section class="boss-planner-page">
-            <div class="page-header">
-                <h1>Boss Planner</h1>
-                <div class="section-sub">Plan boss fights, rewards and party composition</div>
-            </div>
-            <div class="boss-controls">
-                <input id="bossSearch" class="form-control" placeholder="Search bosses..." style="max-width:320px;"> 
-                <select id="bossMapFilter" class="form-control" style="max-width:220px;">
-                    <option value="">All Maps</option>
-                    <option>The Island</option>
-                    <option>Scorched Earth</option>
-                    <option>The Center</option>
-                    <option>Aberration</option>
-                    <option>Ragnarok</option>
-                    <option>Astraeos</option>
-                    <option>Extinction</option>
-                </select>
-                <button id="addBossBtn" class="btn btn-primary">Add Boss</button>
-            </div>
-            <div id="bossGrid" class="boss-grid"></div>
-        </section>
-    `;
-
-    // Load boss data
+    // Load boss data first
     const bosses = await getBossData();
+
+    main.innerHTML = `
+        <div class="boss-page">
+            <div class="boss-header">
+                <div class="page-title">
+                    <h1>👑 Boss Planner</h1>
+                    <div class="boss-count">${bosses.length} bosses available</div>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-primary" id="addBossBtn">➕ Add Boss Fight</button>
+                    <button class="btn btn-secondary" onclick="exportBossData()">📤 Export Plans</button>
+                    <button class="btn btn-secondary" onclick="bossCalculator()">🧮 Calculator</button>
+                </div>
+            </div>
+            
+            <div class="boss-controls">
+                <div class="control-group">
+                    <input id="bossSearch" class="form-control" placeholder="🔍 Search bosses..." style="max-width:320px;"> 
+                    <select id="bossMapFilter" class="form-control" style="max-width:220px;">
+                        <option value="">All Maps</option>
+                        <option>The Island</option>
+                        <option>Scorched Earth</option>
+                        <option>The Center</option>
+                        <option>Aberration</option>
+                        <option>Ragnarok</option>
+                        <option>Astraeos</option>
+                        <option>Extinction</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="boss-tabs">
+                <button class="boss-tab active" onclick="switchBossTab('planned')" data-tab="planned">
+                    📋 Planned Fights
+                </button>
+                <button class="boss-tab" onclick="switchBossTab('gamma')" data-tab="gamma">
+                    🏅 Gamma Bosses
+                </button>
+                <button class="boss-tab" onclick="switchBossTab('beta')" data-tab="beta">
+                    🥈 Beta Bosses
+                </button>
+                <button class="boss-tab" onclick="switchBossTab('alpha')" data-tab="alpha">
+                    🥇 Alpha Bosses
+                </button>
+                <button class="boss-tab" onclick="switchBossTab('all')" data-tab="all">
+                    🌟 All Bosses
+                </button>
+            </div>
+            
+            <div id="bossGrid" class="boss-grid"></div>
+        </div>
+    `;
 
     // Initialize event handlers
     document.getElementById('bossSearch')?.addEventListener('input', debounce(() => renderBossGrid(bosses), 200));

@@ -689,20 +689,20 @@ function openAddCreatureModal(preSelectedSpecies = null) {
                                         <input type="number" id="creatureStamina" min="0" placeholder="Stamina points">
                                     </div>
                                     <div class="stat-input">
-                                        <label for="creatureMelee">⚔️ Melee Damage</label>
-                                        <input type="number" id="creatureMelee" min="0" placeholder="Melee %">
+                                        <label for="creatureOxygen">🫁 Oxygen</label>
+                                        <input type="number" id="creatureOxygen" min="0" placeholder="Oxygen points">
                                     </div>
                                     <div class="stat-input">
-                                        <label for="creatureWeight">📦 Weight</label>
+                                        <label for="creatureFood">🍖 Food</label>
+                                        <input type="number" id="creatureFood" min="0" placeholder="Food points">
+                                    </div>
+                                    <div class="stat-input">
+                                        <label for="creatureWeight">� Weight</label>
                                         <input type="number" id="creatureWeight" min="0" placeholder="Weight capacity">
                                     </div>
                                     <div class="stat-input">
-                                        <label for="creatureSpeed">💨 Movement Speed</label>
-                                        <input type="number" id="creatureSpeed" min="0" placeholder="Speed %">
-                                    </div>
-                                    <div class="stat-input">
-                                        <label for="creatureArmor">🛡️ Armor/Defense</label>
-                                        <input type="number" id="creatureArmor" min="0" placeholder="Armor rating">
+                                        <label for="creatureMelee">⚔️ Melee Damage</label>
+                                        <input type="number" id="creatureMelee" min="0" placeholder="Melee damage %">
                                     </div>
                                 </div>
                             </div>
@@ -815,10 +815,10 @@ function saveNewCreature() {
         // Stats
         health: parseInt(document.getElementById('creatureHealth').value) || null,
         stamina: parseInt(document.getElementById('creatureStamina').value) || null,
-        melee: parseInt(document.getElementById('creatureMelee').value) || null,
+        oxygen: parseInt(document.getElementById('creatureOxygen').value) || null,
+        food: parseInt(document.getElementById('creatureFood').value) || null,
         weight: parseInt(document.getElementById('creatureWeight').value) || null,
-        speed: parseInt(document.getElementById('creatureSpeed').value) || null,
-        armor: parseInt(document.getElementById('creatureArmor').value) || null,
+        melee: parseInt(document.getElementById('creatureMelee').value) || null,
         
         // Mutations & Breeding
         mutations: parseInt(document.getElementById('creatureMutations').value) || 0,
@@ -1111,11 +1111,11 @@ function renderCreatureCard(creature, speciesData) {
                     </div>
                     <div class="stat-item">
                         <span class="stat-label">⚔️ Melee</span>
-                        <span class="stat-value">${creature.damage || creature.melee || 'N/A'}</span>
+                        <span class="stat-value">${creature.melee || 'N/A'}</span>
                     </div>
                     <div class="stat-item">
-                        <span class="stat-label">🛡️ Armor</span>
-                        <span class="stat-value">${creature.armor || 'N/A'}</span>
+                        <span class="stat-label">� Weight</span>
+                        <span class="stat-value">${creature.weight || 'N/A'}</span>
                     </div>
                     <div class="stat-item">
                         <span class="stat-label">⚡ Stamina</span>

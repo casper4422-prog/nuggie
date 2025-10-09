@@ -38,18 +38,8 @@ async function initializeApp() {
         // Check if user is already authenticated
         const token = localStorage.getItem('token');
         if (token) {
-            // Verify token is still valid
-            try {
-                const { res } = await apiRequest('/api/auth/verify', { 
-                    method: 'GET',
-                    headers: { 'Authorization': 'Bearer ' + token }
-                });
-                window.appState.authenticated = res.ok;
-            } catch (e) {
-                console.error('Token verification failed:', e);
-                window.appState.authenticated = false;
-                localStorage.removeItem('token');
-            }
+            // Simple token presence check - backend will validate on actual API calls
+            window.appState.authenticated = true;
         }
 
         // Load species database
@@ -804,35 +794,51 @@ function saveNewCreature() {
     const form = document.getElementById('addCreatureForm');
     if (!form) return;
     
-    // Collect form data
+    // Collect form data (based on Old Nugget structure)
     const newCreature = {
         id: generateCreatureId(),
         name: document.getElementById('creatureName').value.trim(),
         species: document.getElementById('creatureSpecies').value,
-        level: parseInt(document.getElementById('creatureLevel').value) || 1,
         gender: document.getElementById('creatureGender').value,
+        level: parseInt(document.getElementById('creatureLevel').value) || 1,
         
-        // Stats
-        health: parseInt(document.getElementById('creatureHealth').value) || null,
-        stamina: parseInt(document.getElementById('creatureStamina').value) || null,
-        oxygen: parseInt(document.getElementById('creatureOxygen').value) || null,
-        food: parseInt(document.getElementById('creatureFood').value) || null,
-        weight: parseInt(document.getElementById('creatureWeight').value) || null,
-        melee: parseInt(document.getElementById('creatureMelee').value) || null,
+        // Base Stats (Wild Points)
+        baseStats: {
+            Health: parseInt(document.getElementById('baseStatHealth').value) || 0,
+            Stamina: parseInt(document.getElementById('baseStatStamina').value) || 0,
+            Oxygen: parseInt(document.getElementById('baseStatOxygen').value) || 0,
+            Food: parseInt(document.getElementById('baseStatFood').value) || 0,
+            Weight: parseInt(document.getElementById('baseStatWeight').value) || 0,
+            Melee: parseInt(document.getElementById('baseStatMelee').value) || 0
+        },
         
-        // Mutations & Breeding
-        mutations: parseInt(document.getElementById('creatureMutations').value) || 0,
-        colors: document.getElementById('creatureColors').value.trim(),
-        breedingStatus: document.getElementById('creatureBreeding').value,
-        bloodline: document.getElementById('creatureBloodline').value.trim(),
+        // Mutations
+        mutations: {
+            Health: parseInt(document.getElementById('healthMutations').value) || 0,
+            Stamina: parseInt(document.getElementById('staminaMutations').value) || 0,
+            Oxygen: parseInt(document.getElementById('oxygenMutations').value) || 0,
+            Food: parseInt(document.getElementById('foodMutations').value) || 0,
+            Weight: parseInt(document.getElementById('weightMutations').value) || 0,
+            Melee: parseInt(document.getElementById('meleeMutations').value) || 0
+        },
+        
+        // Domestic Levels (Post-tame leveling)
+        domesticLevels: {
+            Health: parseInt(document.getElementById('healthLevels').value) || 0,
+            Stamina: parseInt(document.getElementById('staminaLevels').value) || 0,
+            Oxygen: parseInt(document.getElementById('oxygenLevels').value) || 0,
+            Food: parseInt(document.getElementById('foodLevels').value) || 0,
+            Weight: parseInt(document.getElementById('weightLevels').value) || 0,
+            Melee: parseInt(document.getElementById('meleeLevels').value) || 0
+        },
         
         // Notes & Tags
         notes: document.getElementById('creatureNotes').value.trim(),
         tags: document.getElementById('creatureTags').value.trim().split(',').map(t => t.trim()).filter(t => t),
         
         // Metadata
-        dateAdded: new Date().toISOString(),
-        lastModified: new Date().toISOString()
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
     };
     
     // Validation
@@ -4123,42 +4129,25 @@ function renderArenaGrid() {
 
 async function getBossData() {
     try {
-        const response = await fetch('/api/bosses', {
-            method: 'GET',
-            headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
-        });
-
-        if (response.ok) {
-            return await response.json();
-        } else {
-            console.error('Failed to fetch bosses from backend');
-            return [];
+        // Load from localStorage only (no backend API for bosses)
+        const stored = localStorage.getItem('bossData');
+        if (stored) {
+            return JSON.parse(stored);
         }
+        return [];
     } catch (e) {
-        console.error('Error fetching boss data:', e);
+        console.error('Error loading boss data from localStorage:', e);
         return [];
     }
 }
 
 async function saveBossData(bosses) {
     try {
-        // Assuming we save all bosses, or handle individually. For simplicity, replace all.
-        const response = await fetch('/api/bosses', {
-            method: 'PUT', // Or POST if replacing
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-            },
-            body: JSON.stringify(bosses)
-        });
-
-        if (!response.ok) {
-            console.error('Failed to save bosses');
-        } else {
-            window.currentBosses = bosses;
-        }
+        // Save to localStorage only (no backend API for bosses)
+        localStorage.setItem('bossData', JSON.stringify(bosses));
+        window.currentBosses = bosses;
     } catch (e) {
-        console.error('Error saving bosses:', e);
+        console.error('Error saving bosses to localStorage:', e);
     }
 }
 

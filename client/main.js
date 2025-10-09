@@ -471,9 +471,8 @@ function filterSpecies() {
     }
 }
 
-// Creature Page Management
-function openCreaturePage(speciesName) {
-    window.appState.currentSpecies = speciesName;
+// Open species detail page (modernized to match boss planning style)
+function openSpeciesDetail(speciesName) {
     const database = window.SPECIES_DATABASE || window.EXPANDED_SPECIES_DATABASE;
     const species = database[speciesName];
     
@@ -485,86 +484,106 @@ function openCreaturePage(speciesName) {
     const main = document.getElementById('appMainContent');
     if (!main) return;
     
+    // Get creatures for this species
+    const speciesCreatures = window.appState?.creatures?.filter(c => c.species === speciesName) || [];
+    
     main.innerHTML = `
-        <div class="main-content">
-            <div class="creature-page-header">
-                <div class="creature-page-icon">${species.icon}</div>
-                <div class="creature-page-info">
-                    <h1>${species.name}</h1>
-                    <div class="creature-page-meta">${window.appState?.creatures?.filter(c => c.species === speciesName).length || 0} creatures</div>
-                </div>
-                <div class="creature-page-actions">
-                    <button class="btn btn-primary" onclick="openCreatureModal()">
-                        ➕ Add Creature
-                    </button>
-                    <button class="btn btn-secondary" onclick="goBackToSpecies()">
-                        ← Back to Species
-                    </button>
+        <div class="species-detail-page">
+            <div class="species-detail-header">
+                <button class="btn btn-secondary back-btn" onclick="loadSpeciesPage()">← Back to Species Database</button>
+                <div class="species-info">
+                    <div class="species-title-section">
+                        <div class="species-detail-icon">${species.icon}</div>
+                        <div>
+                            <h1>${species.name}</h1>
+                            <div class="species-meta">
+                                <span class="species-category">${species.category || 'Unknown'}</span>
+                                <span class="species-rarity">${species.rarity || 'Common'}</span>
+                                <span class="species-diet">${species.diet || 'Unknown Diet'}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="species-description">${species.description || 'No description available for this species.'}</p>
                 </div>
             </div>
             
-            <div class="species-info-container">
-                <div class="tab-navigation">
-                    <button class="tab-button active" onclick="switchTab('basic-info')">📖 Basic Info</button>
-                    <button class="tab-button" onclick="switchTab('stats-combat')">📊 Stats & Combat</button>
-                    <button class="tab-button" onclick="switchTab('utility-roles')">⚙️ Utility & Roles</button>
-                </div>
-
-                <div id="basic-info" class="tab-content active">
-                    <div class="info-section">
-                        <div class="dossier-text">
-                            ${species.description || 'Species information will be available soon.'}
-                        </div>
+            <div class="planning-sections">
+                <div class="planning-section">
+                    <div class="section-header">
+                        <h3>📊 Statistics & Ratings</h3>
                     </div>
-                    
-                    <div class="info-section">
-                        <div class="info-grid">
-                            <div class="info-item">
-                                <div class="info-label">Category</div>
-                                <div class="info-value">${species.category || 'Unknown'}</div>
-                            </div>
-                            <div class="info-item">
-                                <div class="info-label">Rarity</div>
-                                <div class="info-value">${species.rarity || 'Unknown'}</div>
-                            </div>
-                            <div class="info-item">
-                                <div class="info-label">Source</div>
-                                <div class="info-value">${species.source || 'Unknown'}</div>
-                            </div>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-label">Combat</div>
+                            <div class="stat-value">${species.ratings?.combat || 'N/A'}<span class="stat-max">/10</span></div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Transport</div>
+                            <div class="stat-value">${species.ratings?.transport || 'N/A'}<span class="stat-max">/10</span></div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Speed</div>
+                            <div class="stat-value">${species.ratings?.speed || 'N/A'}<span class="stat-max">/10</span></div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Survivability</div>
+                            <div class="stat-value">${species.ratings?.survivability || 'N/A'}<span class="stat-max">/10</span></div>
                         </div>
                     </div>
                 </div>
-
-                <div id="stats-combat" class="tab-content">
-                    <div class="info-section">
-                        <div class="info-title">📊 Ratings</div>
-                        <div class="info-grid">
-                            <div class="info-item">
-                                <div class="info-label">Combat</div>
-                                <div class="info-value">${species.ratings?.combat || 'N/A'}/10</div>
-                            </div>
-                            <div class="info-item">
-                                <div class="info-label">Transport</div>
-                                <div class="info-value">${species.ratings?.transport || 'N/A'}/10</div>
-                            </div>
-                            <div class="info-item">
-                                <div class="info-label">Speed</div>
-                                <div class="info-value">${species.ratings?.speed || 'N/A'}/10</div>
-                            </div>
-                            <div class="info-item">
-                                <div class="info-label">Survivability</div>
-                                <div class="info-value">${species.ratings?.survivability || 'N/A'}/10</div>
-                            </div>
-                        </div>
+                
+                <div class="planning-section">
+                    <div class="section-header">
+                        <h3>🦖 Your ${species.name} Collection</h3>
+                        <button class="btn btn-primary" onclick="addNewCreature('${speciesName}')">+ Add New ${species.name}</button>
+                    </div>
+                    <div class="creature-collection" id="creatureCollection-${speciesName}">
+                        ${speciesCreatures.length > 0 ? 
+                            speciesCreatures.map(creature => `
+                                <div class="creature-card">
+                                    <div class="creature-card-header">
+                                        <div class="creature-name">${creature.name || 'Unnamed'}</div>
+                                        <div class="creature-level">Level ${creature.level || 1}</div>
+                                    </div>
+                                    <div class="creature-stats">
+                                        <div class="creature-stat">❤️ ${creature.health || 'N/A'}</div>
+                                        <div class="creature-stat">⚔️ ${creature.damage || 'N/A'}</div>
+                                        <div class="creature-stat">🛡️ ${creature.armor || 'N/A'}</div>
+                                    </div>
+                                    <div class="creature-actions">
+                                        <button class="btn btn-sm btn-secondary" onclick="editCreature('${creature.id}')">Edit</button>
+                                        <button class="btn btn-sm btn-danger" onclick="deleteCreature('${creature.id}')">Delete</button>
+                                    </div>
+                                </div>
+                            `).join('') :
+                            `<div class="empty-collection">
+                                <div class="empty-icon">🦕</div>
+                                <div class="empty-text">No ${species.name} in your collection yet</div>
+                                <div class="empty-subtext">Click "Add New ${species.name}" to get started!</div>
+                            </div>`
+                        }
                     </div>
                 </div>
-
-                <div id="utility-roles" class="tab-content">
-                    <div class="info-section">
-                        <div class="info-grid">
-                            <div class="info-item">
-                                <div class="info-label">Primary Role</div>
-                                <div class="info-value">${species.primaryRole || 'Unknown'}</div>
+                
+                <div class="planning-section">
+                    <div class="section-header">
+                        <h3>🎯 Usage & Strategies</h3>
+                    </div>
+                    <div class="usage-info">
+                        <div class="usage-item">
+                            <div class="usage-label">Primary Role</div>
+                            <div class="usage-value">${species.primaryRole || 'Multi-purpose'}</div>
+                        </div>
+                        ${species.specialAbilities ? `
+                            <div class="usage-item">
+                                <div class="usage-label">Special Abilities</div>
+                                <div class="usage-value">${species.specialAbilities}</div>
+                            </div>
+                        ` : ''}
+                        <div class="usage-tips">
+                            <div class="tips-title">💡 Tips & Strategies</div>
+                            <div class="tips-content">
+                                ${species.tips || `This ${species.name} can be used for various purposes. Experiment with different builds and strategies to find what works best for your playstyle.`}
                             </div>
                         </div>
                     </div>
@@ -576,6 +595,22 @@ function openCreaturePage(speciesName) {
 
 function goBackToSpecies() {
     loadSpeciesPage();
+}
+
+// Add placeholder functions for species page actions
+function exportSpeciesData() {
+    console.log('Export species data functionality coming soon...');
+    // Placeholder for export functionality
+}
+
+function speciesCalculator() {
+    console.log('Species stats calculator coming soon...');
+    // Placeholder for calculator functionality
+}
+
+function addNewCreature(speciesName) {
+    console.log(`Add new ${speciesName} functionality coming soon...`);
+    // Placeholder for adding new creatures
 }
 
 function switchTab(tabId) {
@@ -627,10 +662,13 @@ function updateStatsDashboard() {
 
 // Make functions globally available
 window.filterSpecies = filterSpecies;
-window.openCreaturePage = openCreaturePage;
+window.openSpeciesDetail = openSpeciesDetail;
 window.goBackToSpecies = goBackToSpecies;
 window.switchTab = switchTab;
 window.loadSpeciesPage = loadSpeciesPage;
+window.exportSpeciesData = exportSpeciesData;
+window.speciesCalculator = speciesCalculator;
+window.addNewCreature = addNewCreature;
 
 // Setup navigation listeners for all nav buttons
 function setupNavigationListeners() {
@@ -3192,9 +3230,6 @@ function getSpeciesDB() {
 async function loadSpeciesPage() {
     setActiveNavButton('creatures');
     try {
-        // Initialize speciesData
-        const speciesData = window.SPECIES_DATABASE || {};
-
         // First ensure app and species database are initialized
         if (!window.appState?.initialized) {
             console.log('[SPA] Waiting for app initialization...');
@@ -3215,31 +3250,44 @@ async function loadSpeciesPage() {
         main.innerHTML = '<div class="loading">Loading species data...</div>';
         
         // Get species data
+        const speciesData = window.SPECIES_DATABASE || {};
         if (!Object.keys(speciesData).length) {
             main.innerHTML = '<div class="error">No species data available.</div>';
             return;
         }
 
-        // Render the species page with search and filters and a species grid
+        // Render the modern species page with the same structure as boss planner
         main.innerHTML = `
-        <section class="species-section">
-            <div class="species-header-controls">
-                <div class="species-search">
-                    <input id="searchInput" class="form-control" placeholder="Search species by name, category or diet">
+            <div class="species-page">
+                <div class="species-header">
+                    <div class="page-title">
+                        <h1>🦖 Creature Database</h1>
+                        <div class="species-count">Browse ${Object.keys(speciesData).length} available species</div>
+                    </div>
+                    <div class="header-actions">
+                        <button class="btn btn-secondary" onclick="exportSpeciesData()">📤 Export Data</button>
+                        <button class="btn btn-secondary" onclick="speciesCalculator()">🧮 Stats Calculator</button>
+                    </div>
                 </div>
-                <div class="species-filters">
-                    <select id="categoryFilter" class="form-control">
-                        <option value="">All Categories</option>
-                    </select>
-                    <select id="rarityFilter" class="form-control">
-                        <option value="">All Rarities</option>
-                    </select>
-                    <button id="clearFiltersBtn" class="btn btn-secondary">Clear</button>
+                
+                <div class="species-filters-section">
+                    <div class="filter-group">
+                        <input id="searchInput" class="form-control search-input" placeholder="🔍 Search species by name, category, or diet...">
+                    </div>
+                    <div class="filter-group">
+                        <select id="categoryFilter" class="form-control filter-select">
+                            <option value="">All Categories</option>
+                        </select>
+                        <select id="rarityFilter" class="form-control filter-select">
+                            <option value="">All Rarities</option>
+                        </select>
+                        <button id="clearFiltersBtn" class="btn btn-secondary">Clear Filters</button>
+                    </div>
                 </div>
+                
+                <div id="speciesGrid" class="species-template-grid" aria-live="polite"></div>
             </div>
-            <div id="speciesGrid" class="species-grid" aria-live="polite"></div>
-        </section>
-    `;
+        `;
 
     // Initialize the species grid
     const speciesGrid = document.getElementById('speciesGrid');
@@ -3328,22 +3376,36 @@ async function loadSpeciesPage() {
             return true;
         });
 
-        speciesGrid.innerHTML = filteredSpecies.length ? filteredSpecies.map(s => `
-            <div class="species-card" data-species-id="${s.id || ''}">
-                <div class="species-card-content">
-                    <div class="species-icon">${s.icon || '🦖'}</div>
-                    <div class="species-info">
-                        <div class="species-name">${s.name || 'Unknown Species'}</div>
-                        <div class="species-meta">${s.category || ''} · ${s.rarity || 'Common'}</div>
-                        <div class="species-stats">
-                            ${s.baseStats ? Object.entries(s.baseStats)
-                                .map(([key, value]) => `<span class="stat">${key}: ${value}</span>`)
-                                .join('') : ''}
+        // Use modern boss-card style layout for species cards
+        speciesGrid.innerHTML = filteredSpecies.length ? filteredSpecies.map(species => {
+            // Get creature count for this species
+            const creatureCount = window.appState?.creatures?.filter(c => c.species === species.name).length || 0;
+            
+            return `
+                <div class="species-planning-card" onclick="openSpeciesDetail('${species.name}')">
+                    <div class="template-header">
+                        <div class="species-card-icon">${species.icon || '🦖'}</div>
+                        <div>
+                            <h4>${species.name}</h4>
+                            <span class="template-map">${species.category || 'Unknown'} • ${species.rarity || 'Common'}</span>
                         </div>
                     </div>
+                    <div class="template-type">${species.diet || 'Unknown Diet'}</div>
+                    <div class="template-description">${species.description ? (species.description.length > 100 ? species.description.substring(0, 100) + '...' : species.description) : 'No description available.'}</div>
+                    <div class="species-stats-preview">
+                        ${species.ratings ? `
+                            <div class="stat-item">Combat: ${species.ratings.combat || 'N/A'}</div>
+                            <div class="stat-item">Transport: ${species.ratings.transport || 'N/A'}</div>
+                            <div class="stat-item">Speed: ${species.ratings.speed || 'N/A'}</div>
+                        ` : '<div class="stat-item">No stats available</div>'}
+                    </div>
+                    <div class="species-planning-footer">
+                        <span class="creature-count">${creatureCount} owned</span>
+                        <span class="click-hint">Click to view details →</span>
+                    </div>
                 </div>
-            </div>
-        `).join('') : '<div class="no-results">No species found matching your criteria</div>';
+            `;
+        }).join('') : '<div class="no-results">No species found matching your criteria</div>';
     }
 
     // Wire up event handlers

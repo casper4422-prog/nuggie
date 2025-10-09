@@ -254,6 +254,7 @@ app.post('/api/register', (req, res) => {
 
   // Basic validation
   if (!emailVal.includes('@')) {
+    res.setHeader('Content-Type', 'application/json');
     return res.status(400).json({ error: 'Invalid email format' });
   }
 
@@ -266,9 +267,11 @@ app.post('/api/register', (req, res) => {
   db.get(checkQuery, checkParams, (err, row) => {
     if (err) {
       console.warn('[API] /api/register db lookup error', err && err.message ? err.message : err);
+      res.setHeader('Content-Type', 'application/json');
       return res.status(500).json({ error: 'Server error during lookup' });
     }
     if (row) {
+      res.setHeader('Content-Type', 'application/json');
       return res.status(400).json({ error: 'Email or nickname already exists' });
     }
 
@@ -276,6 +279,7 @@ app.post('/api/register', (req, res) => {
     bcrypt.hash(password, 10, (err, hash) => {
       if (err) {
         console.warn('[API] /api/register bcrypt error', err && err.message ? err.message : err);
+        res.setHeader('Content-Type', 'application/json');
         return res.status(500).json({ error: 'Server error during password processing' });
       }
 
@@ -286,6 +290,7 @@ app.post('/api/register', (req, res) => {
         function(err) {
           if (err) {
             console.warn('[API] /api/register insert error', err && err.message ? err.message : err);
+            res.setHeader('Content-Type', 'application/json');
             return res.status(500).json({ error: 'Failed to create user' });
           }
 
@@ -294,7 +299,8 @@ app.post('/api/register', (req, res) => {
           const token = jwt.sign({ userId }, SECRET, { expiresIn: '1d' });
           console.log('[API] /api/register success for userId', userId);
           
-          return res.json({ 
+          res.setHeader('Content-Type', 'application/json');
+          return res.status(200).json({ 
             success: true, 
             token, 
             userId,

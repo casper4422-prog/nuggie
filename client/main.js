@@ -3642,7 +3642,18 @@ async function apiRequest(path, opts = {}) {
 	const authEmpty = (path === '/api/login' || path === '/api/register') && (body === null || (typeof body === 'string' && body.trim() === ''));
 	if (!res.ok || authEmpty) {
 		try {
-			console.warn('[SPA] apiRequest response', { url, method, status: res.status, contentType: ct, bodyPreview: (raw || '').slice(0,1000) });
+			console.warn('[SPA] apiRequest response', { 
+				url, 
+				method, 
+				status: res.status, 
+				statusText: res.statusText,
+				ok: res.ok,
+				contentType: ct, 
+				rawResponse: raw,
+				parsedBody: body,
+				bodyPreview: (raw || '').slice(0,1000),
+				responseHeaders: Object.fromEntries(res.headers.entries())
+			});
 		} catch (e) {}
 	}
 	return { res, body };

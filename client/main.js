@@ -2457,68 +2457,148 @@ async function loadBossPlanner() {
     const main = document.getElementById('appMainContent');
     if (!main) return;
 
-    // Load boss data first
-    const bosses = await getBossData();
+    const templates = getBossTemplates();
 
     main.innerHTML = `
         <div class="boss-page">
             <div class="boss-header">
                 <div class="page-title">
                     <h1>👑 Boss Planner</h1>
-                    <div class="boss-count">${bosses.length} bosses available</div>
+                    <div class="boss-count">Plan fights for ${templates.length} available bosses</div>
                 </div>
                 <div class="header-actions">
-                    <button class="btn btn-primary" id="addBossBtn">➕ Add Boss Fight</button>
-                    <button class="btn btn-secondary" onclick="exportBossData()">📤 Export Plans</button>
+                    <button class="btn btn-secondary" onclick="exportBossPlans()">📤 Export Plans</button>
                     <button class="btn btn-secondary" onclick="bossCalculator()">🧮 Calculator</button>
                 </div>
             </div>
             
-            <div class="boss-controls">
-                <div class="control-group">
-                    <input id="bossSearch" class="form-control" placeholder="🔍 Search bosses..." style="max-width:320px;"> 
-                    <select id="bossMapFilter" class="form-control" style="max-width:220px;">
-                        <option value="">All Maps</option>
-                        <option>The Island</option>
-                        <option>Scorched Earth</option>
-                        <option>The Center</option>
-                        <option>Aberration</option>
-                        <option>Ragnarok</option>
-                        <option>Astraeos</option>
-                        <option>Extinction</option>
-                    </select>
+            <div class="boss-template-grid">
+                ${templates.map(template => `
+                    <div class="boss-planning-card" onclick="openBossPlanning('${template.id}')">
+                        <div class="template-header">
+                            <h4>${template.name}</h4>
+                            <span class="template-map">${template.map}</span>
+                        </div>
+                        <div class="template-type">${template.type}</div>
+                        <div class="template-description">${template.description}</div>
+                        <div class="template-strategy"><strong>Strategy:</strong> ${template.strategy}</div>
+                        <div class="boss-planning-footer">
+                            <span class="click-hint">Click to plan this boss fight →</span>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    `;
+}
+
+// Open collaborative boss planning page
+function openBossPlanning(bossId) {
+    const template = getBossTemplates().find(t => t.id === bossId);
+    if (!template) return;
+    
+    const main = document.getElementById('appMainContent');
+    if (!main) return;
+    
+    main.innerHTML = `
+        <div class="boss-planning-page">
+            <div class="boss-planning-header">
+                <button class="btn btn-secondary back-btn" onclick="loadBossPlanner()">← Back to Boss List</button>
+                <div class="boss-info">
+                    <h1>${template.name}</h1>
+                    <div class="boss-meta">
+                        <span class="boss-map">${template.map}</span>
+                        <span class="boss-type">${template.type}</span>
+                    </div>
+                    <p class="boss-description">${template.description}</p>
+                    <div class="boss-strategy">
+                        <strong>Recommended Strategy:</strong> ${template.strategy}
+                    </div>
                 </div>
             </div>
             
-            <div class="boss-tabs">
-                <button class="boss-tab active" onclick="switchBossTab('planned')" data-tab="planned">
-                    📋 Planned Fights
-                </button>
-                <button class="boss-tab" onclick="switchBossTab('gamma')" data-tab="gamma">
-                    🏅 Gamma Bosses
-                </button>
-                <button class="boss-tab" onclick="switchBossTab('beta')" data-tab="beta">
-                    🥈 Beta Bosses
-                </button>
-                <button class="boss-tab" onclick="switchBossTab('alpha')" data-tab="alpha">
-                    🥇 Alpha Bosses
-                </button>
-                <button class="boss-tab" onclick="switchBossTab('all')" data-tab="all">
-                    🌟 All Bosses
-                </button>
+            <div class="planning-sections">
+                <div class="planning-section">
+                    <div class="section-header">
+                        <h3>👥 Team & Invites</h3>
+                        <button class="btn btn-primary" onclick="invitePlayers('${bossId}')">+ Invite Players</button>
+                    </div>
+                    <div class="team-list" id="teamList-${bossId}">
+                        <div class="team-member">
+                            <img src="https://via.placeholder.com/40" class="member-avatar">
+                            <div class="member-info">
+                                <div class="member-name">You</div>
+                                <div class="member-role">Leader</div>
+                            </div>
+                        </div>
+                        <div class="invite-placeholder">
+                            <div class="placeholder-text">Invite friends and tribe mates to plan together</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="planning-section">
+                    <div class="section-header">
+                        <h3>🦖 Creature Lineup</h3>
+                        <button class="btn btn-primary" onclick="uploadCreatures('${bossId}')">+ Add Creatures</button>
+                    </div>
+                    <div class="creature-lineup" id="creatureLineup-${bossId}">
+                        <div class="creature-slot empty" onclick="uploadCreatures('${bossId}')">
+                            <div class="slot-content">
+                                <div class="add-icon">+</div>
+                                <div class="slot-text">Add your creatures</div>
+                            </div>
+                        </div>
+                        <div class="lineup-placeholder">
+                            <div class="placeholder-text">Upload your saved creature cards to share with the team</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="planning-section">
+                    <div class="section-header">
+                        <h3>📋 Fight Plan</h3>
+                        <div class="difficulty-selector">
+                            <label>Difficulty:</label>
+                            <select id="difficulty-${bossId}" class="form-control">
+                                <option value="gamma">Gamma (Easy)</option>
+                                <option value="beta">Beta (Medium)</option>
+                                <option value="alpha">Alpha (Hard)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="fight-plan" id="fightPlan-${bossId}">
+                        <textarea class="form-control" placeholder="Add notes about the fight plan, tactics, timing, etc..." rows="4"></textarea>
+                        <div class="plan-actions">
+                            <button class="btn btn-success" onclick="saveFightPlan('${bossId}')">💾 Save Plan</button>
+                            <button class="btn btn-warning" onclick="scheduleFight('${bossId}')">⏰ Schedule Fight</button>
+                        </div>
+                    </div>
+                </div>
             </div>
-            
-            <div id="bossGrid" class="boss-grid"></div>
         </div>
     `;
+    
+    setActiveNavButton('boss');
+}
 
-    // Initialize event handlers
-    document.getElementById('bossSearch')?.addEventListener('input', debounce(() => renderBossGrid(bosses), 200));
-    document.getElementById('bossMapFilter')?.addEventListener('change', () => renderBossGrid(bosses));
-    document.getElementById('addBossBtn')?.addEventListener('click', () => openBossTemplateModal());
+// Collaborative functions for boss planning
+function invitePlayers(bossId) {
+    alert(`Invite system for ${bossId} - Coming soon! This will open a modal to invite friends and tribe mates.`);
+}
 
-    // Initial render
-    renderBossGrid(bosses);
+function uploadCreatures(bossId) {
+    alert(`Creature upload for ${bossId} - Coming soon! This will let you select from your saved creature cards.`);
+}
+
+function saveFightPlan(bossId) {
+    const plan = document.querySelector(`#fightPlan-${bossId} textarea`).value;
+    const difficulty = document.querySelector(`#difficulty-${bossId}`).value;
+    alert(`Plan saved for ${bossId}! Difficulty: ${difficulty}. Plan: ${plan}`);
+}
+
+function scheduleFight(bossId) {
+    alert(`Schedule fight for ${bossId} - Coming soon! This will let you set a date/time and notify team members.`);
 }
 
 function renderBossGrid(bosses) {
@@ -3805,3 +3885,4 @@ function openBossTemplateModal() {
 
 // Export new boss template modal
 window.openBossTemplateModal = openBossTemplateModal;
+window.openBossPlanning = openBossPlanning;

@@ -1238,3 +1238,261 @@ body {
 .template-strategy strong {
     color: #f59e0b;
 }
+
+/* Boss Planning Cards for Main Page */
+.boss-planning-card {
+    background: #1e293b;
+    border: 2px solid #334155;
+    border-radius: 12px;
+    padding: 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.boss-planning-card:hover {
+    border-color: #3b82f6;
+    background: #273447;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+}
+
+.boss-planning-footer {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #334155;
+}
+
+.click-hint {
+    color: #3b82f6;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+/* Boss Planning Page Styles */
+.boss-planning-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.boss-planning-header {
+    margin-bottom: 30px;
+}
+
+.back-btn {
+    margin-bottom: 20px;
+}
+
+.boss-info h1 {
+    margin: 0 0 10px 0;
+    color: #f1f5f9;
+    font-size: 2rem;
+}
+
+.boss-meta {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 15px;
+}
+
+.boss-map {
+    background: #374151;
+    color: #d1d5db;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.boss-type {
+    background: #059669;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.boss-description {
+    color: #cbd5e1;
+    font-size: 1rem;
+    margin-bottom: 10px;
+    line-height: 1.5;
+}
+
+.boss-strategy {
+    color: #94a3b8;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    padding: 12px;
+    background: #0f172a;
+    border-radius: 8px;
+    border-left: 4px solid #f59e0b;
+}
+
+.boss-strategy strong {
+    color: #f59e0b;
+}
+
+/* Planning Sections */
+.planning-sections {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 20px;
+}
+
+.planning-section {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.planning-section:last-child {
+    grid-column: 1 / -1;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #334155;
+}
+
+.section-header h3 {
+    margin: 0;
+    color: #f1f5f9;
+    font-size: 1.2rem;
+}
+
+/* Team Member Styles */
+.team-member {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: #0f172a;
+    border-radius: 8px;
+    margin-bottom: 12px;
+}
+
+.member-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid #3b82f6;
+}
+
+.member-info {
+    flex: 1;
+}
+
+.member-name {
+    font-weight: 600;
+    color: #f1f5f9;
+    margin-bottom: 2px;
+}
+
+.member-role {
+    font-size: 0.85rem;
+    color: #94a3b8;
+}
+
+.invite-placeholder, .lineup-placeholder {
+    text-align: center;
+    padding: 20px;
+    color: #64748b;
+    font-style: italic;
+}
+
+/* Creature Lineup Styles */
+.creature-lineup {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 12px;
+}
+
+.creature-slot {
+    aspect-ratio: 1;
+    border: 2px dashed #475569;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.creature-slot.empty:hover {
+    border-color: #3b82f6;
+    background: rgba(59, 130, 246, 0.1);
+}
+
+.slot-content {
+    text-align: center;
+    color: #64748b;
+}
+
+.add-icon {
+    font-size: 2rem;
+    margin-bottom: 4px;
+}
+
+.slot-text {
+    font-size: 0.8rem;
+}
+
+/* Fight Plan Styles */
+.difficulty-selector {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.difficulty-selector label {
+    color: #cbd5e1;
+    font-weight: 500;
+}
+
+.fight-plan textarea {
+    width: 100%;
+    margin-bottom: 15px;
+    background: #0f172a;
+    border: 1px solid #334155;
+    color: #f1f5f9;
+    border-radius: 8px;
+    padding: 12px;
+    resize: vertical;
+}
+
+.fight-plan textarea:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15);
+}
+
+.plan-actions {
+    display: flex;
+    gap: 12px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .planning-sections {
+        grid-template-columns: 1fr;
+    }
+    
+    .boss-planning-page {
+        padding: 15px;
+    }
+    
+    .section-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+}

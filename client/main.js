@@ -487,6 +487,27 @@ function openSpeciesDetail(speciesName) {
     // Get creatures for this species (for count display only)
     const speciesCreatures = window.appState?.creatures?.filter(c => c.species === speciesName) || [];
     
+    // Generate taming information
+    const tamingInfo = species.taming ? `
+        <div class="info-section">
+            <div class="info-title">🎯 Taming Information</div>
+            <div class="taming-details">
+                <div class="taming-item">
+                    <span class="taming-label">Method:</span>
+                    <span class="taming-value">${species.taming.method || 'Standard KO Taming'}</span>
+                </div>
+                <div class="taming-item">
+                    <span class="taming-label">Preferred Food:</span>
+                    <span class="taming-value">${species.taming.preferredFood || 'Raw Meat/Berries'}</span>
+                </div>
+                <div class="taming-item">
+                    <span class="taming-label">Difficulty:</span>
+                    <span class="taming-value">${species.taming.difficulty || 'Medium'}</span>
+                </div>
+            </div>
+        </div>
+    ` : '';
+    
     main.innerHTML = `
         <div class="species-detail-page">
             <div class="species-detail-header">
@@ -503,59 +524,79 @@ function openSpeciesDetail(speciesName) {
                             </div>
                         </div>
                     </div>
-                    <p class="species-description">${species.description || 'No description available for this species.'}</p>
+                    <p class="species-description">${species.description || 'A remarkable creature with unique characteristics and abilities that make it valuable in various situations.'}</p>
                 </div>
             </div>
             
             <div class="planning-sections">
                 <div class="planning-section">
                     <div class="section-header">
-                        <h3>📊 Statistics & Ratings</h3>
+                        <h3>📊 Statistics & Performance</h3>
+                        <button class="btn btn-primary" onclick="openAddCreatureModal('${speciesName}')">➕ Add Your ${species.name}</button>
                     </div>
                     <div class="stats-grid">
-                        <div class="stat-card">
-                            <div class="stat-label">Combat</div>
+                        <div class="stat-card combat">
+                            <div class="stat-label">⚔️ Combat Rating</div>
                             <div class="stat-value">${species.ratings?.combat || 'N/A'}<span class="stat-max">/10</span></div>
+                            <div class="stat-desc">${getStatDescription('combat', species.ratings?.combat)}</div>
                         </div>
-                        <div class="stat-card">
-                            <div class="stat-label">Transport</div>
+                        <div class="stat-card transport">
+                            <div class="stat-label">🚚 Transport Rating</div>
                             <div class="stat-value">${species.ratings?.transport || 'N/A'}<span class="stat-max">/10</span></div>
+                            <div class="stat-desc">${getStatDescription('transport', species.ratings?.transport)}</div>
                         </div>
-                        <div class="stat-card">
-                            <div class="stat-label">Speed</div>
+                        <div class="stat-card speed">
+                            <div class="stat-label">⚡ Speed Rating</div>
                             <div class="stat-value">${species.ratings?.speed || 'N/A'}<span class="stat-max">/10</span></div>
+                            <div class="stat-desc">${getStatDescription('speed', species.ratings?.speed)}</div>
                         </div>
-                        <div class="stat-card">
-                            <div class="stat-label">Survivability</div>
+                        <div class="stat-card survivability">
+                            <div class="stat-label">🛡️ Survivability</div>
                             <div class="stat-value">${species.ratings?.survivability || 'N/A'}<span class="stat-max">/10</span></div>
+                            <div class="stat-desc">${getStatDescription('survivability', species.ratings?.survivability)}</div>
                         </div>
                     </div>
                 </div>
                 
+                ${tamingInfo}
+                
                 <div class="planning-section">
                     <div class="section-header">
                         <h3>🎯 Usage & Strategies</h3>
-                        <button class="btn btn-primary" onclick="goToMyNuggies()">Manage Your Collection →</button>
+                        <button class="btn btn-secondary" onclick="goToMyNuggies()">Manage Collection →</button>
                     </div>
                     <div class="usage-info">
-                        <div class="usage-item">
-                            <div class="usage-label">Primary Role</div>
-                            <div class="usage-value">${species.primaryRole || 'Multi-purpose'}</div>
-                        </div>
-                        <div class="usage-item">
-                            <div class="usage-label">Creatures Owned</div>
-                            <div class="usage-value">${speciesCreatures.length} ${species.name}${speciesCreatures.length !== 1 ? 's' : ''}</div>
-                        </div>
-                        ${species.specialAbilities ? `
-                            <div class="usage-item">
-                                <div class="usage-label">Special Abilities</div>
-                                <div class="usage-value">${species.specialAbilities}</div>
+                        <div class="usage-grid">
+                            <div class="usage-card">
+                                <div class="usage-title">🏆 Primary Role</div>
+                                <div class="usage-content">${species.primaryRole || 'Multi-purpose creature suitable for various tasks'}</div>
                             </div>
-                        ` : ''}
-                        <div class="usage-tips">
-                            <div class="tips-title">💡 Tips & Strategies</div>
+                            
+                            <div class="usage-card">
+                                <div class="usage-title">📦 Your Collection</div>
+                                <div class="usage-content">
+                                    <div class="collection-stat">${speciesCreatures.length} ${species.name}${speciesCreatures.length !== 1 ? 's' : ''} owned</div>
+                                    ${speciesCreatures.length > 0 ? `
+                                        <div class="collection-details">
+                                            <div>Highest Level: ${Math.max(...speciesCreatures.map(c => c.level || 1))}</div>
+                                            <div>Average Level: ${Math.round(speciesCreatures.reduce((sum, c) => sum + (c.level || 1), 0) / speciesCreatures.length)}</div>
+                                        </div>
+                                    ` : '<div class="collection-empty">Add your first one!</div>'}
+                                </div>
+                            </div>
+                            
+                            ${species.specialAbilities ? `
+                                <div class="usage-card special">
+                                    <div class="usage-title">✨ Special Abilities</div>
+                                    <div class="usage-content">${species.specialAbilities}</div>
+                                </div>
+                            ` : ''}
+                        </div>
+                        
+                        <div class="strategy-tips">
+                            <div class="tips-title">💡 Pro Tips & Strategies</div>
                             <div class="tips-content">
-                                ${species.tips || `This ${species.name} can be used for various purposes. Experiment with different builds and strategies to find what works best for your playstyle.`}
+                                ${species.tips || generateSpeciesTips(species)}
                             </div>
                         </div>
                     </div>
@@ -580,9 +621,257 @@ function speciesCalculator() {
     // Placeholder for calculator functionality
 }
 
-function addNewCreature(speciesName) {
-    console.log(`Add new ${speciesName} functionality coming soon...`);
-    // Placeholder for adding new creatures
+function addNewCreature(speciesName = null) {
+    openAddCreatureModal(speciesName);
+}
+
+// Comprehensive creature addition modal
+function openAddCreatureModal(preSelectedSpecies = null) {
+    const database = window.SPECIES_DATABASE || window.EXPANDED_SPECIES_DATABASE;
+    const speciesList = Object.keys(database).sort();
+    
+    const modalHtml = `
+        <div class="modal-overlay" id="addCreatureModal">
+            <div class="modal-content creature-modal">
+                <div class="modal-header">
+                    <h2>➕ Add New Creature</h2>
+                    <button class="modal-close" onclick="closeAddCreatureModal()">✕</button>
+                </div>
+                
+                <div class="modal-body">
+                    <form id="addCreatureForm">
+                        <div class="form-sections">
+                            <!-- Basic Information -->
+                            <div class="form-section">
+                                <h3>📋 Basic Information</h3>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="creatureName">Creature Name</label>
+                                        <input type="text" id="creatureName" placeholder="Enter creature name..." required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="creatureSpecies">Species</label>
+                                        <select id="creatureSpecies" required>
+                                            <option value="">Select species...</option>
+                                            ${speciesList.map(species => 
+                                                `<option value="${species}" ${preSelectedSpecies === species ? 'selected' : ''}>${species}</option>`
+                                            ).join('')}
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="creatureLevel">Level</label>
+                                        <input type="number" id="creatureLevel" min="1" max="999" placeholder="1" value="1">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="creatureGender">Gender</label>
+                                        <select id="creatureGender">
+                                            <option value="">Unknown</option>
+                                            <option value="Male">Male</option>
+                                            <option value="Female">Female</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Stats Section -->
+                            <div class="form-section">
+                                <h3>📊 Statistics</h3>
+                                <div class="stats-grid">
+                                    <div class="stat-input">
+                                        <label for="creatureHealth">❤️ Health</label>
+                                        <input type="number" id="creatureHealth" min="0" placeholder="Health points">
+                                    </div>
+                                    <div class="stat-input">
+                                        <label for="creatureStamina">⚡ Stamina</label>
+                                        <input type="number" id="creatureStamina" min="0" placeholder="Stamina points">
+                                    </div>
+                                    <div class="stat-input">
+                                        <label for="creatureMelee">⚔️ Melee Damage</label>
+                                        <input type="number" id="creatureMelee" min="0" placeholder="Melee %">
+                                    </div>
+                                    <div class="stat-input">
+                                        <label for="creatureWeight">📦 Weight</label>
+                                        <input type="number" id="creatureWeight" min="0" placeholder="Weight capacity">
+                                    </div>
+                                    <div class="stat-input">
+                                        <label for="creatureSpeed">💨 Movement Speed</label>
+                                        <input type="number" id="creatureSpeed" min="0" placeholder="Speed %">
+                                    </div>
+                                    <div class="stat-input">
+                                        <label for="creatureArmor">🛡️ Armor/Defense</label>
+                                        <input type="number" id="creatureArmor" min="0" placeholder="Armor rating">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Mutations & Breeding -->
+                            <div class="form-section">
+                                <h3>🧬 Mutations & Breeding</h3>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="creatureMutations">Mutation Count</label>
+                                        <input type="number" id="creatureMutations" min="0" max="254" placeholder="0" value="0">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="creatureColors">Color Mutations</label>
+                                        <input type="text" id="creatureColors" placeholder="e.g., Red belly, Blue stripes">
+                                    </div>
+                                </div>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="creatureBreeding">Breeding Status</label>
+                                        <select id="creatureBreeding">
+                                            <option value="">Not for breeding</option>
+                                            <option value="breeder">Active breeder</option>
+                                            <option value="retired">Retired breeder</option>
+                                            <option value="potential">Potential breeder</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="creatureBloodline">Bloodline/Line</label>
+                                        <input type="text" id="creatureBloodline" placeholder="e.g., Alpha Line, Boss Killers">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Notes & Tags -->
+                            <div class="form-section">
+                                <h3>📝 Notes & Tags</h3>
+                                <div class="form-group">
+                                    <label for="creatureNotes">Notes</label>
+                                    <textarea id="creatureNotes" rows="3" placeholder="Any special notes about this creature..."></textarea>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="creatureTags">Tags</label>
+                                    <div class="tag-section">
+                                        <input type="text" id="creatureTags" placeholder="Add tags separated by commas...">
+                                        <div class="preset-tags">
+                                            <span class="preset-tag" onclick="addTag('Boss Fighter')">Boss Fighter</span>
+                                            <span class="preset-tag" onclick="addTag('Breeder')">Breeder</span>
+                                            <span class="preset-tag" onclick="addTag('Resource Gatherer')">Resource Gatherer</span>
+                                            <span class="preset-tag" onclick="addTag('Explorer')">Explorer</span>
+                                            <span class="preset-tag" onclick="addTag('Guard')">Guard</span>
+                                            <span class="preset-tag" onclick="addTag('Transport')">Transport</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeAddCreatureModal()">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="saveNewCreature()">💾 Save Creature</button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+    
+    // Focus on name input
+    setTimeout(() => {
+        document.getElementById('creatureName')?.focus();
+    }, 100);
+}
+
+function closeAddCreatureModal() {
+    const modal = document.getElementById('addCreatureModal');
+    if (modal) {
+        modal.remove();
+    }
+}
+
+function addTag(tagText) {
+    const tagsInput = document.getElementById('creatureTags');
+    if (tagsInput) {
+        const currentTags = tagsInput.value.trim();
+        if (currentTags) {
+            tagsInput.value = currentTags + ', ' + tagText;
+        } else {
+            tagsInput.value = tagText;
+        }
+    }
+}
+
+function saveNewCreature() {
+    const form = document.getElementById('addCreatureForm');
+    if (!form) return;
+    
+    // Collect form data
+    const newCreature = {
+        id: generateCreatureId(),
+        name: document.getElementById('creatureName').value.trim(),
+        species: document.getElementById('creatureSpecies').value,
+        level: parseInt(document.getElementById('creatureLevel').value) || 1,
+        gender: document.getElementById('creatureGender').value,
+        
+        // Stats
+        health: parseInt(document.getElementById('creatureHealth').value) || null,
+        stamina: parseInt(document.getElementById('creatureStamina').value) || null,
+        melee: parseInt(document.getElementById('creatureMelee').value) || null,
+        weight: parseInt(document.getElementById('creatureWeight').value) || null,
+        speed: parseInt(document.getElementById('creatureSpeed').value) || null,
+        armor: parseInt(document.getElementById('creatureArmor').value) || null,
+        
+        // Mutations & Breeding
+        mutations: parseInt(document.getElementById('creatureMutations').value) || 0,
+        colors: document.getElementById('creatureColors').value.trim(),
+        breedingStatus: document.getElementById('creatureBreeding').value,
+        bloodline: document.getElementById('creatureBloodline').value.trim(),
+        
+        // Notes & Tags
+        notes: document.getElementById('creatureNotes').value.trim(),
+        tags: document.getElementById('creatureTags').value.trim().split(',').map(t => t.trim()).filter(t => t),
+        
+        // Metadata
+        dateAdded: new Date().toISOString(),
+        lastModified: new Date().toISOString()
+    };
+    
+    // Validation
+    if (!newCreature.name) {
+        alert('Please enter a creature name.');
+        return;
+    }
+    
+    if (!newCreature.species) {
+        alert('Please select a species.');
+        return;
+    }
+    
+    // Add to collection
+    if (!window.appState.creatures) {
+        window.appState.creatures = [];
+    }
+    
+    window.appState.creatures.push(newCreature);
+    
+    // Save to storage
+    if (typeof window.saveData === 'function') {
+        window.saveData();
+    }
+    
+    // Close modal
+    closeAddCreatureModal();
+    
+    // Show success message
+    console.log('Creature added successfully:', newCreature.name);
+    
+    // Refresh current page if on My Nuggies
+    if (window.location.hash === '#nuggies' || document.querySelector('.nuggies-page')) {
+        loadMyNuggiesPage();
+    }
+}
+
+function generateCreatureId() {
+    return 'creature_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
 }
 
 function switchTab(tabId) {
@@ -645,6 +934,13 @@ window.addSpeciesCreature = addSpeciesCreature;
 window.setupCollectionFilters = setupCollectionFilters;
 window.filterCreatureCollection = filterCreatureCollection;
 window.clearCollectionFilters = clearCollectionFilters;
+window.getStatDescription = getStatDescription;
+window.generateSpeciesTips = generateSpeciesTips;
+window.openAddCreatureModal = openAddCreatureModal;
+window.closeAddCreatureModal = closeAddCreatureModal;
+window.addTag = addTag;
+window.saveNewCreature = saveNewCreature;
+window.generateCreatureId = generateCreatureId;
 
 // Setup navigation listeners for all nav buttons
 function setupNavigationListeners() {
@@ -935,7 +1231,82 @@ function clearCollectionFilters() {
 
 function addSpeciesCreature(speciesName) {
     console.log(`Add new ${speciesName} functionality coming soon...`);
-    // Placeholder for adding creatures of specific species
+    // This will open the creature modal with the species pre-selected
+    openAddCreatureModal(speciesName);
+}
+
+// Helper function to get stat descriptions
+function getStatDescription(statType, value) {
+    if (!value || value === 'N/A') return 'Not rated';
+    
+    const descriptions = {
+        combat: {
+            1: 'Poor fighter', 2: 'Weak in combat', 3: 'Below average fighter',
+            4: 'Fair combat ability', 5: 'Average fighter', 6: 'Good in combat',
+            7: 'Strong fighter', 8: 'Excellent combatant', 9: 'Elite warrior',
+            10: 'Legendary fighter'
+        },
+        transport: {
+            1: 'Very limited carrying', 2: 'Poor weight capacity', 3: 'Below average carrying',
+            4: 'Fair transport ability', 5: 'Average carrier', 6: 'Good pack animal',
+            7: 'Strong transport', 8: 'Excellent carrier', 9: 'Heavy hauler',
+            10: 'Ultimate pack beast'
+        },
+        speed: {
+            1: 'Very slow', 2: 'Slow moving', 3: 'Below average speed',
+            4: 'Fair speed', 5: 'Average pace', 6: 'Good speed',
+            7: 'Fast moving', 8: 'Very fast', 9: 'Extremely fast',
+            10: 'Lightning fast'
+        },
+        survivability: {
+            1: 'Very fragile', 2: 'Fragile', 3: 'Below average durability',
+            4: 'Fair survivability', 5: 'Average toughness', 6: 'Good survivability',
+            7: 'Tough creature', 8: 'Very durable', 9: 'Extremely tough',
+            10: 'Nearly indestructible'
+        }
+    };
+    
+    return descriptions[statType]?.[value] || 'Unknown rating';
+}
+
+// Helper function to generate species tips
+function generateSpeciesTips(species) {
+    const tips = [];
+    
+    // Combat tips
+    if (species.ratings?.combat >= 7) {
+        tips.push("💪 Excellent for boss fights and PvP combat");
+    } else if (species.ratings?.combat <= 3) {
+        tips.push("🛡️ Focus on support roles rather than direct combat");
+    }
+    
+    // Transport tips
+    if (species.ratings?.transport >= 7) {
+        tips.push("📦 Perfect for resource gathering and long expeditions");
+    }
+    
+    // Speed tips  
+    if (species.ratings?.speed >= 7) {
+        tips.push("⚡ Great for scouting, escaping danger, and quick travel");
+    }
+    
+    // Diet-based tips
+    if (species.diet === 'Carnivore') {
+        tips.push("🥩 Feed raw meat for faster taming and better health");
+    } else if (species.diet === 'Herbivore') {
+        tips.push("🌱 Berries and vegetables are your best friend for taming");
+    }
+    
+    // Rarity tips
+    if (species.rarity === 'Rare' || species.rarity === 'Very Rare') {
+        tips.push("⭐ Rare species - invest time in perfect taming for best results");
+    }
+    
+    if (tips.length === 0) {
+        tips.push(`Experiment with different strategies to maximize your ${species.name}'s potential!`);
+    }
+    
+    return tips.join(' • ');
 }
 
 function loadTradingPage() {
@@ -3518,6 +3889,23 @@ async function loadSpeciesPage() {
             // Get creature count for this species
             const creatureCount = window.appState?.creatures?.filter(c => c.species === species.name).length || 0;
             
+            // Determine the strongest role/use case
+            const primaryUse = species.primaryRole || 'Multi-purpose';
+            
+            // Create rating badges based on highest stats
+            const topRatings = [];
+            if (species.ratings) {
+                const ratings = Object.entries(species.ratings)
+                    .filter(([key, value]) => value && value >= 7)
+                    .sort((a, b) => b[1] - a[1])
+                    .slice(0, 2);
+                topRatings.push(...ratings.map(([key, value]) => `${key.charAt(0).toUpperCase() + key.slice(1)}: ${value}/10`));
+            }
+            
+            // Determine if this species is good for beginners
+            const isBeginnerFriendly = species.difficulty === 'Easy' || species.category === 'Common' || 
+                (species.ratings && species.ratings.survivability >= 6);
+            
             return `
                 <div class="species-planning-card" onclick="openSpeciesDetail('${species.name}')">
                     <div class="template-header">
@@ -3527,18 +3915,34 @@ async function loadSpeciesPage() {
                             <span class="template-map">${species.category || 'Unknown'} • ${species.rarity || 'Common'}</span>
                         </div>
                     </div>
-                    <div class="template-type">${species.diet || 'Unknown Diet'}</div>
-                    <div class="template-description">${species.description ? (species.description.length > 100 ? species.description.substring(0, 100) + '...' : species.description) : 'No description available.'}</div>
-                    <div class="species-stats-preview">
-                        ${species.ratings ? `
-                            <div class="stat-item">Combat: ${species.ratings.combat || 'N/A'}</div>
-                            <div class="stat-item">Transport: ${species.ratings.transport || 'N/A'}</div>
-                            <div class="stat-item">Speed: ${species.ratings.speed || 'N/A'}</div>
-                        ` : '<div class="stat-item">No stats available</div>'}
+                    <div class="template-type">${primaryUse}</div>
+                    <div class="template-description">${species.description ? (species.description.length > 100 ? species.description.substring(0, 100) + '...' : species.description) : 'A fascinating creature with unique abilities and characteristics.'}</div>
+                    
+                    <div class="species-highlights">
+                        ${topRatings.length > 0 ? `
+                            <div class="highlight-section">
+                                <div class="highlight-title">⭐ Best Stats</div>
+                                ${topRatings.map(rating => `<div class="highlight-item">${rating}</div>`).join('')}
+                            </div>
+                        ` : ''}
+                        
+                        <div class="highlight-section">
+                            <div class="highlight-title">🎯 Best For</div>
+                            <div class="highlight-item">${species.diet === 'Carnivore' ? 'Combat & Hunting' : species.diet === 'Herbivore' ? 'Resource Gathering' : 'Versatile Tasks'}</div>
+                            ${isBeginnerFriendly ? '<div class="highlight-item beginner-friendly">✨ Beginner Friendly</div>' : ''}
+                        </div>
+                        
+                        ${species.specialAbilities ? `
+                            <div class="highlight-section">
+                                <div class="highlight-title">🔥 Special</div>
+                                <div class="highlight-item">${species.specialAbilities.length > 50 ? species.specialAbilities.substring(0, 50) + '...' : species.specialAbilities}</div>
+                            </div>
+                        ` : ''}
                     </div>
+                    
                     <div class="species-planning-footer">
                         <span class="creature-count">${creatureCount} owned</span>
-                        <span class="click-hint">Click to view details →</span>
+                        <span class="click-hint">Click to learn more →</span>
                     </div>
                 </div>
             `;

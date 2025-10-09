@@ -484,7 +484,7 @@ function openSpeciesDetail(speciesName) {
     const main = document.getElementById('appMainContent');
     if (!main) return;
     
-    // Get creatures for this species
+    // Get creatures for this species (for count display only)
     const speciesCreatures = window.appState?.creatures?.filter(c => c.species === speciesName) || [];
     
     main.innerHTML = `
@@ -534,45 +534,17 @@ function openSpeciesDetail(speciesName) {
                 
                 <div class="planning-section">
                     <div class="section-header">
-                        <h3>🦖 Your ${species.name} Collection</h3>
-                        <button class="btn btn-primary" onclick="addNewCreature('${speciesName}')">+ Add New ${species.name}</button>
-                    </div>
-                    <div class="creature-collection" id="creatureCollection-${speciesName}">
-                        ${speciesCreatures.length > 0 ? 
-                            speciesCreatures.map(creature => `
-                                <div class="creature-card">
-                                    <div class="creature-card-header">
-                                        <div class="creature-name">${creature.name || 'Unnamed'}</div>
-                                        <div class="creature-level">Level ${creature.level || 1}</div>
-                                    </div>
-                                    <div class="creature-stats">
-                                        <div class="creature-stat">❤️ ${creature.health || 'N/A'}</div>
-                                        <div class="creature-stat">⚔️ ${creature.damage || 'N/A'}</div>
-                                        <div class="creature-stat">🛡️ ${creature.armor || 'N/A'}</div>
-                                    </div>
-                                    <div class="creature-actions">
-                                        <button class="btn btn-sm btn-secondary" onclick="editCreature('${creature.id}')">Edit</button>
-                                        <button class="btn btn-sm btn-danger" onclick="deleteCreature('${creature.id}')">Delete</button>
-                                    </div>
-                                </div>
-                            `).join('') :
-                            `<div class="empty-collection">
-                                <div class="empty-icon">🦕</div>
-                                <div class="empty-text">No ${species.name} in your collection yet</div>
-                                <div class="empty-subtext">Click "Add New ${species.name}" to get started!</div>
-                            </div>`
-                        }
-                    </div>
-                </div>
-                
-                <div class="planning-section">
-                    <div class="section-header">
                         <h3>🎯 Usage & Strategies</h3>
+                        <button class="btn btn-primary" onclick="goToMyNuggies()">Manage Your Collection →</button>
                     </div>
                     <div class="usage-info">
                         <div class="usage-item">
                             <div class="usage-label">Primary Role</div>
                             <div class="usage-value">${species.primaryRole || 'Multi-purpose'}</div>
+                        </div>
+                        <div class="usage-item">
+                            <div class="usage-label">Creatures Owned</div>
+                            <div class="usage-value">${speciesCreatures.length} ${species.name}${speciesCreatures.length !== 1 ? 's' : ''}</div>
                         </div>
                         ${species.specialAbilities ? `
                             <div class="usage-item">
@@ -669,6 +641,10 @@ window.loadSpeciesPage = loadSpeciesPage;
 window.exportSpeciesData = exportSpeciesData;
 window.speciesCalculator = speciesCalculator;
 window.addNewCreature = addNewCreature;
+window.addSpeciesCreature = addSpeciesCreature;
+window.setupCollectionFilters = setupCollectionFilters;
+window.filterCreatureCollection = filterCreatureCollection;
+window.clearCollectionFilters = clearCollectionFilters;
 
 // Setup navigation listeners for all nav buttons
 function setupNavigationListeners() {
@@ -735,12 +711,20 @@ function loadMyNuggiesPage() {
     const creatures = window.appState?.creatures || [];
     const database = window.SPECIES_DATABASE || window.EXPANDED_SPECIES_DATABASE;
     
+    // Group creatures by species for better organization
+    const creaturesBySpecies = creatures.reduce((acc, creature) => {
+        const species = creature.species || 'Unknown';
+        if (!acc[species]) acc[species] = [];
+        acc[species].push(creature);
+        return acc;
+    }, {});
+    
     main.innerHTML = `
         <div class="nuggies-page">
             <div class="nuggies-header">
                 <div class="page-title">
-                    <h1>🍗 My Nuggies</h1>
-                    <div class="creature-count">${creatures.length} creatures</div>
+                    <h1>🍗 My Nuggies Collection</h1>
+                    <div class="creature-count">${creatures.length} creatures across ${Object.keys(creaturesBySpecies).length} species</div>
                 </div>
                 <div class="header-actions">
                     <button class="btn btn-primary" onclick="addNewCreature()">➕ Add Creature</button>
@@ -749,56 +733,209 @@ function loadMyNuggiesPage() {
                 </div>
             </div>
             
-            <div class="nuggies-controls">
+            <div class="collection-controls">
                 <div class="search-section">
-                    <div class="search-group">
-                        <input type="text" id="creatureSearch" placeholder="Search creatures..." class="search-input">
-                        <button class="search-btn" onclick="searchCreatures()">🔍</button>
-                    </div>
+                    <input type="text" id="creatureSearch" placeholder="🔍 Search your creatures..." class="search-input">
                 </div>
                 
                 <div class="filter-section">
-                    <select id="speciesFilter" class="filter-select" onchange="filterCreatures()">
+                    <select id="speciesFilter" class="filter-select">
                         <option value="">All Species</option>
-                        ${generateSpeciesFilterOptions()}
+                        ${Object.keys(creaturesBySpecies).sort().map(species => 
+                            `<option value="${species}">${species} (${creaturesBySpecies[species].length})</option>`
+                        ).join('')}
                     </select>
                     
-                    <select id="genderFilter" class="filter-select" onchange="filterCreatures()">
-                        <option value="">All Genders</option>
-                        <option value="male">Male</option>
-                        <option value="female">Female</option>
-                    </select>
-                    
-                    <select id="badgeFilter" class="filter-select" onchange="filterCreatures()">
-                        <option value="">All Badges</option>
-                        <option value="prized">Prized Bloodline</option>
-                        <option value="boss-ready">Boss Ready</option>
-                        <option value="boss-underdog">Boss Underdog</option>
-                    </select>
-                    
-                    <select id="sortFilter" class="filter-select" onchange="sortCreatures()">
-                        <option value="name">Sort by Name</option>
-                        <option value="species">Sort by Species</option>
+                    <select id="sortFilter" class="filter-select">
+                        <option value="species">Group by Species</option>
                         <option value="level">Sort by Level</option>
-                        <option value="health">Sort by Health</option>
-                        <option value="melee">Sort by Melee</option>
+                        <option value="name">Sort by Name</option>
                         <option value="recent">Recently Added</option>
                     </select>
                     
-                    <button class="btn btn-sm btn-secondary" onclick="clearFilters()">Clear All</button>
+                    <button class="btn btn-sm btn-secondary" onclick="clearCollectionFilters()">Clear Filters</button>
                 </div>
             </div>
             
-            <div class="nuggies-content">
-                <div id="creaturesGrid" class="creatures-grid">
-                    ${renderCreaturesGrid(creatures)}
-                </div>
+            <div class="collection-content">
+                ${creatures.length > 0 ? renderCreatureCollection(creaturesBySpecies, database) : renderEmptyCollection()}
             </div>
         </div>
     `;
     
-    // Initialize search and filter functionality
-    setupCreatureSearch();
+    // Set up event listeners for search and filters
+    setupCollectionFilters();
+}
+
+function renderCreatureCollection(creaturesBySpecies, database) {
+    return Object.keys(creaturesBySpecies).sort().map(speciesName => {
+        const speciesCreatures = creaturesBySpecies[speciesName];
+        const speciesData = database?.[speciesName];
+        
+        return `
+            <div class="species-collection-section">
+                <div class="species-section-header">
+                    <div class="species-info">
+                        <div class="species-icon">${speciesData?.icon || '🦖'}</div>
+                        <div>
+                            <h3>${speciesName}</h3>
+                            <div class="species-meta">${speciesCreatures.length} creature${speciesCreatures.length !== 1 ? 's' : ''}</div>
+                        </div>
+                    </div>
+                    <div class="species-actions">
+                        <button class="btn btn-sm btn-primary" onclick="addSpeciesCreature('${speciesName}')">+ Add ${speciesName}</button>
+                        <button class="btn btn-sm btn-secondary" onclick="openSpeciesDetail('${speciesName}')">View Species Info</button>
+                    </div>
+                </div>
+                
+                <div class="creatures-grid">
+                    ${speciesCreatures.map(creature => renderCreatureCard(creature, speciesData)).join('')}
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+function renderCreatureCard(creature, speciesData) {
+    return `
+        <div class="creature-management-card">
+            <div class="creature-card-header">
+                <div class="creature-info">
+                    <div class="creature-name">${creature.name || 'Unnamed'}</div>
+                    <div class="creature-species">${creature.species || 'Unknown'}</div>
+                </div>
+                <div class="creature-level">Level ${creature.level || 1}</div>
+            </div>
+            
+            <div class="creature-details">
+                <div class="creature-stats">
+                    <div class="stat-item">
+                        <span class="stat-label">❤️ Health</span>
+                        <span class="stat-value">${creature.health || 'N/A'}</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">⚔️ Melee</span>
+                        <span class="stat-value">${creature.damage || creature.melee || 'N/A'}</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">🛡️ Armor</span>
+                        <span class="stat-value">${creature.armor || 'N/A'}</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">⚡ Stamina</span>
+                        <span class="stat-value">${creature.stamina || 'N/A'}</span>
+                    </div>
+                </div>
+                
+                <div class="creature-meta">
+                    <div class="meta-item">
+                        <span class="meta-label">Gender:</span>
+                        <span class="meta-value">${creature.gender || 'Unknown'}</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Mutations:</span>
+                        <span class="meta-value">${creature.mutations || 0}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="creature-actions">
+                <button class="btn btn-sm btn-secondary" onclick="editCreature('${creature.id}')">✏️ Edit</button>
+                <button class="btn btn-sm btn-primary" onclick="duplicateCreature('${creature.id}')">📋 Clone</button>
+                <button class="btn btn-sm btn-danger" onclick="deleteCreature('${creature.id}')">🗑️ Delete</button>
+            </div>
+        </div>
+    `;
+}
+
+function renderEmptyCollection() {
+    return `
+        <div class="empty-collection-state">
+            <div class="empty-icon">🦕</div>
+            <div class="empty-title">No Creatures Yet</div>
+            <div class="empty-description">Start building your collection by adding your first creature!</div>
+            <button class="btn btn-primary empty-action" onclick="addNewCreature()">➕ Add Your First Creature</button>
+            <div class="empty-help">
+                <div class="help-title">💡 Getting Started Tips:</div>
+                <ul class="help-list">
+                    <li>Browse the Species Database to learn about different creatures</li>
+                    <li>Add creatures with detailed stats and information</li>
+                    <li>Organize your collection by species and level</li>
+                    <li>Use the search and filter tools to find specific creatures</li>
+                </ul>
+            </div>
+        </div>
+    `;
+}
+
+function setupCollectionFilters() {
+    const searchInput = document.getElementById('creatureSearch');
+    const speciesFilter = document.getElementById('speciesFilter');
+    const sortFilter = document.getElementById('sortFilter');
+    
+    if (searchInput) {
+        searchInput.addEventListener('input', debounce(filterCreatureCollection, 300));
+    }
+    
+    if (speciesFilter) {
+        speciesFilter.addEventListener('change', filterCreatureCollection);
+    }
+    
+    if (sortFilter) {
+        sortFilter.addEventListener('change', filterCreatureCollection);
+    }
+}
+
+function filterCreatureCollection() {
+    const searchTerm = document.getElementById('creatureSearch')?.value.toLowerCase() || '';
+    const selectedSpecies = document.getElementById('speciesFilter')?.value || '';
+    const sortBy = document.getElementById('sortFilter')?.value || 'species';
+    
+    const sections = document.querySelectorAll('.species-collection-section');
+    
+    sections.forEach(section => {
+        const speciesName = section.querySelector('h3').textContent;
+        const shouldShowSection = !selectedSpecies || speciesName === selectedSpecies;
+        
+        if (!shouldShowSection) {
+            section.style.display = 'none';
+            return;
+        }
+        
+        const cards = section.querySelectorAll('.creature-management-card');
+        let visibleCards = 0;
+        
+        cards.forEach(card => {
+            const creatureName = card.querySelector('.creature-name').textContent.toLowerCase();
+            const shouldShowCard = !searchTerm || creatureName.includes(searchTerm);
+            
+            if (shouldShowCard) {
+                card.style.display = 'block';
+                visibleCards++;
+            } else {
+                card.style.display = 'none';
+            }
+        });
+        
+        section.style.display = visibleCards > 0 ? 'block' : 'none';
+    });
+}
+
+function clearCollectionFilters() {
+    const searchInput = document.getElementById('creatureSearch');
+    const speciesFilter = document.getElementById('speciesFilter');
+    const sortFilter = document.getElementById('sortFilter');
+    
+    if (searchInput) searchInput.value = '';
+    if (speciesFilter) speciesFilter.value = '';
+    if (sortFilter) sortFilter.value = 'species';
+    
+    filterCreatureCollection();
+}
+
+function addSpeciesCreature(speciesName) {
+    console.log(`Add new ${speciesName} functionality coming soon...`);
+    // Placeholder for adding creatures of specific species
 }
 
 function loadTradingPage() {

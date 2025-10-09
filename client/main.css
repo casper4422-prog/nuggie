@@ -1852,3 +1852,280 @@ body {
         grid-template-columns: 1fr;
     }
 }
+
+/* My Nuggies Collection Management Styles */
+.nuggies-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.nuggies-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #334155;
+}
+
+.collection-controls {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 30px;
+}
+
+.search-section {
+    margin-bottom: 15px;
+}
+
+.filter-section {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.collection-content {
+    margin-top: 20px;
+}
+
+/* Species Collection Sections */
+.species-collection-section {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 12px;
+    margin-bottom: 24px;
+    overflow: hidden;
+}
+
+.species-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background: #0f172a;
+    border-bottom: 1px solid #334155;
+}
+
+.species-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.species-info .species-icon {
+    font-size: 2rem;
+}
+
+.species-info h3 {
+    margin: 0;
+    color: #f1f5f9;
+    font-size: 1.3rem;
+}
+
+.species-meta {
+    color: #94a3b8;
+    font-size: 0.9rem;
+}
+
+.species-actions {
+    display: flex;
+    gap: 8px;
+}
+
+/* Creature Management Cards */
+.creatures-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+    padding: 20px;
+}
+
+.creature-management-card {
+    background: #0f172a;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    padding: 16px;
+    transition: all 0.2s ease;
+}
+
+.creature-management-card:hover {
+    border-color: #3b82f6;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
+}
+
+.creature-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+}
+
+.creature-name {
+    font-weight: 600;
+    color: #f1f5f9;
+    font-size: 1.1rem;
+}
+
+.creature-species {
+    color: #94a3b8;
+    font-size: 0.85rem;
+    margin-top: 2px;
+}
+
+.creature-level {
+    background: #374151;
+    color: #e5e7eb;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.creature-details {
+    margin-bottom: 16px;
+}
+
+.creature-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.stat-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 8px;
+    background: #1e293b;
+    border-radius: 4px;
+    font-size: 0.85rem;
+}
+
+.stat-label {
+    color: #94a3b8;
+}
+
+.stat-value {
+    color: #f1f5f9;
+    font-weight: 500;
+}
+
+.creature-meta {
+    display: flex;
+    gap: 16px;
+    font-size: 0.8rem;
+}
+
+.meta-item {
+    display: flex;
+    gap: 4px;
+}
+
+.meta-label {
+    color: #94a3b8;
+}
+
+.meta-value {
+    color: #e5e7eb;
+}
+
+.creature-actions {
+    display: flex;
+    gap: 6px;
+    justify-content: flex-end;
+}
+
+/* Empty Collection State */
+.empty-collection-state {
+    text-align: center;
+    padding: 60px 40px;
+    background: #1e293b;
+    border: 2px dashed #334155;
+    border-radius: 12px;
+}
+
+.empty-icon {
+    font-size: 4rem;
+    margin-bottom: 20px;
+}
+
+.empty-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #f1f5f9;
+    margin-bottom: 8px;
+}
+
+.empty-description {
+    color: #94a3b8;
+    margin-bottom: 24px;
+    font-size: 1.1rem;
+}
+
+.empty-action {
+    margin-bottom: 32px;
+}
+
+.empty-help {
+    background: #0f172a;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: left;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.help-title {
+    color: #3b82f6;
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+
+.help-list {
+    color: #94a3b8;
+    padding-left: 20px;
+    line-height: 1.6;
+}
+
+.help-list li {
+    margin-bottom: 6px;
+}
+
+/* Responsive Design for Collection Management */
+@media (max-width: 768px) {
+    .nuggies-header {
+        flex-direction: column;
+        align-items: stretch;
+        text-align: center;
+        gap: 15px;
+    }
+    
+    .filter-section {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .species-section-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 15px;
+    }
+    
+    .species-actions {
+        justify-content: center;
+    }
+    
+    .creatures-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .creature-stats {
+        grid-template-columns: 1fr;
+    }
+}

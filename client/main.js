@@ -134,14 +134,21 @@ function renderRegisterForm() {
             try {
                 console.log('[SPA] sending registration request to server for', email);
                 console.log('[SPA] API base URL will be:', window.__API_BASE);
+                
+                // Debug the request being sent
+                const requestBody = JSON.stringify({ email, password, nickname, discord_name: discord });
+                console.log('[SPA] Registration request body:', requestBody);
+                
                 const { res, body } = await apiRequest('/api/register', { 
                     method: 'POST', 
-                    body: JSON.stringify({ email, password, nickname, discord_name: discord })
+                    body: requestBody
                 });
                 const data = body;
                 
-                console.log('Registration response:', res.status, data);
-                console.log('Registration response details:', { ok: res.ok, status: res.status, url: res.url, headers: Object.fromEntries(res.headers.entries()) });
+                console.log('Registration response status:', res.status);
+                console.log('Registration response body:', data);
+                console.log('Registration response headers:', Object.fromEntries(res.headers.entries()));
+                console.log('Registration response details:', { ok: res.ok, status: res.status, url: res.url });
                 
                 // Handle successful registration with proper response
                 if (res.ok && data && (data.success || data.token)) {
@@ -167,7 +174,20 @@ function renderRegisterForm() {
                 } else if (res.ok && !data) {
                     // Server returned 200 but empty response - likely a server issue
                     console.warn('Registration returned empty response from server');
-                    console.warn('Response details:', { status: res.status, statusText: res.statusText, url: res.url, contentType: res.headers.get('content-type') });
+                    console.warn('Response details:', { 
+                        status: res.status, 
+                        statusText: res.statusText, 
+                        url: res.url, 
+                        contentType: res.headers.get('content-type'),
+                        contentLength: res.headers.get('content-length'),
+                        allHeaders: Object.fromEntries(res.headers.entries())
+                    });
+                    
+                    // Try to determine if this is a CORS issue or server issue
+                    const origin = window.location.origin;
+                    const targetUrl = res.url;
+                    console.warn('Request origin:', origin, 'Target URL:', targetUrl);
+                    
                     if (errorDiv) errorDiv.textContent = 'Registration may have succeeded, but server response was incomplete. Please try logging in, or contact support if the issue persists.';
                 } else {
                     console.log('Registration failed:', data?.error || 'Unknown error');

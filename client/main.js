@@ -3626,20 +3626,28 @@ async function apiRequest(path, opts = {}) {
 	try { raw = await res.text(); } catch (e) { raw = null; }
 	let body = null;
 	try {
-		if (raw && ct.toLowerCase().includes('application/json')) {
-			body = JSON.parse(raw);
-		} else if (raw && raw.trim() && (raw.trim().startsWith('{') || raw.trim().startsWith('['))) {
-			// attempt to parse JSON even if content-type header is absent
-			try { body = JSON.parse(raw); } catch (e) { body = raw; }
+		// Always try to parse as JSON first if we have content
+		if (raw && raw.trim()) {
+			try {
+				body = JSON.parse(raw);
+			} catch (parseError) {
+				// If JSON parsing fails, keep as raw text
+				console.warn('[SPA] JSON parse failed for response:', parseError.message, 'Raw response:', raw.slice(0, 500));
+				body = raw;
+			}
 		} else {
-			body = raw;
+			body = raw; // Empty response
 		}
 	} catch (e) {
+		console.warn('[SPA] Response processing error:', e);
 		body = raw;
 	}
 
 	// Only warn for non-ok responses or when login/register returned an unexpected empty body.
-	const authEmpty = (path === '/api/login' || path === '/api/register') && (body === null || (typeof body === 'string' && body.trim() === ''));
+	const authEmpty = (path === '/api/login' || path === '/api/register') && 
+		(body === null || body === undefined || body === '' || 
+		 (typeof body === 'string' && body.trim() === '') ||
+		 (typeof body === 'object' && Object.keys(body || {}).length === 0));
 	if (!res.ok || authEmpty) {
 		try {
 			console.warn('[SPA] apiRequest response', { 

@@ -237,9 +237,11 @@ db.serialize(() => {
 
 // Register endpoint
 app.post('/api/register', (req, res) => {
+  console.log('[API] /api/register endpoint hit with method:', req.method);
   // Log incoming request for diagnostics (helps detect proxies or body-parsing issues)
   try { console.log('[API] /api/register incoming', { headers: req.headers || {}, bodyPreview: (() => { try { return JSON.stringify(req.body).slice(0,200); } catch(e){ return String(req.body); } })() }); } catch(e){}
   const { email, password, nickname, discord_name } = req.body || {};
+  console.log('[API] /api/register extracted fields:', { email: !!email, password: !!password, nickname: !!nickname, discord_name: !!discord_name });
   
   // Validate required fields
   if (!email || !password) {
@@ -288,6 +290,7 @@ app.post('/api/register', (req, res) => {
         'INSERT INTO users (email, password, nickname, discord_name) VALUES (?, ?, ?, ?)', 
         [emailVal, hash, nickVal, discordVal], 
         function(err) {
+          console.log('[API] /api/register db.run callback triggered');
           if (err) {
             console.warn('[API] /api/register insert error', err && err.message ? err.message : err);
             res.setHeader('Content-Type', 'application/json');
@@ -296,18 +299,25 @@ app.post('/api/register', (req, res) => {
 
           // Generate token and return user info
           const userId = this.lastID;
+          console.log('[API] /api/register got userId from db:', userId);
           const token = jwt.sign({ userId }, SECRET, { expiresIn: '1d' });
-          console.log('[API] /api/register success for userId', userId);
+          console.log('[API] /api/register generated token:', token ? 'YES' : 'NO');
           
-          res.setHeader('Content-Type', 'application/json');
-          return res.status(200).json({ 
+          const responseData = { 
             success: true, 
             token, 
             userId,
             email: emailVal,
             nickname: nickVal,
             discord_name: discordVal
-          });
+          };
+          
+          console.log('[API] /api/register about to send response:', JSON.stringify(responseData));
+          res.setHeader('Content-Type', 'application/json');
+          res.status(200);
+          res.json(responseData);
+          console.log('[API] /api/register response sent');
+          return;
         }
       );
     });

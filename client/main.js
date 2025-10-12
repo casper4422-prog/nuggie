@@ -38,8 +38,25 @@ async function initializeApp() {
         // Check if user is already authenticated
         const token = localStorage.getItem('token');
         if (token) {
-            // Simple token presence check - backend will validate on actual API calls
-            window.appState.authenticated = true;
+            // Validate token by making a test API call
+            try {
+                const { res } = await apiRequest('/api/profile', { method: 'GET' });
+                if (res.ok) {
+                    window.appState.authenticated = true;
+                    console.log('[SPA] Token validation successful');
+                } else {
+                    console.warn('[SPA] Token validation failed, clearing authentication');
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('userId');
+                    localStorage.removeItem('userEmail');
+                    localStorage.removeItem('userNickname');
+                    window.appState.authenticated = false;
+                }
+            } catch (e) {
+                console.warn('[SPA] Token validation error:', e.message);
+                // On network error, assume token is still valid
+                window.appState.authenticated = true;
+            }
         }
 
         // Load species database
@@ -155,9 +172,14 @@ function renderRegisterForm() {
                     console.log('Registration successful, showing main app');
                     // Store credentials and show main app
                     localStorage.setItem('token', data.token);
-                    localStorage.setItem('userId', data.userId);
+                    if (data.userId) localStorage.setItem('userId', data.userId);
                     if (data.email) localStorage.setItem('userEmail', data.email);
                     if (data.nickname) localStorage.setItem('userNickname', data.nickname);
+                    
+                    // Update authentication state
+                    window.appState = window.appState || {};
+                    window.appState.authenticated = true;
+                    
                     // Ensure the document is visible and the main app is shown
                     try { document.documentElement.setAttribute('data-ready', 'true'); } catch (e) {}
                     showMainApp();
@@ -3730,13 +3752,76 @@ async function loadServerArenaCollections() {
 }
 
 function updateAuthUI() {
-    // Placeholder - auth UI update will be implemented later
-    console.log('updateAuthUI called (placeholder)');
+    // Update authentication-related UI elements
+    const token = localStorage.getItem('token');
+    const isAuthenticated = !!(token && window.appState?.authenticated);
+    
+    try {
+        // Update any auth-dependent UI elements here
+        console.log('updateAuthUI: User is', isAuthenticated ? 'authenticated' : 'not authenticated');
+        
+        // You can add specific UI updates here based on auth state
+        // For example, show/hide login forms, update user info displays, etc.
+        
+    } catch (e) {
+        console.warn('updateAuthUI failed:', e);
+    }
+}
+
+// Add logout functionality
+function logout() {
+    try {
+        // Clear all stored authentication data
+        localStorage.removeItem('token');
+        localStorage.removeItem('userId');
+        localStorage.removeItem('userEmail');
+        localStorage.removeItem('userNickname');
+        
+        // Clear app state
+        if (window.appState) {
+            window.appState.authenticated = false;
+            window.appState.creatures = [];
+        }
+        
+        // Reload the page to reset to login state
+        window.location.reload();
+    } catch (e) {
+        console.error('Logout failed:', e);
+    }
+}
+
+// Check if the current token is still valid by making a test API call
+async function validateAuthToken() {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        window.appState.authenticated = false;
+        return false;
+    }
+    
+    try {
+        // Try to fetch user profile as a token validation check
+        const { res } = await apiRequest('/api/profile', { method: 'GET' });
+        if (res.ok) {
+            window.appState.authenticated = true;
+            return true;
+        } else {
+            // Token is invalid, clear it
+            console.warn('Token validation failed, clearing authentication');
+            logout();
+            return false;
+        }
+    } catch (e) {
+        console.warn('Token validation error:', e);
+        // On network error, assume token is still valid but just can't reach server
+        return true;
+    }
 }
 
 window.loadServerBossData = loadServerBossData;
 window.loadServerArenaCollections = loadServerArenaCollections;
 window.updateAuthUI = updateAuthUI;
+window.logout = logout;
+window.validateAuthToken = validateAuthToken;
 
 // Global saveData used by legacy code — write localStorage and sync to server when logged in
 window.saveData = function() {
@@ -4214,82 +4299,53 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
             
             try {
-                const res = await fetch('/api/login', {
+                console.log('[SPA] Attempting login for:', email);
+                
+                // Use the improved apiRequest function instead of direct fetch
+                const { res, body } = await apiRequest('/api/login', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, password })
+                    body: JSON.stringify({ identifier: email, password })
                 });
+                const data = body;
                 
-                // Check if response is ok first
-                if (!res.ok) {
-                    // Try to get error message from response
-                    let errorMessage = 'Login failed';
-                    try {
-                        const errorData = await res.json();
-                        errorMessage = errorData.error || errorMessage;
-                    } catch (e) {
-                        // If JSON parsing fails, use status text
-                        errorMessage = res.statusText || errorMessage;
-                    }
-                    console.log('Login failed with status:', res.status, errorMessage);
-                    if (errorDiv) errorDiv.textContent = errorMessage;
-                    return;
-                }
+                console.log('Login response status:', res.status);
+                console.log('Login response body:', data);
                 
-                // Parse response JSON
-                let data;
-                try {
-                    data = await res.json();
-                } catch (e) {
-                    console.error('Failed to parse login response JSON:', e);
-                    // Check if this is an empty response issue like registration
-                    if (res.ok) {
-                        console.warn('Login returned empty response from server, but status 200 suggests success');
-                        console.log('Proceeding with login assuming server-side success...');
-                        
-                        // Create a minimal success response since server returned 200
-                        data = { 
-                            success: true, 
-                            token: 'temp-token-' + Date.now(),
-                            user: {
-                                email: email,
-                                nickname: email.split('@')[0] // Use part before @ as nickname
-                            }
-                        };
-                        
-                        console.log('Using fallback login data:', data);
-                    } else {
-                        if (errorDiv) errorDiv.textContent = 'Server response error. Please try again.';
-                        return;
-                    }
-                }
-                
-                console.log('Login response:', res.status, data);
-                
-                if (data.success || data.token) {
+                if (res.ok && data && data.token) {
                     console.log('Login successful, showing main app');
                     // Store credentials and show main app
                     localStorage.setItem('token', data.token);
-                    localStorage.setItem('userId', data.userId);
-                    if (data.email) localStorage.setItem('userEmail', data.email);
-                    if (data.nickname) localStorage.setItem('userNickname', data.nickname);
+                    if (data.user?.id) localStorage.setItem('userId', data.user.id);
+                    if (data.user?.email) localStorage.setItem('userEmail', data.user.email);
+                    if (data.user?.nickname) localStorage.setItem('userNickname', data.user.nickname);
+                    
+                    // Update authentication state
+                    window.appState = window.appState || {};
+                    window.appState.authenticated = true;
+                    
                     // Ensure the document is visible and the main app is shown
                     try { document.documentElement.setAttribute('data-ready', 'true'); } catch (e) {}
                     showMainApp();
                     updateTribeHeader();
+                    
                     // Sync server-stored creatures and planner/arena data for this user
                     try { await loadServerCreatures(); } catch (e) { console.warn('loadServerCreatures after login failed', e); }
                     try { await loadServerBossData(); } catch (e) { console.warn('loadServerBossData after login failed', e); }
                     try { await loadServerArenaCollections(); } catch (e) { console.warn('loadServerArenaCollections after login failed', e); }
+                    
                     // Wait for species DB to be available before rendering species page
                     try { await waitForSpeciesDB(3000, 50); } catch (e) {}
                     try { loadSpeciesPage(); } catch (e) {}
+                    
                     // Refresh stats and auth UI after login
                     try { updateStatsDashboard(); } catch (e) {}
                     try { updateAuthUI(); } catch (e) {}
+                } else if (res.ok && !data) {
+                    console.warn('Login returned empty response from server');
+                    if (errorDiv) errorDiv.textContent = 'Login may have succeeded, but server response was incomplete. Please try again.';
                 } else {
-                    console.log('Login failed:', data.error);
-                    if (errorDiv) errorDiv.textContent = data.error || 'Login failed';
+                    console.log('Login failed:', data?.error || 'Unknown error');
+                    if (errorDiv) errorDiv.textContent = data?.error || 'Invalid credentials. Please try again.';
                 }
             } catch (err) {
                 console.error('Login error:', err);

@@ -326,17 +326,36 @@ app.post('/api/register', (req, res) => {
 
 // Login endpoint
 app.post('/api/login', (req, res) => {
+  console.log('[API] /api/login endpoint hit');
   const { identifier, password } = req.body; // identifier can be email or nickname
-  if (!identifier || !password) return res.status(400).json({ error: 'Missing credentials' });
+  if (!identifier || !password) {
+    res.setHeader('Content-Type', 'application/json');
+    return res.status(400).json({ error: 'Missing credentials' });
+  }
   const ident = String(identifier).trim();
+  console.log('[API] /api/login attempting for identifier:', ident);
+  
   db.get('SELECT * FROM users WHERE email = ? COLLATE NOCASE OR nickname = ? COLLATE NOCASE', [ident, ident], (err, user) => {
-    if (err || !user) return res.status(400).json({ error: 'Invalid credentials' });
+    if (err || !user) {
+      res.setHeader('Content-Type', 'application/json');
+      return res.status(400).json({ error: 'Invalid credentials' });
+    }
+    
+    console.log('[API] /api/login found user:', user.id);
     bcrypt.compare(password, user.password, (err, result) => {
       if (result) {
         const token = jwt.sign({ userId: user.id }, SECRET, { expiresIn: '1d' });
-    res.setHeader('Content-Type', 'application/json');
-    return res.json({ token, user: { id: user.id, email: user.email, nickname: user.nickname } });
+        const responseData = { token, user: { id: user.id, email: user.email, nickname: user.nickname } };
+        
+        console.log('[API] /api/login sending successful response:', JSON.stringify(responseData));
+        res.setHeader('Content-Type', 'application/json');
+        res.status(200);
+        res.json(responseData);
+        console.log('[API] /api/login response sent');
+        return;
       } else {
+        console.log('[API] /api/login password comparison failed');
+        res.setHeader('Content-Type', 'application/json');
         res.status(400).json({ error: 'Invalid credentials' });
       }
     });

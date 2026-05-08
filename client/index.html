@@ -20,9 +20,9 @@
     </head>
     <body>
         <script>
-            // nuggie-1.onrender.com runs the full Express stack (frontend + backend together).
-            // All API calls stay on the same origin — no cross-origin needed.
-            window.__API_BASE = '';
+            // nuggie-1.onrender.com = static frontend only (API calls 404 there).
+            // nuggie.onrender.com = the real Express backend with persistent database.
+            window.__API_BASE = 'https://nuggie.onrender.com';
             // Defensive fallback: ensure showMainApp exists so early callers won't throw
             // This will be overwritten by the real implementation in main.js when it loads.
             window.showMainApp = window.showMainApp || function() {

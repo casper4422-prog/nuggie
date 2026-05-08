@@ -1754,90 +1754,352 @@ function addToWatchlist(tradeId) {
     alert(`Added trade ${tradeId} to watchlist!`);
 }
 
-function loadTribesPage() {
-    setActiveNavButton('tribes');
+async function loadTribesPage() {
+    setActiveNavButton('tribe');
     const main = document.getElementById('appMainContent');
     if (!main) return;
-    
-    const userTribe = getUserTribeData();
-    const availableTribes = getAvailableTribes();
-    
+    main.innerHTML = `<div class="std-page"><div style="color:#94a3b8;padding:40px 0">Loading tribes...</div></div>`;
+
+    // Fetch user's tribe and all available tribes in parallel
+    const [myTribe, allTribes] = await Promise.all([
+        apiRequest('/api/my-tribe').then(r => r.body).catch(() => null),
+        apiRequest('/api/tribes').then(r => Array.isArray(r.body) ? r.body : []).catch(() => [])
+    ]);
+
+    if (myTribe && myTribe.id) {
+        // Fetch full tribe details (includes members)
+        const detail = await apiRequest(`/api/tribes/${myTribe.id}`)
+            .then(r => r.body).catch(() => myTribe);
+        renderTribeMemberView(detail, main);
+    } else {
+        renderTribeBrowseView(allTribes, main);
+    }
+}
+
+// ── NO TRIBE: browse + create ──────────────────────────────────
+function renderTribeBrowseView(tribes, main) {
     main.innerHTML = `
-        <div class="tribes-page">
-            <div class="tribes-header">
+        <div class="std-page">
+            <div class="std-page-header">
                 <div class="page-title">
                     <h1>🏛️ Tribes</h1>
-                    <div class="tribe-status">${userTribe ? `Member of ${userTribe.name}` : 'No tribe'}</div>
+                    <div class="page-subtitle">You're not in a tribe yet</div>
                 </div>
-                <div class="header-actions">
-                    ${userTribe ? `
-                        <button class="btn btn-primary" onclick="manageTribe()">⚙️ Manage Tribe</button>
-                        <button class="btn btn-secondary" onclick="tribeChat()">💬 Tribe Chat</button>
-                    ` : `
-                        <button class="btn btn-primary" onclick="createTribe()">➕ Create Tribe</button>
-                        <button class="btn btn-secondary" onclick="searchTribes()">🔍 Find Tribes</button>
-                    `}
-                    <button class="btn btn-secondary" onclick="tribeAlliances()">🤝 Alliances</button>
+                <button class="btn btn-primary" onclick="tribeShowCreateModal()">➕ Create Tribe</button>
+            </div>
+
+            <div class="tribe-browse-section">
+                <div class="tribe-browse-top">
+                    <h2 style="color:#f1f5f9;margin:0">Browse Tribes</h2>
+                    <input id="tribeBrowseSearch" class="form-control search-input" placeholder="🔍 Search tribes..." style="max-width:280px">
                 </div>
-            </div>
-            
-            <div class="tribes-tabs">
-                <button class="tribe-tab active" onclick="switchTribeTab('overview')" data-tab="overview">
-                    🏠 ${userTribe ? 'My Tribe' : 'Overview'}
-                </button>
-                <button class="tribe-tab" onclick="switchTribeTab('members')" data-tab="members">
-                    👥 Members (${userTribe ? userTribe.members.length : 0})
-                </button>
-                <button class="tribe-tab" onclick="switchTribeTab('available')" data-tab="available">
-                    🌍 Available Tribes (${availableTribes.length})
-                </button>
-                <button class="tribe-tab" onclick="switchTribeTab('log')" data-tab="log">
-                    📅 Tribe Log
-                </button>
-            </div>
-            
-            <div class="tribes-content">
-                <div id="tribesContainer" class="tribes-container">
-                    ${userTribe ? renderMyTribe(userTribe) : renderTribeSearch(availableTribes)}
+                <div id="tribeBrowseGrid" class="tribe-browse-grid">
+                    ${renderTribeBrowseCards(tribes)}
                 </div>
             </div>
-        </div>
-    `;
+        </div>`;
+
+    document.getElementById('tribeBrowseSearch')?.addEventListener('input', function() {
+        const q = this.value.toLowerCase();
+        document.getElementById('tribeBrowseGrid').innerHTML =
+            renderTribeBrowseCards(tribes.filter(t =>
+                (t.name||'').toLowerCase().includes(q) || (t.description||'').toLowerCase().includes(q)
+            ));
+    });
 }
 
-// Helper functions for Tribes page
-function getUserTribeData() {
-    // TODO: Replace with actual server data
-    return null; // For now, user has no tribe
+function renderTribeBrowseCards(tribes) {
+    if (!tribes.length) return '<div class="tribe-empty">No tribes found.</div>';
+    return tribes.map(t => `
+        <div class="tribe-browse-card">
+            <div class="tribe-browse-icon">🏛️</div>
+            <div class="tribe-browse-info">
+                <div class="tribe-browse-name">${t.name}</div>
+                ${t.main_map ? `<div class="tribe-browse-map">📍 ${t.main_map}</div>` : ''}
+                ${t.description ? `<div class="tribe-browse-desc">${t.description}</div>` : ''}
+            </div>
+            <button class="btn btn-secondary btn-sm tribe-join-btn" onclick="tribeRequestJoin(${t.id}, '${(t.name||'').replace(/'/g,"\\'")}')">Request to Join</button>
+        </div>`).join('');
 }
 
-function getAvailableTribes() {
-    // TODO: Replace with actual server data
-    return [
-        { id: 1, name: "Alpha Hunters", members: 15, description: "Elite boss hunting tribe" },
-        { id: 2, name: "Dino Breeders", members: 8, description: "Focused on creature breeding" },
-        { id: 3, name: "Resource Lords", members: 22, description: "Resource gathering specialists" }
-    ];
+async function tribeRequestJoin(tribeId, tribeName) {
+    const msg = prompt(`Send a message with your join request to ${tribeName}? (optional)`);
+    if (msg === null) return; // cancelled
+    const { res, body } = await apiRequest(`/api/tribes/${tribeId}/join`, {
+        method: 'POST', body: JSON.stringify({ message: msg || '' })
+    });
+    if (res.ok) {
+        alert(`Join request sent to ${tribeName}! An admin will review it.`);
+    } else {
+        alert(body?.error || 'Failed to send join request.');
+    }
+}
+window.tribeRequestJoin = tribeRequestJoin;
+
+function tribeShowCreateModal() {
+    const modal = document.createElement('div');
+    modal.className = 'modal active';
+    modal.innerHTML = `
+        <div class="modal-content" style="max-width:480px">
+            <div class="modal-header">
+                <h2 class="modal-title">➕ Create Tribe</h2>
+                <button class="close-btn" onclick="this.closest('.modal').remove()">&times;</button>
+            </div>
+            <div class="modal-body" style="display:flex;flex-direction:column;gap:16px">
+                <div class="plan-field">
+                    <label class="form-label">Tribe Name *</label>
+                    <input id="tribeCreateName" class="form-control" placeholder="e.g. Alpha Hunters">
+                </div>
+                <div class="plan-field">
+                    <label class="form-label">Main Map</label>
+                    <input id="tribeCreateMap" class="form-control" placeholder="e.g. The Island, Ragnarok...">
+                </div>
+                <div class="plan-field">
+                    <label class="form-label">Description</label>
+                    <textarea id="tribeCreateDesc" class="form-control" rows="3" placeholder="What's your tribe about?"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="this.closest('.modal').remove()">Cancel</button>
+                <button class="btn btn-primary" onclick="tribeDoCreate()">Create Tribe</button>
+            </div>
+        </div>`;
+    document.body.appendChild(modal);
+}
+window.tribeShowCreateModal = tribeShowCreateModal;
+
+async function tribeDoCreate() {
+    const name = document.getElementById('tribeCreateName')?.value.trim();
+    if (!name) return alert('Tribe name is required.');
+    const main_map = document.getElementById('tribeCreateMap')?.value.trim() || null;
+    const description = document.getElementById('tribeCreateDesc')?.value.trim() || null;
+    const { res, body } = await apiRequest('/api/tribes', {
+        method: 'POST', body: JSON.stringify({ name, main_map, description })
+    });
+    if (res.ok) {
+        document.querySelector('.modal.active')?.remove();
+        loadTribesPage();
+    } else {
+        alert(body?.error || 'Failed to create tribe.');
+    }
+}
+window.tribeDoCreate = tribeDoCreate;
+
+// ── IN TRIBE: tabbed management view ───────────────────────────
+function renderTribeMemberView(tribe, main) {
+    const myUserId = parseInt(localStorage.getItem('userId') || '0');
+    const me = (tribe.members || []).find(m => m.user_id === myUserId);
+    const myRole = me?.role || 'member';
+    const isAdmin = myRole === 'owner' || myRole === 'admin';
+
+    main.innerHTML = `
+        <div class="std-page">
+            <div class="std-page-header">
+                <div class="page-title">
+                    <h1>🏛️ ${tribe.name}</h1>
+                    <div class="page-subtitle">
+                        ${tribe.main_map ? `📍 ${tribe.main_map} · ` : ''}
+                        ${tribe.members?.length || 0} members · Your role: <strong style="color:#60a5fa;text-transform:capitalize">${myRole}</strong>
+                    </div>
+                </div>
+                <button class="btn btn-danger btn-sm" onclick="tribeLeaveTribe(${tribe.id})">Leave Tribe</button>
+            </div>
+
+            <div class="tribe-tabs">
+                <button class="tribe-tab active" data-tab="overview" onclick="tribeTab(this,'overview',${tribe.id})">🏠 Overview</button>
+                <button class="tribe-tab" data-tab="members" onclick="tribeTab(this,'members',${tribe.id})">👥 Members (${tribe.members?.length||0})</button>
+                <button class="tribe-tab" data-tab="vault" onclick="tribeTab(this,'vault',${tribe.id})">🗄️ Vault</button>
+                ${isAdmin ? `<button class="tribe-tab" data-tab="requests" onclick="tribeTab(this,'requests',${tribe.id})">📬 Join Requests</button>` : ''}
+            </div>
+            <div id="tribeTabContent" class="tribe-tab-content">
+                ${renderTribeOverviewTab(tribe, myRole)}
+            </div>
+        </div>`;
 }
 
-function renderMyTribe(tribe) {
-    return `<div class="my-tribe">Member of ${tribe.name}</div>`;
-}
+async function tribeTab(btn, tab, tribeId) {
+    document.querySelectorAll('.tribe-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const content = document.getElementById('tribeTabContent');
+    if (!content) return;
+    content.innerHTML = '<div style="color:#94a3b8;padding:20px">Loading...</div>';
 
-function renderTribeSearch(tribes) {
+    if (tab === 'overview') {
+        const { body } = await apiRequest(`/api/tribes/${tribeId}`).catch(() => ({ body: null }));
+        content.innerHTML = body ? renderTribeOverviewTab(body, null) : '<div class="tribe-empty">Failed to load.</div>';
+    } else if (tab === 'members') {
+        const { body } = await apiRequest(`/api/tribes/${tribeId}`).catch(() => ({ body: null }));
+        const myUserId = parseInt(localStorage.getItem('userId') || '0');
+        const me = (body?.members || []).find(m => m.user_id === myUserId);
+        const isAdmin = me?.role === 'owner' || me?.role === 'admin';
+        content.innerHTML = renderTribeMembersTab(body, tribeId, isAdmin);
+    } else if (tab === 'vault') {
+        const { body } = await apiRequest(`/api/tribes/${tribeId}/creatures`).catch(() => ({ body: [] }));
+        content.innerHTML = renderTribeVaultTab(Array.isArray(body) ? body : [], tribeId);
+    } else if (tab === 'requests') {
+        content.innerHTML = await loadJoinRequestsTab(tribeId);
+    }
+}
+window.tribeTab = tribeTab;
+
+function renderTribeOverviewTab(tribe, myRole) {
+    const role = myRole || (() => {
+        const myId = parseInt(localStorage.getItem('userId') || '0');
+        return (tribe.members||[]).find(m => m.user_id === myId)?.role || 'member';
+    })();
     return `
-        <div class="tribe-search">
-            <h3>Available Tribes</h3>
-            ${tribes.map(tribe => `
-                <div class="tribe-card">
-                    <h4>${tribe.name}</h4>
-                    <p>${tribe.description}</p>
-                    <div class="tribe-meta">${tribe.members} members</div>
-                </div>
-            `).join('')}
-        </div>
-    `;
+        <div class="tribe-overview">
+            ${tribe.description ? `<div class="tribe-desc-block">${tribe.description}</div>` : ''}
+            <div class="tribe-stats-row">
+                <div class="tribe-stat"><div class="tribe-stat-val">${tribe.members?.length||0}</div><div class="tribe-stat-lbl">Members</div></div>
+                ${tribe.main_map ? `<div class="tribe-stat"><div class="tribe-stat-val">📍</div><div class="tribe-stat-lbl">${tribe.main_map}</div></div>` : ''}
+                <div class="tribe-stat"><div class="tribe-stat-val" style="text-transform:capitalize">${role}</div><div class="tribe-stat-lbl">Your Role</div></div>
+            </div>
+            ${role === 'owner' ? `
+            <div class="tribe-owner-actions">
+                <h3 style="color:#f1f5f9;margin:0 0 12px">Owner Actions</h3>
+                <button class="btn btn-secondary" onclick="tribeShowTransferModal(${tribe.id})">🔁 Transfer Ownership</button>
+            </div>` : ''}
+        </div>`;
 }
+
+function renderTribeMembersTab(tribe, tribeId, isAdmin) {
+    const members = tribe?.members || [];
+    const myUserId = parseInt(localStorage.getItem('userId') || '0');
+    return `
+        <div class="tribe-members-list">
+            ${members.map(m => `
+                <div class="tribe-member-row">
+                    <div class="tribe-member-avatar">👤</div>
+                    <div class="tribe-member-info">
+                        <div class="tribe-member-name">${m.nickname || m.email || 'Unknown'}</div>
+                        <div class="tribe-member-role ${m.role}">${m.role}</div>
+                    </div>
+                    ${isAdmin && m.user_id !== myUserId && m.role !== 'owner'
+                        ? `<button class="btn btn-danger btn-sm" onclick="tribeKickMember(${tribeId},${m.user_id},'${(m.nickname||m.email||'this member').replace(/'/g,"\\'")}')">Kick</button>`
+                        : ''}
+                </div>`).join('')}
+        </div>`;
+}
+
+async function tribeKickMember(tribeId, userId, name) {
+    if (!confirm(`Remove ${name} from the tribe?`)) return;
+    const { res, body } = await apiRequest(`/api/tribes/${tribeId}/members/${userId}`, { method: 'DELETE' });
+    if (res.ok) {
+        loadTribesPage();
+    } else {
+        alert(body?.error || 'Failed to remove member.');
+    }
+}
+window.tribeKickMember = tribeKickMember;
+
+function renderTribeVaultTab(creatures, tribeId) {
+    const myNuggies = window.appState?.creatures || [];
+    return `
+        <div class="tribe-vault">
+            <div class="tribe-vault-header">
+                <span style="color:#94a3b8;font-size:0.9rem">${creatures.length} creature${creatures.length!==1?'s':''} in vault</span>
+                ${myNuggies.length ? `<button class="btn btn-primary btn-sm" onclick="tribeShareNuggieModal(${tribeId})">+ Share a Nuggie</button>` : ''}
+            </div>
+            ${creatures.length === 0
+                ? `<div class="tribe-empty">Vault is empty. Members can share their Nuggies here.</div>`
+                : `<div class="tribe-vault-grid">
+                    ${creatures.map(c => {
+                        const d = c.data || c;
+                        return `<div class="tribe-vault-card">
+                            <div class="nuggie-pick-name">${d.name||'Unnamed'}</div>
+                            <div class="nuggie-pick-species">${d.species||'?'}</div>
+                            <div class="nuggie-pick-stats">HP ${d.baseStats?.Health||0} · Mel ${d.baseStats?.Melee||0}</div>
+                        </div>`;
+                    }).join('')}
+                   </div>`
+            }
+        </div>`;
+}
+
+function tribeShareNuggieModal(tribeId) {
+    const creatures = window.appState?.creatures || [];
+    if (!creatures.length) return alert('No creatures in My Nuggies to share.');
+    const modal = document.createElement('div');
+    modal.className = 'modal active';
+    modal.innerHTML = `
+        <div class="modal-content" style="max-width:500px">
+            <div class="modal-header">
+                <h2 class="modal-title">🗄️ Share a Nuggie to Vault</h2>
+                <button class="close-btn" onclick="this.closest('.modal').remove()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="nuggie-picker">
+                    ${creatures.map(c => `
+                    <div class="nuggie-pick-card" onclick="tribeShareNuggie(${tribeId},'${c.id}',this)">
+                        <div class="nuggie-pick-name">${c.name||'Unnamed'}</div>
+                        <div class="nuggie-pick-species">${c.species||'?'}</div>
+                        <div class="nuggie-pick-stats">HP ${c.baseStats?.Health||0} · Mel ${c.baseStats?.Melee||0}</div>
+                    </div>`).join('')}
+                </div>
+            </div>
+        </div>`;
+    document.body.appendChild(modal);
+}
+window.tribeShareNuggieModal = tribeShareNuggieModal;
+
+async function tribeShareNuggie(tribeId, creatureId, el) {
+    const creature = (window.appState?.creatures||[]).find(c => c.id === creatureId);
+    if (!creature) return;
+    const { res, body } = await apiRequest(`/api/tribes/${tribeId}/creatures`, {
+        method: 'POST', body: JSON.stringify({ data: creature })
+    });
+    if (res.ok) {
+        el.closest('.modal')?.remove();
+        alert(`${creature.name} shared to the tribe vault!`);
+    } else {
+        alert(body?.error || 'Failed to share creature.');
+    }
+}
+window.tribeShareNuggie = tribeShareNuggie;
+
+async function loadJoinRequestsTab(tribeId) {
+    const { body } = await apiRequest(`/api/tribes/${tribeId}`).catch(() => ({ body: null }));
+    // No dedicated join-requests endpoint yet; placeholder
+    return `<div class="tribe-empty" style="padding:32px 0">
+        <div style="font-size:2rem;margin-bottom:12px">📬</div>
+        <div style="color:#94a3b8">Join requests will appear here when players request to join your tribe.</div>
+    </div>`;
+}
+
+function tribeShowTransferModal(tribeId) {
+    const { body: tribe } = apiRequest(`/api/tribes/${tribeId}`).catch(() => ({ body: null }));
+    const newOwner = prompt('Enter the user ID of the new owner:');
+    if (!newOwner || isNaN(newOwner)) return;
+    tribeTransferOwnership(tribeId, parseInt(newOwner));
+}
+window.tribeShowTransferModal = tribeShowTransferModal;
+
+async function tribeTransferOwnership(tribeId, newOwnerId) {
+    if (!confirm('Transfer tribe ownership? You will become an admin.')) return;
+    const { res, body } = await apiRequest(`/api/tribes/${tribeId}/transfer`, {
+        method: 'POST', body: JSON.stringify({ new_owner_user_id: newOwnerId })
+    });
+    if (res.ok) {
+        alert('Ownership transferred.');
+        loadTribesPage();
+    } else {
+        alert(body?.error || 'Failed to transfer ownership.');
+    }
+}
+window.tribeTransferOwnership = tribeTransferOwnership;
+
+async function tribeLeaveTribe(tribeId) {
+    const myUserId = localStorage.getItem('userId');
+    if (!confirm('Leave this tribe?')) return;
+    const { res, body } = await apiRequest(`/api/tribes/${tribeId}/members/${myUserId}`, { method: 'DELETE' });
+    if (res.ok) {
+        loadTribesPage();
+    } else {
+        alert(body?.error || 'Failed to leave tribe. If you are the owner, transfer ownership first.');
+    }
+}
+window.tribeLeaveTribe = tribeLeaveTribe;
 
 function loadBossPage() {
     setActiveNavButton('boss');

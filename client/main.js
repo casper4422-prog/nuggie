@@ -2816,22 +2816,7 @@ window.tradeHistory = tradeHistory;
 window.openTradeDetails = openTradeDetails;
 window.makeOffer = makeOffer;
 window.addToWatchlist = addToWatchlist;
-window.switchFriendsTab = switchFriendsTab;
-window.searchFriends = searchFriends;
-window.filterFriends = filterFriends;
-window.sortFriends = sortFriends;
-window.clearFriendsFilters = clearFriendsFilters;
-window.addFriend = addFriend;
-window.findPlayers = findPlayers;
-window.importFriends = importFriends;
-window.openFriendProfile = openFriendProfile;
-window.messageFriend = messageFriend;
-window.inviteToTribe = inviteToTribe;
-window.viewFriendCreatures = viewFriendCreatures;
-window.removeFriend = removeFriend;
-window.acceptFriendRequest = acceptFriendRequest;
-window.declineFriendRequest = declineFriendRequest;
-window.cancelFriendRequest = cancelFriendRequest;
+// Friends functions are exported by client/friends.js
 
 // Boss Planner Implementation
 async function loadBossPlanner() {

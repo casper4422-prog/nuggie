@@ -3078,21 +3078,25 @@ async function loadBossPlanner() {
                 const plan = plans.find(p => p.bossId === t.id);
                 const hasPlan = !!plan;
                 const diff = plan?.difficulty || '';
-                const diffLabel = { gamma: '🟢 Gamma', beta: '🔵 Beta', alpha: '🔴 Alpha' }[diff] || '';
+                const diffColor = { gamma: '#22c55e', beta: '#3b82f6', alpha: '#ef4444' }[diff] || '';
+                const diffLabel = { gamma: 'Gamma', beta: 'Beta', alpha: 'Alpha' }[diff] || '';
                 return `
                 <div class="boss-planning-card" onclick="openBossPlanning('${t.id}')">
-                    <div class="template-header">
-                        <h4>${t.name}</h4>
-                        <div class="template-header-badges">
-                            ${hasPlan ? `<span class="plan-saved-badge">✓ Planned</span>` : ''}
-                            ${diffLabel ? `<span class="plan-diff-badge">${diffLabel}</span>` : ''}
+                    <div class="boss-card-header">
+                        <div class="boss-card-icon">${t.icon}</div>
+                        <div class="boss-card-title">
+                            <div class="boss-card-name">${t.name}</div>
+                            <div class="boss-card-sub">${t.type}</div>
                         </div>
+                        ${hasPlan ? `<div class="boss-planned-dot" title="${diffLabel} planned">✓</div>` : ''}
                     </div>
-                    <span class="template-map">${t.map}</span>
-                    <div class="template-type">${t.type}</div>
-                    <div class="template-strategy">${t.strategy}</div>
-                    <div class="boss-planning-footer">
-                        <span class="click-hint">${hasPlan ? 'View / edit plan →' : 'Click to plan →'}</span>
+                    <div class="boss-card-tags">
+                        <span class="boss-tag map">${t.map}</span>
+                        ${hasPlan && diffLabel ? `<span class="boss-tag diff" style="border-color:${diffColor};color:${diffColor}">${diffLabel}</span>` : ''}
+                    </div>
+                    <div class="boss-card-desc">${t.description || t.strategy}</div>
+                    <div class="boss-card-footer">
+                        <span class="click-hint">${hasPlan ? '✏️ Edit plan' : '📋 Plan fight'}</span>
                     </div>
                 </div>`;
             }).join('') || '<div class="no-results">No bosses match your filters.</div>';
@@ -3527,7 +3531,9 @@ function getBossTemplates() {
             name: species.name || name,
             map: map,
             type: _deriveBossType(species),
-            description: (species.dossierText || '').slice(0, 140) + ((species.dossierText || '').length > 140 ? '…' : ''),
+            icon: species.icon || '💀',
+            rarity: species.rarity || 'Legendary',
+            description: (species.dossierText || '').slice(0, 120) + ((species.dossierText || '').length > 120 ? '…' : ''),
             strategy: _deriveBossStrategy(species)
         });
     }

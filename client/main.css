@@ -1551,12 +1551,24 @@ body {
 
 .filter-select {
     flex: 1;
-    background: #0f172a;
+    background: #1e293b;
     border: 1px solid #475569;
     border-radius: 8px;
-    padding: 12px 16px;
+    padding: 10px 36px 10px 14px;
     color: #f1f5f9;
     font-size: 0.9rem;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 16px;
+    cursor: pointer;
+}
+.filter-select option {
+    background: #1e293b;
+    color: #f1f5f9;
 }
 
 /* Species Template Grid - Matching Boss Planning Cards */
@@ -2606,18 +2618,46 @@ select option {
 
 /* ── Boss Planner ── */
 .boss-filters { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
-.boss-template-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
-.boss-planning-card { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 18px; cursor: pointer; transition: border-color 0.2s, transform 0.15s; display: flex; flex-direction: column; gap: 8px; }
-.boss-planning-card:hover { border-color: #3b82f6; transform: translateY(-2px); }
-.template-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
-.template-header h4 { color: #f1f5f9; margin: 0; font-size: 1rem; }
-.template-header-badges { display: flex; flex-direction: column; gap: 4px; align-items: flex-end; }
-.plan-saved-badge { background: #166534; color: #86efac; font-size: 0.7rem; padding: 2px 8px; border-radius: 99px; white-space: nowrap; }
-.plan-diff-badge { font-size: 0.7rem; padding: 2px 8px; border-radius: 99px; background: #1e3a5f; color: #93c5fd; white-space: nowrap; }
-.template-map { color: #60a5fa; font-size: 0.8rem; font-weight: 600; }
-.template-type { color: #94a3b8; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; }
-.template-strategy { color: #cbd5e1; font-size: 0.85rem; flex: 1; }
-.boss-planning-footer { margin-top: auto; padding-top: 8px; border-top: 1px solid #334155; }
+.boss-template-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+
+/* Boss card — styled like species cards */
+.boss-planning-card {
+    background: rgba(30, 41, 59, 0.8);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+.boss-planning-card:hover { transform: translateY(-2px); border-color: #3b82f6; box-shadow: 0 8px 25px rgba(59,130,246,0.1); }
+.boss-card-header {
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid rgba(59, 130, 246, 0.1);
+}
+.boss-card-icon {
+    width: 48px; height: 48px; flex-shrink: 0;
+    background: linear-gradient(135deg, #7c3aed, #dc2626);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px;
+}
+.boss-card-title { flex: 1; min-width: 0; }
+.boss-card-name { font-size: 1rem; font-weight: 600; color: #f1f5f9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.boss-card-sub { font-size: 0.75rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 2px; }
+.boss-planned-dot { color: #22c55e; font-weight: 700; font-size: 1.1rem; flex-shrink: 0; }
+.boss-card-tags { display: flex; gap: 6px; flex-wrap: wrap; padding: 10px 16px 0; }
+.boss-tag { font-size: 0.72rem; padding: 2px 10px; border-radius: 99px; border: 1px solid; }
+.boss-tag.map { border-color: rgba(59,130,246,0.4); color: #60a5fa; background: rgba(59,130,246,0.08); }
+.boss-tag.diff { background: transparent; }
+.boss-card-desc { padding: 10px 16px; color: #94a3b8; font-size: 0.82rem; flex: 1; line-height: 1.5; }
+.boss-card-footer { padding: 10px 16px 14px; border-top: 1px solid rgba(59,130,246,0.1); }
 .click-hint { color: #3b82f6; font-size: 0.8rem; }
 .boss-planning-page { display: flex; flex-direction: column; gap: 0; max-width: 900px; margin: 0 auto; padding-bottom: 100px; }
 .boss-planning-header { display: flex; gap: 20px; align-items: flex-start; padding: 24px 0 20px; border-bottom: 1px solid #334155; margin-bottom: 24px; flex-wrap: wrap; }

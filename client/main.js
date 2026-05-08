@@ -840,8 +840,10 @@ function openAddCreatureModal(preSelectedSpecies = null) {
     `;
     
     document.body.insertAdjacentHTML('beforeend', modalHtml);
-    
-    // Focus on name input
+    // Activate overlay
+    const injected = document.getElementById('addCreatureModal');
+    if (injected) injected.classList.add('active');
+
     setTimeout(() => {
         document.getElementById('creatureName')?.focus();
     }, 100);
@@ -2933,8 +2935,11 @@ function clearFilters() {
 }
 
 // Creature Action Functions
-function addNewCreature() {
-    alert('Add creature form will be implemented soon!');
+function addNewCreature(speciesName) {
+    if (typeof window.openCreatureModal === 'function') {
+        try { window.appState.currentSpecies = speciesName || null; } catch (e) {}
+        window.openCreatureModal(null);
+    }
 }
 
 function exportCreatures() {
@@ -3366,12 +3371,13 @@ window.loadBossPlanner = loadBossPlanner;
 
 // Modal cleanup function to prevent UI bugs during navigation
 function cleanupModals() {
-    // Remove any existing modals
-    const existingModals = document.querySelectorAll('.modal');
-    existingModals.forEach(modal => {
-        if (modal.parentNode) {
-            modal.parentNode.removeChild(modal);
-        }
+    // Close creatures.js managed modals via their close functions
+    if (typeof window.closeCreatureModal === 'function') window.closeCreatureModal();
+    // Deactivate any other .modal overlays without removing them from the DOM
+    document.querySelectorAll('.modal.active').forEach(m => m.classList.remove('active'));
+    // Remove old-style modal-overlay elements that were dynamically injected (not managed)
+    document.querySelectorAll('.modal-overlay').forEach(m => {
+        if (!m.id || (m.id !== 'creatureModal' && m.id !== 'creatureDetailModal')) m.remove();
     });
 }
 

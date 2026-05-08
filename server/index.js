@@ -16,7 +16,8 @@ const SECRET = process.env.JWT_SECRET || 'your_jwt_secret'; // Override via JWT_
 // Echo the request Origin so previews and different subdomains are accepted.
 // Allow Authorization header for Bearer token flows and Content-Type for JSON.
 // Gzip/Brotli compression for responses (reduces bandwidth)
-app.use(compression());
+// compression() removed — Render's CDN handles gzip at the edge; double-compressing
+// causes the response body to arrive garbled/empty in the browser.
 app.use(cors({ origin: true, credentials: true, allowedHeaders: ['Content-Type', 'Authorization'] }));
 app.use(express.json());
 
@@ -312,12 +313,8 @@ app.post('/api/register', (req, res) => {
             discord_name: discordVal
           };
           
-          console.log('[API] /api/register about to send response:', JSON.stringify(responseData));
-          res.setHeader('Content-Type', 'application/json');
-          res.status(200);
-          res.json(responseData);
-          console.log('[API] /api/register response sent');
-          return;
+          console.log('[API] /api/register sending response');
+          return res.status(200).json(responseData);
         }
       );
     });
@@ -347,12 +344,8 @@ app.post('/api/login', (req, res) => {
         const token = jwt.sign({ userId: user.id }, SECRET, { expiresIn: '1d' });
         const responseData = { token, user: { id: user.id, email: user.email, nickname: user.nickname } };
         
-        console.log('[API] /api/login sending successful response:', JSON.stringify(responseData));
-        res.setHeader('Content-Type', 'application/json');
-        res.status(200);
-        res.json(responseData);
-        console.log('[API] /api/login response sent');
-        return;
+        console.log('[API] /api/login sending successful response');
+        return res.status(200).json(responseData);
       } else {
         console.log('[API] /api/login password comparison failed');
         res.setHeader('Content-Type', 'application/json');

@@ -3124,7 +3124,7 @@ function openBossPlanning(bossId) {
                     </div>
                     <div class="team-list" id="teamList-${bossId}">
                         <div class="team-member">
-                            <img src="https://via.placeholder.com/40" class="member-avatar">
+                            <div class="member-avatar" style="width:40px;height:40px;border-radius:50%;background:#334155;display:flex;align-items:center;justify-content:center;font-size:18px;">👤</div>
                             <div class="member-info">
                                 <div class="member-name">You</div>
                                 <div class="member-role">Leader</div>

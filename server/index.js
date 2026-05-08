@@ -883,6 +883,22 @@ app.get('/api/users/search', authenticateToken, (req, res) => {
 });
 
 // --- Tribe endpoints ---
+
+// Get the authenticated user's current tribe (the first tribe they belong to)
+app.get('/api/my-tribe', authenticateToken, (req, res) => {
+  db.get(
+    `SELECT t.id, t.name, t.main_map, t.description, t.owner_user_id, m.role
+     FROM tribe_memberships m JOIN tribes t ON m.tribe_id = t.id
+     WHERE m.user_id = ? LIMIT 1`,
+    [req.user.userId],
+    (err, row) => {
+      if (err) return res.status(500).json({ error: 'Failed to load tribe' });
+      if (!row) return res.json(null);
+      res.json(row);
+    }
+  );
+});
+
 // Create a tribe
 app.post('/api/tribes', authenticateToken, (req, res) => {
   const { name, main_map, description } = req.body || {};

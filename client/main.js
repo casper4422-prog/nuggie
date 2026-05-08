@@ -1189,22 +1189,22 @@ function renderCreatureCard(creature, speciesData) {
                 <div class="creature-stats">
                     <div class="stat-item">
                         <span class="stat-label">❤️ Health</span>
-                        <span class="stat-value">${creature.health || 'N/A'}</span>
+                        <span class="stat-value">${creature.baseStats?.Health ?? 'N/A'}</span>
                     </div>
                     <div class="stat-item">
                         <span class="stat-label">⚔️ Melee</span>
-                        <span class="stat-value">${creature.melee || 'N/A'}</span>
+                        <span class="stat-value">${creature.baseStats?.Melee ?? 'N/A'}</span>
                     </div>
                     <div class="stat-item">
-                        <span class="stat-label">� Weight</span>
-                        <span class="stat-value">${creature.weight || 'N/A'}</span>
+                        <span class="stat-label">🏋️ Weight</span>
+                        <span class="stat-value">${creature.baseStats?.Weight ?? 'N/A'}</span>
                     </div>
                     <div class="stat-item">
                         <span class="stat-label">⚡ Stamina</span>
-                        <span class="stat-value">${creature.stamina || 'N/A'}</span>
+                        <span class="stat-value">${creature.baseStats?.Stamina ?? 'N/A'}</span>
                     </div>
                 </div>
-                
+
                 <div class="creature-meta">
                     <div class="meta-item">
                         <span class="meta-label">Gender:</span>
@@ -1212,7 +1212,7 @@ function renderCreatureCard(creature, speciesData) {
                     </div>
                     <div class="meta-item">
                         <span class="meta-label">Mutations:</span>
-                        <span class="meta-value">${creature.mutations || 0}</span>
+                        <span class="meta-value">${Object.values(creature.mutations || {}).reduce((a, b) => a + b, 0) || 0}</span>
                     </div>
                 </div>
             </div>
@@ -2678,14 +2678,12 @@ function calculateUserAchievements(creatures) {
     let bosses = 0;
     
     creatures.forEach(creature => {
-        // Check for badge-worthy stats (placeholder logic)
-        if (creature.health >= 45 && creature.stamina >= 45 && creature.food >= 45 && 
-            creature.weight >= 45 && creature.melee >= 45) {
+        const bs = creature.baseStats || {};
+        if ((bs.Health || 0) >= 45 && (bs.Stamina || 0) >= 45 && (bs.Food || 0) >= 45 &&
+            (bs.Weight || 0) >= 45 && (bs.Melee || 0) >= 45) {
             badges++;
         }
-        
-        // Check for boss readiness
-        if (creature.health >= 75 && creature.melee >= 75) {
+        if ((bs.Health || 0) >= 75 && (bs.Melee || 0) >= 75) {
             bosses++;
         }
     });
@@ -2780,7 +2778,9 @@ function renderCreaturesGrid(creatures) {
     }
     
     return creatures.map(creature => {
-        const badges = calculateCreatureBadges(creature);
+        const badges = (window.BadgeSystem && typeof window.BadgeSystem.calculateAchievements === 'function')
+            ? (window.BadgeSystem.calculateAchievements(creature) || [])
+            : [];
         const database = window.SPECIES_DATABASE || window.EXPANDED_SPECIES_DATABASE;
         const speciesData = database && database[creature.species] ? database[creature.species] : null;
         
@@ -2800,21 +2800,21 @@ function renderCreaturesGrid(creatures) {
                     <div class="stat-bar">
                         <span class="stat-label">HP</span>
                         <div class="stat-progress">
-                            <div class="stat-fill" style="width: ${Math.min(100, (creature.health || 0) * 2)}%"></div>
+                            <div class="stat-fill" style="width: ${Math.min(100, (creature.baseStats?.Health || 0) * 2)}%"></div>
                         </div>
-                        <span class="stat-value">${creature.health || 0}</span>
+                        <span class="stat-value">${creature.baseStats?.Health || 0}</span>
                     </div>
                     <div class="stat-bar">
                         <span class="stat-label">Melee</span>
                         <div class="stat-progress">
-                            <div class="stat-fill" style="width: ${Math.min(100, (creature.melee || 0) * 2)}%"></div>
+                            <div class="stat-fill" style="width: ${Math.min(100, (creature.baseStats?.Melee || 0) * 2)}%"></div>
                         </div>
-                        <span class="stat-value">${creature.melee || 0}</span>
+                        <span class="stat-value">${creature.baseStats?.Melee || 0}</span>
                     </div>
                 </div>
                 
                 <div class="creature-badges">
-                    ${badges.map(badge => `<div class="badge ${badge.class}">${badge.icon} ${badge.name}</div>`).join('')}
+                    ${(window.BadgeSystem && typeof window.BadgeSystem.generateBadgeHTML === 'function') ? window.BadgeSystem.generateBadgeHTML(creature) : ''}
                 </div>
                 
                 <div class="creature-actions">
@@ -2833,27 +2833,6 @@ function renderCreaturesGrid(creatures) {
     }).join('');
 }
 
-function calculateCreatureBadges(creature) {
-    const badges = [];
-    
-    // Prized Bloodline (all stats 45+)
-    if (creature.health >= 45 && creature.stamina >= 45 && creature.food >= 45 && 
-        creature.weight >= 45 && creature.melee >= 45) {
-        badges.push({ name: 'Prized', icon: '🏆', class: 'prized' });
-    }
-    
-    // Boss Ready (health and melee 75+)
-    if (creature.health >= 75 && creature.melee >= 75) {
-        badges.push({ name: 'Boss Ready', icon: '👑', class: 'boss-ready' });
-    }
-    
-    // Boss Underdog (health and melee 50-74)
-    if (creature.health >= 50 && creature.health < 75 && creature.melee >= 50 && creature.melee < 75) {
-        badges.push({ name: 'Underdog', icon: '🥊', class: 'boss-underdog' });
-    }
-    
-    return badges;
-}
 
 function setupCreatureSearch() {
     const searchInput = document.getElementById('creatureSearch');
@@ -2892,15 +2871,13 @@ function filterCreatures() {
         creatures = creatures.filter(c => c.gender === genderFilter);
     }
     
-    if (badgeFilter) {
+    if (badgeFilter && window.BadgeSystem && typeof window.BadgeSystem.calculateAchievements === 'function') {
         creatures = creatures.filter(c => {
-            const badges = calculateCreatureBadges(c);
-            return badges.some(badge => {
-                if (badgeFilter === 'prized') return badge.class === 'prized';
-                if (badgeFilter === 'boss-ready') return badge.class === 'boss-ready';
-                if (badgeFilter === 'boss-underdog') return badge.class === 'boss-underdog';
-                return false;
-            });
+            const badges = window.BadgeSystem.calculateAchievements(c) || [];
+            if (badgeFilter === 'prized') return badges.some(b => b.id === 'prized_bloodline');
+            if (badgeFilter === 'boss-ready') return badges.some(b => b.id && b.id.startsWith('boss_'));
+            if (badgeFilter === 'boss-underdog') return badges.some(b => b.id && b.id.startsWith('underdog_'));
+            return false;
         });
     }
     
@@ -3723,6 +3700,11 @@ async function apiRequest(path, opts = {}) {
 	return { res, body };
 }
 
+function getCreatureStorageKey() {
+	const userId = localStorage.getItem('userId') || 'local';
+	return `creatures_${userId}`;
+}
+
 // Load creatures from server and merge into appState.creatures
 async function loadServerCreatures() {
 	try {
@@ -4192,9 +4174,9 @@ function filterSpecies() {
         return matchesSearch && matchesCategory && matchesRarity;
     });
 
-    console.log(`[SPA] Filtered species: ${filtered.length} of ${species.length}`);
+    console.log(`[SPA] Filtered species: ${filteredSpecies.length} of ${Object.values(speciesData).length}`);
 
-    grid.innerHTML = filtered.length ? filtered.map(s => `
+    grid.innerHTML = filteredSpecies.length ? filteredSpecies.map(s => `
         <div class="species-card" onclick="window.goToCreatures('${s.name}')" data-species-id="${s.id || ''}">
             <div class="species-card-content">
                 <div class="species-icon">${s.icon || '🦖'}</div>

@@ -238,13 +238,10 @@ async function renderTribeFriendsList() {
             tribeDiv.innerHTML = '<div class="error-message">No friends to assign to your tribe.</div>';
             return;
         }
-        // Fetch tribe assignments (assume /api/tribe/members returns user IDs)
-        const tribeRes = await fetch('/api/tribe/members', {
-            headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
-        });
-        const tribeMembers = await tribeRes.json();
+        const myTribe = await getMyTribe();
+        const tribeMembers = myTribe ? (myTribe.members || []).map(m => m.user_id) : [];
         tribeDiv.innerHTML = friends.map(f => {
-            const isInTribe = Array.isArray(tribeMembers) && tribeMembers.includes(f.friend_user_id);
+            const isInTribe = tribeMembers.includes(f.friend_user_id);
             return `<div class="tribe-friend-item">
                 <span><strong>${f.friend_nickname || f.friend_email}</strong> ${f.friend_discord_name ? `<span class='friend-meta'>Discord: ${f.friend_discord_name}</span>` : ''}</span>
                 <button class="btn btn-sm ${isInTribe ? 'btn-danger' : 'btn-primary'}" onclick="${isInTribe ? `removeFromTribe(${f.friend_user_id})` : `addToTribe(${f.friend_user_id})`}">${isInTribe ? 'Remove from Tribe' : 'Add to Tribe'}</button>
@@ -258,7 +255,9 @@ async function renderTribeFriendsList() {
 // Add friend to tribe
 async function addToTribe(friendUserId) {
     try {
-        const res = await fetch('/api/tribe/members', {
+        const myTribe = await getMyTribe();
+        if (!myTribe) return alert('You are not in a tribe.');
+        const res = await fetch(`/api/tribes/${myTribe.id}/members`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -269,7 +268,8 @@ async function addToTribe(friendUserId) {
         if (res.ok) {
             await renderTribeFriendsList();
         } else {
-            alert('Failed to add to tribe');
+            const err = await res.json().catch(() => ({}));
+            alert(err.error || 'Failed to add to tribe');
         }
     } catch (e) {
         alert('Failed to add to tribe');
@@ -280,17 +280,33 @@ async function addToTribe(friendUserId) {
 async function removeFromTribe(friendUserId) {
     if (!confirm('Remove from tribe?')) return;
     try {
-        const res = await fetch(`/api/tribe/members/${friendUserId}`, {
+        const myTribe = await getMyTribe();
+        if (!myTribe) return alert('You are not in a tribe.');
+        const res = await fetch(`/api/tribes/${myTribe.id}/members/${friendUserId}`, {
             method: 'DELETE',
             headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
         });
         if (res.ok) {
             await renderTribeFriendsList();
         } else {
-            alert('Failed to remove from tribe');
+            const err = await res.json().catch(() => ({}));
+            alert(err.error || 'Failed to remove from tribe');
         }
     } catch (e) {
         alert('Failed to remove from tribe');
+    }
+}
+
+// Helper: fetch current user's tribe (returns tribe object or null)
+async function getMyTribe() {
+    try {
+        const res = await fetch('/api/my-tribe', {
+            headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+        });
+        if (!res.ok) return null;
+        return await res.json();
+    } catch (e) {
+        return null;
     }
 }
 
@@ -298,16 +314,10 @@ async function removeFromTribe(friendUserId) {
 async function renderTribeStatus() {
     const statusDiv = document.getElementById('tribeStatus');
     if (!statusDiv) return;
-
     try {
-        const response = await fetch('/api/tribe', {
-            method: 'GET',
-            headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
-        });
-
-        if (response.ok) {
-            const tribe = await response.json();
-            statusDiv.innerHTML = `<p>You are in tribe: <strong>${tribe.name}</strong></p>`;
+        const tribe = await getMyTribe();
+        if (tribe) {
+            statusDiv.innerHTML = `<p>You are in tribe: <strong>${tribe.name}</strong> <span class="friend-meta">(${tribe.role})</span></p>`;
         } else {
             statusDiv.innerHTML = '<p>You are not in a tribe.</p>';
         }
@@ -348,7 +358,7 @@ function showCreateTribeModal() {
         if (!name) return alert('Please enter a tribe name.');
 
         try {
-            const response = await fetch('/api/tribe', {
+            const response = await fetch('/api/tribes', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -403,13 +413,22 @@ function showJoinTribeModal() {
         if (!tribeIdentifier) return alert('Please enter a tribe name or ID.');
 
         try {
-            const response = await fetch('/api/tribe/join', {
+            // Search for the tribe by name, then join by ID
+            const searchRes = await fetch(`/api/tribes?q=${encodeURIComponent(tribeIdentifier)}`, {
+                headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+            });
+            const tribes = await searchRes.json();
+            const match = Array.isArray(tribes) && tribes.find(t =>
+                t.name.toLowerCase() === tribeIdentifier.toLowerCase() || String(t.id) === tribeIdentifier
+            );
+            if (!match) return alert('Tribe not found. Check the name and try again.');
+            const response = await fetch(`/api/tribes/${match.id}/join`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
                 },
-                body: JSON.stringify({ tribeIdentifier })
+                body: JSON.stringify({})
             });
 
             if (response.ok) {

@@ -9029,140 +9029,6 @@ const SPECIES_DATABASE = {
   // Badge Categories
   badgeCategories: ['harvesting', 'combat', 'boss']
 },
-'Morellatops_99': {
-  // Basic Info
-  id: 'MORELLATOPS_099',
-  name: 'Morellatops',
-  icon: '🐪',
-  category: 'utility',
-  rarity: 'common',
-  source: 'Scorched Earth DLC',
-  variants: ['Standard'],
-
-  // Biology & Lore
-  dossierText: "Morellatops dromedarius seems to be a relative of modern camels. Like camels, the Morellatops has a hump on its back that stores water, allowing it to survive in the harsh desert environment without needing to drink frequently. What makes Morellatops particularly useful is its water storage capability and its natural resistance to heat. When ridden in desert environments, it provides its rider with protection from the harsh sun and extreme temperatures. Additionally, it can shoot water projectiles at enemies, which is both amusing and tactically useful for cooling down overheated creatures or washing off certain debuffs.",
-  temperament: 'Defensive',
-  diet: 'Herbivore (desert vegetation, cacti)',
-  habitat: 'Deserts, arid regions, hot climates',
-  realWorldBasis: 'Camelus (Camel)',
-  sizeClass: 'Large',
-
-  // Taming System
-  tamingMethod: 'Passive',
-  tamingType: 'Hand-feeding (non-violent)',
-  preferredKibble: 'Regular Kibble',
-  favoriteFood: 'Regular Kibble',
-  tamingSpeed: 'Moderate',
-  torpor: {
-    baseValue: 550,
-    depleteRate: 'N/A'
-  },
-  specialRequirements: 'Must be fed cactus sap for faster taming, found in desert areas',
-
-  // Base Statistics (Level 1 Wild)
-  baseStats: {
-    health: 365,
-    stamina: 270,
-    oxygen: 150,
-    food: 4000,
-    weight: 300,
-    melee: 20,
-    speed: 100,
-    torpor: 550
-  },
-
-  // Stat Scaling (Per Level)
-  statScaling: {
-    health: 73,
-    stamina: 27,
-    oxygen: 15,
-    food: 400,
-    weight: 6,
-    melee: 1,
-    speed: 1.2
-  },
-
-  // Equipment & Combat
-  saddleLevel: 33,
-  saddleType: 'Morellatops Saddle',
-  saddleArmor: 25,
-  platformLimit: 0,
-  specialAbilities: ['Water storage', 'heat resistance', 'water projectile attack'],
-  attackTypes: ['Spit attack', 'bite', 'kick'],
-  canCarry: ['Moderate cargo, excellent for desert travel'],
-
-  // Utility & Roles
-  primaryRole: 'Desert survival and water storage specialist',
-  secondaryRoles: ['Heat-resistant mount', 'projectile support', 'desert exploration'],
-  gatheringResources: ['Cactus sap', 'berries', 'fiber', 'thatch'],
-  gatheringEfficiency: {
-    'Cactus sap': 8,
-    Berries: 6,
-    Fiber: 5,
-    Thatch: 4
-  },
-  ratings: {
-    combat: 5,
-    transport: 7,
-    speed: 6,
-    survivability: 8
-  },
-
-  // Environmental Data
-  speeds: {
-    land: 25,
-    flying: 0,
-    swimming: 15,
-    climbing: 0
-  },
-  environmentalResistances: ['Heat immunity', 'extreme temperature tolerance'],
-  preferredBiome: 'Deserts, arid regions, hot climates',
-  temperatureRange: {
-    min: 0,
-    max: 60
-  },
-  oxygenRequirement: 'Air breathing',
-
-  // Breeding Genetics
-  breeding: {
-    cooldown: '18-48 hours',
-    gestationTime: '7 hours, 56 minutes',
-    babyFoodConsumption: 'Moderate',
-    maturationTime: '2 days, 22 hours',
-    colorRegions: 6,
-    colorRegionNames: ['Body', 'hump', 'legs', 'stripes', 'belly', 'markings'],
-    mutationChance: 7.31,
-    breedingDifficulty: 'Easy'
-  },
-
-  // Special Functions
-  workstation: 'None',
-  resourceProduction: 'Water storage (can be tapped for water)',
-  structureFunctions: 'None',
-  buffAuras: ['Heat protection for rider'],
-  debuffAbilities: ['Water spit can cool overheated creatures'],
-  uniqueMechanics: ['Water storage system', 'heat immunity', 'desert adaptation'],
-
-  // Spawn & Location
-  spawnMaps: ['Scorched Earth', 'Ragnarok', 'Valguero', 'Crystal Isles', 'Lost Island', 'Fjordur'],
-  spawnZones: ['Deserts', 'arid regions', 'hot climate areas'],
-  rarityRating: 'Common (in desert biomes)',
-  levelRange: '1-150',
-  packBehavior: 'Small herds (2-4)',
-  territorialBehavior: 'Defensive, protective of herd',
-
-  // Management Metadata
-  difficultyRating: 'Easy',
-  beginnerFriendly: true,
-  endGameViable: true,
-  bossFightCapable: false,
-  pvpMeta: 'Low',
-  resourceInvestment: 'Low',
-  maintenanceLevel: 'Low',
-
-  // Badge Categories
-  badgeCategories: ['utility', 'transport']
-},
 'Phoenix': {
   // Basic Info
   id: 'PHOENIX_100',
@@ -11285,2648 +11151,6 @@ const SPECIES_DATABASE = {
 
   // Badge Categories
   badgeCategories: ['combat', 'boss', 'transport']
-},
-'Poison Wyvern': {
-  // Basic Info
-  id: 'POISON_WYVERN_106',
-  name: 'Poison Wyvern',
-  icon: '☠️',
-  category: 'combat',
-  rarity: 'legendary',
-  source: 'Scorched Earth DLC',
-  variants: ['Standard', 'S-Variant'],
-
-  // Biology & Lore
-  dossierText: "Draconis veneno is the most insidious of the Wyvern subspecies, wielding deadly toxins instead of raw elemental force. What makes Poison Wyvern particularly terrifying is its ability to create vast clouds of poisonous gas that linger in an area, denying access to enemies and slowly weakening everything within its influence. The toxic breath can penetrate most forms of protection and continues to damage victims long after the initial attack. Unlike other Wyverns that rely on direct damage, the Poison Wyvern specializes in area control and attrition warfare. Its venomous attacks make it invaluable for defending strategic locations and controlling battlefield movement.",
-  temperament: 'Extremely Aggressive',
-  diet: 'Carnivore (large prey, toxic compounds)',
-  habitat: 'Wyvern trenches, swampy areas, high altitude nests',
-  realWorldBasis: 'Draco (Dragon mythology)',
-  sizeClass: 'Colossal',
-
-  // Taming System
-  tamingMethod: 'Special',
-  tamingType: 'Must steal and incubate Wyvern eggs, then imprint babies',
-  preferredKibble: 'N/A',
-  favoriteFood: 'Wyvern Milk',
-  tamingSpeed: 'N/A',
-  torpor: {
-    baseValue: 1550,
-    depleteRate: 'N/A'
-  },
-  specialRequirements: 'Must steal eggs from Wyvern nests, requires Wyvern Milk for babies',
-
-  // Base Statistics (Level 1 Wild)
-  baseStats: {
-    health: 1725,
-    stamina: 400,
-    oxygen: 150,
-    food: 2000,
-    weight: 400,
-    melee: 80,
-    speed: 100,
-    torpor: 1550
-  },
-
-  // Stat Scaling (Per Level)
-  statScaling: {
-    health: 345,
-    stamina: 40,
-    oxygen: 15,
-    food: 200,
-    weight: 8,
-    melee: 4,
-    speed: 1.5
-  },
-
-  // Equipment & Combat
-  saddleLevel: 0,
-  saddleType: 'Cannot be saddled (ridden bareback)',
-  saddleArmor: 0,
-  platformLimit: 0,
-  specialAbilities: ['Poison gas cloud', 'toxic damage over time', 'area denial', 'aerial dominance'],
-  attackTypes: ['Poison gas breath (area control)', 'bite', 'claw strikes', 'toxic aura'],
-  canCarry: ['Large amounts of cargo, excellent for aerial operations'],
-
-  // Utility & Roles
-  primaryRole: 'Area denial and attrition warfare specialist',
-  secondaryRoles: ['Strategic location control', 'crowd control', 'aerial supremacy'],
-  gatheringResources: ['Raw meat', 'hide'],
-  gatheringEfficiency: {
-    'Raw meat': 7,
-    Hide: 6
-  },
-  ratings: {
-    combat: 10,
-    transport: 8,
-    speed: 9,
-    survivability: 9
-  },
-
-  // Environmental Data
-  speeds: {
-    land: 10,
-    flying: 50,
-    swimming: 20,
-    climbing: 0
-  },
-  environmentalResistances: ['Poison immunity', 'toxic resistance'],
-  preferredBiome: 'Wyvern trenches, swampy areas, high altitude regions',
-  temperatureRange: {
-    min: 10,
-    max: 60
-  },
-  oxygenRequirement: 'Air breathing',
-
-  // Breeding Genetics
-  breeding: {
-    cooldown: '18-48 hours',
-    gestationTime: '4 hours, 59 minutes',
-    babyFoodConsumption: 'Extreme',
-    maturationTime: '3 days, 20 hours',
-    colorRegions: 6,
-    colorRegionNames: ['Body', 'wings', 'poison elements', 'belly', 'spines', 'toxic glow'],
-    mutationChance: 7.31,
-    breedingDifficulty: 'Extreme'
-  },
-
-  // Special Functions
-  workstation: 'None',
-  resourceProduction: 'None',
-  structureFunctions: 'Can poison and weaken structures over time',
-  buffAuras: ['None'],
-  debuffAbilities: ['Poison gas causes toxic damage over time and area denial'],
-  uniqueMechanics: ['Egg stealing system', 'poison gas weapon', 'toxic immunity'],
-
-  // Spawn & Location
-  spawnMaps: ['Scorched Earth', 'Ragnarok', 'Valguero', 'Crystal Isles', 'Lost Island', 'Fjordur'],
-  spawnZones: ['Wyvern trenches', 'swampy areas', 'high altitude nesting sites'],
-  rarityRating: 'Legendary',
-  levelRange: '1-190',
-  packBehavior: 'Small flights (2-4)',
-  territorialBehavior: 'Extremely aggressive, defends nesting areas',
-
-  // Management Metadata
-  difficultyRating: 'Extreme',
-  beginnerFriendly: false,
-  endGameViable: true,
-  bossFightCapable: true,
-  pvpMeta: 'Ultimate',
-  resourceInvestment: 'Extreme',
-  maintenanceLevel: 'High',
-
-  // Badge Categories
-  badgeCategories: ['boss', 'combat']
-},
-'Shastasaurus': {
-  // Basic Info
-  id: 'SHASTASAURUS_107',
-  name: 'Shastasaurus',
-  icon: '🐋',
-  category: 'transport',
-  rarity: 'rare',
-  source: 'Base Game',
-  variants: ['Standard'],
-
-  // Biology & Lore
-  dossierText: "Shastasaurus liangae is a massive marine reptile that represents one of the largest creatures in the ocean. What makes Shastasaurus truly remarkable is its incredible size and peaceful demeanor despite being a carnivore. This gentle giant feeds primarily on smaller fish and marine creatures, using its massive bulk to create currents that help with feeding. When tamed, Shastasaurus becomes an exceptional underwater mount for exploration and transport, capable of carrying multiple passengers and vast amounts of cargo. Its size provides natural protection from most marine predators, and its stamina allows for extended deep-sea expeditions.",
-  temperament: 'Passive',
-  diet: 'Carnivore (small fish, plankton, marine microorganisms)',
-  habitat: 'Deep ocean, open water, underwater trenches',
-  realWorldBasis: 'Shastasaurus sikanniensis',
-  sizeClass: 'Colossal',
-
-  // Taming System
-  tamingMethod: 'Passive',
-  tamingType: 'Hand-feeding underwater (non-violent)',
-  preferredKibble: 'Exceptional Kibble',
-  favoriteFood: 'Exceptional Kibble',
-  tamingSpeed: 'Very Slow',
-  torpor: {
-    baseValue: 2500,
-    depleteRate: 'N/A'
-  },
-  specialRequirements: 'Must approach carefully underwater, completely passive, massive size',
-
-  // Base Statistics (Level 1 Wild)
-  baseStats: {
-    health: 2400,
-    stamina: 800,
-    oxygen: 150,
-    food: 8000,
-    weight: 1000,
-    melee: 60,
-    speed: 100,
-    torpor: 2500
-  },
-
-  // Stat Scaling (Per Level)
-  statScaling: {
-    health: 480,
-    stamina: 80,
-    oxygen: 15,
-    food: 800,
-    weight: 20,
-    melee: 3,
-    speed: 1
-  },
-
-  // Equipment & Combat
-  saddleLevel: 81,
-  saddleType: 'Shastasaurus Saddle',
-  saddleArmor: 25,
-  platformLimit: 1,
-  specialAbilities: ['Massive size', 'underwater platform capability', 'gentle nature'],
-  attackTypes: ['Gentle ram (rarely used)', 'tail sweep (defensive only)'],
-  canCarry: ['Massive cargo capacity, multiple passengers'],
-
-  // Utility & Roles
-  primaryRole: 'Underwater mobile platform and deep sea transport',
-  secondaryRoles: ['Deep ocean exploration', 'underwater base', 'group transport'],
-  gatheringResources: ['Raw fish meat', 'prime fish meat'],
-  gatheringEfficiency: {
-    'Raw fish meat': 5,
-    'Prime fish meat': 4
-  },
-  ratings: {
-    combat: 4,
-    transport: 10,
-    speed: 4,
-    survivability: 9
-  },
-
-  // Environmental Data
-  speeds: {
-    land: 0,
-    flying: 0,
-    swimming: 20,
-    climbing: 0
-  },
-  environmentalResistances: ['Deep sea pressure immunity'],
-  preferredBiome: 'Deep ocean, open water, underwater trenches',
-  temperatureRange: {
-    min: 0,
-    max: 25
-  },
-  oxygenRequirement: 'Water breathing only',
-
-  // Breeding Genetics
-  breeding: {
-    cooldown: '18-48 hours',
-    gestationTime: '7 hours, 56 minutes',
-    babyFoodConsumption: 'Extreme',
-    maturationTime: '4 days, 22 hours',
-    colorRegions: 6,
-    colorRegionNames: ['Body', 'fins', 'belly', 'patterns', 'markings', 'bioluminescence'],
-    mutationChance: 7.31,
-    breedingDifficulty: 'Very Hard'
-  },
-
-  // Special Functions
-  workstation: 'Platform saddle allows underwater base construction',
-  resourceProduction: 'None',
-  structureFunctions: 'Mobile underwater platform for building',
-  buffAuras: ['None'],
-  debuffAbilities: ['None'],
-  uniqueMechanics: ['Underwater platform building', 'massive size', 'gentle giant behavior'],
-
-  // Spawn & Location
-  spawnMaps: ['The Island', 'The Center', 'Ragnarok', 'Valguero', 'Crystal Isles', 'Lost Island', 'Fjordur'],
-  spawnZones: ['Deep ocean', 'open water', 'underwater trenches'],
-  rarityRating: 'Rare',
-  levelRange: '1-150',
-  packBehavior: 'Solitary or small pods (2-3)',
-  territorialBehavior: 'Completely passive, gentle giant',
-
-  // Management Metadata
-  difficultyRating: 'Hard',
-  beginnerFriendly: false,
-  endGameViable: true,
-  bossFightCapable: false,
-  pvpMeta: 'Medium',
-  resourceInvestment: 'Extreme',
-  maintenanceLevel: 'High',
-
-  // Badge Categories
-  badgeCategories: ['transport', 'utility']
-},
-'Basilisk': {
-  // Basic Info
-  id: 'BASILISK_108',
-  name: 'Basilisk',
-  icon: '🐍',
-  category: 'combat',
-  rarity: 'rare',
-  source: 'Aberration DLC',
-  variants: ['Standard'],
-
-  // Biology & Lore
-  dossierText: "Serpens regulus is a massive serpentine creature that has adapted to life in the underground caverns of Aberration. What makes Basilisk truly formidable is its ability to burrow through solid rock and earth, allowing it to travel beneath the surface and emerge unexpectedly to ambush prey. The creature's venomous bite can paralyze even large creatures, while its burrowing ability makes it nearly impossible to escape once it sets its sights on a target. When tamed, Basilisk becomes an invaluable mount for underground exploration and surprise attacks. Its natural resistance to radiation and ability to navigate subterranean environments make it essential for surviving in the most dangerous underground regions.",
-  temperament: 'Aggressive',
-  diet: 'Carnivore (large underground prey, eggs)',
-  habitat: 'Underground caverns, rocky areas, subterranean environments',
-  realWorldBasis: 'Basilisk (mythological serpent)',
-  sizeClass: 'Colossal',
-
-  // Taming System
-  tamingMethod: 'Passive',
-  tamingType: 'Must be fed fertilized Rock Drake eggs',
-  preferredKibble: 'N/A',
-  favoriteFood: 'Fertilized Rock Drake Eggs',
-  tamingSpeed: 'Slow',
-  torpor: {
-    baseValue: 3000,
-    depleteRate: 'N/A'
-  },
-  specialRequirements: 'Only accepts fertilized Rock Drake eggs, extremely dangerous during taming',
-
-  // Base Statistics (Level 1 Wild)
-  baseStats: {
-    health: 8000,
-    stamina: 300,
-    oxygen: 150,
-    food: 4000,
-    weight: 800,
-    melee: 172,
-    speed: 100,
-    torpor: 3000
-  },
-
-  // Stat Scaling (Per Level)
-  statScaling: {
-    health: 1600,
-    stamina: 30,
-    oxygen: 15,
-    food: 400,
-    weight: 16,
-    melee: 8.6,
-    speed: 1
-  },
-
-  // Equipment & Combat
-  saddleLevel: 85,
-  saddleType: 'Basilisk Saddle',
-  saddleArmor: 25,
-  platformLimit: 0,
-  specialAbilities: ['Underground burrowing', 'venomous bite', 'radiation resistance', 'ambush attacks'],
-  attackTypes: ['Venomous bite (paralyzing)', 'underground emergence', 'constriction'],
-  canCarry: ['Large amounts of cargo, excellent for underground expeditions'],
-
-  // Utility & Roles
-  primaryRole: 'Underground exploration and ambush specialist',
-  secondaryRoles: ['Radiation zone navigation', 'surprise attacks', 'subterranean transport'],
-  gatheringResources: ['Raw meat', 'hide', 'element'],
-  gatheringEfficiency: {
-    'Raw meat': 7,
-    Hide: 6,
-    Element: 5
-  },
-  ratings: {
-    combat: 9,
-    transport: 8,
-    speed: 7,
-    survivability: 9
-  },
-
-  // Environmental Data
-  speeds: {
-    land: 35,
-    flying: 0,
-    swimming: 20,
-    climbing: 0
-  },
-  environmentalResistances: ['Radiation immunity', 'pressure resistance'],
-  preferredBiome: 'Underground caverns, rocky areas, radiation zones',
-  temperatureRange: {
-    min: 10,
-    max: 50
-  },
-  oxygenRequirement: 'Air breathing',
-
-  // Breeding Genetics
-  breeding: {
-    cooldown: '18-48 hours',
-    gestationTime: '7 hours, 56 minutes',
-    babyFoodConsumption: 'Extreme',
-    maturationTime: '4 days, 22 hours',
-    colorRegions: 6,
-    colorRegionNames: ['Body', 'belly', 'stripes', 'spines', 'patterns', 'bioluminescence'],
-    mutationChance: 7.31,
-    breedingDifficulty: 'Extreme'
-  },
-
-  // Special Functions
-  workstation: 'None',
-  resourceProduction: 'None',
-  structureFunctions: 'Can burrow through most terrain',
-  buffAuras: ['None'],
-  debuffAbilities: ['Venomous bite causes paralysis'],
-  uniqueMechanics: ['Underground burrowing system', 'radiation immunity', 'special taming requirements'],
-
-  // Spawn & Location
-  spawnMaps: ['Aberration', 'Valguero (underground areas)', 'Crystal Isles', 'Lost Island', 'Fjordur'],
-  spawnZones: ['Underground caverns', 'rocky areas', 'radiation zones'],
-  rarityRating: 'Rare',
-  levelRange: '1-150',
-  packBehavior: 'Solitary',
-  territorialBehavior: 'Extremely aggressive, ambushes from underground',
-
-  // Management Metadata
-  difficultyRating: 'Extreme',
-  beginnerFriendly: false,
-  endGameViable: true,
-  bossFightCapable: true,
-  pvpMeta: 'Very High',
-  resourceInvestment: 'Extreme',
-  maintenanceLevel: 'High',
-
-  // Badge Categories
-  badgeCategories: ['combat', 'boss']
-},
-'Bulbdog': {
-  // Basic Info
-  id: 'BULBDOG_109',
-  name: 'Bulbdog',
-  icon: '💡',
-  category: 'utility',
-  rarity: 'common',
-  source: 'Aberration DLC',
-  variants: ['Standard'],
-
-  // Biology & Lore
-  dossierText: "Microluminis globulus is a small, bioluminescent creature that has adapted to life in the dark depths of Aberration. What makes Bulbdog particularly valuable is not its size or strength, but its ability to produce a powerful bioluminescent light that can ward off the dangerous Reaper Kings and other creatures that fear illumination. The creature's light can be adjusted in intensity, making it perfect for both stealth operations and full illumination. Additionally, Bulbdog can detect nearby enemies through its enhanced senses, making it an excellent early warning system. Its friendly disposition and utility make it one of the most beloved shoulder pets among Aberration survivors.",
-  temperament: 'Friendly',
-  diet: 'Omnivore (mushrooms, plants, small creatures)',
-  habitat: 'Underground areas, bioluminescent zones, cave systems',
-  realWorldBasis: 'Bioluminescent creature (fantasy)',
-  sizeClass: 'Small',
-
-  // Taming System
-  tamingMethod: 'Passive',
-  tamingType: 'Hand-feeding (non-violent)',
-  preferredKibble: 'Simple Kibble',
-  favoriteFood: 'Simple Kibble',
-  tamingSpeed: 'Fast',
-  torpor: {
-    baseValue: 90,
-    depleteRate: 'N/A'
-  },
-  specialRequirements: 'Prefers mushrooms, found in dark areas, provides light',
-
-  // Base Statistics (Level 1 Wild)
-  baseStats: {
-    health: 90,
-    stamina: 100,
-    oxygen: 150,
-    food: 450,
-    weight: 25,
-    melee: 8,
-    speed: 100,
-    torpor: 90
-  },
-
-  // Stat Scaling (Per Level)
-  statScaling: {
-    health: 18,
-    stamina: 10,
-    oxygen: 15,
-    food: 45,
-    weight: 0.5,
-    melee: 0.4,
-    speed: 2
-  },
-
-  // Equipment & Combat
-  saddleLevel: 0,
-  saddleType: 'Shoulder pet',
-  saddleArmor: 0,
-  platformLimit: 0,
-  specialAbilities: ['Adjustable bioluminescent light', 'enemy detection', 'Reaper ward'],
-  attackTypes: ['Weak bite (rarely used, mainly defensive)'],
-  canCarry: ['Small items, primarily provides light and detection'],
-
-  // Utility & Roles
-  primaryRole: 'Light source and detection system',
-  secondaryRoles: ['Reaper protection', 'early warning system', 'underground navigation'],
-  gatheringResources: ['Mushrooms'],
-  gatheringEfficiency: {
-    'Various mushrooms': 4
-  },
-  ratings: {
-    combat: 2,
-    transport: 2,
-    speed: 6,
-    survivability: 4
-  },
-
-  // Environmental Data
-  speeds: {
-    land: 20,
-    flying: 0,
-    swimming: 15,
-    climbing: 0
-  },
-  environmentalResistances: ['Radiation tolerance'],
-  preferredBiome: 'Underground areas, bioluminescent zones, cave systems',
-  temperatureRange: {
-    min: 10,
-    max: 30
-  },
-  oxygenRequirement: 'Air breathing',
-
-  // Breeding Genetics
-  breeding: {
-    cooldown: '18-48 hours',
-    gestationTime: '1 hour, 25 minutes',
-    babyFoodConsumption: 'Low',
-    maturationTime: '1 day, 20 hours',
-    colorRegions: 5,
-    colorRegionNames: ['Body', 'light organ', 'patterns', 'belly', 'markings'],
-    mutationChance: 7.31,
-    breedingDifficulty: 'Easy'
-  },
-
-  // Special Functions
-  workstation: 'None',
-  resourceProduction: 'None',
-  structureFunctions: 'None',
-  buffAuras: ['Light projection wards off light-sensitive creatures'],
-  debuffAbilities: ['None'],
-  uniqueMechanics: ['Adjustable light intensity', 'enemy detection system', 'Reaper protection'],
-
-  // Spawn & Location
-  spawnMaps: ['Aberration', 'Valguero (underground)', 'Crystal Isles', 'Lost Island', 'Fjordur'],
-  spawnZones: ['Underground areas', 'bioluminescent zones', 'cave systems'],
-  rarityRating: 'Common',
-  levelRange: '1-150',
-  packBehavior: 'Small groups (2-4)',
-  territorialBehavior: 'Friendly, approaches humans',
-
-  // Management Metadata
-  difficultyRating: 'Easy',
-  beginnerFriendly: true,
-  endGameViable: true,
-  bossFightCapable: false,
-  pvpMeta: 'Low',
-  resourceInvestment: 'Very Low',
-  maintenanceLevel: 'Very Low',
-
-  // Badge Categories
-  badgeCategories: ['utility']
-},
-'Featherlight': {
-  // Basic Info
-  id: 'FEATHERLIGHT_110',
-  name: 'Featherlight',
-  icon: '✨',
-  category: 'utility',
-  rarity: 'common',
-  source: 'Aberration DLC',
-  variants: ['Standard'],
-
-  // Biology & Lore
-  dossierText: "Microluminis altera is an elegant flying creature that serves as another bioluminescent companion in the dangerous depths of Aberration. What makes Featherlight unique among the light pets is its ability to fly, allowing it to provide aerial reconnaissance while maintaining its light-producing capabilities. Its wings enable it to scout ahead and detect threats from above, while its powerful bioluminescence can illuminate large areas. The creature's graceful flight patterns and beautiful light display make it both functional and aesthetically pleasing. Like other light pets, it provides essential protection against creatures that fear illumination, but its aerial capabilities make it superior for exploration and scouting missions.",
-  temperament: 'Skittish',
-  diet: 'Omnivore (plant matter, seeds, small insects)',
-  habitat: 'Underground areas, bioluminescent zones, high cave chambers',
-  realWorldBasis: 'Bioluminescent flying creature (fantasy)',
-  sizeClass: 'Small',
-
-  // Taming System
-  tamingMethod: 'Passive',
-  tamingType: 'Hand-feeding (non-violent)',
-  preferredKibble: 'Simple Kibble',
-  favoriteFood: 'Simple Kibble',
-  tamingSpeed: 'Fast',
-  torpor: {
-    baseValue: 60,
-    depleteRate: 'N/A'
-  },
-  specialRequirements: 'Prefers seeds, found in high areas, skittish behavior',
-
-  // Base Statistics (Level 1 Wild)
-  baseStats: {
-    health: 60,
-    stamina: 150,
-    oxygen: 150,
-    food: 450,
-    weight: 18,
-    melee: 5,
-    speed: 100,
-    torpor: 60
-  },
-
-  // Stat Scaling (Per Level)
-  statScaling: {
-    health: 12,
-    stamina: 15,
-    oxygen: 15,
-    food: 45,
-    weight: 0.36,
-    melee: 0.25,
-    speed: 2.2
-  },
-
-  // Equipment & Combat
-  saddleLevel: 0,
-  saddleType: 'Shoulder pet that can fly independently',
-  saddleArmor: 0,
-  platformLimit: 0,
-  specialAbilities: ['Flying reconnaissance', 'adjustable bioluminescent light', 'area illumination'],
-  attackTypes: ['Weak peck (rarely used, mainly evasive)'],
-  canCarry: ['Very small items, primarily provides light and scouting'],
-
-  // Utility & Roles
-  primaryRole: 'Flying light source and aerial scout',
-  secondaryRoles: ['Area illumination', 'reconnaissance', 'underground navigation'],
-  gatheringResources: ['Seeds', 'small plant materials'],
-  gatheringEfficiency: {
-    Seeds: 5,
-    'Plant materials': 3
-  },
-  ratings: {
-    combat: 1,
-    transport: 1,
-    speed: 8,
-    survivability: 3
-  },
-
-  // Environmental Data
-  speeds: {
-    land: 15,
-    flying: 30,
-    swimming: 10,
-    climbing: 0
-  },
-  environmentalResistances: ['Radiation tolerance'],
-  preferredBiome: 'Underground areas, bioluminescent zones, high cave chambers',
-  temperatureRange: {
-    min: 10,
-    max: 30
-  },
-  oxygenRequirement: 'Air breathing',
-
-  // Breeding Genetics
-  breeding: {
-    cooldown: '18-48 hours',
-    gestationTime: '1 hour, 25 minutes',
-    babyFoodConsumption: 'Very Low',
-    maturationTime: '1 day, 20 hours',
-    colorRegions: 6,
-    colorRegionNames: ['Body', 'wings', 'light organ', 'feathers', 'patterns', 'glow'],
-    mutationChance: 7.31,
-    breedingDifficulty: 'Easy'
-  },
-
-  // Special Functions
-  workstation: 'None',
-  resourceProduction: 'None',
-  structureFunctions: 'None',
-  buffAuras: ['Flying light projection wards off light-sensitive creatures'],
-  debuffAbilities: ['None'],
-  uniqueMechanics: ['Independent flying capability', 'aerial reconnaissance', 'adjustable light intensity'],
-
-  // Spawn & Location
-  spawnMaps: ['Aberration', 'Valguero (underground)', 'Crystal Isles', 'Lost Island', 'Fjordur'],
-  spawnZones: ['Underground areas', 'bioluminescent zones', 'high cave chambers'],
-  rarityRating: 'Common',
-  levelRange: '1-150',
-  packBehavior: 'Small flocks (2-4)',
-  territorialBehavior: 'Skittish, flees when threatened',
-
-  // Management Metadata
-  difficultyRating: 'Easy',
-  beginnerFriendly: true,
-  endGameViable: true,
-  bossFightCapable: false,
-  pvpMeta: 'Low',
-  resourceInvestment: 'Very Low',
-  maintenanceLevel: 'Very Low',
-
-  // Badge Categories
-  badgeCategories: ['utility']
-},
-'Glowtail': {
-  // Basic Info
-  id: 'GLOWTAIL_111',
-  name: 'Glowtail',
-  icon: '🌟',
-  category: 'utility',
-  rarity: 'common',
-  source: 'Aberration DLC',
-  variants: ['Standard'],
-
-  // Biology & Lore
-  dossierText: "Microluminis lumiculoides is another bioluminescent companion native to the depths of Aberration. What sets Glowtail apart from other light pets is its prehensile tail that can grasp and manipulate objects with surprising dexterity. The creature's bioluminescent capabilities provide the same essential protection against light-sensitive predators as other light pets, but its tail allows it to assist with resource gathering and tool manipulation. Glowtail's gentle nature and helpful tendencies make it an invaluable partner for survivors exploring the dangerous underground environments. Its ability to both illuminate and assist with tasks makes it one of the most versatile shoulder companions available.",
-  temperament: 'Friendly',
-  diet: 'Omnivore (mushrooms, small plants, seeds)',
-  habitat: 'Underground areas, bioluminescent zones, cave systems',
-  realWorldBasis: 'Bioluminescent creature with prehensile tail (fantasy)',
-  sizeClass: 'Small',
-
-  // Taming System
-  tamingMethod: 'Passive',
-  tamingType: 'Hand-feeding (non-violent)',
-  preferredKibble: 'Simple Kibble',
-  favoriteFood: 'Simple Kibble',
-  tamingSpeed: 'Fast',
-  torpor: {
-    baseValue: 70,
-    depleteRate: 'N/A'
-  },
-  specialRequirements: 'Prefers seeds and mushrooms, found in dark areas, provides light and assistance',
-
-  // Base Statistics (Level 1 Wild)
-  baseStats: {
-    health: 70,
-    stamina: 100,
-    oxygen: 150,
-    food: 450,
-    weight: 20,
-    melee: 6,
-    speed: 100,
-    torpor: 70
-  },
-
-  // Stat Scaling (Per Level)
-  statScaling: {
-    health: 14,
-    stamina: 10,
-    oxygen: 15,
-    food: 45,
-    weight: 0.4,
-    melee: 0.3,
-    speed: 2
-  },
-
-  // Equipment & Combat
-  saddleLevel: 0,
-  saddleType: 'Shoulder pet',
-  saddleArmor: 0,
-  platformLimit: 0,
-  specialAbilities: ['Adjustable bioluminescent light', 'prehensile tail assistance', 'item manipulation'],
-  attackTypes: ['Weak bite (rarely used, mainly defensive)'],
-  canCarry: ['Small items, can manipulate objects with tail'],
-
-  // Utility & Roles
-  primaryRole: 'Light source and task assistance',
-  secondaryRoles: ['Item manipulation', 'underground navigation', 'Reaper protection'],
-  gatheringResources: ['Mushrooms', 'seeds'],
-  gatheringEfficiency: {
-    'Various mushrooms': 5,
-    Seeds: 4
-  },
-  ratings: {
-    combat: 2,
-    transport: 3,
-    speed: 6,
-    survivability: 4
-  },
-
-  // Environmental Data
-  speeds: {
-    land: 18,
-    flying: 0,
-    swimming: 12,
-    climbing: 1
-  },
-  environmentalResistances: ['Radiation tolerance'],
-  preferredBiome: 'Underground areas, bioluminescent zones, cave systems',
-  temperatureRange: {
-    min: 10,
-    max: 30
-  },
-  oxygenRequirement: 'Air breathing',
-
-  // Breeding Genetics
-  breeding: {
-    cooldown: '18-48 hours',
-    gestationTime: '1 hour, 25 minutes',
-    babyFoodConsumption: 'Low',
-    maturationTime: '1 day, 20 hours',
-    colorRegions: 6,
-    colorRegionNames: ['Body', 'tail', 'light organ', 'patterns', 'belly', 'markings'],
-    mutationChance: 7.31,
-    breedingDifficulty: 'Easy'
-  },
-
-  // Special Functions
-  workstation: 'None',
-  resourceProduction: 'None',
-  structureFunctions: 'None',
-  buffAuras: ['Light projection wards off light-sensitive creatures'],
-  debuffAbilities: ['None'],
-  uniqueMechanics: ['Prehensile tail object manipulation', 'adjustable light intensity', 'task assistance'],
-
-  // Spawn & Location
-  spawnMaps: ['Aberration', 'Valguero (underground)', 'Crystal Isles', 'Lost Island', 'Fjordur'],
-  spawnZones: ['Underground areas', 'bioluminescent zones', 'cave systems'],
-  rarityRating: 'Common',
-  levelRange: '1-150',
-  packBehavior: 'Small groups (2-4)',
-  territorialBehavior: 'Friendly, approaches humans',
-
-  // Management Metadata
-  difficultyRating: 'Easy',
-  beginnerFriendly: true,
-  endGameViable: true,
-  bossFightCapable: false,
-  pvpMeta: 'Low',
-  resourceInvestment: 'Very Low',
-  maintenanceLevel: 'Very Low',
-
-  // Badge Categories
-  badgeCategories: ['utility']
-},
-'Karkinos': {
-  // Basic Info
-  id: 'KARKINOS_112',
-  name: 'Karkinos',
-  icon: '🦀',
-  category: 'transport',
-  rarity: 'rare',
-  source: 'Aberration DLC',
-  variants: ['Standard'],
-
-  // Biology & Lore
-  dossierText: "Karkinos versutus is a massive crab-like arthropod that has adapted to life in the underground environments of Aberration. What makes Karkinos truly remarkable is its incredible jumping ability combined with its powerful claws that can grab and manipulate both creatures and objects. The creature's unique mobility allows it to leap great distances vertically and horizontally, making it capable of reaching areas that other ground-based creatures cannot access. Its claws can grab multiple creatures simultaneously, making it invaluable for rescue operations and creature transport. When tamed, Karkinos becomes an exceptional mount for vertical exploration and specialized transport operations in challenging terrain.",
-  temperament: 'Aggressive',
-  diet: 'Omnivore (everything, opportunistic feeder)',
-  habitat: 'Underground areas, rocky caverns, vertical cliff faces',
-  realWorldBasis: 'Karkinos (giant prehistoric crab)',
-  sizeClass: 'Large',
-
-  // Taming System
-  tamingMethod: 'Knockout',
-  tamingType: 'Violent taming with tranquilizers',
-  preferredKibble: 'Extraordinary Kibble',
-  favoriteFood: 'Extraordinary Kibble',
-  tamingSpeed: 'Slow',
-  torpor: {
-    baseValue: 2000,
-    depleteRate: 'Moderate'
-  },
-  specialRequirements: 'Aggressive behavior, massive jumping ability, found in dangerous areas',
-
-  // Base Statistics (Level 1 Wild)
-  baseStats: {
-    health: 1500,
-    stamina: 300,
-    oxygen: 150,
-    food: 3000,
-    weight: 800,
-    melee: 90,
-    speed: 100,
-    torpor: 2000
-  },
-
-  // Stat Scaling (Per Level)
-  statScaling: {
-    health: 300,
-    stamina: 30,
-    oxygen: 15,
-    food: 300,
-    weight: 16,
-    melee: 4.5,
-    speed: 1.2
-  },
-
-  // Equipment & Combat
-  saddleLevel: 65,
-  saddleType: 'Karkinos Saddle',
-  saddleArmor: 25,
-  platformLimit: 0,
-  specialAbilities: ['Massive jumping', 'creature grabbing', 'dual claw manipulation', 'vertical mobility'],
-  attackTypes: ['Claw grab', 'crush attack', 'slam', 'jumping strikes'],
-  canCarry: ['Can grab and carry multiple creatures simultaneously'],
-
-  // Utility & Roles
-  primaryRole: 'Vertical mobility specialist and creature transport',
-  secondaryRoles: ['Rescue operations', 'cliff exploration', 'multi-creature handling'],
-  gatheringResources: ['Stone', 'metal', 'crystal', 'organic materials'],
-  gatheringEfficiency: {
-    Stone: 7,
-    Metal: 6,
-    Crystal: 5,
-    'Organic materials': 4
-  },
-  ratings: {
-    combat: 8,
-    transport: 9,
-    speed: 7,
-    survivability: 8
-  },
-
-  // Environmental Data
-  speeds: {
-    land: 25,
-    flying: 0,
-    swimming: 20,
-    climbing: 0
-  },
-  environmentalResistances: ['Radiation tolerance'],
-  preferredBiome: 'Underground areas, rocky caverns, vertical cliff faces',
-  temperatureRange: {
-    min: 10,
-    max: 40
-  },
-  oxygenRequirement: 'Air breathing',
-
-  // Breeding Genetics
-  breeding: {
-    cooldown: '18-48 hours',
-    gestationTime: '7 hours, 56 minutes',
-    babyFoodConsumption: 'High',
-    maturationTime: '2 days, 22 hours',
-    colorRegions: 6,
-    colorRegionNames: ['Body', 'claws', 'shell', 'legs', 'patterns', 'markings'],
-    mutationChance: 7.31,
-    breedingDifficulty: 'Hard'
-  },
-
-  // Special Functions
-  workstation: 'None',
-  resourceProduction: 'None',
-  structureFunctions: 'None',
-  buffAuras: ['None'],
-  debuffAbilities: ['Claw grab immobilizes targets'],
-  uniqueMechanics: ['Multi-creature grabbing system', 'massive jumping capability'],
-
-  // Spawn & Location
-  spawnMaps: ['Aberration', 'Valguero (underground)', 'Crystal Isles', 'Lost Island', 'Fjordur'],
-  spawnZones: ['Underground areas', 'rocky caverns', 'vertical cliff faces'],
-  rarityRating: 'Rare',
-  levelRange: '1-150',
-  packBehavior: 'Solitary',
-  territorialBehavior: 'Aggressive, territorial about prime jumping spots',
-
-  // Management Metadata
-  difficultyRating: 'Hard',
-  beginnerFriendly: false,
-  endGameViable: true,
-  bossFightCapable: true,
-  pvpMeta: 'High',
-  resourceInvestment: 'High',
-  maintenanceLevel: 'Medium',
-
-  // Badge Categories
-  badgeCategories: ['transport', 'combat', 'boss']
-},
-'Ravager': {
-  // Basic Info
-  id: 'RAVAGER_113',
-  name: 'Ravager',
-  icon: '🐺',
-  category: 'combat',
-  rarity: 'common',
-  source: 'Aberration DLC',
-  variants: ['Standard'],
-
-  // Biology & Lore
-  dossierText: "Canis barghest is a pack-hunting predator that has evolved in the harsh underground environments of Aberration. What makes Ravager particularly dangerous is its combination of pack intelligence, climbing ability, and hit-and-run tactics. These creatures can scale walls and navigate three-dimensional terrain with ease, allowing them to attack from unexpected angles. Their pack coordination is sophisticated, with individuals working together to flank and overwhelm prey. When tamed, Ravagers become excellent mounts for survivors who need mobility and stealth in dangerous territories. Their natural agility and pack loyalty make them invaluable for both exploration and combat operations.",
-  temperament: 'Aggressive (pack behavior)',
-  diet: 'Carnivore (pack hunters, any meat)',
-  habitat: 'Underground areas, rocky terrain, cave systems',
-  realWorldBasis: 'Canis (wolf/dog) with enhanced abilities',
-  sizeClass: 'Medium',
-
-  // Taming System
-  tamingMethod: 'Knockout',
-  tamingType: 'Violent taming with tranquilizers',
-  preferredKibble: 'Superior Kibble',
-  favoriteFood: 'Superior Kibble',
-  tamingSpeed: 'Moderate',
-  torpor: {
-    baseValue: 600,
-    depleteRate: 'Fast'
-  },
-  specialRequirements: 'Pack behavior, aggressive coordination, found in dangerous underground areas',
-
-  // Base Statistics (Level 1 Wild)
-  baseStats: {
-    health: 400,
-    stamina: 300,
-    oxygen: 150,
-    food: 1200,
-    weight: 200,
-    melee: 38,
-    speed: 100,
-    torpor: 600
-  },
-
-  // Stat Scaling (Per Level)
-  statScaling: {
-    health: 80,
-    stamina: 30,
-    oxygen: 15,
-    food: 120,
-    weight: 4,
-    melee: 1.9,
-    speed: 2
-  },
-
-  // Equipment & Combat
-  saddleLevel: 47,
-  saddleType: 'Ravager Saddle',
-  saddleArmor: 25,
-  platformLimit: 0,
-  specialAbilities: ['Wall climbing', 'pack coordination', 'stealth movement', 'jumping attacks'],
-  attackTypes: ['Pack coordinated attacks', 'bite', 'pounce', 'climbing strikes'],
-  canCarry: ['Medium cargo, excellent for stealth operations'],
-
-  // Utility & Roles
-  primaryRole: 'Pack hunter and climbing assault specialist',
-  secondaryRoles: ['Stealth operations', 'cave exploration', 'pack coordination'],
-  gatheringResources: ['Raw meat', 'hide', 'chitin'],
-  gatheringEfficiency: {
-    'Raw meat': 7,
-    Hide: 6,
-    Chitin: 5
-  },
-  ratings: {
-    combat: 8,
-    transport: 6,
-    speed: 8,
-    survivability: 7
-  },
-
-  // Environmental Data
-  speeds: {
-    land: 35,
-    flying: 0,
-    swimming: 20,
-    climbing: 1
-  },
-  environmentalResistances: ['Radiation tolerance'],
-  preferredBiome: 'Underground areas, rocky terrain, cave systems',
-  temperatureRange: {
-    min: 10,
-    max: 35
-  },
-  oxygenRequirement: 'Air breathing',
-
-  // Breeding Genetics
-  breeding: {
-    cooldown: '18-48 hours',
-    gestationTime: '7 hours, 56 minutes',
-    babyFoodConsumption: 'High',
-    maturationTime: '2 days, 22 hours',
-    colorRegions: 6,
-    colorRegionNames: ['Body', 'stripes', 'belly', 'mane', 'claws', 'markings'],
-    mutationChance: 7.31,
-    breedingDifficulty: 'Medium'
-  },
-
-  // Special Functions
-  workstation: 'None',
-  resourceProduction: 'None',
-  structureFunctions: 'None',
-  buffAuras: ['Pack coordination provides damage and speed bonuses'],
-  debuffAbilities: ['None'],
-  uniqueMechanics: ['Wall climbing capability', 'pack hunting coordination'],
-
-  // Spawn & Location
-  spawnMaps: ['Aberration', 'Valguero (underground)', 'Crystal Isles', 'Lost Island', 'Fjordur'],
-  spawnZones: ['Underground areas', 'rocky terrain', 'cave systems'],
-  rarityRating: 'Common',
-  levelRange: '1-150',
-  packBehavior: 'Hunting packs (4-8 members)',
-  territorialBehavior: 'Aggressive pack hunters, coordinate complex attacks',
-
-  // Management Metadata
-  difficultyRating: 'Medium',
-  beginnerFriendly: false,
-  endGameViable: true,
-  bossFightCapable: true,
-  pvpMeta: 'High',
-  resourceInvestment: 'Medium',
-  maintenanceLevel: 'Medium',
-
-  // Badge Categories
-  badgeCategories: ['combat', 'boss']
-},
-'Reaper': {
-  // Basic Info
-  id: 'REAPER_114',
-  name: 'Reaper',
-  icon: '👹',
-  category: 'combat',
-  rarity: 'legendary',
-  source: 'Aberration DLC',
-  variants: ['Standard', 'S-Variant'],
-
-  // Biology & Lore
-  dossierText: "Xenomorph regina is perhaps the most terrifying apex predator in all of Aberration. What makes Reaper truly nightmarish is its xenomorphic reproduction cycle and incredible adaptability. The creature exists in multiple forms - from the burrowing Reaper King to the chest-bursting juveniles. Reaper Kings are virtually immune to damage when exposed to light but become vulnerable in darkness. Their acid blood and devastating attacks make them nearly unstoppable predators. The taming process involves surviving a 'pregnancy' after being impregnated by a Reaper Queen, making it one of the most unique and dangerous taming experiences in ARK. Once born and imprinted, Reaper becomes an unstoppable force of destruction.",
-  temperament: 'Extremely Aggressive',
-  diet: 'Carnivore (xenomorphic lifecycle, aggressive predator)',
-  habitat: 'Deepest underground areas, radiation zones, Element regions',
-  realWorldBasis: 'Xenomorph (science fiction)',
-  sizeClass: 'Colossal',
-
-  // Taming System
-  tamingMethod: 'Special',
-  tamingType: 'Must be impregnated by Reaper Queen, then survive gestation and birth',
-  preferredKibble: 'N/A',
-  favoriteFood: 'N/A',
-  tamingSpeed: 'N/A',
-  torpor: {
-    baseValue: 2500,
-    depleteRate: 'N/A'
-  },
-  specialRequirements: 'Must survive Reaper Queen encounter, pregnancy process, and imprinting',
-
-  // Base Statistics (Level 1 Wild)
-  baseStats: {
-    health: 2000,
-    stamina: 480,
-    oxygen: 150,
-    food: 4000,
-    weight: 500,
-    melee: 120,
-    speed: 100,
-    torpor: 2500
-  },
-
-  // Stat Scaling (Per Level)
-  statScaling: {
-    health: 400,
-    stamina: 48,
-    oxygen: 15,
-    food: 400,
-    weight: 10,
-    melee: 6,
-    speed: 1.8
-  },
-
-  // Equipment & Combat
-  saddleLevel: 0,
-  saddleType: 'Cannot be saddled (ridden bareback)',
-  saddleArmor: 0,
-  platformLimit: 0,
-  specialAbilities: ['Acid immunity', 'light vulnerability/strength', 'tail grab', 'acid projectiles'],
-  attackTypes: ['Acid spit', 'tail impale', 'bite', 'grab attacks', 'acid blood damage'],
-  canCarry: ['Can grab and carry creatures with tail'],
-
-  // Utility & Roles
-  primaryRole: 'Ultimate underground apex predator',
-  secondaryRoles: ['Radiation zone specialist', 'Element area exploration', 'xenomorphic warfare'],
-  gatheringResources: ['Raw meat', 'hide', 'element'],
-  gatheringEfficiency: {
-    'Raw meat': 8,
-    Hide: 7,
-    Element: 6
-  },
-  ratings: {
-    combat: 10,
-    transport: 8,
-    speed: 8,
-    survivability: 9
-  },
-
-  // Environmental Data
-  speeds: {
-    land: 30,
-    flying: 0,
-    swimming: 20,
-    climbing: 1
-  },
-  environmentalResistances: ['Acid immunity', 'radiation immunity', 'light vulnerability'],
-  preferredBiome: 'Deepest underground areas, radiation zones, Element regions',
-  temperatureRange: {
-    min: 10,
-    max: 60
-  },
-  oxygenRequirement: 'Air breathing',
-
-  // Breeding Genetics
-  breeding: {
-    cooldown: 'Special xenomorphic cycle',
-    gestationTime: 'Special (pregnancy process varies)',
-    babyFoodConsumption: 'Extreme',
-    maturationTime: 'Special lifecycle',
-    colorRegions: 6,
-    colorRegionNames: ['Body', 'carapace', 'tail', 'claws', 'bio-luminescence', 'acid glow'],
-    mutationChance: 7.31,
-    breedingDifficulty: 'Extreme'
-  },
-
-  // Special Functions
-  workstation: 'None',
-  resourceProduction: 'None',
-  structureFunctions: 'Can destroy structures with acid',
-  buffAuras: ['None'],
-  debuffAbilities: ['Acid attacks cause damage over time'],
-  uniqueMechanics: ['Xenomorphic reproduction', 'light vulnerability/strength system', 'acid immunity'],
-
-  // Spawn & Location
-  spawnMaps: ['Aberration', 'Crystal Isles (underground)', 'Lost Island', 'Fjordur'],
-  spawnZones: ['Deepest underground areas', 'radiation zones', 'Element regions'],
-  rarityRating: 'Legendary',
-  levelRange: '1-150',
-  packBehavior: 'Solitary (except during reproduction)',
-  territorialBehavior: 'Extremely aggressive, apex predator',
-
-  // Management Metadata
-  difficultyRating: 'Extreme',
-  beginnerFriendly: false,
-  endGameViable: true,
-  bossFightCapable: true,
-  pvpMeta: 'Ultimate',
-  resourceInvestment: 'Extreme',
-  maintenanceLevel: 'High',
-
-  // Badge Categories
-  badgeCategories: ['combat', 'boss']
-},
-'Rock Drake': {
-  // Basic Info
-  id: 'ROCK_DRAKE_115',
-  name: 'Rock Drake',
-  icon: '🐲',
-  category: 'combat',
-  rarity: 'legendary',
-  source: 'Aberration DLC',
-  variants: ['Standard', 'S-Variant'],
-
-  // Biology & Lore
-  dossierText: "Draconis obscurum is a magnificent drake that has mastered both flight and stealth in the underground realms of Aberration. What makes Rock Drake truly exceptional is its ability to become completely invisible when motionless, combined with its gliding capabilities and wall-climbing prowess. The creature can navigate three-dimensional space with unparalleled grace, clinging to cave ceilings and diving through underground chasms. Its natural camouflage makes it the ultimate stealth mount, capable of infiltrating areas undetected. Rock Drake eggs must be stolen from the deepest, most dangerous parts of Aberration, making the acquisition process as challenging as the creature is valuable. Once raised, it becomes the supreme reconnaissance and stealth operations mount.",
-  temperament: 'Aggressive',
-  diet: 'Carnivore (subterranean predator)',
-  habitat: 'Deep underground areas, Element regions, dangerous caverns',
-  realWorldBasis: 'Drake (dragon-like creature)',
-  sizeClass: 'Large',
-
-  // Taming System
-  tamingMethod: 'Special',
-  tamingType: 'Must steal eggs from Rock Drake nests and raise babies',
-  preferredKibble: 'N/A',
-  favoriteFood: 'Nameless Venom',
-  tamingSpeed: 'N/A',
-  torpor: {
-    baseValue: 1725,
-    depleteRate: 'N/A'
-  },
-  specialRequirements: 'Must steal eggs from extremely dangerous nests, requires Nameless Venom',
-
-  // Base Statistics (Level 1 Wild)
-  baseStats: {
-    health: 1950,
-    stamina: 440,
-    oxygen: 150,
-    food: 2000,
-    weight: 400,
-    melee: 75,
-    speed: 100,
-    torpor: 1725
-  },
-
-  // Stat Scaling (Per Level)
-  statScaling: {
-    health: 390,
-    stamina: 44,
-    oxygen: 15,
-    food: 200,
-    weight: 8,
-    melee: 3.75,
-    speed: 1.8
-  },
-
-  // Equipment & Combat
-  saddleLevel: 75,
-  saddleType: 'Rock Drake Saddle',
-  saddleArmor: 25,
-  platformLimit: 0,
-  specialAbilities: ['Invisibility when motionless', 'gliding', 'wall climbing', 'stealth movement'],
-  attackTypes: ['Bite', 'claw strikes', 'stealth attacks', 'gliding dives'],
-  canCarry: ['Excellent cargo capacity, stealth transport'],
-
-  // Utility & Roles
-  primaryRole: 'Ultimate stealth and reconnaissance specialist',
-  secondaryRoles: ['Deep exploration', 'vertical mobility', 'infiltration operations'],
-  gatheringResources: ['Raw meat', 'hide', 'element'],
-  gatheringEfficiency: {
-    'Raw meat': 7,
-    Hide: 6,
-    Element: 5
-  },
-  ratings: {
-    combat: 8,
-    transport: 8,
-    speed: 9,
-    survivability: 9
-  },
-
-  // Environmental Data
-  speeds: {
-    land: 30,
-    flying: 45,
-    swimming: 25,
-    climbing: 1
-  },
-  environmentalResistances: ['Radiation immunity', 'stealth capabilities'],
-  preferredBiome: 'Deep underground areas, Element regions, dangerous caverns',
-  temperatureRange: {
-    min: 10,
-    max: 50
-  },
-  oxygenRequirement: 'Air breathing',
-
-  // Breeding Genetics
-  breeding: {
-    cooldown: '18-48 hours',
-    gestationTime: '4 hours, 59 minutes',
-    babyFoodConsumption: 'Extreme',
-    maturationTime: '3 days, 20 hours',
-    colorRegions: 6,
-    colorRegionNames: ['Body', 'wings', 'patterns', 'belly', 'claws', 'bioluminescence'],
-    mutationChance: 7.31,
-    breedingDifficulty: 'Extreme'
-  },
-
-  // Special Functions
-  workstation: 'None',
-  resourceProduction: 'None',
-  structureFunctions: 'None',
-  buffAuras: ['None'],
-  debuffAbilities: ['None'],
-  uniqueMechanics: ['Invisibility system', 'wall climbing', 'gliding capability', 'egg stealing requirement'],
-
-  // Spawn & Location
-  spawnMaps: ['Aberration', 'Crystal Isles (underground)', 'Lost Island', 'Fjordur'],
-  spawnZones: ['Deep underground areas', 'Element regions', 'dangerous caverns with nests'],
-  rarityRating: 'Legendary',
-  levelRange: '1-190',
-  packBehavior: 'Solitary',
-  territorialBehavior: 'Extremely aggressive, defends nesting areas viciously',
-
-  // Management Metadata
-  difficultyRating: 'Extreme',
-  beginnerFriendly: false,
-  endGameViable: true,
-  bossFightCapable: true,
-  pvpMeta: 'Ultimate',
-  resourceInvestment: 'Extreme',
-  maintenanceLevel: 'High',
-
-  // Badge Categories
-  badgeCategories: ['combat', 'boss', 'transport']
-},
-'Roll Rat': {
-  // Basic Info
-  id: 'ROLL_RAT_116',
-  name: 'Roll Rat',
-  icon: '🐹',
-  category: 'harvesting',
-  rarity: 'common',
-  source: 'Aberration DLC',
-  variants: ['Standard'],
-
-  // Biology & Lore
-  dossierText: "Heterocephalus magnus is a large, robust rodent that has adapted perfectly to life in the underground tunnels of Aberration. What makes Roll Rat particularly useful is its ability to roll into a ball and move at high speeds, allowing it to traverse rough terrain and escape danger quickly. The creature's powerful digging claws make it an excellent excavator, capable of gathering large quantities of wood, stone, and other materials. Its cheek pouches can store vast amounts of resources, making it an ideal pack animal for large-scale gathering operations. When threatened, Roll Rat can curl into an armored ball that provides significant protection from attacks while allowing rapid movement.",
-  temperament: 'Cowardly',
-  diet: 'Herbivore (roots, fungi, underground vegetation)',
-  habitat: 'Underground tunnels, cave systems, burrows',
-  realWorldBasis: 'Heterocephalus (Naked Mole Rat) scaled up',
-  sizeClass: 'Large',
-
-  // Taming System
-  tamingMethod: 'Passive',
-  tamingType: 'Hand-feeding (non-violent)',
-  preferredKibble: 'Superior Kibble',
-  favoriteFood: 'Superior Kibble',
-  tamingSpeed: 'Moderate',
-  torpor: {
-    baseValue: 1350,
-    depleteRate: 'N/A'
-  },
-  specialRequirements: 'Cowardly behavior, prefers seeds and mushrooms, rolls into ball when threatened',
-
-  // Base Statistics (Level 1 Wild)
-  baseStats: {
-    health: 900,
-    stamina: 300,
-    oxygen: 150,
-    food: 4000,
-    weight: 1200,
-    melee: 32,
-    speed: 100,
-    torpor: 1350
-  },
-
-  // Stat Scaling (Per Level)
-  statScaling: {
-    health: 180,
-    stamina: 30,
-    oxygen: 15,
-    food: 400,
-    weight: 24,
-    melee: 1.6,
-    speed: 1.5
-  },
-
-  // Equipment & Combat
-  saddleLevel: 58,
-  saddleType: 'Roll Rat Saddle',
-  saddleArmor: 25,
-  platformLimit: 0,
-  specialAbilities: ['Rolling ball form', 'digging', 'massive storage', 'tunnel navigation'],
-  attackTypes: ['Weak bite (primarily defensive)', 'rolling charge when in ball form'],
-  canCarry: ['Massive amounts of resources in cheek pouches'],
-
-  // Utility & Roles
-  primaryRole: 'Mass resource gatherer and underground transport',
-  secondaryRoles: ['Tunnel excavation', 'rapid underground travel', 'storage specialist'],
-  gatheringResources: ['Wood', 'stone', 'metal', 'fungal materials', 'underground resources'],
-  gatheringEfficiency: {
-    Wood: 9,
-    Stone: 8,
-    Metal: 7,
-    'Fungal materials': 6
-  },
-  ratings: {
-    combat: 4,
-    transport: 10,
-    speed: 8,
-    survivability: 7
-  },
-
-  // Environmental Data
-  speeds: {
-    land: 40,
-    flying: 0,
-    swimming: 15,
-    climbing: 0
-  },
-  environmentalResistances: ['Radiation tolerance'],
-  preferredBiome: 'Underground tunnels, cave systems, burrows',
-  temperatureRange: {
-    min: 10,
-    max: 35
-  },
-  oxygenRequirement: 'Air breathing',
-
-  // Breeding Genetics
-  breeding: {
-    cooldown: '18-48 hours',
-    gestationTime: '7 hours, 56 minutes',
-    babyFoodConsumption: 'High',
-    maturationTime: '2 days, 22 hours',
-    colorRegions: 6,
-    colorRegionNames: ['Body', 'belly', 'stripes', 'claws', 'ears', 'markings'],
-    mutationChance: 7.31,
-    breedingDifficulty: 'Medium'
-  },
-
-  // Special Functions
-  workstation: 'None',
-  resourceProduction: 'None',
-  structureFunctions: 'Tunnel excavation capabilities',
-  buffAuras: ['None'],
-  debuffAbilities: ['None'],
-  uniqueMechanics: ['Rolling ball transformation', 'massive storage cheek pouches', 'digging specialization'],
-
-  // Spawn & Location
-  spawnMaps: ['Aberration', 'Valguero (underground)', 'Crystal Isles', 'Lost Island', 'Fjordur'],
-  spawnZones: ['Underground tunnels', 'cave systems', 'burrow networks'],
-  rarityRating: 'Common',
-  levelRange: '1-150',
-  packBehavior: 'Small colonies (3-6)',
-  territorialBehavior: 'Cowardly, rolls into ball and flees when threatened',
-
-  // Management Metadata
-  difficultyRating: 'Easy',
-  beginnerFriendly: true,
-  endGameViable: true,
-  bossFightCapable: false,
-  pvpMeta: 'Low',
-  resourceInvestment: 'Medium',
-  maintenanceLevel: 'Low',
-
-  // Badge Categories
-  badgeCategories: ['harvesting', 'transport']
-},
-'Shinehorn': {
-  // Basic Info
-  id: 'SHINEHORN_117',
-  name: 'Shinehorn',
-  icon: '🦌',
-  category: 'utility',
-  rarity: 'common',
-  source: 'Aberration DLC',
-  variants: ['Standard'],
-
-  // Biology & Lore
-  dossierText: "Microluminis cerva is a small, deer-like creature that has evolved bioluminescent capabilities to survive in the dark depths of Aberration. What makes Shinehorn unique among light pets is its ability to charge its light through movement, creating a sustainable illumination source that grows brighter with activity. The creature's gentle nature and natural curiosity make it an excellent companion for long expeditions. Its horn-like protrusions emit a warm, steady light that can ward off dangerous predators while providing essential illumination for navigation. Shinehorn's ability to detect nearby creatures through its enhanced senses makes it invaluable for early warning and area awareness.",
-  temperament: 'Skittish',
-  diet: 'Herbivore (mushrooms, underground plants, roots)',
-  habitat: 'Underground areas, bioluminescent zones, cave pastures',
-  realWorldBasis: 'Deer with bioluminescent adaptations (fantasy)',
-  sizeClass: 'Small',
-
-  // Taming System
-  tamingMethod: 'Passive',
-  tamingType: 'Hand-feeding (non-violent)',
-  preferredKibble: 'Simple Kibble',
-  favoriteFood: 'Simple Kibble',
-  tamingSpeed: 'Fast',
-  torpor: {
-    baseValue: 85,
-    depleteRate: 'N/A'
-  },
-  specialRequirements: 'Skittish behavior, prefers mushrooms, charges light through movement',
-
-  // Base Statistics (Level 1 Wild)
-  baseStats: {
-    health: 85,
-    stamina: 120,
-    oxygen: 150,
-    food: 450,
-    weight: 22,
-    melee: 7,
-    speed: 100,
-    torpor: 85
-  },
-
-  // Stat Scaling (Per Level)
-  statScaling: {
-    health: 17,
-    stamina: 12,
-    oxygen: 15,
-    food: 45,
-    weight: 0.44,
-    melee: 0.35,
-    speed: 2.2
-  },
-
-  // Equipment & Combat
-  saddleLevel: 0,
-  saddleType: 'Shoulder pet',
-  saddleArmor: 0,
-  platformLimit: 0,
-  specialAbilities: ['Movement-charged bioluminescent light', 'creature detection', 'sustained illumination'],
-  attackTypes: ['Weak headbutt (rarely used, mainly evasive)'],
-  canCarry: ['Small items, primarily provides light and detection'],
-
-  // Utility & Roles
-  primaryRole: 'Sustainable light source and detection system',
-  secondaryRoles: ['Long-term illumination', 'creature awareness', 'underground navigation'],
-  gatheringResources: ['Mushrooms'],
-  gatheringEfficiency: {
-    'Various mushrooms': 4
-  },
-  ratings: {
-    combat: 2,
-    transport: 2,
-    speed: 7,
-    survivability: 4
-  },
-
-  // Environmental Data
-  speeds: {
-    land: 22,
-    flying: 0,
-    swimming: 15,
-    climbing: 1
-  },
-  environmentalResistances: ['Radiation tolerance'],
-  preferredBiome: 'Underground areas, bioluminescent zones, cave pastures',
-  temperatureRange: {
-    min: 10,
-    max: 30
-  },
-  oxygenRequirement: 'Air breathing',
-
-  // Breeding Genetics
-  breeding: {
-    cooldown: '18-48 hours',
-    gestationTime: '1 hour, 25 minutes',
-    babyFoodConsumption: 'Low',
-    maturationTime: '1 day, 20 hours',
-    colorRegions: 6,
-    colorRegionNames: ['Body', 'horns', 'light organs', 'spots', 'belly', 'legs'],
-    mutationChance: 7.31,
-    breedingDifficulty: 'Easy'
-  },
-
-  // Special Functions
-  workstation: 'None',
-  resourceProduction: 'None',
-  structureFunctions: 'None',
-  buffAuras: ['Movement-charged light projection wards off light-sensitive creatures'],
-  debuffAbilities: ['None'],
-  uniqueMechanics: ['Movement-charged light system', 'creature detection', 'sustained illumination'],
-
-  // Spawn & Location
-  spawnMaps: ['Aberration', 'Valguero (underground)', 'Crystal Isles', 'Lost Island', 'Fjordur'],
-  spawnZones: ['Underground areas', 'bioluminescent zones', 'cave pastures'],
-  rarityRating: 'Common',
-  levelRange: '1-150',
-  packBehavior: 'Small herds (2-5)',
-  territorialBehavior: 'Skittish, flees when threatened',
-
-  // Management Metadata
-  difficultyRating: 'Easy',
-  beginnerFriendly: true,
-  endGameViable: true,
-  bossFightCapable: false,
-  pvpMeta: 'Low',
-  resourceInvestment: 'Very Low',
-  maintenanceLevel: 'Very Low',
-
-  // Badge Categories
-  badgeCategories: ['utility']
-},
-'Yi Ling': {
-  // Basic Info
-  id: 'YI_LING_118',
-  name: 'Yi Ling',
-  icon: '🦋',
-  category: 'utility',
-  rarity: 'rare',
-  source: 'Lost Island DLC',
-  variants: ['Standard'],
-
-  // Biology & Lore
-  dossierText: "Yi Ling crystallinus is a magnificent crystalline moth that represents one of the most beautiful and ethereal creatures found on the ARKs. What makes Yi Ling truly special is its ability to manipulate crystal formations and create mesmerizing light displays through its wing patterns. The creature seems to exist partially in another dimension, occasionally phasing in and out of visibility. Its wings can generate healing auras and protective barriers, making it invaluable for support operations. Yi Ling's connection to crystal formations allows it to locate and harvest rare crystals that other creatures cannot access. Its mystical abilities and otherworldly beauty make it one of the most sought-after creatures for survivors who appreciate both function and aesthetic appeal.",
-  temperament: 'Peaceful',
-  diet: 'Omnivore (crystals, nectar, energy)',
-  habitat: 'Crystal formations, mystical areas, dimensional rifts',
-  realWorldBasis: 'Mystical crystalline moth (fantasy)',
-  sizeClass: 'Medium',
-
-  // Taming System
-  tamingMethod: 'Passive',
-  tamingType: 'Must be fed rare crystals and specific materials',
-  preferredKibble: 'N/A',
-  favoriteFood: 'Rare crystals',
-  tamingSpeed: 'Slow',
-  torpor: {
-    baseValue: 450,
-    depleteRate: 'N/A'
-  },
-  specialRequirements: 'Requires rare crystals, phases in and out of visibility, found near crystal formations',
-
-  // Base Statistics (Level 1 Wild)
-  baseStats: {
-    health: 350,
-    stamina: 400,
-    oxygen: 150,
-    food: 1500,
-    weight: 150,
-    melee: 25,
-    speed: 100,
-    torpor: 450
-  },
-
-  // Stat Scaling (Per Level)
-  statScaling: {
-    health: 70,
-    stamina: 40,
-    oxygen: 15,
-    food: 150,
-    weight: 3,
-    melee: 1.25,
-    speed: 1.8
-  },
-
-  // Equipment & Combat
-  saddleLevel: 70,
-  saddleType: 'Yi Ling Saddle',
-  saddleArmor: 25,
-  platformLimit: 0,
-  specialAbilities: ['Crystal manipulation', 'healing auras', 'dimensional phasing', 'protective barriers'],
-  attackTypes: ['Crystal projectiles', 'wing buffet', 'energy beams'],
-  canCarry: ['Moderate cargo, specializes in crystal transport'],
-
-  // Utility & Roles
-  primaryRole: 'Crystal specialist and support mount',
-  secondaryRoles: ['Healing support', 'protective barriers', 'mystical operations'],
-  gatheringResources: ['Rare crystals', 'crystal formations', 'element dust'],
-  gatheringEfficiency: {
-    'Rare crystals': 10,
-    'Crystal formations': 8,
-    'Element dust': 6
-  },
-  ratings: {
-    combat: 6,
-    transport: 6,
-    speed: 8,
-    survivability: 8
-  },
-
-  // Environmental Data
-  speeds: {
-    land: 15,
-    flying: 42,
-    swimming: 20,
-    climbing: 0
-  },
-  environmentalResistances: ['Crystal affinity', 'dimensional resistance'],
-  preferredBiome: 'Crystal formations, mystical areas, dimensional rifts',
-  temperatureRange: {
-    min: 15,
-    max: 35
-  },
-  oxygenRequirement: 'Air breathing',
-
-  // Breeding Genetics
-  breeding: {
-    cooldown: '18-48 hours',
-    gestationTime: '4 hours, 59 minutes',
-    babyFoodConsumption: 'High',
-    maturationTime: '3 days, 20 hours',
-    colorRegions: 8,
-    colorRegionNames: ['Body', 'wings', 'crystals', 'patterns', 'aura', 'mystical glow', 'wing membranes', 'energy'],
-    mutationChance: 7.31,
-    breedingDifficulty: 'Hard'
-  },
-
-  // Special Functions
-  workstation: 'None',
-  resourceProduction: 'Can create rare crystals through mystical processes',
-  structureFunctions: 'None',
-  buffAuras: ['Healing aura', 'protective barrier generation'],
-  debuffAbilities: ['None'],
-  uniqueMechanics: ['Crystal manipulation', 'dimensional phasing', 'healing support system'],
-
-  // Spawn & Location
-  spawnMaps: ['Lost Island', 'Crystal Isles', 'Fjordur (crystal areas)'],
-  spawnZones: ['Crystal formations', 'mystical areas', 'dimensional rifts'],
-  rarityRating: 'Rare',
-  levelRange: '1-150',
-  packBehavior: 'Solitary or pairs',
-  territorialBehavior: 'Peaceful, avoids conflict',
-
-  // Management Metadata
-  difficultyRating: 'Hard',
-  beginnerFriendly: false,
-  endGameViable: true,
-  bossFightCapable: true,
-  pvpMeta: 'Medium',
-  resourceInvestment: 'High',
-  maintenanceLevel: 'Medium',
-
-  // Badge Categories
-  badgeCategories: ['utility', 'harvesting', 'boss']
-},
-'Dreadnoughtus': {
-  // Basic Info
-  id: 'DREADNOUGHTUS_119',
-  name: 'Dreadnoughtus',
-  icon: '🦕',
-  category: 'transport',
-  rarity: 'legendary',
-  source: 'Lost Island DLC',
-  variants: ['Standard'],
-
-  // Biology & Lore
-  dossierText: "Dreadnoughtus enormis is a colossal sauropod that stands among the largest creatures ever to walk the earth. What makes Dreadnoughtus truly remarkable is its incredible size combined with surprising mobility for such a massive creature. The beast's enormous tail can be used as a devastating weapon, capable of sending even large predators flying with a single strike. Its platform saddle capability allows for the construction of mobile fortresses on its back, while its massive weight provides stability that smaller creatures cannot match. Despite its peaceful herbivorous nature, Dreadnoughtus commands respect through sheer presence alone. Its ability to gather vast quantities of vegetation makes it invaluable for large-scale agricultural operations.",
-  temperament: 'Docile',
-  diet: 'Herbivore (massive vegetation consumption)',
-  habitat: 'Plains, forests, anywhere with abundant vegetation',
-  realWorldBasis: 'Dreadnoughtus schrani',
-  sizeClass: 'Titan',
-
-  // Taming System
-  tamingMethod: 'Knockout',
-  tamingType: 'Violent taming with tranquilizers',
-  preferredKibble: 'Exceptional Kibble',
-  favoriteFood: 'Exceptional Kibble',
-  tamingSpeed: 'Extremely Slow',
-  torpor: {
-    baseValue: 15000,
-    depleteRate: 'Very Slow'
-  },
-  specialRequirements: 'Massive torpor requirement, colossal size, requires extensive preparation',
-
-  // Base Statistics (Level 1 Wild)
-  baseStats: {
-    health: 30000,
-    stamina: 1000,
-    oxygen: 150,
-    food: 20000,
-    weight: 3000,
-    melee: 200,
-    speed: 100,
-    torpor: 15000
-  },
-
-  // Stat Scaling (Per Level)
-  statScaling: {
-    health: 6000,
-    stamina: 100,
-    oxygen: 15,
-    food: 2000,
-    weight: 60,
-    melee: 10,
-    speed: 0.5
-  },
-
-  // Equipment & Combat
-  saddleLevel: 90,
-  saddleType: 'Dreadnoughtus Platform Saddle',
-  saddleArmor: 25,
-  platformLimit: 1,
-  specialAbilities: ['Devastating tail sweep', 'massive platform building', 'colossal gathering'],
-  attackTypes: ['Tail sweep (massive AoE)', 'stomp', 'body slam'],
-  canCarry: ['Unlimited cargo on platform, multiple passengers'],
-
-  // Utility & Roles
-  primaryRole: 'Mobile mega-fortress and massive resource gatherer',
-  secondaryRoles: ['Siege operations', 'mobile base', 'mega-construction projects'],
-  gatheringResources: ['Berries', 'wood', 'thatch', 'fiber'],
-  gatheringEfficiency: {
-    Vegetation: 10
-  },
-  ratings: {
-    combat: 8,
-    transport: 10,
-    speed: 2,
-    survivability: 10
-  },
-
-  // Environmental Data
-  speeds: {
-    land: 10,
-    flying: 0,
-    swimming: 5,
-    climbing: 0
-  },
-  environmentalResistances: ['Massive knockback resistance'],
-  preferredBiome: 'Plains, forests, open areas with vegetation',
-  temperatureRange: {
-    min: 10,
-    max: 40
-  },
-  oxygenRequirement: 'Air breathing',
-
-  // Breeding Genetics
-  breeding: {
-    cooldown: '18-48 hours',
-    gestationTime: '7 hours, 56 minutes',
-    babyFoodConsumption: 'Extreme',
-    maturationTime: '5 days, 10 hours',
-    colorRegions: 6,
-    colorRegionNames: ['Body', 'stripes', 'belly', 'back', 'legs', 'spines'],
-    mutationChance: 7.31,
-    breedingDifficulty: 'Extreme'
-  },
-
-  // Special Functions
-  workstation: 'Platform saddle allows full mega-base construction',
-  resourceProduction: 'None',
-  structureFunctions: 'Mobile mega-platform for unlimited building',
-  buffAuras: ['None'],
-  debuffAbilities: ['Tail sweep causes massive knockback'],
-  uniqueMechanics: ['Mega-platform building capability', 'colossal size', 'massive resource gathering'],
-
-  // Spawn & Location
-  spawnMaps: ['Lost Island', 'Crystal Isles', 'Fjordur'],
-  spawnZones: ['Plains', 'forests', 'open areas with abundant vegetation'],
-  rarityRating: 'Legendary',
-  levelRange: '1-150',
-  packBehavior: 'Small herds (2-3)',
-  territorialBehavior: 'Docile, defensive when threatened',
-
-  // Management Metadata
-  difficultyRating: 'Extreme',
-  beginnerFriendly: false,
-  endGameViable: true,
-  bossFightCapable: false,
-  pvpMeta: 'Ultimate',
-  resourceInvestment: 'Extreme',
-  maintenanceLevel: 'Extreme',
-
-  // Badge Categories
-  badgeCategories: ['transport', 'harvesting']
-},
-'Enforcer': {
-  // Basic Info
-  id: 'ENFORCER_120',
-  name: 'Enforcer',
-  icon: '🤖',
-  category: 'combat',
-  rarity: 'rare',
-  source: 'Extinction DLC',
-  variants: ['Standard'],
-
-  // Biology & Lore
-  dossierText: "Enforcer corruptionis is a sophisticated robotic entity designed to combat the corruption spreading across the ARKs. What makes Enforcer unique is its technological nature and specialized anti-corruption capabilities. The creature exists as a mechanical construct that can be crafted rather than tamed, requiring advanced technological components and Element to create. Its teleportation abilities allow it to quickly traverse the battlefield and eliminate corrupted targets with extreme prejudice. The Enforcer's advanced targeting systems make it particularly effective against corrupted creatures, dealing massive damage to these threats while providing reasonable protection to its operator. Its ability to teleport makes it invaluable for hit-and-run tactics and rapid battlefield repositioning.",
-  temperament: 'Programmed (Combat AI)',
-  diet: 'Mechanical (Element-powered)',
-  habitat: 'Technological areas, corrupted zones, Element regions',
-  realWorldBasis: 'Military combat robot',
-  sizeClass: 'Medium',
-
-  // Taming System
-  tamingMethod: 'Special',
-  tamingType: 'Must be crafted at City Terminal using specific blueprints',
-  preferredKibble: 'N/A',
-  favoriteFood: 'N/A',
-  tamingSpeed: 'N/A',
-  torpor: {
-    baseValue: 0,
-    depleteRate: 'N/A'
-  },
-  specialRequirements: 'Must craft using Element, Metal, Electronics, and other technological components',
-
-  // Base Statistics (Level 1 Wild)
-  baseStats: {
-    health: 800,
-    stamina: 300,
-    oxygen: 150,
-    food: 0,
-    weight: 300,
-    melee: 60,
-    speed: 100,
-    torpor: 0
-  },
-
-  // Stat Scaling (Per Level)
-  statScaling: {
-    health: 160,
-    stamina: 30,
-    oxygen: 15,
-    food: 0,
-    weight: 6,
-    melee: 3,
-    speed: 2
-  },
-
-  // Equipment & Combat
-  saddleLevel: 0,
-  saddleType: 'Cannot be saddled (technological interface)',
-  saddleArmor: 0,
-  platformLimit: 0,
-  specialAbilities: ['Teleportation', 'anti-corruption damage', 'advanced targeting', 'energy weapons'],
-  attackTypes: ['Energy blasts', 'teleportation strikes', 'rapid-fire projectiles'],
-  canCarry: ['Moderate technological cargo'],
-
-  // Utility & Roles
-  primaryRole: 'Anti-corruption specialist and rapid assault unit',
-  secondaryRoles: ['Hit-and-run tactics', 'corrupted zone clearing', 'technological warfare'],
-  gatheringResources: ['Element', 'technological components'],
-  gatheringEfficiency: {
-    Element: 8,
-    'Technological components': 6
-  },
-  ratings: {
-    combat: 9,
-    transport: 6,
-    speed: 9,
-    survivability: 7
-  },
-
-  // Environmental Data
-  speeds: {
-    land: 30,
-    flying: 0,
-    swimming: 20,
-    climbing: 0
-  },
-  environmentalResistances: ['Corruption immunity', 'technological resistance'],
-  preferredBiome: 'Technological areas, corrupted zones, Element regions',
-  temperatureRange: {
-    min: -20,
-    max: 80
-  },
-  oxygenRequirement: 'None (mechanical)',
-
-  // Breeding Genetics
-  breeding: {
-    cooldown: 'Cannot breed',
-    gestationTime: 'N/A',
-    babyFoodConsumption: 'N/A',
-    maturationTime: 'N/A',
-    colorRegions: 6,
-    colorRegionNames: ['Chassis', 'lights', 'armor', 'weapons', 'energy core', 'technological markings'],
-    mutationChance: 0,
-    breedingDifficulty: 'N/A'
-  },
-
-  // Special Functions
-  workstation: 'Advanced technological interface',
-  resourceProduction: 'None',
-  structureFunctions: 'Can interface with technological systems',
-  buffAuras: ['None'],
-  debuffAbilities: ['Massive damage bonus against corrupted creatures'],
-  uniqueMechanics: ['Teleportation system', 'anti-corruption specialization', 'crafting-based acquisition'],
-
-  // Spawn & Location
-  spawnMaps: ['Extinction', 'Genesis Part 1', 'Genesis Part 2'],
-  spawnZones: ['City Terminals', 'technological facilities (crafting locations)'],
-  rarityRating: 'Rare (crafting-dependent)',
-  levelRange: 'Variable (depends on crafting materials)',
-  packBehavior: 'Programmable (can coordinate with other technological units)',
-  territorialBehavior: 'Programmed combat protocols',
-
-  // Management Metadata
-  difficultyRating: 'Hard',
-  beginnerFriendly: false,
-  endGameViable: true,
-  bossFightCapable: true,
-  pvpMeta: 'High',
-  resourceInvestment: 'High',
-  maintenanceLevel: 'Medium',
-
-  // Badge Categories
-  badgeCategories: ['combat', 'boss']
-},
-'Gacha': {
-  // Basic Info
-  id: 'GACHA_121',
-  name: 'Gacha',
-  icon: '🐻',
-  category: 'harvesting',
-  rarity: 'rare',
-  source: 'Extinction DLC',
-  variants: ['Standard', 'GachaClaus (Event)'],
-
-  // Biology & Lore
-  dossierText: "Macrodryadis crystallinus is a gentle giant that spends its days foraging for food in the dense forest it calls home, though it rarely has to look very far. Thanks to its extraordinary digestive system, not only can Macrodryadis eat just about anything, but it can also turn a diet of scraps into a mountain of precious resources. Instead of producing excrement, Macrodryadis grows glittering crystals upon its back, which fall off when they reach their full size. What makes this ability particularly remarkable is that the crystals contain a plethora of different resources and items that would otherwise be difficult to obtain. From basic materials to advanced technological components, the Gacha's unique biology makes it a living resource generator. This gentle creature's ability to transmute consumed items into valuable crystals makes it one of the most sought-after creatures for resource management.",
-  temperament: 'Docile (Passive)',
-  diet: 'Omnivore (literally eats anything)',
-  habitat: 'Forest areas, technological zones, anywhere resources are plentiful',
-  realWorldBasis: 'Giant ground sloth (fantasy crystal production)',
-  sizeClass: 'Large',
-
-  // Taming System
-  tamingMethod: 'Passive',
-  tamingType: 'Feed structures, pellets, or metal/stone items',
-  preferredKibble: 'N/A',
-  favoriteFood: 'Tek Structures',
-  tamingSpeed: 'Medium',
-  torpor: {
-    baseValue: 700,
-    depleteRate: 'N/A'
-  },
-  specialRequirements: 'Must feed items to inventory, produces crystals when fed',
-
-  // Base Statistics (Level 1 Wild)
-  baseStats: {
-    health: 700,
-    stamina: 275,
-    oxygen: 150,
-    food: 8000,
-    weight: 550,
-    melee: 175,
-    speed: 100,
-    torpor: 700
-  },
-
-  // Stat Scaling (Per Level)
-  statScaling: {
-    health: 140,
-    stamina: 27.5,
-    oxygen: 15,
-    food: 800,
-    weight: 11,
-    melee: 8.75,
-    speed: 1
-  },
-
-  // Equipment & Combat
-  saddleLevel: 38,
-  saddleType: 'Gacha Saddle',
-  saddleArmor: 25,
-  platformLimit: 0,
-  specialAbilities: ['Crystal production', 'resource transmutation', 'item consumption', 'crafting skill affects crystal quality'],
-  attackTypes: ['Bite', 'claw swipe (defensive only)'],
-  canCarry: ['Massive amounts of raw materials and structures'],
-
-  // Utility & Roles
-  primaryRole: 'Resource production and material transmutation',
-  secondaryRoles: ['Mobile storage', 'late-game resource generator', 'crystal farming'],
-  gatheringResources: ['Produces 6 different resources in crystals'],
-  gatheringEfficiency: {
-    'Crystal Production': 10
-  },
-  ratings: {
-    combat: 3,
-    transport: 8,
-    speed: 4,
-    survivability: 7
-  },
-
-  // Environmental Data
-  speeds: {
-    land: 20,
-    flying: 0,
-    swimming: 15,
-    climbing: 0
-  },
-  environmentalResistances: ['Standard mammalian resistances'],
-  preferredBiome: 'Forest areas, anywhere with abundant resources',
-  temperatureRange: {
-    min: 10,
-    max: 35
-  },
-  oxygenRequirement: 'Air breathing',
-
-  // Breeding Genetics
-  breeding: {
-    cooldown: '18-48 hours',
-    gestationTime: '7 hours, 56 minutes',
-    babyFoodConsumption: 'High',
-    maturationTime: '2 days, 22 hours',
-    colorRegions: 6,
-    colorRegionNames: ['Body', 'belly', 'back', 'arms', 'crystals', 'markings'],
-    mutationChance: 7.31,
-    breedingDifficulty: 'Medium'
-  },
-
-  // Special Functions
-  workstation: 'None',
-  resourceProduction: 'Produces Gacha Crystals containing random resources',
-  structureFunctions: 'None',
-  buffAuras: ['Happiness affects production (mate boost increases production)'],
-  debuffAbilities: ['Sadness reduces production (same-gender Gacha nearby)'],
-  uniqueMechanics: ['Crystal production system', 'crafting skill affects quality and speed', 'Snow Owl Pellet buff doubles production'],
-
-  // Spawn & Location
-  spawnMaps: ['Extinction', 'Genesis Part 1', 'Genesis Part 2', 'Crystal Isles', 'Lost Island', 'Fjordur'],
-  spawnZones: ['Forest areas', 'UnderForest (Extinction)', 'scattered biomes'],
-  rarityRating: 'Rare',
-  levelRange: '1-150',
-  packBehavior: 'Solitary or pairs',
-  territorialBehavior: 'Peaceful, non-aggressive',
-
-  // Management Metadata
-  difficultyRating: 'Medium',
-  beginnerFriendly: false,
-  endGameViable: true,
-  bossFightCapable: false,
-  pvpMeta: 'High',
-  resourceInvestment: 'High',
-  maintenanceLevel: 'Medium',
-
-  // Badge Categories
-  badgeCategories: ['harvesting', 'utility']
-},
-'Gasbags': {
-  // Basic Info
-  id: 'GASBAGS_122',
-  name: 'Gasbags',
-  icon: '🎈',
-  category: 'transport',
-  rarity: 'common',
-  source: 'Extinction DLC',
-  variants: ['Standard', 'R-Gasbags (Genesis Part 2)'],
-
-  // Biology & Lore
-  dossierText: "Mopsechiniscus fluitobesus represents a fascinating evolution of the tardigrade lineage, though grown to enormous proportions. What makes Gasbags truly remarkable is its ability to inflate itself like a balloon and launch into the air, providing both defense and transportation capabilities. The creature's unique physiology allows it to store massive amounts of air in specialized organs, which it can use for both flight and defense. When threatened, Gasbags can rapidly inflate to reduce incoming damage by up to 80%, while also gaining the ability to float and maneuver through the air. Its gentle nature and incredible carrying capacity make it invaluable for transportation and logistics. The creature's ability to blast air from its underside provides both propulsion and a powerful defensive mechanism that can knock back even the largest predators.",
-  temperament: 'Docile (Defensive)',
-  diet: 'Herbivore (berries, crops, vegetables)',
-  habitat: 'Wasteland areas, open plains, areas with good air currents',
-  realWorldBasis: 'Tardigrade (water bear) - greatly enlarged',
-  sizeClass: 'Large',
-
-  // Taming System
-  tamingMethod: 'Knockout',
-  tamingType: 'Tranquilize while deflated for maximum torpor damage',
-  preferredKibble: 'Superior Kibble',
-  favoriteFood: 'Superior Kibble',
-  tamingSpeed: 'Medium',
-  torpor: {
-    baseValue: 700,
-    depleteRate: 'Medium'
-  },
-  specialRequirements: 'Takes 80% less torpor damage when inflated, trap recommended',
-
-  // Base Statistics (Level 1 Wild)
-  baseStats: {
-    health: 700,
-    stamina: 150,
-    oxygen: 2000,
-    food: 8000,
-    weight: 900,
-    melee: 160,
-    speed: 100,
-    torpor: 700
-  },
-
-  // Stat Scaling (Per Level)
-  statScaling: {
-    health: 140,
-    stamina: 15,
-    oxygen: 200,
-    food: 800,
-    weight: 18,
-    melee: 8,
-    speed: 2
-  },
-
-  // Equipment & Combat
-  saddleLevel: 38,
-  saddleType: 'Gasbags Saddle',
-  saddleArmor: 25,
-  platformLimit: 0,
-  specialAbilities: ['Inflation (80% damage reduction)', 'air blasting', 'floating flight', 'gas propulsion'],
-  attackTypes: ['Air blast (knockback)', 'bite (weak)', 'body slam when inflated'],
-  canCarry: ['Extreme weight capacity, excellent for resource transport'],
-
-  // Utility & Roles
-  primaryRole: 'Heavy transport and logistics mount',
-  secondaryRoles: ['Tank (damage reduction)', 'aerial transport', 'base defense'],
-  gatheringResources: ['Limited gathering capability'],
-  gatheringEfficiency: {
-    General: 3
-  },
-  ratings: {
-    combat: 5,
-    transport: 10,
-    speed: 6,
-    survivability: 9
-  },
-
-  // Environmental Data
-  speeds: {
-    land: 25,
-    flying: 30,
-    swimming: 20,
-    climbing: 0
-  },
-  environmentalResistances: ['High damage resistance when inflated'],
-  preferredBiome: 'Open areas, wasteland, anywhere with room to inflate',
-  temperatureRange: {
-    min: -10,
-    max: 50
-  },
-  oxygenRequirement: 'Air breathing (massive oxygen capacity)',
-
-  // Breeding Genetics
-  breeding: {
-    cooldown: '18-48 hours',
-    gestationTime: '7 hours, 56 minutes',
-    babyFoodConsumption: 'High',
-    maturationTime: '2 days, 22 hours',
-    colorRegions: 6,
-    colorRegionNames: ['Main body', 'underside', 'back', 'stripes', 'belly', 'air sacs'],
-    mutationChance: 7.31,
-    breedingDifficulty: 'Medium'
-  },
-
-  // Special Functions
-  workstation: 'None',
-  resourceProduction: 'None',
-  structureFunctions: 'None',
-  buffAuras: ['None'],
-  debuffAbilities: ['Air blast causes massive knockback and brief immunity to fall damage'],
-  uniqueMechanics: ['Inflation system', 'air-based flight', 'damage reduction scaling with air level'],
-
-  // Spawn & Location
-  spawnMaps: ['Extinction', 'Genesis Part 1', 'Genesis Part 2', 'Fjordur', 'Astraeos'],
-  spawnZones: ['Wasteland (Extinction)', 'scattered open areas', 'plains'],
-  rarityRating: 'Common',
-  levelRange: '1-150',
-  packBehavior: 'Solitary or small groups (2-3)',
-  territorialBehavior: 'Docile, flees when threatened',
-
-  // Management Metadata
-  difficultyRating: 'Medium',
-  beginnerFriendly: true,
-  endGameViable: true,
-  bossFightCapable: true,
-  pvpMeta: 'High',
-  resourceInvestment: 'Medium',
-  maintenanceLevel: 'Low',
-
-  // Badge Categories
-  badgeCategories: ['transport', 'utility']
-},
-'Managarmr': {
-  // Basic Info
-  id: 'MANAGARMR_123',
-  name: 'Managarmr',
-  icon: '🐺',
-  category: 'combat',
-  rarity: 'rare',
-  source: 'Extinction DLC',
-  variants: ['Standard', 'R-Managarmr (Genesis Part 2)'],
-
-  // Biology & Lore
-  dossierText: "Managarmr eredrarcticus is a magnificent creature that combines the mobility of a drake with the ferocity of a dire wolf. What makes Managarmr truly exceptional is its combination of jet-powered movement, ice breath attacks, and incredible three-dimensional mobility. The creature can launch itself through the air with powerful jet boosts, allowing it to traverse terrain that would be impossible for other ground-based mounts. Its breath weapon can freeze enemies solid, leaving them vulnerable to follow-up attacks. The Managarmr's agility and unpredictability in combat make it both a formidable opponent and an invaluable ally. Its ability to rapidly change direction mid-flight and perform devastating hit-and-run attacks makes it one of the most versatile combat mounts available. The creature's pack hunting instincts remain strong even when tamed, making it loyal and responsive to its rider's commands.",
-  temperament: 'Aggressive',
-  diet: 'Carnivore (meat, prime meat)',
-  habitat: 'Snow biomes, tundra, ice caves, cold mountainous regions',
-  realWorldBasis: 'Dire wolf with fantasy ice/jet abilities',
-  sizeClass: 'Medium-Large',
-
-  // Taming System
-  tamingMethod: 'Knockout',
-  tamingType: 'Extremely difficult due to mobility, requires trap or Snow Owl freezing',
-  preferredKibble: 'Extraordinary Kibble',
-  favoriteFood: 'Extraordinary Kibble',
-  tamingSpeed: 'Medium-Fast',
-  torpor: {
-    baseValue: 825,
-    depleteRate: 'Medium'
-  },
-  specialRequirements: 'Highly mobile, requires specialized trapping, freeze with Snow Owl recommended',
-
-  // Base Statistics (Level 1 Wild)
-  baseStats: {
-    health: 825,
-    stamina: 300,
-    oxygen: 150,
-    food: 2000,
-    weight: 500,
-    melee: 175,
-    speed: 100,
-    torpor: 825
-  },
-
-  // Stat Scaling (Per Level)
-  statScaling: {
-    health: 165,
-    stamina: 30,
-    oxygen: 15,
-    food: 200,
-    weight: 10,
-    melee: 8.75,
-    speed: 2
-  },
-
-  // Equipment & Combat
-  saddleLevel: 66,
-  saddleType: 'Managarmr Saddle',
-  saddleArmor: 25,
-  platformLimit: 0,
-  specialAbilities: ['Jet boost propulsion', 'ice breath freezing', 'wall climbing', 'no fall damage', 'three-dimensional flight'],
-  attackTypes: ['Ice breath (freezes targets)', 'bite', 'claw attacks', 'aerial dive attacks'],
-  canCarry: ['Moderate weight capacity, excellent mobility'],
-
-  // Utility & Roles
-  primaryRole: 'Advanced mobility and hit-and-run combat',
-  secondaryRoles: ['Scout', 'aerial assault', 'ice combat specialist', 'terrain traversal'],
-  gatheringResources: ['Limited gathering (mainly through combat)'],
-  gatheringEfficiency: {
-    Combat: 4
-  },
-  ratings: {
-    combat: 9,
-    transport: 6,
-    speed: 10,
-    survivability: 8
-  },
-
-  // Environmental Data
-  speeds: {
-    land: 35,
-    flying: 45,
-    swimming: 25,
-    climbing: 1
-  },
-  environmentalResistances: ['Cold resistance', 'ice immunity'],
-  preferredBiome: 'Snow biomes, tundra, ice caves, mountainous terrain',
-  temperatureRange: {
-    min: -40,
-    max: 10
-  },
-  oxygenRequirement: 'Air breathing',
-
-  // Breeding Genetics
-  breeding: {
-    cooldown: '18-48 hours',
-    gestationTime: '7 hours, 56 minutes',
-    babyFoodConsumption: 'High',
-    maturationTime: '2 days, 22 hours',
-    colorRegions: 6,
-    colorRegionNames: ['Body', 'belly', 'mane', 'stripes', 'ice effects', 'accents'],
-    mutationChance: 7.31,
-    breedingDifficulty: 'Hard'
-  },
-
-  // Special Functions
-  workstation: 'None',
-  resourceProduction: 'None',
-  structureFunctions: 'None',
-  buffAuras: ['None'],
-  debuffAbilities: ['Ice breath freezes targets, making them vulnerable'],
-  uniqueMechanics: ['Jet boost system', 'wall climbing', 'ice breath weapon', 'no fall damage'],
-
-  // Spawn & Location
-  spawnMaps: ['Extinction', 'Genesis Part 1', 'Genesis Part 2', 'Lost Island', 'Fjordur'],
-  spawnZones: ['Snow biome (Extinction)', 'frozen areas', 'tundra regions'],
-  rarityRating: 'Rare',
-  levelRange: '1-150',
-  packBehavior: 'Small packs (2-4)',
-  territorialBehavior: 'Highly aggressive, territorial',
-
-  // Management Metadata
-  difficultyRating: 'Extreme',
-  beginnerFriendly: false,
-  endGameViable: true,
-  bossFightCapable: true,
-  pvpMeta: 'Ultimate',
-  resourceInvestment: 'High',
-  maintenanceLevel: 'Medium',
-
-  // Badge Categories
-  badgeCategories: ['combat', 'boss', 'transport']
-},
-'Mek': {
-  // Basic Info
-  id: 'MEK_124',
-  name: 'Mek',
-  icon: '🤖',
-  category: 'combat',
-  rarity: 'legendary',
-  source: 'Extinction DLC',
-  variants: ['Standard', 'Mega Mek (Titan fight variant)'],
-
-  // Biology & Lore
-  dossierText: "The Mek represents the pinnacle of technological warfare, designed as humanity's answer to the Titan threat. These massive mechanical suits combine advanced artificial intelligence with devastating weapons systems and unparalleled durability. What makes the Mek truly formidable is its modular weapon system, allowing for customization based on tactical requirements. From devastating plasma cannons to precision missile systems, the Mek can be equipped to handle any battlefield scenario. The suit's advanced targeting systems and energy shields provide both offensive and defensive capabilities that rival even the mightiest organic creatures. The Mek's ability to interface with other technological creatures like Scouts for repairs and coordination makes it the centerpiece of any advanced military operation. Only the most skilled survivors can effectively pilot these technological marvels.",
-  temperament: 'Programmed (Combat AI)',
-  diet: 'Mechanical (Element-powered)',
-  habitat: 'Technological areas, military installations, Titan battlefields',
-  realWorldBasis: 'Military mecha/power armor',
-  sizeClass: 'Massive',
-
-  // Taming System
-  tamingMethod: 'Special',
-  tamingType: 'Must be crafted at City Terminal using specific blueprints and resources',
-  preferredKibble: 'N/A',
-  favoriteFood: 'N/A',
-  tamingSpeed: 'N/A',
-  torpor: {
-    baseValue: 0,
-    depleteRate: 'N/A'
-  },
-  specialRequirements: 'Requires massive amounts of Element, advanced materials, and Mek blueprints',
-
-  // Base Statistics (Level 1 Wild)
-  baseStats: {
-    health: 15000,
-    stamina: 1000,
-    oxygen: 0,
-    food: 0,
-    weight: 8000,
-    melee: 500,
-    speed: 100,
-    torpor: 0
-  },
-
-  // Stat Scaling (Per Level)
-  statScaling: {
-    health: 3000,
-    stamina: 100,
-    oxygen: 0,
-    food: 0,
-    weight: 160,
-    melee: 25,
-    speed: 2
-  },
-
-  // Equipment & Combat
-  saddleLevel: 0,
-  saddleType: 'Internal piloting system',
-  saddleArmor: 0,
-  platformLimit: 0,
-  specialAbilities: ['Energy weapons', 'missile systems', 'energy shields', 'Scout healing interface', 'siege capabilities'],
-  attackTypes: ['Plasma cannon', 'missile barrage', 'plasma punch', 'energy beam weapons'],
-  canCarry: ['Massive cargo capacity, heavy construction materials'],
-
-  // Utility & Roles
-  primaryRole: 'Ultimate combat platform and Titan killer',
-  secondaryRoles: ['Siege warfare', 'base destruction', 'technological warfare', 'heavy construction'],
-  gatheringResources: ['Element from defeated Titans and technological enemies'],
-  gatheringEfficiency: {
-    Element: 8,
-    'Technological components': 0
-  },
-  ratings: {
-    combat: 10,
-    transport: 9,
-    speed: 5,
-    survivability: 10
-  },
-
-  // Environmental Data
-  speeds: {
-    land: 25,
-    flying: 0,
-    swimming: 15,
-    climbing: 0
-  },
-  environmentalResistances: ['Element immunity', 'technological resistance', 'radiation immunity'],
-  preferredBiome: 'Technological areas, Titan battlefields, Element regions',
-  temperatureRange: {
-    min: -50,
-    max: 100
-  },
-  oxygenRequirement: 'None (sealed system)',
-
-  // Breeding Genetics
-  breeding: {
-    cooldown: 'Cannot breed',
-    gestationTime: 'N/A',
-    babyFoodConsumption: 'N/A',
-    maturationTime: 'N/A',
-    colorRegions: 6,
-    colorRegionNames: ['Chassis', 'weapons', 'energy systems', 'armor plates', 'cockpit', 'decals'],
-    mutationChance: 0,
-    breedingDifficulty: 'N/A'
-  },
-
-  // Special Functions
-  workstation: 'Advanced technological interface',
-  resourceProduction: 'None',
-  structureFunctions: 'Can destroy and build advanced structures',
-  buffAuras: ['None'],
-  debuffAbilities: ['Massive damage against structures and creatures'],
-  uniqueMechanics: ['Modular weapon system', 'energy shield technology', 'Scout healing interface'],
-
-  // Spawn & Location
-  spawnMaps: ['Extinction', 'Genesis Part 1', 'Genesis Part 2'],
-  spawnZones: ['City Terminals', 'technological facilities (crafting locations)'],
-  rarityRating: 'Legendary (crafting-dependent)',
-  levelRange: 'Variable (depends on blueprint and crafting)',
-  packBehavior: 'Programmable (can coordinate with other technological units)',
-  territorialBehavior: 'Programmed combat protocols',
-
-  // Management Metadata
-  difficultyRating: 'Extreme',
-  beginnerFriendly: false,
-  endGameViable: true,
-  bossFightCapable: true,
-  pvpMeta: 'Ultimate',
-  resourceInvestment: 'Extreme',
-  maintenanceLevel: 'High',
-
-  // Badge Categories
-  badgeCategories: ['boss', 'combat']
-},
-'Scout': {
-  // Basic Info
-  id: 'SCOUT_125',
-  name: 'Scout',
-  icon: '👁️',
-  category: 'utility',
-  rarity: 'uncommon',
-  source: 'Extinction DLC',
-  variants: ['Standard'],
-
-  // Biology & Lore
-  dossierText: "The UAV RQ-7Y represents advanced reconnaissance technology designed for surveillance and target acquisition. What makes the Scout particularly valuable is its ability to provide real-time battlefield intelligence without risking human lives. These small aerial drones can mark targets, provide overwatch, and coordinate with other technological units like Enforcers to maintain security. The Scout's advanced sensors can distinguish between friendly and hostile targets, making it invaluable for both military operations and civilian protection. Its ability to heal and maintain Meks during combat operations makes it an essential support unit for technological warfare. The Scout's compact design and silent operation allow it to conduct surveillance missions without detection, providing crucial intelligence for tactical planning.",
-  temperament: 'Programmed (Surveillance AI)',
-  diet: 'Mechanical (Element Dust-powered)',
-  habitat: 'Technological areas, surveillance zones, security perimeters',
-  realWorldBasis: 'Military reconnaissance drone',
-  sizeClass: 'Small',
-
-  // Taming System
-  tamingMethod: 'Special',
-  tamingType: 'Must be crafted at Tek Replicator using blueprints obtained from destroyed wild Scouts',
-  preferredKibble: 'N/A',
-  favoriteFood: 'N/A',
-  tamingSpeed: 'N/A',
-  torpor: {
-    baseValue: 0,
-    depleteRate: 'N/A'
-  },
-  specialRequirements: 'Requires Element Dust, blueprints from destroyed wild Scouts for better quality',
-
-  // Base Statistics (Level 1 Wild)
-  baseStats: {
-    health: 120,
-    stamina: 100,
-    oxygen: 0,
-    food: 500,
-    weight: 50,
-    melee: 10,
-    speed: 100,
-    torpor: 0
-  },
-
-  // Stat Scaling (Per Level)
-  statScaling: {
-    health: 24,
-    stamina: 10,
-    oxygen: 0,
-    food: 50,
-    weight: 1,
-    melee: 0.5,
-    speed: 5
-  },
-
-  // Equipment & Combat
-  saddleLevel: 0,
-  saddleType: 'Scout Remote (Tek binoculars control system)',
-  saddleArmor: 0,
-  platformLimit: 0,
-  specialAbilities: ['Target marking', 'thermal vision', 'Mek healing', 'surveillance mode', 'silent flight'],
-  attackTypes: ['Minimal (primarily surveillance, weak ram attack)'],
-  canCarry: ['Very limited (small items only)'],
-
-  // Utility & Roles
-  primaryRole: 'Reconnaissance and surveillance',
-  secondaryRoles: ['Mek support and healing', 'target marking', 'aggro management', 'exploration'],
-  gatheringResources: ['None'],
-  gatheringEfficiency: {
-    'Surveillance': 10
-  },
-  ratings: {
-    combat: 2,
-    transport: 1,
-    speed: 8,
-    survivability: 4
-  },
-
-  // Environmental Data
-  speeds: {
-    land: 0,
-    flying: 40,
-    swimming: 20,
-    climbing: 0
-  },
-  environmentalResistances: ['Technological resistance, small size reduces target profile'],
-  preferredBiome: 'Technological areas, any area requiring surveillance',
-  temperatureRange: {
-    min: -20,
-    max: 80
-  },
-  oxygenRequirement: 'None (mechanical)',
-
-  // Breeding Genetics
-  breeding: {
-    cooldown: 'Cannot breed',
-    gestationTime: 'N/A',
-    babyFoodConsumption: 'N/A',
-    maturationTime: 'N/A',
-    colorRegions: 6,
-    colorRegionNames: ['Chassis', 'sensors', 'thrusters', 'lights', 'panels', 'markings'],
-    mutationChance: 0,
-    breedingDifficulty: 'N/A'
-  },
-
-  // Special Functions
-  workstation: 'None',
-  resourceProduction: 'None',
-  structureFunctions: 'Can interface with technological systems',
-  buffAuras: ['None'],
-  debuffAbilities: ['Target marking for Enforcers'],
-  uniqueMechanics: ['Remote control system', 'thermal vision', 'Mek healing capability', 'silent operation'],
-
-  // Spawn & Location
-  spawnMaps: ['Extinction', 'Genesis Part 1', 'Genesis Part 2'],
-  spawnZones: ['City areas', 'technological facilities', 'can be deployed anywhere'],
-  rarityRating: 'Uncommon (crafting-dependent)',
-  levelRange: 'Variable (depends on blueprint quality)',
-  packBehavior: 'Can coordinate with other technological units',
-  territorialBehavior: 'Programmed surveillance protocols',
-
-  // Management Metadata
-  difficultyRating: 'Medium',
-  beginnerFriendly: false,
-  endGameViable: true,
-  bossFightCapable: true,
-  pvpMeta: 'High',
-  resourceInvestment: 'Medium',
-  maintenanceLevel: 'Low',
-
-  // Badge Categories
-  badgeCategories: ['utility', 'boss']
 },
 'Roll Rat': {
   // Basic Info
@@ -26668,138 +23892,6 @@ const SPECIES_DATABASE = {
   // Badge Categories
   badgeCategories: ['combat', 'boss']
 },
-'Ichthyornis': {
-  // Basic Info
-  id: 'ICHTHYORNIS_215',
-  name: 'Ichthyornis',
-  icon: '🐦',
-  category: 'utility',
-  rarity: 'common',
-  source: 'Base Game',
-  variants: ['Standard'],
-
-  // Biology & Lore
-  dossierText: "Ichthyornis piscoquus is a small flying creature that primarily feeds on fish, but has developed some rather annoying behaviors that make it a pest to survivors. What makes Ichthyornis particularly frustrating is its habit of stealing food and items directly from a survivor's hands, then flying away to consume them. However, this behavior can actually be beneficial when the bird is tamed, as it can be trained to steal specific items from enemies or to fish autonomously. Additionally, when tamed Ichthyornis consume fish, they have a chance to produce higher-quality cooked fish, making them useful for food preparation.",
-  temperament: 'Opportunistic',
-  diet: 'Carnivore (fish, stolen food)',
-  habitat: 'Coastal areas, rivers, anywhere near water',
-  realWorldBasis: 'Ichthyornis dispar',
-  sizeClass: 'Small',
-
-  // Taming System
-  tamingMethod: 'Knockout',
-  tamingType: 'Violent taming with tranquilizers',
-  preferredKibble: 'Simple Kibble',
-  favoriteFood: 'Simple Kibble',
-  tamingSpeed: 'Fast',
-  torpor: {
-    baseValue: 50,
-    depleteRate: 'Very Fast'
-  },
-  specialRequirements: 'Steals items from players, very low torpor, difficult to hit while flying',
-
-  // Base Statistics (Level 1 Wild)
-  baseStats: {
-    health: 50,
-    stamina: 150,
-    oxygen: 150,
-    food: 450,
-    weight: 25,
-    melee: 5,
-    speed: 100,
-    torpor: 50
-  },
-
-  // Stat Scaling (Per Level)
-  statScaling: {
-    health: 10,
-    stamina: 15,
-    oxygen: 15,
-    food: 45,
-    weight: 0.5,
-    melee: 0.25,
-    speed: 2
-  },
-
-  // Equipment & Combat
-  saddleLevel: 0,
-  saddleType: 'Shoulder pet',
-  saddleArmor: 0,
-  platformLimit: 0,
-  specialAbilities: ['Item stealing', 'autonomous fishing', 'food quality improvement'],
-  attackTypes: ['Peck', 'theft swoop'],
-  canCarry: ['Small items (stolen goods)'],
-
-  // Utility & Roles
-  primaryRole: 'Autonomous fishing and item retrieval',
-  secondaryRoles: ['Food quality improvement', 'harassment of enemies', 'scouting'],
-  gatheringResources: ['Fish meat', 'prime fish meat', 'cooked fish'],
-  gatheringEfficiency: {
-    'Autonomous fishing': 8,
-    'Food quality improvement': 9
-  },
-  ratings: {
-    combat: 2,
-    transport: 1,
-    speed: 8,
-    survivability: 3
-  },
-
-  // Environmental Data
-  speeds: {
-    land: 10,
-    flying: 35,
-    swimming: 15,
-    climbing: 0
-  },
-  environmentalResistances: ['None'],
-  preferredBiome: 'Coastal areas, rivers, lakes, fishing areas',
-  temperatureRange: {
-    min: 15,
-    max: 35
-  },
-  oxygenRequirement: 'Air breathing',
-
-  // Breeding Genetics
-  breeding: {
-    cooldown: '18-48 hours',
-    gestationTime: '1 hour, 25 minutes',
-    babyFoodConsumption: 'Low',
-    maturationTime: '1 day, 20 hours',
-    colorRegions: 6,
-    colorRegionNames: ['Body', 'wings', 'beak', 'feet', 'head', 'belly'],
-    mutationChance: 7.31,
-    breedingDifficulty: 'Easy'
-  },
-
-  // Special Functions
-  workstation: 'None',
-  resourceProduction: 'Improved quality cooked fish when processing raw fish',
-  structureFunctions: 'None',
-  buffAuras: ['None'],
-  debuffAbilities: ['Can steal items from enemies'],
-  uniqueMechanics: ['Autonomous fishing', 'item theft capability', 'food quality improvement'],
-
-  // Spawn & Location
-  spawnMaps: ['The Island', 'The Center', 'Ragnarok', 'Valguero', 'Crystal Isles', 'Lost Island', 'Fjordur'],
-  spawnZones: ['Coastal areas', 'rivers', 'lakes', 'anywhere near water and fish'],
-  rarityRating: 'Common',
-  levelRange: '1-150',
-  packBehavior: 'Small flocks (3-6)',
-  territorialBehavior: 'Opportunistic, steals from players and attacks when hungry',
-
-  // Management Metadata
-  difficultyRating: 'Medium',
-  beginnerFriendly: false,
-  endGameViable: true,
-  bossFightCapable: false,
-  pvpMeta: 'Medium',
-  resourceInvestment: 'Very Low',
-  maintenanceLevel: 'Very Low',
-
-  // Badge Categories
-  badgeCategories: ['utility', 'harvesting']
-},
 'Magmasaur': {
   // Basic Info
   id: 'MAGMASAUR_216',
@@ -27062,137 +24154,6 @@ const SPECIES_DATABASE = {
 
   // Badge Categories
   badgeCategories: ['transport', 'utility']
-},
-'Moeder, Master of the Ocean': {
-  // Basic Info
-  id: 'MOEDER_218',
-  name: 'Moeder, Master of the Ocean',
-  icon: '🦑',
-  category: 'boss',
-  rarity: 'mythical',
-  source: 'Genesis Part 1 DLC (Ocean Boss)',
-  variants: ['Gamma', 'Beta', 'Alpha'],
-
-  // Biology & Lore
-  dossierText: "Moeder represents the ultimate apex predator of the Genesis Simulation's vast ocean biome, a colossal eel-like creature of immense power and cunning. What makes Moeder truly terrifying is its mastery over the ocean's depths and its ability to command legions of smaller aquatic creatures. This titanic boss encounter tests survivors' underwater combat skills, requiring a combination of powerful aquatic mounts, advanced technology, and strategic coordination. Moeder's attacks range from devastating electrical discharges to powerful bites and constricting coils that can crush even the most heavily armored submarines. Its multi-phase battle involves navigating treacherous underwater terrain while fending off swarms of minions, culminating in a final confrontation against the master of the ocean itself. Defeating Moeder requires not only overwhelming firepower but also a deep understanding of underwater tactics and environmental awareness.",
-  temperament: 'Aggressive (Boss)',
-  diet: 'Carnivore (consumes all oceanic challengers)',
-  habitat: 'Moeder\'s Arena (Genesis Simulation Ocean)',
-  realWorldBasis: 'Mythological sea serpent/giant eel',
-  sizeClass: 'Titan',
-
-  // Taming System
-  tamingMethod: 'Cannot be tamed',
-  tamingType: 'N/A (Boss creature)',
-  preferredKibble: 'N/A',
-  favoriteFood: 'N/A',
-  tamingSpeed: 'N/A',
-  torpor: {
-    baseValue: 1000000,
-    depleteRate: 'N/A'
-  },
-  specialRequirements: 'Must complete specific missions in the Ocean biome to access',
-
-  // Base Statistics (Level 1 Wild)
-  baseStats: {
-    health: 1250000,
-    stamina: 10000,
-    oxygen: 15000,
-    food: 10000,
-    weight: 20000,
-    melee: 1500,
-    speed: 100,
-    torpor: 1000000
-  },
-
-  // Stat Scaling (Per Level)
-  statScaling: {
-    health: 250000,
-    stamina: 1000,
-    oxygen: 1500,
-    food: 1000,
-    weight: 400,
-    melee: 75,
-    speed: 1
-  },
-
-  // Equipment & Combat
-  saddleLevel: 0,
-  saddleType: 'N/A',
-  saddleArmor: 0,
-  platformLimit: 0,
-  specialAbilities: ['Electrical discharges', 'minion spawning', 'constriction', 'submarine combat', 'multi-phase battle'],
-  attackTypes: ['Bite', 'tail swipe', 'electrical field', 'minion swarm'],
-  canCarry: ['N/A'],
-
-  // Utility & Roles
-  primaryRole: 'Ultimate underwater boss challenge',
-  secondaryRoles: ['End-game progression', 'testing aquatic combat skills', 'Element farming'],
-  gatheringResources: ['Element', 'Moeder Trophy', 'special engrams upon defeat'],
-  gatheringEfficiency: {
-    'Boss rewards': 10
-  },
-  ratings: {
-    combat: 10,
-    transport: 0,
-    speed: 4,
-    survivability: 10
-  },
-
-  // Environmental Data
-  speeds: {
-    land: 0,
-    flying: 0,
-    swimming: 40,
-    climbing: 0
-  },
-  environmentalResistances: ['Pressure immunity', 'massive damage resistance', 'electrical immunity'],
-  preferredBiome: 'Moeder\'s Arena (Ocean Biome)',
-  temperatureRange: {
-    min: 0,
-    max: 30
-  },
-  oxygenRequirement: 'Water breathing only',
-
-  // Breeding Genetics
-  breeding: {
-    cooldown: 'N/A',
-    gestationTime: 'N/A',
-    babyFoodConsumption: 'N/A',
-    maturationTime: 'N/A',
-    colorRegions: 6,
-    colorRegionNames: ['Body', 'fins', 'electrical organs', 'bioluminescence', 'patterns', 'eyes'],
-    mutationChance: 0,
-    breedingDifficulty: 'N/A'
-  },
-
-  // Special Functions
-  workstation: 'N/A',
-  resourceProduction: 'Drops Element and unlocks Tekgrams upon defeat',
-  structureFunctions: 'N/A',
-  buffAuras: ['None'],
-  debuffAbilities: ['Electrical attacks stun and disable equipment'],
-  uniqueMechanics: ['Multi-phase boss fight', 'minion spawning system', 'submarine combat'],
-
-  // Spawn & Location
-  spawnMaps: ['Genesis Part 1'],
-  spawnZones: ['Ocean biome (summoned only)'],
-  rarityRating: 'Mythical',
-  levelRange: '1 (scales with difficulty)',
-  packBehavior: 'Commands swarms of aquatic minions',
-  territorialBehavior: 'Ultimate territorial control over its arena',
-
-  // Management Metadata
-  difficultyRating: 'Mythical',
-  beginnerFriendly: false,
-  endGameViable: true,
-  bossFightCapable: true,
-  pvpMeta: 'N/A',
-  resourceInvestment: 'Mythical',
-  maintenanceLevel: 'N/A',
-
-  // Badge Categories
-  badgeCategories: ['boss', 'combat']
 },
 'Parakeet Fish School': {
   // Basic Info
@@ -27966,137 +24927,6 @@ const SPECIES_DATABASE = {
   levelRange: '1 (fixed boss level)',
   packBehavior: 'Commands swarms of Zombie Dodos',
   territorialBehavior: 'Extremely aggressive, attacks all players on sight',
-
-  // Management Metadata
-  difficultyRating: 'Mythical',
-  beginnerFriendly: false,
-  endGameViable: true,
-  bossFightCapable: true,
-  pvpMeta: 'N/A',
-  resourceInvestment: 'Mythical',
-  maintenanceLevel: 'N/A',
-
-  // Badge Categories
-  badgeCategories: ['boss', 'combat']
-},
-'Dodobitus': {
-  // Basic Info
-  id: 'DODOBITUS_225',
-  name: 'Dodobitus',
-  icon: '🦤',
-  category: 'boss',
-  rarity: 'mythical',
-  source: 'Turkey Trial Event',
-  variants: ['Event Boss'],
-
-  // Biology & Lore
-  dossierText: "The Dodobitus is a colossal dodo that has been mutated into a monstrous engine of destruction. This seasonal terror, appearing only during the Turkey Trial event, represents the ultimate avian nightmare. What makes the Dodobitus truly formidable is its immense size, granting it incredible health and the ability to trample structures and creatures with ease. It retains the relentless nature of a dodo but on a catastrophic scale, leading armies of smaller, aggressive 'Super Turkeys' into battle. Defeating this feathered titan requires the coordinated efforts of an entire tribe, as it combines the absurdity of a giant dodo with the devastating power of a world boss. Its appearance is a clear sign that the island's strange energies can twist even the most harmless of creatures into a force of nature.",
-  temperament: 'Aggressive (Event Boss)',
-  diet: 'Carnivore (consumes all who oppose it)',
-  habitat: 'Spawns during the Turkey Trial event',
-  realWorldBasis: 'Dodo bird (gigantic, mutated version)',
-  sizeClass: 'Titan',
-
-  // Taming System
-  tamingMethod: 'Cannot be tamed',
-  tamingType: 'N/A (Event Boss)',
-  preferredKibble: 'N/A',
-  favoriteFood: 'N/A',
-  tamingSpeed: 'N/A',
-  torpor: {
-    baseValue: 1000000,
-    depleteRate: 'N/A'
-  },
-  specialRequirements: 'Only spawns during the Turkey Trial event',
-
-  // Base Statistics (Level 1 Wild)
-  baseStats: {
-    health: 5000000,
-    stamina: 20000,
-    oxygen: 150,
-    food: 20000,
-    weight: 20000,
-    melee: 2000,
-    speed: 100,
-    torpor: 1000000
-  },
-
-  // Stat Scaling (Per Level)
-  statScaling: {
-    health: 1000000,
-    stamina: 2000,
-    oxygen: 15,
-    food: 2000,
-    weight: 400,
-    melee: 100,
-    speed: 1
-  },
-
-  // Equipment & Combat
-  saddleLevel: 0,
-  saddleType: 'N/A',
-  saddleArmor: 0,
-  platformLimit: 0,
-  specialAbilities: ['Minion summoning (Super Turkeys)', 'massive stomp', 'structure damage', 'area of effect attacks'],
-  attackTypes: ['Stomp', 'peck', 'summon minions'],
-  canCarry: ['N/A'],
-
-  // Utility & Roles
-  primaryRole: 'Seasonal event boss challenge',
-  secondaryRoles: ['Testing tribe strength', 'obtaining rare event rewards'],
-  gatheringResources: ['Wishbones', 'event-specific loot'],
-  gatheringEfficiency: {
-    'Event Loot': 10
-  },
-  ratings: {
-    combat: 10,
-    transport: 0,
-    speed: 2,
-    survivability: 10
-  },
-
-  // Environmental Data
-  speeds: {
-    land: 15,
-    flying: 0,
-    swimming: 10,
-    climbing: 0
-  },
-  environmentalResistances: ['Massive damage resistance'],
-  preferredBiome: 'Any (spawns during event)',
-  temperatureRange: {
-    min: -50,
-    max: 100
-  },
-  oxygenRequirement: 'Air breathing',
-
-  // Breeding Genetics
-  breeding: {
-    cooldown: 'N/A',
-    gestationTime: 'N/A',
-    babyFoodConsumption: 'N/A',
-    maturationTime: 'N/A',
-    colorRegions: 4,
-    colorRegionNames: ['Body', 'feathers', 'beak', 'feet'],
-    mutationChance: 0,
-    breedingDifficulty: 'N/A'
-  },
-
-  // Special Functions
-  workstation: 'N/A',
-  resourceProduction: 'Drops Wishbones for event crafting',
-  structureFunctions: 'N/A',
-  buffAuras: ['None'],
-  debuffAbilities: ['None'],
-  uniqueMechanics: ['Minion summoning', 'seasonal spawning'],
-
-  // Spawn & Location
-  spawnMaps: ['All maps'],
-  spawnZones: ['Spawns randomly during the Turkey Trial event'],
-  rarityRating: 'Mythical',
-  levelRange: '1 (fixed boss level)',
-  packBehavior: 'Leads armies of Super Turkeys',
-  territorialBehavior: 'Extremely aggressive, attacks everything',
 
   // Management Metadata
   difficultyRating: 'Mythical',
@@ -30335,136 +27165,7 @@ const SPECIES_DATABASE = {
   badgeCategories: ['combat', 'utility', 'pvp']
 },
 'Fenrir': {
-  // Basic Info
-  id: 'FENRIR_243',
-  name: 'Fenrir',
-  icon: '🐺',
-  category: 'combat',
-  rarity: 'mythical',
-  source: 'Fjordur DLC',
-  variants: ['Standard'],
 
-  // Biology & Lore
-  dossierText: "Fenrir is a creature of myth, a monstrous wolf with a heart of ice, born from the harsh, frozen landscapes of Fjordur. What makes this beast truly legendary is its mastery over ice and its unnatural strength. Fenrir is not a creature that can be found in the wild; it is a reward for those who prove their worth by conquering all of the challenges Fjordur has to offer. Its body is covered in a thick, armored hide of ice, and its breath can freeze enemies solid. It moves with a supernatural speed and agility, making it a terrifying opponent in battle. A tamed Fenrir is a symbol of ultimate power, a loyal and devastating companion capable of turning the tide of any conflict.",
-  temperament: 'Aggressive (Mythical)',
-  diet: 'Carnivore',
-  habitat: 'Only obtainable by defeating the Fenrisulfr boss',
-  realWorldBasis: 'Fenrir (Norse mythology)',
-  sizeClass: 'Large',
-
-  // Taming System
-  tamingMethod: 'Special',
-  tamingType: 'Reward for defeating the Fenrisulfr boss on Fjordur',
-  preferredKibble: 'N/A',
-  favoriteFood: 'N/A',
-  tamingSpeed: 'N/A',
-  torpor: {
-    baseValue: 2000,
-    depleteRate: 'N/A'
-  },
-  specialRequirements: 'Cannot be tamed or bred, only obtained as a boss reward',
-
-  // Base Statistics (Level 1 Wild)
-  baseStats: {
-    health: 950,
-    stamina: 450,
-    oxygen: 150,
-    food: 2500,
-    weight: 400,
-    melee: 50,
-    speed: 100,
-    torpor: 2000
-  },
-
-  // Stat Scaling (Per Level)
-  statScaling: {
-    health: 190,
-    stamina: 45,
-    oxygen: 15,
-    food: 250,
-    weight: 8,
-    melee: 2.5,
-    speed: 2
-  },
-
-  // Equipment & Combat
-  saddleLevel: 0,
-  saddleType: 'No saddle required',
-  saddleArmor: 0,
-  platformLimit: 0,
-  specialAbilities: ['Ice armor', 'freezing breath', 'unnatural speed', 'pack howl'],
-  attackTypes: ['Bite', 'claw swipe', 'ice breath', 'howl (freezes enemies)'],
-  canCarry: ['Moderate weight'],
-
-  // Utility & Roles
-  primaryRole: 'Ultimate ice combat mount',
-  secondaryRoles: ['Boss fighting', 'PVP specialist', 'crowd control'],
-  gatheringResources: ['Meat, hide, pelt'],
-  gatheringEfficiency: {
-    Pelt: 9,
-    Meat: 8
-  },
-  ratings: {
-    combat: 10,
-    transport: 7,
-    speed: 9,
-    survivability: 9
-  },
-
-  // Environmental Data
-  speeds: {
-    land: 45,
-    flying: 0,
-    swimming: 30,
-    climbing: 0
-  },
-  environmentalResistances: ['Ice immunity', 'cold immunity'],
-  preferredBiome: 'Cold regions, snow biomes',
-  temperatureRange: {
-    min: -100,
-    max: 10
-  },
-  oxygenRequirement: 'Air breathing',
-
-  // Breeding Genetics
-  breeding: {
-    cooldown: 'Cannot breed',
-    gestationTime: 'N/A',
-    babyFoodConsumption: 'N/A',
-    maturationTime: 'N/A',
-    colorRegions: 6,
-    colorRegionNames: ['Body', 'fur', 'ice armor', 'eyes', 'claws', 'patterns'],
-    mutationChance: 0,
-    breedingDifficulty: 'Cannot breed'
-  },
-
-  // Special Functions
-  workstation: 'None',
-  resourceProduction: 'None',
-  structureFunctions: 'None',
-  buffAuras: ['None'],
-  debuffAbilities: ['Ice breath and howl freeze enemies'],
-  uniqueMechanics: ['Obtained as a boss reward', 'cannot be bred'],
-
-  // Spawn & Location
-  spawnMaps: ['Fjordur'],
-  spawnZones: ['Fenrisulfr boss arena (reward)'],
-  rarityRating: 'Mythical',
-  levelRange: '1 (scales with boss difficulty)',
-  packBehavior: 'Solitary',
-  territorialBehavior: 'Extremely aggressive',
-
-  // Management Metadata
-  difficultyRating: 'Mythical',
-  beginnerFriendly: false,
-  endGameViable: true,
-  bossFightCapable: true,
-  pvpMeta: 'Ultimate',
-  resourceInvestment: 'Mythical',
-  maintenanceLevel: 'Medium',
-
-  // Badge Categories
-  badgeCategories: ['boss', 'combat']
 },
 'Giant Tortoise': {
   // Basic Info
@@ -33227,139 +29928,6 @@ const SPECIES_DATABASE = {
   // Badge Categories
   badgeCategories: ['utility', 'transport']
 },
-'Pyromane': {
-  // Basic Info
-  id: 'PYROMANE_223',
-  name: 'Pyromane',
-  icon: '🔥',
-  category: 'combat',
-  rarity: 'rare',
-  source: 'S-Dino Variants Mod',
-  variants: ['Enhanced Fire Variant'],
-
-  // Biology & Lore
-  dossierText: "Pyromane ignis represents a remarkable evolutionary adaptation to volcanic environments, developing the ability to harness and manipulate fire as both a weapon and defensive mechanism. What makes this creature particularly dangerous is its mastery over flame-based attacks and its natural immunity to fire damage, allowing it to thrive in environments that would incinerate most other creatures. The creature's pyrokinetic abilities include devastating flame breath attacks, the capacity to ignite the ground around it, and the ability to create defensive fire barriers. Most impressively, the Pyromane can absorb fire damage to fuel its own abilities, making it stronger when facing flame-based attacks. This makes it an invaluable mount for survivors operating in volcanic regions or facing fire-wielding enemies, providing both offensive firepower and defensive immunity to thermal damage.",
-  temperament: 'Aggressive (Fire Predator)',
-  diet: 'Carnivore',
-  habitat: 'Volcanic regions, lava fields, fire-based environments, thermal areas',
-  realWorldBasis: 'Enhanced creature with pyrokinetic adaptations',
-  sizeClass: 'Large',
-
-  // Taming System
-  tamingMethod: 'Knockout',
-  tamingType: 'Fire-immune predator with flame attacks',
-  preferredKibble: 'Superior Kibble',
-  favoriteFood: 'Superior Kibble',
-  tamingSpeed: 'Medium',
-  torpor: {
-    baseValue: 700,
-    depleteRate: 'Medium'
-  },
-  specialRequirements: 'Fire immunity makes flame weapons ineffective, thermal environment preferred',
-
-  // Base Statistics (Level 1 Wild)
-  baseStats: {
-    health: 800,
-    stamina: 350,
-    oxygen: 150,
-    food: 2500,
-    weight: 400,
-    melee: 55,
-    speed: 100,
-    torpor: 700
-  },
-
-  // Stat Scaling (Per Level)
-  statScaling: {
-    health: 160,
-    stamina: 35,
-    oxygen: 15,
-    food: 250,
-    weight: 8,
-    melee: 2.75,
-    speed: 1.75
-  },
-
-  // Equipment & Combat
-  saddleLevel: 65,
-  saddleType: 'Pyromane Saddle',
-  saddleArmor: 25,
-  platformLimit: 0,
-  specialAbilities: ['Flame breath', 'fire immunity', 'ground ignition', 'defensive fire barriers', 'flame absorption'],
-  attackTypes: ['Flame breath', 'burning bite', 'fire ground slam', 'thermal charge'],
-  canCarry: ['Good cargo capacity'],
-
-  // Utility & Roles
-  primaryRole: 'Fire-based combat specialist and thermal area control',
-  secondaryRoles: ['Volcanic exploration', 'fire-based resource gathering', 'thermal defense'],
-  gatheringResources: ['Sulfur', 'obsidian', 'crystal (from volcanic areas)'],
-  gatheringEfficiency: {
-    Sulfur: 9,
-    Obsidian: 8,
-    Crystal: 7
-  },
-  ratings: {
-    combat: 9,
-    transport: 7,
-    speed: 6,
-    survivability: 9
-  },
-
-  // Environmental Data
-  speeds: {
-    land: 30,
-    flying: 0,
-    swimming: 15,
-    climbing: 0
-  },
-  environmentalResistances: ['Complete fire immunity', 'heat resistance', 'thermal adaptation'],
-  preferredBiome: 'Volcanic regions, lava fields, thermal areas',
-  temperatureRange: {
-    min: 25,
-    max: 100
-  },
-  oxygenRequirement: 'Air breathing',
-
-  // Breeding Genetics
-  breeding: {
-    cooldown: '18-48 hours',
-    gestationTime: '5 hours, 30 minutes',
-    babyFoodConsumption: 'High',
-    maturationTime: '4 days, 5 hours',
-    colorRegions: 6,
-    colorRegionNames: ['Body', 'flames', 'markings', 'eyes', 'thermal glow', 'accents'],
-    mutationChance: 7.31,
-    breedingDifficulty: 'Hard'
-  },
-
-  // Special Functions
-  workstation: 'None',
-  resourceProduction: 'None',
-  structureFunctions: 'Can ignite flammable structures',
-  buffAuras: ['Heat aura provides warmth to nearby creatures'],
-  debuffAbilities: ['Burning effects on enemies'],
-  uniqueMechanics: ['Fire immunity system', 'flame absorption', 'thermal area control', 'volcanic adaptation'],
-
-  // Spawn & Location
-  spawnMaps: ['Maps with volcanic areas (mod dependent)'],
-  spawnZones: ['Volcanic regions', 'lava fields', 'thermal areas'],
-  rarityRating: 'Rare',
-  levelRange: '1-150',
-  packBehavior: 'Solitary or pairs',
-  territorialBehavior: 'Territorial over thermal areas',
-
-  // Management Metadata
-  difficultyRating: 'Hard',
-  beginnerFriendly: false,
-  endGameViable: true,
-  bossFightCapable: true,
-  pvpMeta: 'High',
-  resourceInvestment: 'High',
-  maintenanceLevel: 'Medium',
-
-  // Badge Categories
-  badgeCategories: ['combat', 'boss']
-},
 'Dreadmare': {
   // Basic Info
   id: 'DREADMARE_224',
@@ -33893,36 +30461,29 @@ const SPECIES_DATABASE = {
   badgeCategories: ['boss', 'combat']
 },
 'S-Allosaurus': {
-  // Basic Info
-  id: 'S_ALLO_002',
-  name: 'S-Allosaurus',
-  icon: '🦕',
-  category: 'combat',
-  rarity: 'uncommon',
-  source: 'Base Game (S-Variant)',
-  variants: ['Standard', 'Aberrant', 'X-Variant', 'Brute (Genesis)', 'S-Variant'],
-
-  // Biology & Lore
-  dossierText: "The standard Allosaurus therotribus is a fearsome pack hunter, but this variant is a different beast entirely. It displays the same pack-oriented behaviors, with a dominant alpha leading the charge, but it moves with an unnatural swiftness and strikes with heightened ferocity. Visually, it is distinguished by a subtle, shimmering aura that seems to cling to its scales, a tell-tale sign of the anomalous energy that courses through these variants. I've observed these packs in the most irradiated territories, completely unharmed by the toxic environment that would fell their common counterparts. This immunity makes them apex predators in even the most inhospitable lands. Taming an S-Allosaurus requires the same methods as the standard breed, but the result is a creature honed for a specific purpose: the alpha strike. It sacrifices a degree of its natural resilience for a significant boost in speed and raw power. A pack of these creatures is a blur of teeth and claws, capable of overwhelming targets with a flurry of bleed-inducing bites before they can mount an effective defense. While a lone S-Allosaurus is a formidable hunter, a pack is a force of nature—a living wave of destruction that exemplifies the high-risk, high-reward paradigm of these strange new creatures.",
-  temperament: 'Aggressively Social',
-  diet: 'Carnivore',
-  habitat: 'Forests, plains, mountain foothills, irradiated zones',
-  realWorldBasis: 'Allosaurus fragilis',
-  sizeClass: 'Large',
-
-  // Taming System
-  tamingMethod: 'Knockout',
-  tamingType: 'Violent taming with tranquilizers',
-  preferredKibble: 'Superior Kibble',
-  favoriteFood: 'Superior Kibble',
-  tamingSpeed: 'Moderate',
+  id: "S_ALLO_002",
+  name: "S-Allosaurus",
+  icon: "🦕",
+  category: "combat",
+  rarity: "uncommon",
+  source: "Base Game (S-Variant)",
+  variants: ["Standard", "Aberrant", "X-Variant", "Brute (Genesis)", "S-Variant"],
+  dossierText: "The standard Allosaurus therotribus is a fearsome pack hunter, but this variant is a different beast entirely. It displays the same pack-oriented behaviors, with a dominant alpha leading the charge, but it moves with an unnatural swiftness and strikes with heightened ferocity. Visually, it is distinguished by a subtle, shimmering aura that seems to cling to its scales, a tell-tale sign of the anomalous energy that courses through these variants. I've observed these packs in the most irradiated territories, completely unharmed by the toxic environment that would fell their common counterparts. This immunity makes them apex predators in even the most inhospitable lands. Taming an S-Allosaurus requires the same methods as the standard breed, but the result is a creature honed for a specific purpose: the alpha strike. It sacrifices a degree of its natural resilience for a significant boost in speed and raw power. A pack of these creatures is a blur of teeth and claws, capable of overwhelming targets with a flurry of bleed-inducing bites before they can mount an effective defense. While a lone S-Allosaurus is a formidable hunter, a pack is a force of nature—a living wave of destruction that exemplifies the high-risk, high-reward paradigm of these strange new creatures. Like all S-variants from Nekatus's S-Dino mod, this creature carries full radiation immunity — a meaningful passive advantage in environments like Aberration and the Genesis simulations where unprotected tames quickly become liabilities. In the wild, it has a 10% chance of spawning as an S-variant in place of the standard creature, identifiable by its distinctive bioluminescent shimmer. Holding E while mounted toggles special particle effects. Crossbreeding with the non-S variant is fully supported, allowing survivors to introduce the radiation immunity and S-variant glow into an established breeding line without sacrificing existing stat gains.",
+  temperament: "Aggressively Social",
+  diet: "Carnivore",
+  habitat: "Forests, plains, mountain foothills, irradiated zones",
+  realWorldBasis: "Allosaurus fragilis",
+  sizeClass: "Large",
+  tamingMethod: "Knockout",
+  tamingType: "Violent taming with tranquilizers",
+  preferredKibble: "Superior Kibble",
+  favoriteFood: "Superior Kibble",
+  tamingSpeed: "Moderate",
   torpor: {
     baseValue: 1550,
-    depleteRate: 'Fast'
+    depleteRate: "Fast"
   },
-  specialRequirements: 'Pack hunters - hunt in groups of 3, alpha has red glow. High torpor drain requires a sufficient supply of narcotics.',
-
-  // Base Statistics (Level 1 Wild)
+  specialRequirements: "Pack hunters - hunt in groups of 3, alpha has red glow. High torpor drain requires a sufficient supply of narcotics.",
   baseStats: {
     health: 567,
     stamina: 420,
@@ -33933,8 +30494,6 @@ const SPECIES_DATABASE = {
     speed: 100,
     torpor: 1550
   },
-
-  // Stat Scaling (Per Level)
   statScaling: {
     health: 126,
     stamina: 42,
@@ -33944,20 +30503,16 @@ const SPECIES_DATABASE = {
     melee: 1.75,
     speed: 1.75
   },
-
-  // Equipment & Combat
   saddleLevel: 67,
-  saddleType: 'Allosaurus Saddle',
+  saddleType: "Allosaurus Saddle",
   saddleArmor: 25,
   platformLimit: 0,
-  specialAbilities: ['Pack boost (alpha gets +50% damage when leading)', 'bleed attack', 'pounce', 'radiation immunity', 'toggleable particle effects.'],
-  attackTypes: ['Bite', 'tail swipe', 'pounce attack', 'gnashed bleed'],
-  canCarry: ['Small to medium creatures in mouth'],
-
-  // Utility & Roles
-  primaryRole: 'Pack hunting mount, mid-tier combat',
-  secondaryRoles: ['Flanking predator', 'high-velocity alpha strike unit', 'boss fighter (bleed)'],
-  gatheringResources: ['Meat, hide, keratin from kills'],
+  specialAbilities: ["Pack boost (alpha gets +50% damage when leading)", "bleed attack", "pounce", "radiation immunity", "toggleable particle effects."],
+  attackTypes: ["Bite", "tail swipe", "pounce attack", "gnashed bleed"],
+  canCarry: ["Small to medium creatures in mouth"],
+  primaryRole: "Pack hunting mount, mid-tier combat",
+  secondaryRoles: ["Flanking predator", "high-velocity alpha strike unit", "boss fighter (bleed)"],
+  gatheringResources: ["Meat, hide, keratin from kills"],
   gatheringEfficiency: {
     Meat: 7,
     Hide: 6
@@ -33968,93 +30523,74 @@ const SPECIES_DATABASE = {
     speed: 9,
     survivability: 6
   },
-
-  // Environmental Data
   speeds: {
     land: 32,
     flying: 0,
     swimming: 20,
     climbing: 0
   },
-  environmentalResistances: ['Immune to radiation'],
-  preferredBiome: 'Forests, grasslands, mountain foothills',
+  environmentalResistances: ["Immune to radiation"],
+  preferredBiome: "Forests, grasslands, mountain foothills",
   temperatureRange: {
     min: 16,
     max: 35
   },
-  oxygenRequirement: 'Air breathing',
-
-  // Breeding Genetics
+  oxygenRequirement: "Air breathing",
   breeding: {
-    cooldown: '18-48 hours',
-    gestationTime: '1 hour, 25 minutes',
-    babyFoodConsumption: 'High',
-    maturationTime: '1 day, 20 hours',
+    cooldown: "18-48 hours",
+    gestationTime: "1 hour, 25 minutes",
+    babyFoodConsumption: "High",
+    maturationTime: "1 day, 20 hours",
     colorRegions: 6,
-    colorRegionNames: ['Body', 'Spine', 'Body accent', 'Stripe', 'Belly', 'Legs'],
+    colorRegionNames: ["Body", "Spine", "Body accent", "Stripe", "Belly", "Legs"],
     mutationChance: 7.31,
-    breedingDifficulty: 'Medium'
+    breedingDifficulty: "Medium"
   },
-
-  // Special Functions
-  workstation: 'None',
-  resourceProduction: 'None',
-  structureFunctions: 'None',
-  buffAuras: ['Pack leader buff (red glow on alpha)'],
-  debuffAbilities: ['Bleed damage from gnashed attacks'],
-  uniqueMechanics: ['S-Dinos can crossbreed with non-S-Dinos'],
-
-  // Spawn & Location
-  spawnMaps: ['The Island', 'The Center', 'Ragnarok', 'Valguero', 'Crystal Isles', 'Lost Island', 'Fjordur', 'Aberration (Aberrant variant)'],
-  spawnZones: ['Forests, grasslands, redwood forests. Has a 10% chance to spawn in place of a standard Allosaurus.'],
-  rarityRating: 'Common',
-  levelRange: '1-150',
-  packBehavior: 'Pack of 3 (1 alpha, 2 betas)',
-  territorialBehavior: 'Aggressive, hunts in coordinated attacks',
-
-  // Management Metadata
-  difficultyRating: 'Medium',
+  workstation: "None",
+  resourceProduction: "None",
+  structureFunctions: "None",
+  buffAuras: ["Pack leader buff (red glow on alpha)"],
+  debuffAbilities: ["Bleed damage from gnashed attacks"],
+  uniqueMechanics: ["S-Dinos can crossbreed with non-S-Dinos"],
+  spawnMaps: ["The Island", "The Center", "Ragnarok", "Valguero", "Crystal Isles", "Lost Island", "Fjordur", "Aberration (Aberrant variant)"],
+  spawnZones: ["Forests, grasslands, redwood forests. Has a 10% chance to spawn in place of a standard Allosaurus."],
+  rarityRating: "Common",
+  levelRange: "1-150",
+  packBehavior: "Pack of 3 (1 alpha, 2 betas)",
+  territorialBehavior: "Aggressive, hunts in coordinated attacks",
+  difficultyRating: "Medium",
   beginnerFriendly: false,
   endGameViable: true,
   bossFightCapable: true,
-  pvpMeta: 'Medium',
-  resourceInvestment: 'Medium',
-  maintenanceLevel: 'Medium',
-
-  // Badge Categories
-  badgeCategories: ['combat', 'boss']
+  pvpMeta: "Medium",
+  resourceInvestment: "Medium",
+  maintenanceLevel: "Medium",
+  badgeCategories: ["combat", "boss"]
 },
 'S-Ankylo': {
-  // Basic Info
-  id: 'S_ANKY_004',
-  name: 'S-Ankylosaurus',
-  icon: '⚒️',
-  category: 'harvesting',
-  rarity: 'uncommon',
-  source: 'Base Game (S-Variant)',
-  variants: ['Standard', 'Aberrant', 'S-Variant'],
-
-  // Biology & Lore
-  dossierText: "At first glance, this variant of Ankylosaurus appears identical to the common species, save for the faint particulate energy that surrounds it. It grazes peacefully, its armored back providing a near-impenetrable defense against the island's predators. Like all S-Variants, it can wander through radioactive zones without any ill effect, a trait that makes the resource-rich but hazardous areas its preferred habitat. Its temperament is unchanged; it is a gentle giant that only brandishes its tail club when threatened. The true anomaly of this creature is only revealed upon taming. While it receives the standard enhancements to its speed and the power of its tail swings, its most profound change is one of behavior. A standard Ankylosaurus will cease harvesting resources once its inventory becomes half-full, a frustrating quirk for any industrious survivor. This variant, however, has no such limitation. It will continue to gather metal, crystal, and flint with a single-minded focus until it physically cannot carry another stone. This simple change transforms it from a mere tool into a semi-autonomous harvesting engine. When paired with a transport flyer, the S-Ankylosaurus becomes the cornerstone of any tribe's industrial efforts, a tireless worker that can gather a mountain of resources with minimal oversight.",
-  temperament: 'Docile, but will defend itself',
-  diet: 'Herbivore',
-  habitat: 'Rocky areas, mountain foothills, quarries, irradiated zones',
-  realWorldBasis: 'Ankylosaurus magniventris',
-  sizeClass: 'Large',
-
-  // Taming System
-  tamingMethod: 'Knockout',
-  tamingType: 'Violent taming with tranquilizers',
-  preferredKibble: 'Regular Kibble',
-  favoriteFood: 'Regular Kibble',
-  tamingSpeed: 'Slow',
+  id: "S_ANKY_004",
+  name: "S-Ankylosaurus",
+  icon: "⚒️",
+  category: "harvesting",
+  rarity: "uncommon",
+  source: "Base Game (S-Variant)",
+  variants: ["Standard", "Aberrant", "S-Variant"],
+  dossierText: "At first glance, this variant of Ankylosaurus appears identical to the common species, save for the faint particulate energy that surrounds it. It grazes peacefully, its armored back providing a near-impenetrable defense against the island's predators. Like all S-Variants, it can wander through radioactive zones without any ill effect, a trait that makes the resource-rich but hazardous areas its preferred habitat. Its temperament is unchanged; it is a gentle giant that only brandishes its tail club when threatened. The true anomaly of this creature is only revealed upon taming. While it receives the standard enhancements to its speed and the power of its tail swings, its most profound change is one of behavior. A standard Ankylosaurus will cease harvesting resources once its inventory becomes half-full, a frustrating quirk for any industrious survivor. This variant, however, has no such limitation. It will continue to gather metal, crystal, and flint with a single-minded focus until it physically cannot carry another stone. This simple change transforms it from a mere tool into a semi-autonomous harvesting engine. When paired with a transport flyer, the S-Ankylosaurus becomes the cornerstone of any tribe's industrial efforts, a tireless worker that can gather a mountain of resources with minimal oversight. Like all S-variants from Nekatus's S-Dino mod, this creature carries full radiation immunity — a meaningful passive advantage in environments like Aberration and the Genesis simulations where unprotected tames quickly become liabilities. In the wild, it has a 10% chance of spawning as an S-variant in place of the standard creature, identifiable by its distinctive bioluminescent shimmer. Holding E while mounted toggles special particle effects. Crossbreeding with the non-S variant is fully supported, allowing survivors to introduce the radiation immunity and S-variant glow into an established breeding line without sacrificing existing stat gains.",
+  temperament: "Docile, but will defend itself",
+  diet: "Herbivore",
+  habitat: "Rocky areas, mountain foothills, quarries, irradiated zones",
+  realWorldBasis: "Ankylosaurus magniventris",
+  sizeClass: "Large",
+  tamingMethod: "Knockout",
+  tamingType: "Violent taming with tranquilizers",
+  preferredKibble: "Regular Kibble",
+  favoriteFood: "Regular Kibble",
+  tamingSpeed: "Slow",
   torpor: {
     baseValue: 1500,
-    depleteRate: 'Slow'
+    depleteRate: "Slow"
   },
-  specialRequirements: 'Very high torpor, takes reduced damage from front/sides.',
-
-  // Base Statistics (Level 1 Wild)
+  specialRequirements: "Very high torpor, takes reduced damage from front/sides.",
   baseStats: {
     health: 630,
     stamina: 175,
@@ -34065,8 +30601,6 @@ const SPECIES_DATABASE = {
     speed: 100,
     torpor: 1500
   },
-
-  // Stat Scaling (Per Level)
   statScaling: {
     health: 140,
     stamina: 17.5,
@@ -34076,20 +30610,16 @@ const SPECIES_DATABASE = {
     melee: 2.5,
     speed: 0
   },
-
-  // Equipment & Combat
   saddleLevel: 40,
-  saddleType: 'Ankylo Saddle',
+  saddleType: "Ankylo Saddle",
   saddleArmor: 25,
   platformLimit: 0,
-  specialAbilities: ['Massive damage reduction', 'tail swing attack', 'rock destroyer', 'radiation immunity', 'toggleable particle effects', 'does not stop farming at 50% weight.'],
-  attackTypes: ['Tail swing (devastating knockback)', 'bite'],
-  canCarry: ['None'],
-
-  // Utility & Roles
-  primaryRole: 'Premier metal and stone gatherer',
-  secondaryRoles: ['Mobile quarry', 'defensive mount', 'autonomous harvesting engine'],
-  gatheringResources: ['Metal ore', 'stone', 'flint', 'crystal', 'obsidian'],
+  specialAbilities: ["Massive damage reduction", "tail swing attack", "rock destroyer", "radiation immunity", "toggleable particle effects", "does not stop farming at 50% weight."],
+  attackTypes: ["Tail swing (devastating knockback)", "bite"],
+  canCarry: ["None"],
+  primaryRole: "Premier metal and stone gatherer",
+  secondaryRoles: ["Mobile quarry", "defensive mount", "autonomous harvesting engine"],
+  gatheringResources: ["Metal ore", "stone", "flint", "crystal", "obsidian"],
   gatheringEfficiency: {
     Metal: 10,
     Stone: 10,
@@ -34102,93 +30632,74 @@ const SPECIES_DATABASE = {
     speed: 4,
     survivability: 9
   },
-
-  // Environmental Data
   speeds: {
     land: 8,
     flying: 0,
     swimming: 5,
     climbing: 0
   },
-  environmentalResistances: ['Massive damage reduction', 'immune to most knockback', 'immune to radiation.'],
-  preferredBiome: 'Mountains, rocky areas, metal-rich zones',
+  environmentalResistances: ["Massive damage reduction", "immune to most knockback", "immune to radiation."],
+  preferredBiome: "Mountains, rocky areas, metal-rich zones",
   temperatureRange: {
     min: 10,
     max: 40
   },
-  oxygenRequirement: 'Air breathing',
-
-  // Breeding Genetics
+  oxygenRequirement: "Air breathing",
   breeding: {
-    cooldown: '18-48 hours',
-    gestationTime: '2 hours, 37 minutes',
-    babyFoodConsumption: 'High',
-    maturationTime: '1 day, 15 hours',
+    cooldown: "18-48 hours",
+    gestationTime: "2 hours, 37 minutes",
+    babyFoodConsumption: "High",
+    maturationTime: "1 day, 15 hours",
     colorRegions: 6,
-    colorRegionNames: ['Body', 'spikes', 'shell', 'stripe', 'underside', 'tail club'],
+    colorRegionNames: ["Body", "spikes", "shell", "stripe", "underside", "tail club"],
     mutationChance: 7.31,
-    breedingDifficulty: 'Medium'
+    breedingDifficulty: "Medium"
   },
-
-  // Special Functions
-  workstation: 'None',
-  resourceProduction: 'None',
-  structureFunctions: 'None',
-  buffAuras: ['None'],
-  debuffAbilities: ['Massive knockback on tail attacks'],
-  uniqueMechanics: ['Reduced weight for metal/stone carried', 'auto-harvest functionality', 'does not stop farming at 50% weight. S-Dinos can crossbreed with non-S-Dinos.'],
-
-  // Spawn & Location
-  spawnMaps: ['The Island', 'The Center', 'Ragnarok', 'Valguero', 'Crystal Isles', 'Lost Island', 'Fjordur', 'Aberration (Aberrant)'],
-  spawnZones: ['Mountains, rocky highlands, metal-rich areas. Has a 10% chance to spawn in place of a standard Ankylosaurus.'],
-  rarityRating: 'Common',
-  levelRange: '1-150',
-  packBehavior: 'Small family groups (2-4)',
-  territorialBehavior: 'Peaceful unless threatened, defensive when attacked',
-
-  // Management Metadata
-  difficultyRating: 'Easy-Medium',
+  workstation: "None",
+  resourceProduction: "None",
+  structureFunctions: "None",
+  buffAuras: ["None"],
+  debuffAbilities: ["Massive knockback on tail attacks"],
+  uniqueMechanics: ["Reduced weight for metal/stone carried", "auto-harvest functionality", "does not stop farming at 50% weight. S-Dinos can crossbreed with non-S-Dinos."],
+  spawnMaps: ["The Island", "The Center", "Ragnarok", "Valguero", "Crystal Isles", "Lost Island", "Fjordur", "Aberration (Aberrant)"],
+  spawnZones: ["Mountains, rocky highlands, metal-rich areas. Has a 10% chance to spawn in place of a standard Ankylosaurus."],
+  rarityRating: "Common",
+  levelRange: "1-150",
+  packBehavior: "Small family groups (2-4)",
+  territorialBehavior: "Peaceful unless threatened, defensive when attacked",
+  difficultyRating: "Easy-Medium",
   beginnerFriendly: true,
   endGameViable: true,
   bossFightCapable: false,
-  pvpMeta: 'Medium',
-  resourceInvestment: 'Low',
-  maintenanceLevel: 'Low',
-
-  // Badge Categories
-  badgeCategories: ['harvesting']
+  pvpMeta: "Medium",
+  resourceInvestment: "Low",
+  maintenanceLevel: "Low",
+  badgeCategories: ["harvesting"]
 },
 'S-Basilosaurus': {
-  // Basic Info
-  id: 'S_BASILO_010',
-  name: 'S-Basilosaurus',
-  icon: '🐋',
-  category: 'utility',
-  rarity: 'rare',
-  source: 'Base Game (S-Variant)',
-  variants: ['Standard', 'Aberrant', 'S-Variant'],
-
-  // Biology & Lore
-  dossierText: "The oceans of the ARK are home to many strange creatures, but this variant of Basilosaurus is a true curiosity. It possesses the same gentle nature as its common relatives and is often trailed by a coterie of opportunistic predators. However, it is marked by the faint, shimmering particles common to all S-Variants and an immunity to radiation that allows it to explore the most toxic underwater grottos. Its most notable trait remains its natural bio-insulation and its complete imperviousness to the neurotoxins of Cnidaria and the shocking attacks of Electrophorus. For the oceanic explorer, the S-Basilosaurus is a direct upgrade. It is faster and its bite is more powerful, making it more efficient at harvesting the ocean's bounty and defending itself from aggressors. However, this comes at the cost of some of its natural durability. This trade-off is most apparent in the deepest trenches of the sea. The crushing pressure that inflicts a constant, draining toll on the common Basilosaurus is even more pronounced for this variant. A survivor riding an S-Basilosaurus must be ever-vigilant of their depth, for the abyss is an even greater threat to this swifter, but more fragile, king of the shallow seas.",
-  temperament: 'Passive (but will retaliate)',
-  diet: 'Carnivore',
-  habitat: 'Deep ocean, underwater trenches, cold waters, irradiated waters',
-  realWorldBasis: 'Basilosaurus cetoides',
-  sizeClass: 'Massive',
-
-  // Taming System
-  tamingMethod: 'Passive',
-  tamingType: 'Hand-feeding with preferred food while dealing with its escort of aggressive sea creatures.',
-  preferredKibble: 'Exceptional Kibble',
-  favoriteFood: 'Exceptional Kibble',
-  tamingSpeed: 'Very Slow',
+  id: "S_BASILO_010",
+  name: "S-Basilosaurus",
+  icon: "🐋",
+  category: "utility",
+  rarity: "rare",
+  source: "Base Game (S-Variant)",
+  variants: ["Standard", "Aberrant", "S-Variant"],
+  dossierText: "The oceans of the ARK are home to many strange creatures, but this variant of Basilosaurus is a true curiosity. It possesses the same gentle nature as its common relatives and is often trailed by a coterie of opportunistic predators. However, it is marked by the faint, shimmering particles common to all S-Variants and an immunity to radiation that allows it to explore the most toxic underwater grottos. Its most notable trait remains its natural bio-insulation and its complete imperviousness to the neurotoxins of Cnidaria and the shocking attacks of Electrophorus. For the oceanic explorer, the S-Basilosaurus is a direct upgrade. It is faster and its bite is more powerful, making it more efficient at harvesting the ocean's bounty and defending itself from aggressors. However, this comes at the cost of some of its natural durability. This trade-off is most apparent in the deepest trenches of the sea. The crushing pressure that inflicts a constant, draining toll on the common Basilosaurus is even more pronounced for this variant. A survivor riding an S-Basilosaurus must be ever-vigilant of their depth, for the abyss is an even greater threat to this swifter, but more fragile, king of the shallow seas. Like all S-variants from Nekatus's S-Dino mod, this creature carries full radiation immunity — a meaningful passive advantage in environments like Aberration and the Genesis simulations where unprotected tames quickly become liabilities. In the wild, it has a 10% chance of spawning as an S-variant in place of the standard creature, identifiable by its distinctive bioluminescent shimmer. Holding E while mounted toggles special particle effects. Crossbreeding with the non-S variant is fully supported, allowing survivors to introduce the radiation immunity and S-variant glow into an established breeding line without sacrificing existing stat gains.",
+  temperament: "Passive (but will retaliate)",
+  diet: "Carnivore",
+  habitat: "Deep ocean, underwater trenches, cold waters, irradiated waters",
+  realWorldBasis: "Basilosaurus cetoides",
+  sizeClass: "Massive",
+  tamingMethod: "Passive",
+  tamingType: "Hand-feeding with preferred food while dealing with its escort of aggressive sea creatures.",
+  preferredKibble: "Exceptional Kibble",
+  favoriteFood: "Exceptional Kibble",
+  tamingSpeed: "Very Slow",
   torpor: {
     baseValue: 3000,
-    depleteRate: 'N/A'
+    depleteRate: "N/A"
   },
-  specialRequirements: 'Must be tamed underwater, completely immune to cnidaria/electrophorus shock.',
-
-  // Base Statistics (Level 1 Wild)
+  specialRequirements: "Must be tamed underwater, completely immune to cnidaria/electrophorus shock.",
   baseStats: {
     health: 2160,
     stamina: 800,
@@ -34199,8 +30710,6 @@ const SPECIES_DATABASE = {
     speed: 100,
     torpor: 3000
   },
-
-  // Stat Scaling (Per Level)
   statScaling: {
     health: 480,
     stamina: 80,
@@ -34210,22 +30719,18 @@ const SPECIES_DATABASE = {
     melee: 3,
     speed: 1
   },
-
-  // Equipment & Combat
   saddleLevel: 60,
-  saddleType: 'Basilosaurus Saddle',
+  saddleType: "Basilosaurus Saddle",
   saddleArmor: 25,
   platformLimit: 1,
-  specialAbilities: ['Immunity to electric/jellyfish attacks', 'cold resistance', 'oil production', 'radiation immunity', 'toggleable particle effects.'],
-  attackTypes: ['Tail slap', 'bite attack'],
-  canCarry: ['Large creatures and substantial cargo'],
-
-  // Utility & Roles
-  primaryRole: 'Deep sea exploration and mobile sea base',
-  secondaryRoles: ['Oil production', 'underwater construction platform', 'cold water mount'],
-  gatheringResources: ['Oil (passive production)', 'raw fish meat', 'hide'],
+  specialAbilities: ["Immunity to electric/jellyfish attacks", "cold resistance", "oil production", "radiation immunity", "toggleable particle effects."],
+  attackTypes: ["Tail slap", "bite attack"],
+  canCarry: ["Large creatures and substantial cargo"],
+  primaryRole: "Deep sea exploration and mobile sea base",
+  secondaryRoles: ["Oil production", "underwater construction platform", "cold water mount"],
+  gatheringResources: ["Oil (passive production)", "raw fish meat", "hide"],
   gatheringEfficiency: {
-    'Oil production': 10,
+    "Oil production": 10,
     Fish: 6,
     Hide: 5
   },
@@ -34235,93 +30740,74 @@ const SPECIES_DATABASE = {
     speed: 6,
     survivability: 9
   },
-
-  // Environmental Data
   speeds: {
     land: 0,
     flying: 0,
     swimming: 20,
     climbing: 0
   },
-  environmentalResistances: ['Electric immunity', 'cold immunity', 'pressure immunity (takes increased damage at extreme depths)', 'radiation immunity.'],
-  preferredBiome: 'Deep ocean, arctic waters, underwater trenches',
+  environmentalResistances: ["Electric immunity", "cold immunity", "pressure immunity (takes increased damage at extreme depths)", "radiation immunity."],
+  preferredBiome: "Deep ocean, arctic waters, underwater trenches",
   temperatureRange: {
     min: -10,
     max: 20
   },
-  oxygenRequirement: 'Air breathing (surfaces regularly)',
-
-  // Breeding Genetics
+  oxygenRequirement: "Air breathing (surfaces regularly)",
   breeding: {
-    cooldown: '18-48 hours',
-    gestationTime: '7 hours, 56 minutes',
-    babyFoodConsumption: 'Extreme',
-    maturationTime: '4 days, 22 hours',
+    cooldown: "18-48 hours",
+    gestationTime: "7 hours, 56 minutes",
+    babyFoodConsumption: "Extreme",
+    maturationTime: "4 days, 22 hours",
     colorRegions: 6,
-    colorRegionNames: ['Body', 'belly', 'dorsal', 'stripes', 'fins', 'flippers'],
+    colorRegionNames: ["Body", "belly", "dorsal", "stripes", "fins", "flippers"],
     mutationChance: 7.31,
-    breedingDifficulty: 'Very Hard'
+    breedingDifficulty: "Very Hard"
   },
-
-  // Special Functions
-  workstation: 'Platform saddle allows crafting stations',
-  resourceProduction: 'Oil (passive generation in inventory)',
-  structureFunctions: 'Mobile sea base platform',
-  buffAuras: ['Cold protection for nearby players'],
-  debuffAbilities: ['None'],
-  uniqueMechanics: ['Electric immunity', 'platform building capability', 'oil generation. S-Dinos can crossbreed with non-S-Dinos.'],
-
-  // Spawn & Location
-  spawnMaps: ['The Island', 'The Center', 'Ragnarok', 'Valguero', 'Crystal Isles', 'Lost Island', 'Fjordur', 'Aberration (Aberrant)'],
-  spawnZones: ['Deep ocean areas, arctic waters, underwater caves. Has a 10% chance to spawn in place of a standard Basilosaurus.'],
-  rarityRating: 'Rare',
-  levelRange: '1-150',
-  packBehavior: 'Solitary or small pods (2-3)',
-  territorialBehavior: 'Passive unless attacked, protective of young',
-
-  // Management Metadata
-  difficultyRating: 'Very Hard',
+  workstation: "Platform saddle allows crafting stations",
+  resourceProduction: "Oil (passive generation in inventory)",
+  structureFunctions: "Mobile sea base platform",
+  buffAuras: ["Cold protection for nearby players"],
+  debuffAbilities: ["None"],
+  uniqueMechanics: ["Electric immunity", "platform building capability", "oil generation. S-Dinos can crossbreed with non-S-Dinos."],
+  spawnMaps: ["The Island", "The Center", "Ragnarok", "Valguero", "Crystal Isles", "Lost Island", "Fjordur", "Aberration (Aberrant)"],
+  spawnZones: ["Deep ocean areas, arctic waters, underwater caves. Has a 10% chance to spawn in place of a standard Basilosaurus."],
+  rarityRating: "Rare",
+  levelRange: "1-150",
+  packBehavior: "Solitary or small pods (2-3)",
+  territorialBehavior: "Passive unless attacked, protective of young",
+  difficultyRating: "Very Hard",
   beginnerFriendly: false,
   endGameViable: true,
   bossFightCapable: false,
-  pvpMeta: 'High',
-  resourceInvestment: 'Very High',
-  maintenanceLevel: 'High',
-
-  // Badge Categories
-  badgeCategories: ['utility', 'transport']
+  pvpMeta: "High",
+  resourceInvestment: "Very High",
+  maintenanceLevel: "High",
+  badgeCategories: ["utility", "transport"]
 },
 'S-Carcharodontosaurus': {
-  // Basic Info
-  id: 'S_CARCHA_014',
-  name: 'S-Carcharodontosaurus',
-  icon: '🦈',
-  category: 'combat',
-  rarity: 'legendary',
-  source: 'Lost Island DLC (S-Variant)',
-  variants: ['Standard', 'S-Variant'],
-
-  // Biology & Lore
-  dossierText: "The standard Carcharodontosaurus is a terror, an apex predator whose power can rival a Giganotosaurus. This variant is that terror amplified. It is faster, stronger, and somehow, more common. I've noted that these anomalous versions appear with a startling fifty percent frequency, making them a far more prevalent threat in the island's most dangerous regions. Like its brethren, it is driven by a terrifying 'Bloodrage,' growing ever more powerful with each kill it makes. The shimmering aura that surrounds it seems to intensify as its rage builds, a visual warning of its escalating lethality. Taming an S-Carcharodontosaurus follows the same trust-based ritual as the original, but the reward is a creature of unparalleled destructive momentum. The S-Variant's enhanced speed allows it to chain kills more effectively, building its Bloodrage to its zenith with terrifying speed. Its increased damage output means each kill is easier to secure, accelerating its snowballing power. The trade-off is a reduction in its initial health pool, making its first engagement in a battle its most vulnerable moment. A survivor who can successfully navigate this initial risk will be rewarded with a nearly unstoppable engine of destruction, capable of tearing through entire armies.",
-  temperament: 'Aggressive',
-  diet: 'Carnivore (large prey preferred)',
-  habitat: 'Open plains, hunting grounds, irradiated zones',
-  realWorldBasis: 'Carcharodontosaurus saharicus',
-  sizeClass: 'Massive',
-
-  // Taming System
-  tamingMethod: 'Special (Trust-Based)',
-  tamingType: 'Non-violent trust-based taming. Drag corpses to a trapped wild Carcharodontosaurus to fill its trust meter, then mount it and go on a killing spree to complete the tame.',
-  preferredKibble: 'N/A',
-  favoriteFood: 'N/A',
-  tamingSpeed: 'Variable',
+  id: "S_CARCHA_014",
+  name: "S-Carcharodontosaurus",
+  icon: "🦈",
+  category: "combat",
+  rarity: "legendary",
+  source: "Lost Island DLC (S-Variant)",
+  variants: ["Standard", "S-Variant"],
+  dossierText: "The standard Carcharodontosaurus is a terror, an apex predator whose power can rival a Giganotosaurus. This variant is that terror amplified. It is faster, stronger, and somehow, more common. I've noted that these anomalous versions appear with a startling fifty percent frequency, making them a far more prevalent threat in the island's most dangerous regions. Like its brethren, it is driven by a terrifying 'Bloodrage,' growing ever more powerful with each kill it makes. The shimmering aura that surrounds it seems to intensify as its rage builds, a visual warning of its escalating lethality. Taming an S-Carcharodontosaurus follows the same trust-based ritual as the original, but the reward is a creature of unparalleled destructive momentum. The S-Variant's enhanced speed allows it to chain kills more effectively, building its Bloodrage to its zenith with terrifying speed. Its increased damage output means each kill is easier to secure, accelerating its snowballing power. The trade-off is a reduction in its initial health pool, making its first engagement in a battle its most vulnerable moment. A survivor who can successfully navigate this initial risk will be rewarded with a nearly unstoppable engine of destruction, capable of tearing through entire armies. Like all S-variants from Nekatus's S-Dino mod, this creature carries full radiation immunity — a meaningful passive advantage in environments like Aberration and the Genesis simulations where unprotected tames quickly become liabilities. In the wild, it has a 10% chance of spawning as an S-variant in place of the standard creature, identifiable by its distinctive bioluminescent shimmer. Holding E while mounted toggles special particle effects. Crossbreeding with the non-S variant is fully supported, allowing survivors to introduce the radiation immunity and S-variant glow into an established breeding line without sacrificing existing stat gains.",
+  temperament: "Aggressive",
+  diet: "Carnivore (large prey preferred)",
+  habitat: "Open plains, hunting grounds, irradiated zones",
+  realWorldBasis: "Carcharodontosaurus saharicus",
+  sizeClass: "Massive",
+  tamingMethod: "Passive (Trust-Based)",
+  tamingType: "Non-violent trust-based taming. Drag corpses to a trapped wild Carcharodontosaurus to fill its trust meter, then mount it and go on a killing spree to complete the tame.",
+  preferredKibble: "N/A",
+  favoriteFood: "N/A",
+  tamingSpeed: "Variable",
   torpor: {
     baseValue: 2000,
-    depleteRate: 'N/A'
+    depleteRate: "N/A"
   },
-  specialRequirements: 'Bloodrage mechanic makes it extremely dangerous. Requires trapping and a supply of fresh corpses.',
-
-  // Base Statistics (Level 1 Wild)
+  specialRequirements: "Bloodrage mechanic makes it extremely dangerous. Requires trapping and a supply of fresh corpses.",
   baseStats: {
     health: 63000,
     stamina: 450,
@@ -34332,8 +30818,6 @@ const SPECIES_DATABASE = {
     speed: 100,
     torpor: 2000
   },
-
-  // Stat Scaling (Per Level)
   statScaling: {
     health: 240,
     stamina: 45,
@@ -34343,20 +30827,16 @@ const SPECIES_DATABASE = {
     melee: 6,
     speed: 2
   },
-
-  // Equipment & Combat
   saddleLevel: 96,
-  saddleType: 'Carcharodontosaurus Saddle',
+  saddleType: "Carcharodontosaurus Saddle",
   saddleArmor: 45,
   platformLimit: 0,
-  specialAbilities: ['Bloodrage (damage and speed boost from kills)', 'devastating bite', 'radiation immunity', 'toggleable particle effects.'],
-  attackTypes: ['Crushing bite', 'tail swipe', 'bloodrage rampage'],
-  canCarry: ['Large creatures in mouth'],
-
-  // Utility & Roles
-  primaryRole: 'Elite combat mount and alpha predator hunter',
-  secondaryRoles: ['Horde clearing', 'resource gathering through kills', 'unstoppable engine of destruction'],
-  gatheringResources: ['Meat, hide, keratin (massive amounts from kills)'],
+  specialAbilities: ["Bloodrage (damage and speed boost from kills)", "devastating bite", "radiation immunity", "toggleable particle effects."],
+  attackTypes: ["Crushing bite", "tail swipe", "bloodrage rampage"],
+  canCarry: ["Large creatures in mouth"],
+  primaryRole: "Elite combat mount and alpha predator hunter",
+  secondaryRoles: ["Horde clearing", "resource gathering through kills", "unstoppable engine of destruction"],
+  gatheringResources: ["Meat, hide, keratin (massive amounts from kills)"],
   gatheringEfficiency: {
     Meat: 10,
     Hide: 9,
@@ -34368,226 +30848,74 @@ const SPECIES_DATABASE = {
     speed: 9,
     survivability: 8
   },
-
-  // Environmental Data
   speeds: {
     land: 35,
     flying: 0,
     swimming: 25,
     climbing: 0
   },
-  environmentalResistances: ['Immune to radiation'],
-  preferredBiome: 'Open plains, grasslands, hunting territories',
+  environmentalResistances: ["Immune to radiation"],
+  preferredBiome: "Open plains, grasslands, hunting territories",
   temperatureRange: {
     min: 10,
     max: 45
   },
-  oxygenRequirement: 'Air breathing',
-
-  // Breeding Genetics
+  oxygenRequirement: "Air breathing",
   breeding: {
-    cooldown: '18-48 hours',
-    gestationTime: '7 hours, 56 minutes',
-    babyFoodConsumption: 'Extreme',
-    maturationTime: '10 days, 4 hours',
+    cooldown: "18-48 hours",
+    gestationTime: "7 hours, 56 minutes",
+    babyFoodConsumption: "Extreme",
+    maturationTime: "10 days, 4 hours",
     colorRegions: 6,
-    colorRegionNames: ['Body', 'stripes', 'belly', 'back', 'spines', 'teeth'],
+    colorRegionNames: ["Body", "stripes", "belly", "back", "spines", "teeth"],
     mutationChance: 7.31,
-    breedingDifficulty: 'Very Hard'
+    breedingDifficulty: "Very Hard"
   },
-
-  // Special Functions
-  workstation: 'None',
-  resourceProduction: 'None',
-  structureFunctions: 'None',
-  buffAuras: ['Bloodrage'],
-  debuffAbilities: ['None'],
-  uniqueMechanics: ['Bloodrage system (kill chains boost speed and damage). S-Dinos can crossbreed with non-S-Dinos.'],
-
-  // Spawn & Location
-  spawnMaps: ['Lost Island', 'Crystal Isles', 'Fjordur'],
-  spawnZones: ['Open plains, grasslands, predator territories. Has a 50% chance to spawn in place of a standard Carcharodontosaurus.'],
-  rarityRating: 'Legendary',
-  levelRange: '1-150',
-  packBehavior: 'Solitary',
-  territorialBehavior: 'Extremely aggressive, apex predator',
-
-  // Management Metadata
-  difficultyRating: 'Very Hard',
+  workstation: "None",
+  resourceProduction: "None",
+  structureFunctions: "None",
+  buffAuras: ["Bloodrage"],
+  debuffAbilities: ["None"],
+  uniqueMechanics: ["Bloodrage system (kill chains boost speed and damage). S-Dinos can crossbreed with non-S-Dinos."],
+  spawnMaps: ["Lost Island", "Crystal Isles", "Fjordur"],
+  spawnZones: ["Open plains, grasslands, predator territories. Has a 50% chance to spawn in place of a standard Carcharodontosaurus."],
+  rarityRating: "Legendary",
+  levelRange: "1-150",
+  packBehavior: "Solitary",
+  territorialBehavior: "Extremely aggressive, apex predator",
+  difficultyRating: "Very Hard",
   beginnerFriendly: false,
   endGameViable: true,
   bossFightCapable: true,
-  pvpMeta: 'Very High',
-  resourceInvestment: 'Extreme',
-  maintenanceLevel: 'High',
-
-  // Badge Categories
-  badgeCategories: ['boss', 'combat']
-},
-'S-Cat (S-Sabertooth)': {
-  // Basic Info
-  id: 'S_SABERTOOTH_081',
-  name: 'S-Sabertooth',
-  icon: '🐅',
-  category: 'combat',
-  rarity: 'common',
-  source: 'Base Game (S-Variant)',
-  variants: ['Standard', 'Aberrant', 'S-Variant'],
-
-  // Biology & Lore
-  dossierText: "The common Sabertooth is a swift and efficient predator of the island's colder climates, but this variant is a step beyond. It is noticeably faster, closing the distance on prey with a startling burst of speed, and its attacks seem to carry more weight. It is visually marked by the faint, energetic particles that cling to its fur and, like all S-Variants, is completely immune to the effects of radiation. It retains the aggressive, solitary hunting style of its species, a silent stalker of the mountain slopes and snowy plains. The S-Sabertooth is the perfect mount for the survivor who values speed and precision. Its enhanced swiftness makes it an exceptional scout and a master of hit-and-run tactics. In combat, it excels at guerrilla warfare, darting in to deliver a powerful bite before retreating out of harm's way. This offensive boost also translates to its harvesting abilities, allowing it to gather hide and chitin from carcasses with greater efficiency. This comes at the cost of some of its natural hardiness, making it more of a glass cannon than its standard counterpart. It is a creature for the deft survivor, one who can leverage its superior mobility to avoid damage rather than absorb it.",
-  temperament: 'Aggressive',
-  diet: 'Carnivore (large prey, pack hunters)',
-  habitat: 'Mountains, cliffs, rocky areas, caves, irradiated zones',
-  realWorldBasis: 'Smilodon fatalis (Saber-toothed Cat)',
-  sizeClass: 'Large',
-
-  // Taming System
-  tamingMethod: 'Knockout',
-  tamingType: 'Violent taming with tranquilizers',
-  preferredKibble: 'Regular Kibble',
-  favoriteFood: 'Regular Kibble',
-  tamingSpeed: 'Moderate',
-  torpor: {
-    baseValue: 350,
-    depleteRate: 'Fast'
-  },
-  specialRequirements: 'Aggressive pack behavior, climbing ability, found in mountainous regions.',
-
-  // Base Statistics (Level 1 Wild)
-  baseStats: {
-    health: 225,
-    stamina: 200,
-    oxygen: 150,
-    food: 1200,
-    weight: 200,
-    melee: 27.5,
-    speed: 100,
-    torpor: 350
-  },
-
-  // Stat Scaling (Per Level)
-  statScaling: {
-    health: 50,
-    stamina: 20,
-    oxygen: 15,
-    food: 120,
-    weight: 4,
-    melee: 1.25,
-    speed: 2
-  },
-
-  // Equipment & Combat
-  saddleLevel: 37,
-  saddleType: 'Sabertooth Saddle',
-  saddleArmor: 25,
-  platformLimit: 0,
-  specialAbilities: ['Wall climbing', 'pack coordination', 'saber bite', 'radiation immunity', 'toggleable particle effects.'],
-  attackTypes: ['Saber bite', 'claw swipes', 'pounce attack'],
-  canCarry: ['Medium cargo'],
-
-  // Utility & Roles
-  primaryRole: 'Climbing assault mount and pack hunter',
-  secondaryRoles: ['Cliff exploration', 'cave raiding', 'vertical mobility', 'hide/chitin harvester'],
-  gatheringResources: ['Raw meat', 'hide', 'chitin'],
-  gatheringEfficiency: {
-    'Raw meat': 7,
-    Hide: 6,
-    Chitin: 5
-  },
-  ratings: {
-    combat: 8,
-    transport: 6,
-    speed: 9,
-    survivability: 6
-  },
-
-  // Environmental Data
-  speeds: {
-    land: 35,
-    flying: 0,
-    swimming: 20,
-    climbing: 0
-  },
-  environmentalResistances: ['Immune to radiation'],
-  preferredBiome: 'Mountains, cliffs, rocky areas, caves, vertical terrain',
-  temperatureRange: {
-    min: 5,
-    max: 35
-  },
-  oxygenRequirement: 'Air breathing',
-
-  // Breeding Genetics
-  breeding: {
-    cooldown: '18-48 hours',
-    gestationTime: '7 hours, 56 minutes',
-    babyFoodConsumption: 'High',
-    maturationTime: '2 days, 22 hours',
-    colorRegions: 6,
-    colorRegionNames: ['Body', 'stripes', 'spots', 'belly', 'mane', 'sabers'],
-    mutationChance: 7.31,
-    breedingDifficulty: 'Medium'
-  },
-
-  // Special Functions
-  workstation: 'None',
-  resourceProduction: 'None',
-  structureFunctions: 'None',
-  buffAuras: ['Pack coordination provides damage bonus'],
-  debuffAbilities: ['None'],
-  uniqueMechanics: ['Wall climbing capability', 'pack hunting coordination. S-Dinos can crossbreed with non-S-Dinos.'],
-
-  // Spawn & Location
-  spawnMaps: ['The Island', 'The Center', 'Ragnarok', 'Valguero', 'Crystal Isles', 'Lost Island', 'Fjordur', 'Aberration (Aberrant)'],
-  spawnZones: ['Mountains, cliffs, rocky areas, caves, high elevation areas. Has a 10% chance to spawn in place of a standard Sabertooth.'],
-  rarityRating: 'Common',
-  levelRange: '1-150',
-  packBehavior: 'Hunting packs (3-6 members)',
-  territorialBehavior: 'Aggressive pack hunters, coordinate attacks',
-
-  // Management Metadata
-  difficultyRating: 'Medium',
-  beginnerFriendly: false,
-  endGameViable: true,
-  bossFightCapable: true,
-  pvpMeta: 'High',
-  resourceInvestment: 'Medium',
-  maintenanceLevel: 'Medium',
-
-  // Badge Categories
-  badgeCategories: ['combat', 'boss']
+  pvpMeta: "Very High",
+  resourceInvestment: "Extreme",
+  maintenanceLevel: "High",
+  badgeCategories: ["boss", "combat"]
 },
 'S-Ceratosaurus': {
-  // Basic Info
-  id: 'S_CERATO_216',
-  name: 'S-Ceratosaurus',
-  icon: '🦖',
-  category: 'combat',
-  rarity: 'uncommon',
-  source: 'Base Game (S-Variant)',
-  variants: ['Standard', 'S-Variant'],
-
-  // Biology & Lore
-  dossierText: "I've encountered this peculiar variant of Ceratosaurus in the grasslands, a departure from the typical habitats of its kind. It is faster and more aggressive than the common species, and like all its anomalous brethren, it is surrounded by a faint shimmer of energy and is immune to radiation. Its most curious behavioral difference is its taming method. Unlike the strange, blood-focused passive method of the standard Ceratosaurus, this variant seems susceptible to traditional knockout techniques. The S-Ceratosaurus is a paradigm shift in tactical utility. While it possesses the standard S-Variant enhancements of increased speed and power at the cost of health, its most revolutionary trait is the ability for its rider to wield their own weaponry from the saddle. This transforms the creature from a simple melee combatant into a highly mobile weapons platform. A survivor can use its speed to kite a dangerous predator while firing tranquilizer darts from its back, or use its agility to strafe an enemy position with rifle fire. This single change, combined with its more accessible taming method, makes the S-Ceratosaurus an invaluable and versatile addition to any tribe's arsenal.",
-  temperament: 'Aggressive',
-  diet: 'Carnivore',
-  habitat: 'Grasslands, irradiated zones',
-  realWorldBasis: 'Ceratosaurus nasicornis',
-  sizeClass: 'Large',
-
-  // Taming System
-  tamingMethod: 'Knockout',
-  tamingType: 'Violent taming with tranquilizers',
-  preferredKibble: 'Extraordinary Kibble',
-  favoriteFood: 'Extraordinary Kibble',
-  tamingSpeed: 'Moderate',
+  id: "S_CERATO_216",
+  name: "S-Ceratosaurus",
+  icon: "🦖",
+  category: "combat",
+  rarity: "uncommon",
+  source: "Base Game (S-Variant)",
+  variants: ["Standard", "S-Variant"],
+  dossierText: "I've encountered this peculiar variant of Ceratosaurus in the grasslands, a departure from the typical habitats of its kind. It is faster and more aggressive than the common species, and like all its anomalous brethren, it is surrounded by a faint shimmer of energy and is immune to radiation. Its most curious behavioral difference is its taming method. Unlike the strange, blood-focused passive method of the standard Ceratosaurus, this variant seems susceptible to traditional knockout techniques. The S-Ceratosaurus is a paradigm shift in tactical utility. While it possesses the standard S-Variant enhancements of increased speed and power at the cost of health, its most revolutionary trait is the ability for its rider to wield their own weaponry from the saddle. This transforms the creature from a simple melee combatant into a highly mobile weapons platform. A survivor can use its speed to kite a dangerous predator while firing tranquilizer darts from its back, or use its agility to strafe an enemy position with rifle fire. This single change, combined with its more accessible taming method, makes the S-Ceratosaurus an invaluable and versatile addition to any tribe's arsenal. Like all S-variants from Nekatus's S-Dino mod, this creature carries full radiation immunity — a meaningful passive advantage in environments like Aberration and the Genesis simulations where unprotected tames quickly become liabilities. In the wild, it has a 10% chance of spawning as an S-variant in place of the standard creature, identifiable by its distinctive bioluminescent shimmer. Holding E while mounted toggles special particle effects. Crossbreeding with the non-S variant is fully supported, allowing survivors to introduce the radiation immunity and S-variant glow into an established breeding line without sacrificing existing stat gains.",
+  temperament: "Aggressive",
+  diet: "Carnivore",
+  habitat: "Grasslands, irradiated zones",
+  realWorldBasis: "Ceratosaurus nasicornis",
+  sizeClass: "Large",
+  tamingMethod: "Knockout",
+  tamingType: "Violent taming with tranquilizers",
+  preferredKibble: "Extraordinary Kibble",
+  favoriteFood: "Extraordinary Kibble",
+  tamingSpeed: "Moderate",
   torpor: {
     baseValue: 420,
-    depleteRate: 'Fast'
+    depleteRate: "Fast"
   },
-  specialRequirements: 'Unlike the standard variant, the S-Ceratosaurus is a knockout tame.',
-
-  // Base Statistics (Level 1 Wild)
+  specialRequirements: "Unlike the standard variant, the S-Ceratosaurus is a knockout tame.",
   baseStats: {
     health: 495,
     stamina: 300,
@@ -34598,8 +30926,6 @@ const SPECIES_DATABASE = {
     speed: 100,
     torpor: 420
   },
-
-  // Stat Scaling (Per Level)
   statScaling: {
     health: 110,
     stamina: 40,
@@ -34609,20 +30935,16 @@ const SPECIES_DATABASE = {
     melee: 1.75,
     speed: 1.5
   },
-
-  // Equipment & Combat
   saddleLevel: 60,
-  saddleType: 'Ceratosaurus Saddle',
+  saddleType: "Ceratosaurus Saddle",
   saddleArmor: 25,
   platformLimit: 0,
-  specialAbilities: ['Allows mounted weaponry', 'venomous horn', 'radiation immunity', 'toggleable particle effects.'],
-  attackTypes: ['Bite', 'Horn Attack', 'Tail Whip'],
-  canCarry: ['None'],
-
-  // Utility & Roles
-  primaryRole: 'Mobile weapons platform',
-  secondaryRoles: ['Taming mount', 'travel mount', 'mid-tier combat'],
-  gatheringResources: ['Meat', 'Hide', 'Keratin'],
+  specialAbilities: ["Allows mounted weaponry", "venomous horn", "radiation immunity", "toggleable particle effects."],
+  attackTypes: ["Bite", "Horn Attack", "Tail Whip"],
+  canCarry: ["None"],
+  primaryRole: "Mobile weapons platform",
+  secondaryRoles: ["Taming mount", "travel mount", "mid-tier combat"],
+  gatheringResources: ["Meat", "Hide", "Keratin"],
   gatheringEfficiency: {
     Meat: 7,
     Hide: 6
@@ -34633,93 +30955,74 @@ const SPECIES_DATABASE = {
     speed: 8,
     survivability: 6
   },
-
-  // Environmental Data
   speeds: {
     land: 40,
     flying: 0,
     swimming: 25,
     climbing: 0
   },
-  environmentalResistances: ['Immune to radiation'],
-  preferredBiome: 'Grasslands',
+  environmentalResistances: ["Immune to radiation"],
+  preferredBiome: "Grasslands",
   temperatureRange: {
     min: 5,
     max: 45
   },
-  oxygenRequirement: 'Air breathing',
-
-  // Breeding Genetics
+  oxygenRequirement: "Air breathing",
   breeding: {
-    cooldown: '18-48 hours',
-    gestationTime: '2 hours, 37 minutes',
-    babyFoodConsumption: 'High',
-    maturationTime: '5 days, 12 hours',
+    cooldown: "18-48 hours",
+    gestationTime: "2 hours, 37 minutes",
+    babyFoodConsumption: "High",
+    maturationTime: "5 days, 12 hours",
     colorRegions: 6,
-    colorRegionNames: ['Body', 'horn', 'back ridges', 'stripes', 'markings', 'accents'],
+    colorRegionNames: ["Body", "horn", "back ridges", "stripes", "markings", "accents"],
     mutationChance: 7.31,
-    breedingDifficulty: 'Medium'
+    breedingDifficulty: "Medium"
   },
-
-  // Special Functions
-  workstation: 'None',
-  resourceProduction: 'None',
-  structureFunctions: 'None',
-  buffAuras: ['None'],
-  debuffAbilities: ['None'],
-  uniqueMechanics: ['Rider can use weapons while mounted. S-Dinos can crossbreed with non-S-Dinos.'],
-
-  // Spawn & Location
-  spawnMaps: ['The Island', 'The Center', 'Ragnarok', 'Valguero', 'Fjordur', 'Lost Island', 'Genesis Part 2', 'Astraeos'],
-  spawnZones: ['Uses "DinoSpawnEntriesGrassland" & "DinoSpawnEntriesGrassland_Astraeos" spawn containers. Has a 10% chance to spawn in place of a standard Ceratosaurus.'],
-  rarityRating: 'Uncommon',
-  levelRange: '1-150',
-  packBehavior: 'Solitary or pairs',
-  territorialBehavior: 'Aggressive',
-
-  // Management Metadata
-  difficultyRating: 'Medium',
+  workstation: "None",
+  resourceProduction: "None",
+  structureFunctions: "None",
+  buffAuras: ["None"],
+  debuffAbilities: ["None"],
+  uniqueMechanics: ["Rider can use weapons while mounted. S-Dinos can crossbreed with non-S-Dinos."],
+  spawnMaps: ["The Island", "The Center", "Ragnarok", "Valguero", "Fjordur", "Lost Island", "Genesis Part 2", "Astraeos"],
+  spawnZones: ["Uses \"DinoSpawnEntriesGrassland\" & \"DinoSpawnEntriesGrassland_Astraeos\" spawn containers. Has a 10% chance to spawn in place of a standard Ceratosaurus."],
+  rarityRating: "Uncommon",
+  levelRange: "1-150",
+  packBehavior: "Solitary or pairs",
+  territorialBehavior: "Aggressive",
+  difficultyRating: "Medium",
   beginnerFriendly: false,
   endGameViable: true,
   bossFightCapable: true,
-  pvpMeta: 'High',
-  resourceInvestment: 'Medium',
-  maintenanceLevel: 'Medium',
-
-  // Badge Categories
-  badgeCategories: ['combat', 'boss']
+  pvpMeta: "High",
+  resourceInvestment: "Medium",
+  maintenanceLevel: "Medium",
+  badgeCategories: ["combat", "boss"]
 },
 'S-Daeodon': {
-  // Basic Info
-  id: 'S_DAEODON_020',
-  name: 'S-Daeodon',
-  icon: '🐗',
-  category: 'combat',
-  rarity: 'rare',
-  source: 'Base Game (S-Variant)',
-  variants: ['Standard', 'Aberrant', 'S-Variant'],
-
-  // Biology & Lore
-  dossierText: "This creature is an anomaly among anomalies. While it bears the physical appearance of a Daeodon, its behavior and capabilities are utterly alien to the species. I have observed it in the wild and it displays none of the signature healing abilities of its common kin. Instead, it fights with a ferocity and power that is frankly shocking. It possesses a devastating area-of-effect attack and a physical resilience that seems to rival that of a Tyrannosaurus. It is a complete and terrifying inversion of the 'Hell Pig' I thought I knew. To tame an S-Daeodon is to acquire not a healer, but a frontline brawler of the highest caliber. Its healing aura is completely absent, replaced by a stat profile that mirrors the island's apex predator. Its health, stamina, and melee power are all massively increased, transforming it from a support unit into a primary assault creature. It can no longer sustain a war party through regeneration; instead, it leads the charge, shattering enemy formations with its powerful bite and area-of-effect stomp. This variant is perhaps the most drastic reimagining I have yet encountered, forcing a complete strategic re-evaluation of the Daeodon's role on the battlefield.",
-  temperament: 'Territorial',
-  diet: 'Omnivore',
-  habitat: 'Forests, plains, irradiated zones, wherever food is abundant',
-  realWorldBasis: 'Daeodon shoshonensis',
-  sizeClass: 'Large',
-
-  // Taming System
-  tamingMethod: 'Knockout',
-  tamingType: 'Violent taming with tranquilizers',
-  preferredKibble: 'Superior Kibble',
-  favoriteFood: 'Superior Kibble',
-  tamingSpeed: 'Slow',
+  id: "S_DAEODON_020",
+  name: "S-Daeodon",
+  icon: "🐗",
+  category: "combat",
+  rarity: "rare",
+  source: "Base Game (S-Variant)",
+  variants: ["Standard", "Aberrant", "S-Variant"],
+  dossierText: "This creature is an anomaly among anomalies. While it bears the physical appearance of a Daeodon, its behavior and capabilities are utterly alien to the species. I have observed it in the wild and it displays none of the signature healing abilities of its common kin. Instead, it fights with a ferocity and power that is frankly shocking. It possesses a devastating area-of-effect attack and a physical resilience that seems to rival that of a Tyrannosaurus. It is a complete and terrifying inversion of the 'Hell Pig' I thought I knew. To tame an S-Daeodon is to acquire not a healer, but a frontline brawler of the highest caliber. Its healing aura is completely absent, replaced by a stat profile that mirrors the island's apex predator. Its health, stamina, and melee power are all massively increased, transforming it from a support unit into a primary assault creature. It can no longer sustain a war party through regeneration; instead, it leads the charge, shattering enemy formations with its powerful bite and area-of-effect stomp. This variant is perhaps the most drastic reimagining I have yet encountered, forcing a complete strategic re-evaluation of the Daeodon's role on the battlefield. Like all S-variants from Nekatus's S-Dino mod, this creature carries full radiation immunity — a meaningful passive advantage in environments like Aberration and the Genesis simulations where unprotected tames quickly become liabilities. In the wild, it has a 10% chance of spawning as an S-variant in place of the standard creature, identifiable by its distinctive bioluminescent shimmer. Holding E while mounted toggles special particle effects. Crossbreeding with the non-S variant is fully supported, allowing survivors to introduce the radiation immunity and S-variant glow into an established breeding line without sacrificing existing stat gains.",
+  temperament: "Territorial",
+  diet: "Omnivore",
+  habitat: "Forests, plains, irradiated zones, wherever food is abundant",
+  realWorldBasis: "Daeodon shoshonensis",
+  sizeClass: "Large",
+  tamingMethod: "Knockout",
+  tamingType: "Violent taming with tranquilizers",
+  preferredKibble: "Superior Kibble",
+  favoriteFood: "Superior Kibble",
+  tamingSpeed: "Slow",
   torpor: {
     baseValue: 1550,
-    depleteRate: 'Moderate'
+    depleteRate: "Moderate"
   },
-  specialRequirements: 'Extremely high food consumption, both wild and tamed.',
-
-  // Base Statistics (Level 1 Wild)
+  specialRequirements: "Extremely high food consumption, both wild and tamed.",
   baseStats: {
     health: 1100,
     stamina: 420,
@@ -34730,8 +31033,6 @@ const SPECIES_DATABASE = {
     speed: 100,
     torpor: 1550
   },
-
-  // Stat Scaling (Per Level)
   statScaling: {
     health: 220,
     stamina: 42,
@@ -34741,20 +31042,16 @@ const SPECIES_DATABASE = {
     melee: 5,
     speed: 1.75
   },
-
-  // Equipment & Combat
   saddleLevel: 45,
-  saddleType: 'Daeodon Saddle',
+  saddleType: "Daeodon Saddle",
   saddleArmor: 25,
   platformLimit: 0,
-  specialAbilities: ['AOE attack', 'massive food consumption', 'pack leader', 'radiation immunity', 'toggleable particle effects.'],
-  attackTypes: ['Bite', 'charge', 'tail swipe', 'AOE stomp'],
-  canCarry: ['Medium creatures and substantial cargo'],
-
-  // Utility & Roles
-  primaryRole: 'Frontline brawler and primary assault creature',
-  secondaryRoles: ['Combat mount', 'food processor', 'boss fighter (DPS role)'],
-  gatheringResources: ['Meat, hide, berries (omnivorous)'],
+  specialAbilities: ["AOE attack", "massive food consumption", "pack leader", "radiation immunity", "toggleable particle effects."],
+  attackTypes: ["Bite", "charge", "tail swipe", "AOE stomp"],
+  canCarry: ["Medium creatures and substantial cargo"],
+  primaryRole: "Frontline brawler and primary assault creature",
+  secondaryRoles: ["Combat mount", "food processor", "boss fighter (DPS role)"],
+  gatheringResources: ["Meat, hide, berries (omnivorous)"],
   gatheringEfficiency: {
     Meat: 7,
     Hide: 6,
@@ -34766,93 +31063,74 @@ const SPECIES_DATABASE = {
     speed: 6,
     survivability: 9
   },
-
-  // Environmental Data
   speeds: {
     land: 28,
     flying: 0,
     swimming: 20,
     climbing: 0
   },
-  environmentalResistances: ['Immune to radiation'],
-  preferredBiome: 'Forests, plains, areas with abundant food sources',
+  environmentalResistances: ["Immune to radiation"],
+  preferredBiome: "Forests, plains, areas with abundant food sources",
   temperatureRange: {
     min: 10,
     max: 35
   },
-  oxygenRequirement: 'Air breathing',
-
-  // Breeding Genetics
+  oxygenRequirement: "Air breathing",
   breeding: {
-    cooldown: '18-48 hours',
-    gestationTime: '7 hours, 56 minutes',
-    babyFoodConsumption: 'Extreme',
-    maturationTime: '2 days, 22 hours',
+    cooldown: "18-48 hours",
+    gestationTime: "7 hours, 56 minutes",
+    babyFoodConsumption: "Extreme",
+    maturationTime: "2 days, 22 hours",
     colorRegions: 6,
-    colorRegionNames: ['Body', 'spine', 'stripes', 'belly', 'snout', 'tusks'],
+    colorRegionNames: ["Body", "spine", "stripes", "belly", "snout", "tusks"],
     mutationChance: 7.31,
-    breedingDifficulty: 'Very Hard'
+    breedingDifficulty: "Very Hard"
   },
-
-  // Special Functions
-  workstation: 'None',
-  resourceProduction: 'None',
-  structureFunctions: 'None',
-  buffAuras: ['None'],
-  debuffAbilities: ['None'],
-  uniqueMechanics: ['AOE attack. Has base stats comparable to a Rex. Does not heal. S-Dinos can crossbreed with non-S-Dinos.'],
-
-  // Spawn & Location
-  spawnMaps: ['The Island', 'The Center', 'Ragnarok', 'Valguero', 'Crystal Isles', 'Lost Island', 'Fjordur', 'Aberration (Aberrant)'],
-  spawnZones: ['Forests, plains, areas with diverse food sources. Has a 10% chance to spawn in place of a standard Daeodon.'],
-  rarityRating: 'Rare',
-  levelRange: '1-150',
-  packBehavior: 'Small groups (2-4)',
-  territorialBehavior: 'Territorial, aggressive when defending food sources',
-
-  // Management Metadata
-  difficultyRating: 'Hard',
+  workstation: "None",
+  resourceProduction: "None",
+  structureFunctions: "None",
+  buffAuras: ["None"],
+  debuffAbilities: ["None"],
+  uniqueMechanics: ["AOE attack. Has base stats comparable to a Rex. Does not heal. S-Dinos can crossbreed with non-S-Dinos."],
+  spawnMaps: ["The Island", "The Center", "Ragnarok", "Valguero", "Crystal Isles", "Lost Island", "Fjordur", "Aberration (Aberrant)"],
+  spawnZones: ["Forests, plains, areas with diverse food sources. Has a 10% chance to spawn in place of a standard Daeodon."],
+  rarityRating: "Rare",
+  levelRange: "1-150",
+  packBehavior: "Small groups (2-4)",
+  territorialBehavior: "Territorial, aggressive when defending food sources",
+  difficultyRating: "Hard",
   beginnerFriendly: false,
   endGameViable: true,
   bossFightCapable: true,
-  pvpMeta: 'High',
-  resourceInvestment: 'Extreme',
-  maintenanceLevel: 'Very High',
-
-  // Badge Categories
-  badgeCategories: ['combat', 'boss']
+  pvpMeta: "High",
+  resourceInvestment: "Extreme",
+  maintenanceLevel: "Very High",
+  badgeCategories: ["combat", "boss"]
 },
 'S-Deinonychus': {
-  // Basic Info
-  id: 'S_DEINONYCHUS_2259',
-  name: 'S-Deinonychus',
-  icon: '🦖',
-  category: 'combat',
-  rarity: 'uncommon',
-  source: 'Base Game (S-Variant)',
-  variants: ['Standard', 'S-Variant'],
-
-  // Biology & Lore
-  dossierText: "The common Deinonychus is a creature of specific locales, its nests found only in certain cliff-side environments. This S-Variant, however, is far more widespread. I have seen it hunting in any region where Raptors are found, suggesting it has somehow usurped their ecological niche. It is faster and deadlier than a standard Deinonychus, but the most significant change is its nature. Unlike the wild originals, which can only be propagated by stealing their eggs, this variant can be rendered unconscious and tamed through conventional means. The accessibility of the S-Deinonychus is its greatest asset. Being a knockout tame makes it far easier to acquire for tribes on any map, and its ability to be bred allows for the development of powerful, mutated bloodlines. It retains its signature pounce and bleed-inducing attacks, which are amplified by its enhanced stats. While it does not receive the bonus levels from taming effectiveness—a curious balancing act of this world's strange mechanics—its widespread availability and breedability make it a premier pack hunter for any tribe, no longer a regional specialty but a global threat.",
-  temperament: 'Aggressive',
-  diet: 'Carnivore',
-  habitat: 'Anywhere Raptors spawn, irradiated zones',
-  realWorldBasis: 'Deinonychus antirrhopus',
-  sizeClass: 'Medium',
-
-  // Taming System
-  tamingMethod: 'Knockout',
-  tamingType: 'Violent taming with tranquilizers',
-  preferredKibble: 'Exceptional & Extraordinary Kibble',
-  favoriteFood: 'Exceptional Kibble',
-  tamingSpeed: 'Moderate',
+  id: "S_DEINONYCHUS_2259",
+  name: "S-Deinonychus",
+  icon: "🦖",
+  category: "combat",
+  rarity: "uncommon",
+  source: "Valguero DLC (S-Variant)",
+  variants: ["Standard", "S-Variant"],
+  dossierText: "The common Deinonychus is a creature of specific locales, its nests found only in certain cliff-side environments. This S-Variant, however, is far more widespread. I have seen it hunting in any region where Raptors are found, suggesting it has somehow usurped their ecological niche. It is faster and deadlier than a standard Deinonychus, but the most significant change is its nature. Unlike the wild originals, which can only be propagated by stealing their eggs, this variant can be rendered unconscious and tamed through conventional means. The accessibility of the S-Deinonychus is its greatest asset. Being a knockout tame makes it far easier to acquire for tribes on any map, and its ability to be bred allows for the development of powerful, mutated bloodlines. It retains its signature pounce and bleed-inducing attacks, which are amplified by its enhanced stats. While it does not receive the bonus levels from taming effectiveness—a curious balancing act of this world's strange mechanics—its widespread availability and breedability make it a premier pack hunter for any tribe, no longer a regional specialty but a global threat. Like all S-variants from Nekatus's S-Dino mod, this creature carries full radiation immunity — a meaningful passive advantage in environments like Aberration and the Genesis simulations where unprotected tames quickly become liabilities. In the wild, it has a 10% chance of spawning as an S-variant in place of the standard creature, identifiable by its distinctive bioluminescent shimmer. Holding E while mounted toggles special particle effects. Crossbreeding with the non-S variant is fully supported, allowing survivors to introduce the radiation immunity and S-variant glow into an established breeding line without sacrificing existing stat gains.",
+  temperament: "Aggressive",
+  diet: "Carnivore",
+  habitat: "Anywhere Raptors spawn, irradiated zones",
+  realWorldBasis: "Deinonychus antirrhopus",
+  sizeClass: "Medium",
+  tamingMethod: "Knockout",
+  tamingType: "Violent taming with tranquilizers",
+  preferredKibble: "Exceptional & Extraordinary Kibble",
+  favoriteFood: "Exceptional Kibble",
+  tamingSpeed: "Moderate",
   torpor: {
     baseValue: 500,
-    depleteRate: 'Fast'
+    depleteRate: "Fast"
   },
-  specialRequirements: 'Does not get tame effectiveness bonus levels for balance reasons.',
-
-  // Base Statistics (Level 1 Wild)
+  specialRequirements: "Does not get tame effectiveness bonus levels for balance reasons.",
   baseStats: {
     health: 180,
     stamina: 260,
@@ -34863,8 +31141,6 @@ const SPECIES_DATABASE = {
     speed: 100,
     torpor: 500
   },
-
-  // Stat Scaling (Per Level)
   statScaling: {
     health: 40,
     stamina: 15,
@@ -34874,20 +31150,16 @@ const SPECIES_DATABASE = {
     melee: 1.7,
     speed: 2
   },
-
-  // Equipment & Combat
   saddleLevel: 32,
-  saddleType: 'Deinonychus Saddle',
+  saddleType: "Deinonychus Saddle",
   saddleArmor: 25,
   platformLimit: 0,
-  specialAbilities: ['Pounce and latch', 'bleed attack', 'pack roar', 'radiation immunity', 'toggleable particle effects', 'climbing (bugged).'],
-  attackTypes: ['Bite', 'Claw Slash', 'Pounce', 'Latch & Gnaw'],
-  canCarry: ['None'],
-
-  // Utility & Roles
-  primaryRole: 'Pack hunting mount and bleed damage specialist',
-  secondaryRoles: ['Travel mount', 'cave exploration', 'boss fighter (bleed damage)'],
-  gatheringResources: ['Meat', 'Hide', 'Keratin'],
+  specialAbilities: ["Pounce and latch", "bleed attack", "pack roar", "radiation immunity", "toggleable particle effects", "climbing (bugged)."],
+  attackTypes: ["Bite", "Claw Slash", "Pounce", "Latch & Gnaw"],
+  canCarry: ["None"],
+  primaryRole: "Pack hunting mount and bleed damage specialist",
+  secondaryRoles: ["Travel mount", "cave exploration", "boss fighter (bleed damage)"],
+  gatheringResources: ["Meat", "Hide", "Keratin"],
   gatheringEfficiency: {
     Meat: 8,
     Hide: 7
@@ -34898,93 +31170,74 @@ const SPECIES_DATABASE = {
     speed: 9,
     survivability: 6
   },
-
-  // Environmental Data
   speeds: {
     land: 38,
     flying: 0,
     swimming: 25,
     climbing: 0
   },
-  environmentalResistances: ['Immune to radiation'],
-  preferredBiome: 'Anywhere Raptors are found',
+  environmentalResistances: ["Immune to radiation"],
+  preferredBiome: "Anywhere Raptors are found",
   temperatureRange: {
     min: -20,
     max: 15
   },
-  oxygenRequirement: 'Air breathing',
-
-  // Breeding Genetics
+  oxygenRequirement: "Air breathing",
   breeding: {
-    cooldown: '18-48 hours',
-    gestationTime: '1 hour, 25 minutes',
-    babyFoodConsumption: 'High',
-    maturationTime: '1 day, 13 hours',
+    cooldown: "18-48 hours",
+    gestationTime: "1 hour, 25 minutes",
+    babyFoodConsumption: "High",
+    maturationTime: "1 day, 13 hours",
     colorRegions: 6,
-    colorRegionNames: ['Body', 'Feathers', 'Head', 'Claws', 'Legs', 'Belly'],
+    colorRegionNames: ["Body", "Feathers", "Head", "Claws", "Legs", "Belly"],
     mutationChance: 7.31,
-    breedingDifficulty: 'Medium'
+    breedingDifficulty: "Medium"
   },
-
-  // Special Functions
-  workstation: 'None',
-  resourceProduction: 'None',
-  structureFunctions: 'None',
-  buffAuras: ['Pack leader roar provides damage and speed buff to pack members.'],
-  debuffAbilities: ['None'],
-  uniqueMechanics: ['Knockout tame, Breedable, does not gain bonus levels from taming effectiveness. S-Dinos can crossbreed with non-S-Dinos.'],
-
-  // Spawn & Location
-  spawnMaps: ['All maps where Raptors spawn'],
-  spawnZones: ['Has a 10% chance to spawn in place of a Raptor.'],
-  rarityRating: 'Uncommon',
-  levelRange: '1-150',
-  packBehavior: 'Pack of 3-6',
-  territorialBehavior: 'Aggressively social, hunts in coordinated packs',
-
-  // Management Metadata
-  difficultyRating: 'Medium',
+  workstation: "None",
+  resourceProduction: "None",
+  structureFunctions: "None",
+  buffAuras: ["Pack leader roar provides damage and speed buff to pack members."],
+  debuffAbilities: ["None"],
+  uniqueMechanics: ["Knockout tame, Breedable, does not gain bonus levels from taming effectiveness. S-Dinos can crossbreed with non-S-Dinos."],
+  spawnMaps: ["All maps where Raptors spawn"],
+  spawnZones: ["Has a 10% chance to spawn in place of a Raptor."],
+  rarityRating: "Uncommon",
+  levelRange: "1-150",
+  packBehavior: "Pack of 3-6",
+  territorialBehavior: "Aggressively social, hunts in coordinated packs",
+  difficultyRating: "Medium",
   beginnerFriendly: false,
   endGameViable: true,
   bossFightCapable: true,
-  pvpMeta: 'High',
-  resourceInvestment: 'Medium',
-  maintenanceLevel: 'Medium',
-
-  // Badge Categories
-  badgeCategories: ['combat', 'boss']
+  pvpMeta: "High",
+  resourceInvestment: "Medium",
+  maintenanceLevel: "Medium",
+  badgeCategories: ["combat", "boss"]
 },
 'S-Deinosuchus': {
-  // Basic Info
-  id: 'S_DEINOSUCHUS_2272',
-  name: 'S-Deinosuchus',
-  icon: '🐊',
-  category: 'combat',
-  rarity: 'rare',
-  source: 'Base Game (S-Variant)',
-  variants: ['Standard', 'S-Variant'],
-
-  // Biology & Lore
-  dossierText: "The Deinosuchus is the undisputed king of the island's swamps and rivers, a colossal crocodilian of immense power. This S-Variant is that power honed to an even finer edge. It moves with greater speed both in water and on land, and its already devastating bite seems to carry even more force. It is surrounded by the tell-tale shimmer of anomalous energy and is immune to radiation, allowing it to patrol the most toxic waterways without fear. It is an apex predator made even more perfect. An S-Deinosuchus is a terrifying weapon. Its signature 'giga bite' inflicts a grievous bleeding wound that drains the life from even the most resilient of creatures, a trait that makes it invaluable for tackling the island's legendary guardians. The S-Variant's 10% damage increase makes this bleed even more potent, melting the health of its targets with horrifying efficiency. While it sacrifices a fraction of its immense health pool, its increased speed and power make it a more effective and mobile engine of destruction. For amphibious warfare, there are few creatures that can match its sheer, brutal effectiveness.",
-  temperament: 'Aggressive',
-  diet: 'Carnivore',
-  habitat: 'Swamps, rivers, irradiated zones',
-  realWorldBasis: 'Deinosuchus',
-  sizeClass: 'Large',
-
-  // Taming System
-  tamingMethod: 'Knockout',
-  tamingType: 'Violent taming with tranquilizers',
-  preferredKibble: 'Superior Kibble',
-  favoriteFood: 'Superior Kibble',
-  tamingSpeed: 'Slow',
+  id: "S_DEINOSUCHUS_2272",
+  name: "S-Deinosuchus",
+  icon: "🐊",
+  category: "combat",
+  rarity: "rare",
+  source: "Base Game (S-Variant)",
+  variants: ["Standard", "S-Variant"],
+  dossierText: "The Deinosuchus is the undisputed king of the island's swamps and rivers, a colossal crocodilian of immense power. This S-Variant is that power honed to an even finer edge. It moves with greater speed both in water and on land, and its already devastating bite seems to carry even more force. It is surrounded by the tell-tale shimmer of anomalous energy and is immune to radiation, allowing it to patrol the most toxic waterways without fear. It is an apex predator made even more perfect. An S-Deinosuchus is a terrifying weapon. Its signature 'giga bite' inflicts a grievous bleeding wound that drains the life from even the most resilient of creatures, a trait that makes it invaluable for tackling the island's legendary guardians. The S-Variant's 10% damage increase makes this bleed even more potent, melting the health of its targets with horrifying efficiency. While it sacrifices a fraction of its immense health pool, its increased speed and power make it a more effective and mobile engine of destruction. For amphibious warfare, there are few creatures that can match its sheer, brutal effectiveness. Like all S-variants from Nekatus's S-Dino mod, this creature carries full radiation immunity — a meaningful passive advantage in environments like Aberration and the Genesis simulations where unprotected tames quickly become liabilities. In the wild, it has a 10% chance of spawning as an S-variant in place of the standard creature, identifiable by its distinctive bioluminescent shimmer. Holding E while mounted toggles special particle effects. Crossbreeding with the non-S variant is fully supported, allowing survivors to introduce the radiation immunity and S-variant glow into an established breeding line without sacrificing existing stat gains.",
+  temperament: "Aggressive",
+  diet: "Carnivore",
+  habitat: "Swamps, rivers, irradiated zones",
+  realWorldBasis: "Deinosuchus",
+  sizeClass: "Large",
+  tamingMethod: "Knockout",
+  tamingType: "Violent taming with tranquilizers",
+  preferredKibble: "Superior Kibble",
+  favoriteFood: "Superior Kibble",
+  tamingSpeed: "Slow",
   torpor: {
     baseValue: 1500,
-    depleteRate: 'Slow'
+    depleteRate: "Slow"
   },
-  specialRequirements: 'Extremely dangerous, trapping is essential.',
-
-  // Base Statistics (Level 1 Wild)
+  specialRequirements: "Extremely dangerous, trapping is essential.",
   baseStats: {
     health: 900,
     stamina: 300,
@@ -34995,8 +31248,6 @@ const SPECIES_DATABASE = {
     speed: 100,
     torpor: 1500
   },
-
-  // Stat Scaling (Per Level)
   statScaling: {
     health: 200,
     stamina: 30,
@@ -35006,20 +31257,16 @@ const SPECIES_DATABASE = {
     melee: 2,
     speed: 1.5
   },
-
-  // Equipment & Combat
   saddleLevel: 72,
-  saddleType: 'Deinosuchus Saddle',
+  saddleType: "Deinosuchus Saddle",
   saddleArmor: 25,
   platformLimit: 0,
-  specialAbilities: ['Giga Bite (bleed)', 'radiation immunity', 'toggleable particle effects', 'no oxygen stat.'],
-  attackTypes: ['Bite', 'Giga Bite', 'Tail Whip', 'Swim Dash'],
-  canCarry: ['None'],
-
-  // Utility & Roles
-  primaryRole: 'Amphibious combat and boss killer',
-  secondaryRoles: ['Travel mount', 'meat harvester'],
-  gatheringResources: ['Meat', 'Hide', 'Fish Meat'],
+  specialAbilities: ["Giga Bite (bleed)", "radiation immunity", "toggleable particle effects", "no oxygen stat."],
+  attackTypes: ["Bite", "Giga Bite", "Tail Whip", "Swim Dash"],
+  canCarry: ["None"],
+  primaryRole: "Amphibious combat and boss killer",
+  secondaryRoles: ["Travel mount", "meat harvester"],
+  gatheringResources: ["Meat", "Hide", "Fish Meat"],
   gatheringEfficiency: {
     Meat: 9,
     Hide: 8
@@ -35030,93 +31277,74 @@ const SPECIES_DATABASE = {
     speed: 8,
     survivability: 9
   },
-
-  // Environmental Data
   speeds: {
     land: 30,
     flying: 0,
     swimming: 40,
     climbing: 0
   },
-  environmentalResistances: ['Immune to radiation'],
-  preferredBiome: 'Swamps, Rivers',
+  environmentalResistances: ["Immune to radiation"],
+  preferredBiome: "Swamps, Rivers",
   temperatureRange: {
     min: 15,
     max: 35
   },
-  oxygenRequirement: 'None',
-
-  // Breeding Genetics
+  oxygenRequirement: "None",
   breeding: {
-    cooldown: '18-48 hours',
-    gestationTime: '3 hours, 45 minutes',
-    babyFoodConsumption: 'High',
-    maturationTime: '3 days, 15 hours',
+    cooldown: "18-48 hours",
+    gestationTime: "3 hours, 45 minutes",
+    babyFoodConsumption: "High",
+    maturationTime: "3 days, 15 hours",
     colorRegions: 6,
-    colorRegionNames: ['Body', 'Spikes', 'Underside', 'Back', 'Legs', 'Head'],
+    colorRegionNames: ["Body", "Spikes", "Underside", "Back", "Legs", "Head"],
     mutationChance: 7.31,
-    breedingDifficulty: 'Hard'
+    breedingDifficulty: "Hard"
   },
-
-  // Special Functions
-  workstation: 'None',
-  resourceProduction: 'None',
-  structureFunctions: 'None',
-  buffAuras: ['None'],
-  debuffAbilities: ['None'],
-  uniqueMechanics: ['Giga Bite bleed scales with target health. S-Dinos can crossbreed with non-S-Dinos.'],
-
-  // Spawn & Location
-  spawnMaps: ['The Island', 'The Center', 'Ragnarok', 'Valguero', 'Lost Island', 'Fjordur'],
-  spawnZones: ['Swamps and rivers. Has a 10% chance to spawn in place of a standard Deinosuchus.'],
-  rarityRating: 'Rare',
-  levelRange: '1-150',
-  packBehavior: 'Solitary',
-  territorialBehavior: 'Aggressive',
-
-  // Management Metadata
-  difficultyRating: 'Hard',
+  workstation: "None",
+  resourceProduction: "None",
+  structureFunctions: "None",
+  buffAuras: ["None"],
+  debuffAbilities: ["None"],
+  uniqueMechanics: ["Giga Bite bleed scales with target health. S-Dinos can crossbreed with non-S-Dinos."],
+  spawnMaps: ["The Island", "The Center", "Ragnarok", "Valguero", "Lost Island", "Fjordur"],
+  spawnZones: ["Swamps and rivers. Has a 10% chance to spawn in place of a standard Deinosuchus."],
+  rarityRating: "Rare",
+  levelRange: "1-150",
+  packBehavior: "Solitary",
+  territorialBehavior: "Aggressive",
+  difficultyRating: "Hard",
   beginnerFriendly: false,
   endGameViable: true,
   bossFightCapable: true,
-  pvpMeta: 'High',
-  resourceInvestment: 'High',
-  maintenanceLevel: 'Medium',
-
-  // Badge Categories
-  badgeCategories: ['combat', 'boss']
+  pvpMeta: "High",
+  resourceInvestment: "High",
+  maintenanceLevel: "Medium",
+  badgeCategories: ["combat", "boss"]
 },
 'S-Direbear': {
-  // Basic Info
-  id: 'S_DIREBEAR_026',
-  name: 'S-Direbear',
-  icon: '🐻',
-  category: 'utility',
-  rarity: 'common',
-  source: 'Base Game (S-Variant)',
-  variants: ['Standard', 'Polar Bear', 'S-Variant'],
-
-  // Biology & Lore
-  dossierText: "The Direbear is a large, powerful omnivore found in the colder regions and forests of the ARK. It is known for its surprising speed, formidable combat strength, and its unique ability to harvest large quantities of Fiber and Giant Bee Honey. The S-Variant Direbear receives a significant set of unique modifications in addition to the standard stat changes, making it a premier utility and transport mount. In addition to the standard enhancements to damage and speed, and its immunity to radiation, this variant is a staggering 20% larger than its common counterpart. Its most impactful change, however, is an incredible suite of weight reductions, halving the burden of almost every key industrial resource. This transforms it from a general-purpose brawler into a logistical powerhouse, a specialized high-capacity transport that rivals even the most dedicated cargo creatures.",
-  temperament: 'Territorial',
-  diet: 'Omnivore',
-  habitat: 'Forests, mountains, rivers, irradiated zones',
-  realWorldBasis: 'Arctodus simus (Short-faced Bear)',
-  sizeClass: 'Large',
-
-  // Taming System
-  tamingMethod: 'Knockout',
-  tamingType: 'Violent taming with tranquilizers',
-  preferredKibble: 'Superior Kibble',
-  favoriteFood: 'Superior Kibble',
-  tamingSpeed: 'Moderate',
+  id: "S_DIREBEAR_026",
+  name: "S-Direbear",
+  icon: "🐻",
+  category: "utility",
+  rarity: "common",
+  source: "Base Game (S-Variant)",
+  variants: ["Standard", "Polar Bear", "S-Variant"],
+  dossierText: "The Direbear is a large, powerful omnivore found in the colder regions and forests of the ARK. It is known for its surprising speed, formidable combat strength, and its unique ability to harvest large quantities of Fiber and Giant Bee Honey. The S-Variant Direbear receives a significant set of unique modifications in addition to the standard stat changes, making it a premier utility and transport mount. In addition to the standard enhancements to damage and speed, and its immunity to radiation, this variant is a staggering 20% larger than its common counterpart. Its most impactful change, however, is an incredible suite of weight reductions, halving the burden of almost every key industrial resource. This transforms it from a general-purpose brawler into a logistical powerhouse, a specialized high-capacity transport that rivals even the most dedicated cargo creatures. Like all S-variants from Nekatus's S-Dino mod, this creature carries full radiation immunity — a meaningful passive advantage in environments like Aberration and the Genesis simulations where unprotected tames quickly become liabilities. In the wild, it has a 10% chance of spawning as an S-variant in place of the standard creature, identifiable by its distinctive bioluminescent shimmer. Holding E while mounted toggles special particle effects. Crossbreeding with the non-S variant is fully supported, allowing survivors to introduce the radiation immunity and S-variant glow into an established breeding line without sacrificing existing stat gains.",
+  temperament: "Territorial",
+  diet: "Omnivore",
+  habitat: "Forests, mountains, rivers, irradiated zones",
+  realWorldBasis: "Arctodus simus (Short-faced Bear)",
+  sizeClass: "Large",
+  tamingMethod: "Knockout",
+  tamingType: "Violent taming with tranquilizers",
+  preferredKibble: "Superior Kibble",
+  favoriteFood: "Superior Kibble",
+  tamingSpeed: "Moderate",
   torpor: {
     baseValue: 725,
-    depleteRate: 'Moderate'
+    depleteRate: "Moderate"
   },
-  specialRequirements: 'Loves honey, dangerous when threatened, excellent swimmer.',
-
-  // Base Statistics (Level 1 Wild)
+  specialRequirements: "Loves honey, dangerous when threatened, excellent swimmer.",
   baseStats: {
     health: 360,
     stamina: 400,
@@ -35127,8 +31355,6 @@ const SPECIES_DATABASE = {
     speed: 100,
     torpor: 725
   },
-
-  // Stat Scaling (Per Level)
   statScaling: {
     health: 80,
     stamina: 40,
@@ -35138,20 +31364,16 @@ const SPECIES_DATABASE = {
     melee: 2.1,
     speed: 1.5
   },
-
-  // Equipment & Combat
   saddleLevel: 45,
-  saddleType: 'Direbear Saddle',
+  saddleType: "Direbear Saddle",
   saddleArmor: 25,
   platformLimit: 0,
-  specialAbilities: ['Excellent swimmer', 'honey gathering', 'intimidation roar', 'radiation immunity', 'toggleable particle effects', 'massive weight reduction for many resources.'],
-  attackTypes: ['Claw swipes', 'bite', 'intimidation roar'],
-  canCarry: ['Large amounts of cargo'],
-
-  // Utility & Roles
-  primaryRole: 'High-capacity ground-based transport and logistics',
-  secondaryRoles: ['Mining companion', 'honey gatherer', 'combat mount'],
-  gatheringResources: ['Berries', 'wood', 'fiber', 'honey', 'fish', 'meat'],
+  specialAbilities: ["Excellent swimmer", "honey gathering", "intimidation roar", "radiation immunity", "toggleable particle effects", "massive weight reduction for many resources."],
+  attackTypes: ["Claw swipes", "bite", "intimidation roar"],
+  canCarry: ["Large amounts of cargo"],
+  primaryRole: "High-capacity ground-based transport and logistics",
+  secondaryRoles: ["Mining companion", "honey gatherer", "combat mount"],
+  gatheringResources: ["Berries", "wood", "fiber", "honey", "fish", "meat"],
   gatheringEfficiency: {
     Berries: 8,
     Wood: 6,
@@ -35165,93 +31387,74 @@ const SPECIES_DATABASE = {
     speed: 8,
     survivability: 7
   },
-
-  // Environmental Data
   speeds: {
     land: 30,
     flying: 0,
     swimming: 40,
     climbing: 0
   },
-  environmentalResistances: ['Cold resistance', 'radiation immunity'],
-  preferredBiome: 'Forests, mountains, rivers, anywhere with resources',
+  environmentalResistances: ["Cold resistance", "radiation immunity"],
+  preferredBiome: "Forests, mountains, rivers, anywhere with resources",
   temperatureRange: {
     min: -10,
     max: 30
   },
-  oxygenRequirement: 'Air breathing',
-
-  // Breeding Genetics
+  oxygenRequirement: "Air breathing",
   breeding: {
-    cooldown: '18-48 hours',
-    gestationTime: '7 hours, 56 minutes',
-    babyFoodConsumption: 'High',
-    maturationTime: '2 days, 22 hours',
+    cooldown: "18-48 hours",
+    gestationTime: "7 hours, 56 minutes",
+    babyFoodConsumption: "High",
+    maturationTime: "2 days, 22 hours",
     colorRegions: 6,
-    colorRegionNames: ['Body', 'claws', 'nose', 'stripes', 'belly', 'back'],
+    colorRegionNames: ["Body", "claws", "nose", "stripes", "belly", "back"],
     mutationChance: 7.31,
-    breedingDifficulty: 'Medium'
+    breedingDifficulty: "Medium"
   },
-
-  // Special Functions
-  workstation: 'None',
-  resourceProduction: 'None',
-  structureFunctions: 'None',
-  buffAuras: ['Intimidation roar can scare smaller creatures'],
-  debuffAbilities: ['None'],
-  uniqueMechanics: ['50% weight reduction for Metal, Metalingot, Obsidian, Crystal, Stone, Polymer, Sand, Sulfur & Black Pearls. S-Dinos can crossbreed with non-S-Dinos.'],
-
-  // Spawn & Location
-  spawnMaps: ['The Island', 'The Center', 'Ragnarok', 'Valguero', 'Crystal Isles', 'Lost Island', 'Fjordur'],
-  spawnZones: ['Forests, mountains, rivers, polar regions (Polar variant). Has a 10% chance to spawn in place of a standard Direbear.'],
-  rarityRating: 'Common',
-  levelRange: '1-150',
-  packBehavior: 'Solitary or family pairs',
-  territorialBehavior: 'Territorial, aggressive when defending territory',
-
-  // Management Metadata
-  difficultyRating: 'Medium',
+  workstation: "None",
+  resourceProduction: "None",
+  structureFunctions: "None",
+  buffAuras: ["Intimidation roar can scare smaller creatures"],
+  debuffAbilities: ["None"],
+  uniqueMechanics: ["50% weight reduction for Metal, Metalingot, Obsidian, Crystal, Stone, Polymer, Sand, Sulfur & Black Pearls. S-Dinos can crossbreed with non-S-Dinos."],
+  spawnMaps: ["The Island", "The Center", "Ragnarok", "Valguero", "Crystal Isles", "Lost Island", "Fjordur"],
+  spawnZones: ["Forests, mountains, rivers, polar regions (Polar variant). Has a 10% chance to spawn in place of a standard Direbear."],
+  rarityRating: "Common",
+  levelRange: "1-150",
+  packBehavior: "Solitary or family pairs",
+  territorialBehavior: "Territorial, aggressive when defending territory",
+  difficultyRating: "Medium",
   beginnerFriendly: false,
   endGameViable: true,
   bossFightCapable: true,
-  pvpMeta: 'High',
-  resourceInvestment: 'Medium',
-  maintenanceLevel: 'Medium',
-
-  // Badge Categories
-  badgeCategories: ['utility', 'transport', 'combat', 'boss']
+  pvpMeta: "High",
+  resourceInvestment: "Medium",
+  maintenanceLevel: "Medium",
+  badgeCategories: ["utility", "transport", "combat", "boss"]
 },
 'S-Doedicurus': {
-  // Basic Info
-  id: 'S_DOEDI_029',
-  name: 'S-Doedicurus',
-  icon: '⚒️',
-  category: 'harvesting',
-  rarity: 'common',
-  source: 'Base Game (S-Variant)',
-  variants: ['Standard', 'S-Variant'],
-
-  // Biology & Lore
-  dossierText: "This variant of the Doedicurus is another example of a creature whose anomalous nature is focused on utility rather than combat. In the wild, it behaves identically to its common counterpart, rolling into an armored ball when threatened and wandering the plains in search of vegetation. It is, of course, immune to radiation and surrounded by a faint shimmer, the universal markers of an S-Variant. Like the S-Ankylosaurus, the S-Doedicurus has been freed from the frustrating limitation of ceasing its work when half-encumbered. It will continue to harvest stone until its inventory is completely full, a massive quality-of-life improvement for any tribe focused on building. Furthermore, it possesses a unique and incredibly useful trait: it reduces the weight of sand by a staggering 75%. This makes it the single most efficient creature for gathering the resources needed for crafting essentials like clay and cement. It is a specialized tool, perfectly adapted for the industrious survivor.",
-  temperament: 'Docile',
-  diet: 'Herbivore',
-  habitat: 'Mountains, rocky areas, grasslands, irradiated zones',
-  realWorldBasis: 'Doedicurus clavicaudatus',
-  sizeClass: 'Large',
-
-  // Taming System
-  tamingMethod: 'Knockout',
-  tamingType: 'Violent taming with tranquilizers',
-  preferredKibble: 'Regular Kibble',
-  favoriteFood: 'Regular Kibble',
-  tamingSpeed: 'Slow',
+  id: "S_DOEDI_029",
+  name: "S-Doedicurus",
+  icon: "⚒️",
+  category: "harvesting",
+  rarity: "common",
+  source: "Base Game (S-Variant)",
+  variants: ["Standard", "S-Variant"],
+  dossierText: "This variant of the Doedicurus is another example of a creature whose anomalous nature is focused on utility rather than combat. In the wild, it behaves identically to its common counterpart, rolling into an armored ball when threatened and wandering the plains in search of vegetation. It is, of course, immune to radiation and surrounded by a faint shimmer, the universal markers of an S-Variant. Like the S-Ankylosaurus, the S-Doedicurus has been freed from the frustrating limitation of ceasing its work when half-encumbered. It will continue to harvest stone until its inventory is completely full, a massive quality-of-life improvement for any tribe focused on building. Furthermore, it possesses a unique and incredibly useful trait: it reduces the weight of sand by a staggering 75%. This makes it the single most efficient creature for gathering the resources needed for crafting essentials like clay and cement. It is a specialized tool, perfectly adapted for the industrious survivor. Like all S-variants from Nekatus's S-Dino mod, this creature carries full radiation immunity — a meaningful passive advantage in environments like Aberration and the Genesis simulations where unprotected tames quickly become liabilities. In the wild, it has a 10% chance of spawning as an S-variant in place of the standard creature, identifiable by its distinctive bioluminescent shimmer. Holding E while mounted toggles special particle effects. Crossbreeding with the non-S variant is fully supported, allowing survivors to introduce the radiation immunity and S-variant glow into an established breeding line without sacrificing existing stat gains.",
+  temperament: "Docile",
+  diet: "Herbivore",
+  habitat: "Mountains, rocky areas, grasslands, irradiated zones",
+  realWorldBasis: "Doedicurus clavicaudatus",
+  sizeClass: "Large",
+  tamingMethod: "Knockout",
+  tamingType: "Violent taming with tranquilizers",
+  preferredKibble: "Regular Kibble",
+  favoriteFood: "Regular Kibble",
+  tamingSpeed: "Slow",
   torpor: {
     baseValue: 1800,
-    depleteRate: 'Very Slow'
+    depleteRate: "Very Slow"
   },
-  specialRequirements: 'Curls into ball when attacked, takes massive damage reduction.',
-
-  // Base Statistics (Level 1 Wild)
+  specialRequirements: "Curls into ball when attacked, takes massive damage reduction.",
   baseStats: {
     health: 630,
     stamina: 100,
@@ -35262,8 +31465,6 @@ const SPECIES_DATABASE = {
     speed: 100,
     torpor: 1800
   },
-
-  // Stat Scaling (Per Level)
   statScaling: {
     health: 140,
     stamina: 10,
@@ -35273,20 +31474,16 @@ const SPECIES_DATABASE = {
     melee: 1.6,
     speed: 0
   },
-
-  // Equipment & Combat
   saddleLevel: 34,
-  saddleType: 'Doedicurus Saddle',
+  saddleType: "Doedicurus Saddle",
   saddleArmor: 25,
   platformLimit: 0,
-  specialAbilities: ['Ball form (damage reduction and stone gathering)', 'auto-harvest', 'radiation immunity', 'toggleable particle effects', 'does not stop farming at 50% weight', '75% sand weight reduction.'],
-  attackTypes: ['Tail swipe', 'ball ram', 'defensive curl'],
-  canCarry: ['None'],
-
-  // Utility & Roles
-  primaryRole: 'Premier stone and sand gathering specialist',
-  secondaryRoles: ['Mobile quarry', 'defensive mount', 'construction support'],
-  gatheringResources: ['Stone, sand, clay (massive amounts)'],
+  specialAbilities: ["Ball form (damage reduction and stone gathering)", "auto-harvest", "radiation immunity", "toggleable particle effects", "does not stop farming at 50% weight", "75% sand weight reduction."],
+  attackTypes: ["Tail swipe", "ball ram", "defensive curl"],
+  canCarry: ["None"],
+  primaryRole: "Premier stone and sand gathering specialist",
+  secondaryRoles: ["Mobile quarry", "defensive mount", "construction support"],
+  gatheringResources: ["Stone, sand, clay (massive amounts)"],
   gatheringEfficiency: {
     Stone: 10,
     Sand: 10,
@@ -35298,227 +31495,74 @@ const SPECIES_DATABASE = {
     speed: 8,
     survivability: 9
   },
-
-  // Environmental Data
   speeds: {
     land: 15,
     flying: 0,
     swimming: 10,
     climbing: 0
   },
-  environmentalResistances: ['Massive damage reduction when curled up', 'immune to radiation.'],
-  preferredBiome: 'Mountains, rocky areas, quarries, stone-rich areas',
+  environmentalResistances: ["Massive damage reduction when curled up", "immune to radiation."],
+  preferredBiome: "Mountains, rocky areas, quarries, stone-rich areas",
   temperatureRange: {
     min: 10,
     max: 40
   },
-  oxygenRequirement: 'Air breathing',
-
-  // Breeding Genetics
+  oxygenRequirement: "Air breathing",
   breeding: {
-    cooldown: '18-48 hours',
-    gestationTime: '3 hours, 44 minutes',
-    babyFoodConsumption: 'High',
-    maturationTime: '1 day, 18 hours',
+    cooldown: "18-48 hours",
+    gestationTime: "3 hours, 44 minutes",
+    babyFoodConsumption: "High",
+    maturationTime: "1 day, 18 hours",
     colorRegions: 6,
-    colorRegionNames: ['Body', 'shell', 'spikes', 'stripes', 'underside', 'club'],
+    colorRegionNames: ["Body", "shell", "spikes", "stripes", "underside", "club"],
     mutationChance: 7.31,
-    breedingDifficulty: 'Medium'
+    breedingDifficulty: "Medium"
   },
-
-  // Special Functions
-  workstation: 'None',
-  resourceProduction: 'None',
-  structureFunctions: 'None',
-  buffAuras: ['None'],
-  debuffAbilities: ['None'],
-  uniqueMechanics: ['Ball form locomotion', 'auto-harvest stone', 'weight reduction for stone and sand', 'does not stop farming at 50% weight. S-Dinos can crossbreed with non-S-Dinos.'],
-
-  // Spawn & Location
-  spawnMaps: ['The Island', 'The Center', 'Ragnarok', 'Valguero', 'Crystal Isles', 'Lost Island', 'Fjordur'],
-  spawnZones: ['Mountains, rocky highlands, stone-rich areas. Has a 10% chance to spawn in place of a standard Doedicurus.'],
-  rarityRating: 'Common',
-  levelRange: '1-150',
-  packBehavior: 'Small groups (2-4)',
-  territorialBehavior: 'Docile, curls up when threatened',
-
-  // Management Metadata
-  difficultyRating: 'Easy-Medium',
+  workstation: "None",
+  resourceProduction: "None",
+  structureFunctions: "None",
+  buffAuras: ["None"],
+  debuffAbilities: ["None"],
+  uniqueMechanics: ["Ball form locomotion", "auto-harvest stone", "weight reduction for stone and sand", "does not stop farming at 50% weight. S-Dinos can crossbreed with non-S-Dinos."],
+  spawnMaps: ["The Island", "The Center", "Ragnarok", "Valguero", "Crystal Isles", "Lost Island", "Fjordur"],
+  spawnZones: ["Mountains, rocky highlands, stone-rich areas. Has a 10% chance to spawn in place of a standard Doedicurus."],
+  rarityRating: "Common",
+  levelRange: "1-150",
+  packBehavior: "Small groups (2-4)",
+  territorialBehavior: "Docile, curls up when threatened",
+  difficultyRating: "Easy-Medium",
   beginnerFriendly: true,
   endGameViable: true,
   bossFightCapable: false,
-  pvpMeta: 'Medium',
-  resourceInvestment: 'Low',
-  maintenanceLevel: 'Low',
-
-  // Badge Categories
-  badgeCategories: ['harvesting', 'utility']
-},
-'S-Dunkleosteus': {
-  // Basic Info
-  id: 'S_DUNKLEO_031',
-  name: 'S-Dunkleosteus',
-  icon: '🐟',
-  category: 'harvesting',
-  rarity: 'uncommon',
-  source: 'Base Game (S-Variant)',
-  variants: ['Standard', 'S-Variant'],
-
-  // Biology & Lore
-  dossierText: "Dunkleosteus loricaruptor is a very strange creature. It is a fairly large fish, covered head to tail in armored plates, with incredibly powerful jaws. It tends to live in the deepest parts of the ocean, and only comes up to hunt or scavenge. The S-Variant amplifies its core strengths, making it faster, more powerful, and an even more efficient deep-sea harvester. It gains the ability to swim backwards, adding a surprising degree of maneuverability for a creature so heavily armored. Most critically, it is immune to the paralyzing effects of Cnidaria and Electrophorus, a trait that transforms it from a vulnerable resource hauler into a much safer deep-sea mining vessel. This immunity, combined with its enhanced weight reduction for key oceanic resources, solidifies its role as a premier underwater industrial tool.",
-  temperament: 'Docile (but territorial when threatened)',
-  diet: 'Carnivore (fish, marine scavenger)',
-  habitat: 'Deep ocean, ocean floor, underwater trenches, irradiated waters',
-  realWorldBasis: 'Dunkleosteus terrelli',
-  sizeClass: 'Large',
-
-  // Taming System
-  tamingMethod: 'Knockout',
-  tamingType: 'Violent taming with tranquilizers',
-  preferredKibble: 'Superior Kibble',
-  favoriteFood: 'Superior Kibble',
-  tamingSpeed: 'Slow',
-  torpor: {
-    baseValue: 1000,
-    depleteRate: 'Moderate'
-  },
-  specialRequirements: 'Deep ocean taming, excellent for oil and black pearl gathering.',
-
-  // Base Statistics (Level 1 Wild)
-  baseStats: {
-    health: 639,
-    stamina: 300,
-    oxygen: 150,
-    food: 2000,
-    weight: 800,
-    melee: 44,
-    speed: 100,
-    torpor: 1000
-  },
-
-  // Stat Scaling (Per Level)
-  statScaling: {
-    health: 142,
-    stamina: 30,
-    oxygen: 15,
-    food: 200,
-    weight: 16,
-    melee: 2,
-    speed: 1
-  },
-
-  // Equipment & Combat
-  saddleLevel: 44,
-  saddleType: 'Dunkleosteus Saddle',
-  saddleArmor: 25,
-  platformLimit: 0,
-  specialAbilities: ['Oil and black pearl harvesting', 'armored plates protection', 'can swim backwards', 'immune against Jellyfish stun & dismount', 'enhanced weight reduction', 'radiation immunity', 'toggleable particle effects.'],
-  attackTypes: ['Crushing bite', 'ram attack'],
-  canCarry: ['None'],
-
-  // Utility & Roles
-  primaryRole: 'Deep sea resource gatherer (oil, black pearls, metal, etc.)',
-  secondaryRoles: ['Deep ocean exploration', 'underwater combat'],
-  gatheringResources: ['Oil', 'black pearls', 'metal', 'crystal', 'obsidian', 'stone', 'raw fish meat', 'hide'],
-  gatheringEfficiency: {
-    Oil: 10,
-    'Black Pearls': 10,
-    Metal: 9,
-    Stone: 8
-  },
-  ratings: {
-    combat: 7,
-    transport: 9,
-    speed: 7,
-    survivability: 8
-  },
-
-  // Environmental Data
-  speeds: {
-    land: 0,
-    flying: 0,
-    swimming: 25,
-    climbing: 0
-  },
-  environmentalResistances: ['Pressure immunity', 'heavy armor protection', 'Jellyfish/Eel immunity', 'radiation immunity.'],
-  preferredBiome: 'Deep ocean, ocean floor, underwater caves',
-  temperatureRange: {
-    min: 0,
-    max: 25
-  },
-  oxygenRequirement: 'Water breathing only',
-
-  // Breeding Genetics
-  breeding: {
-    cooldown: '18-48 hours',
-    gestationTime: '4 hours, 59 minutes',
-    babyFoodConsumption: 'High',
-    maturationTime: '1 day, 20 hours',
-    colorRegions: 6,
-    colorRegionNames: ['Body', 'plates', 'fins', 'stripes', 'belly', 'head'],
-    mutationChance: 7.31,
-    breedingDifficulty: 'Medium-Hard'
-  },
-
-  // Special Functions
-  workstation: 'None',
-  resourceProduction: 'None',
-  structureFunctions: 'None',
-  buffAuras: ['None'],
-  debuffAbilities: ['None'],
-  uniqueMechanics: ['Specialized oil and black pearl harvesting, 25% more weight reduction for metal, crystal, obsidian, stone and oil. Immune to Jellyfish stun. Can swim backwards. S-Dinos can crossbreed with non-S-Dinos.'],
-
-  // Spawn & Location
-  spawnMaps: ['The Island', 'The Center', 'Ragnarok', 'Valguero', 'Crystal Isles', 'Lost Island', 'Fjordur'],
-  spawnZones: ['Deep ocean, ocean floor, underwater trenches. Uses "DinoSpawnEntries_DarkWaterAngler" spawner. Has a 10% chance to spawn in place of a standard Dunkleosteus.'],
-  rarityRating: 'Uncommon',
-  levelRange: '1-150',
-  packBehavior: 'Solitary',
-  territorialBehavior: 'Docile until threatened, then aggressive',
-
-  // Management Metadata
-  difficultyRating: 'Medium-Hard',
-  beginnerFriendly: false,
-  endGameViable: true,
-  bossFightCapable: false,
-  pvpMeta: 'Medium',
-  resourceInvestment: 'Medium',
-  maintenanceLevel: 'Low',
-
-  // Badge Categories
-  badgeCategories: ['harvesting', 'utility']
+  pvpMeta: "Medium",
+  resourceInvestment: "Low",
+  maintenanceLevel: "Low",
+  badgeCategories: ["harvesting", "utility"]
 },
 'S-Fasolasuchus': {
-  // Basic Info
-  id: 'S_FASOLA_2022',
-  name: 'S-Fasolasuchus',
-  icon: '🐊',
-  category: 'combat',
-  rarity: 'rare',
-  source: 'Base Game (S-Variant)',
-  variants: ['Standard', 'S-Variant'],
-
-  // Biology & Lore
-  dossierText: "The deserts are home to the terrifying Fasolasuchus, a massive terrestrial predator that can 'swim' through the sand to ambush its prey. This S-Variant is even more formidable, possessing greater speed and strength than the original. It is wreathed in the typical shimmering aura and is immune to radiation, making it a top predator even in the scorched, irradiated wastes. Its acidic bite and blinding sand attack remain its signature weapons, a deadly combination for any unprepared survivor. The S-Fasolasuchus is a powerful desert mount, but its most peculiar alteration is in its harvesting capabilities. While the common species is adept at gathering flint from rocks, this S-Variant has a strange affinity for metal. When it strikes a metal-rich rock, it harvests raw metal ore instead of flint. This bizarre adaptation turns a fearsome combatant into a surprisingly effective, if unconventional, mining tool. A survivor who tames this beast gains not only a powerful war mount but also a valuable partner in their resource-gathering endeavors.",
-  temperament: 'Aggressive',
-  diet: 'Carnivore',
-  habitat: 'Deserts, irradiated zones',
-  realWorldBasis: 'Fasolasuchus tenax',
-  sizeClass: 'Large',
-
-  // Taming System
-  tamingMethod: 'Knockout',
-  tamingType: 'Violent taming with tranquilizers',
-  preferredKibble: 'Extraordinary Kibble',
-  favoriteFood: 'Extraordinary Kibble',
-  tamingSpeed: 'Slow',
+  id: "S_FASOLA_2022",
+  name: "S-Fasolasuchus",
+  icon: "🐊",
+  category: "combat",
+  rarity: "rare",
+  source: "Scorched Earth DLC (S-Variant)",
+  variants: ["Standard", "S-Variant"],
+  dossierText: "The deserts are home to the terrifying Fasolasuchus, a massive terrestrial predator that can 'swim' through the sand to ambush its prey. This S-Variant is even more formidable, possessing greater speed and strength than the original. It is wreathed in the typical shimmering aura and is immune to radiation, making it a top predator even in the scorched, irradiated wastes. Its acidic bite and blinding sand attack remain its signature weapons, a deadly combination for any unprepared survivor. The S-Fasolasuchus is a powerful desert mount, but its most peculiar alteration is in its harvesting capabilities. While the common species is adept at gathering flint from rocks, this S-Variant has a strange affinity for metal. When it strikes a metal-rich rock, it harvests raw metal ore instead of flint. This bizarre adaptation turns a fearsome combatant into a surprisingly effective, if unconventional, mining tool. A survivor who tames this beast gains not only a powerful war mount but also a valuable partner in their resource-gathering endeavors. Like all S-variants from Nekatus's S-Dino mod, this creature carries full radiation immunity — a meaningful passive advantage in environments like Aberration and the Genesis simulations where unprotected tames quickly become liabilities. In the wild, it has a 10% chance of spawning as an S-variant in place of the standard creature, identifiable by its distinctive bioluminescent shimmer. Holding E while mounted toggles special particle effects. Crossbreeding with the non-S variant is fully supported, allowing survivors to introduce the radiation immunity and S-variant glow into an established breeding line without sacrificing existing stat gains.",
+  temperament: "Aggressive",
+  diet: "Carnivore",
+  habitat: "Deserts, irradiated zones",
+  realWorldBasis: "Fasolasuchus tenax",
+  sizeClass: "Large",
+  tamingMethod: "Knockout",
+  tamingType: "Violent taming with tranquilizers",
+  preferredKibble: "Extraordinary Kibble",
+  favoriteFood: "Extraordinary Kibble",
+  tamingSpeed: "Slow",
   torpor: {
     baseValue: 1200,
-    depleteRate: 'Moderate'
+    depleteRate: "Moderate"
   },
-  specialRequirements: 'Dangerous ambush predator that "swims" in sand.',
-
-  // Base Statistics (Level 1 Wild)
+  specialRequirements: "Dangerous ambush predator that \"swims\" in sand.",
   baseStats: {
     health: 675,
     stamina: 350,
@@ -35529,8 +31573,6 @@ const SPECIES_DATABASE = {
     speed: 100,
     torpor: 1200
   },
-
-  // Stat Scaling (Per Level)
   statScaling: {
     health: 135,
     stamina: 35,
@@ -35540,20 +31582,16 @@ const SPECIES_DATABASE = {
     melee: 2.75,
     speed: 1.5
   },
-
-  // Equipment & Combat
   saddleLevel: 75,
-  saddleType: 'Fasolasuchus Saddle',
+  saddleType: "Fasolasuchus Saddle",
   saddleArmor: 25,
   platformLimit: 0,
-  specialAbilities: ['Sand swimming', 'acidic bite', 'blinding sand attack', 'radiation immunity', 'toggleable particle effects', 'harvests metal instead of flint.'],
-  attackTypes: ['Bite', 'Acid Spit', 'Sand Attack', 'Submerge/Emerge Ambush'],
-  canCarry: ['None'],
-
-  // Utility & Roles
-  primaryRole: 'Desert combat mount and unconventional metal harvester',
-  secondaryRoles: ['Travel mount', 'ambush predator'],
-  gatheringResources: ['Metal', 'Meat', 'Hide'],
+  specialAbilities: ["Sand swimming", "acidic bite", "blinding sand attack", "radiation immunity", "toggleable particle effects", "harvests metal instead of flint."],
+  attackTypes: ["Bite", "Acid Spit", "Sand Attack", "Submerge/Emerge Ambush"],
+  canCarry: ["None"],
+  primaryRole: "Desert combat mount and unconventional metal harvester",
+  secondaryRoles: ["Travel mount", "ambush predator"],
+  gatheringResources: ["Metal", "Meat", "Hide"],
   gatheringEfficiency: {
     Metal: 8,
     Meat: 7,
@@ -35565,93 +31603,74 @@ const SPECIES_DATABASE = {
     speed: 8,
     survivability: 7
   },
-
-  // Environmental Data
   speeds: {
     land: 30,
     flying: 0,
     swimming: 35,
     climbing: 0
   },
-  environmentalResistances: ['Immune to radiation'],
-  preferredBiome: 'Deserts',
+  environmentalResistances: ["Immune to radiation"],
+  preferredBiome: "Deserts",
   temperatureRange: {
     min: 15,
     max: 50
   },
-  oxygenRequirement: 'Air breathing',
-
-  // Breeding Genetics
+  oxygenRequirement: "Air breathing",
   breeding: {
-    cooldown: '18-48 hours',
-    gestationTime: '4 hours, 59 minutes',
-    babyFoodConsumption: 'High',
-    maturationTime: '3 days, 20 hours',
+    cooldown: "18-48 hours",
+    gestationTime: "4 hours, 59 minutes",
+    babyFoodConsumption: "High",
+    maturationTime: "3 days, 20 hours",
     colorRegions: 6,
-    colorRegionNames: ['Body', 'Spines', 'Back', 'Underside', 'Markings', 'Head'],
+    colorRegionNames: ["Body", "Spines", "Back", "Underside", "Markings", "Head"],
     mutationChance: 7.31,
-    breedingDifficulty: 'Hard'
+    breedingDifficulty: "Hard"
   },
-
-  // Special Functions
-  workstation: 'None',
-  resourceProduction: 'None',
-  structureFunctions: 'None',
-  buffAuras: ['None'],
-  debuffAbilities: ['None'],
-  uniqueMechanics: ['Harvests Metal instead of flint from metal nodes. Can swim through sand. S-Dinos can crossbreed with non-S-Dinos.'],
-
-  // Spawn & Location
-  spawnMaps: ['Scorched Earth', 'Ragnarok', 'Extinction', 'Valguero', 'Genesis Part 1', 'Crystal Isles', 'Lost Island', 'Fjordur'],
-  spawnZones: ['Deserts and arid areas. Has a 10% chance to spawn in place of a standard Fasolasuchus.'],
-  rarityRating: 'Rare',
-  levelRange: '1-150',
-  packBehavior: 'Solitary',
-  territorialBehavior: 'Aggressive',
-
-  // Management Metadata
-  difficultyRating: 'Hard',
+  workstation: "None",
+  resourceProduction: "None",
+  structureFunctions: "None",
+  buffAuras: ["None"],
+  debuffAbilities: ["None"],
+  uniqueMechanics: ["Harvests Metal instead of flint from metal nodes. Can swim through sand. S-Dinos can crossbreed with non-S-Dinos."],
+  spawnMaps: ["Scorched Earth", "Ragnarok", "Extinction", "Valguero", "Genesis Part 1", "Crystal Isles", "Lost Island", "Fjordur"],
+  spawnZones: ["Deserts and arid areas. Has a 10% chance to spawn in place of a standard Fasolasuchus."],
+  rarityRating: "Rare",
+  levelRange: "1-150",
+  packBehavior: "Solitary",
+  territorialBehavior: "Aggressive",
+  difficultyRating: "Hard",
   beginnerFriendly: false,
   endGameViable: true,
   bossFightCapable: true,
-  pvpMeta: 'Medium',
-  resourceInvestment: 'High',
-  maintenanceLevel: 'Medium',
-
-  // Badge Categories
-  badgeCategories: ['combat', 'boss']
+  pvpMeta: "Medium",
+  resourceInvestment: "High",
+  maintenanceLevel: "Medium",
+  badgeCategories: ["combat", "boss"]
 },
 'S-Fenrir': {
-  // Basic Info
-  id: 'S_FENRIR_2022',
-  name: 'S-Fenrir',
-  icon: '🐺',
-  category: 'combat',
-  rarity: 'legendary',
-  source: 'Base Game (S-Variant)',
-  variants: ['Standard', 'S-Variant'],
-
-  // Biology & Lore
-  dossierText: "This creature should not exist. Fenrir is a creature of myth, a legendary wolf from the frozen north. Yet, here it is, stalking the snowiest peaks of the ARK. This S-Variant is a tangible reality, a being of ice and fury. Instead of the usual shimmering particles, it is surrounded by a constant flurry of snow, and its icy spikes are always visible. Unlike its mythological counterpart, which is a unique entity, this variant can be tamed via knockout and, incredibly, can be bred in captivity. The S-Fenrir is a true trophy. It possesses all the abilities of the legendary beast from the Fjordur realm: a slowing ice bite, a howl that encases it in protective, damaging ice armor, and pack-boosting capabilities. Its inventory acts as a refrigerator, preserving perishables with supernatural efficiency. The S-Variant modifications make it slightly faster and stronger, but more fragile. It is a creature of immense power and rarity, a living legend brought to life by the strange forces that govern this world.",
-  temperament: 'Aggressive',
-  diet: 'Carnivore',
-  habitat: 'Snow biomes, frozen peaks, irradiated zones',
-  realWorldBasis: 'Fenrir (Norse Mythology)',
-  sizeClass: 'Medium',
-
-  // Taming System
-  tamingMethod: 'Knockout',
-  tamingType: 'Violent taming with tranquilizers',
-  preferredKibble: 'Superior Kibble',
-  favoriteFood: 'Superior Kibble',
-  tamingSpeed: 'Moderate',
+  id: "S_FENRIR_2022",
+  name: "S-Fenrir",
+  icon: "🐺",
+  category: "combat",
+  rarity: "legendary",
+  source: "Fjordur DLC (S-Variant)",
+  variants: ["Standard", "S-Variant"],
+  dossierText: "This creature should not exist. Fenrir is a creature of myth, a legendary wolf from the frozen north. Yet, here it is, stalking the snowiest peaks of the ARK. This S-Variant is a tangible reality, a being of ice and fury. Instead of the usual shimmering particles, it is surrounded by a constant flurry of snow, and its icy spikes are always visible. Unlike its mythological counterpart, which is a unique entity, this variant can be tamed via knockout and, incredibly, can be bred in captivity. The S-Fenrir is a true trophy. It possesses all the abilities of the legendary beast from the Fjordur realm: a slowing ice bite, a howl that encases it in protective, damaging ice armor, and pack-boosting capabilities. Its inventory acts as a refrigerator, preserving perishables with supernatural efficiency. The S-Variant modifications make it slightly faster and stronger, but more fragile. It is a creature of immense power and rarity, a living legend brought to life by the strange forces that govern this world. Like all S-variants from Nekatus's S-Dino mod, this creature carries full radiation immunity — a meaningful passive advantage in environments like Aberration and the Genesis simulations where unprotected tames quickly become liabilities. In the wild, it has a 10% chance of spawning as an S-variant in place of the standard creature, identifiable by its distinctive bioluminescent shimmer. Holding E while mounted toggles special particle effects. Crossbreeding with the non-S variant is fully supported, allowing survivors to introduce the radiation immunity and S-variant glow into an established breeding line without sacrificing existing stat gains.",
+  temperament: "Aggressive",
+  diet: "Carnivore",
+  habitat: "Snow biomes, frozen peaks, irradiated zones",
+  realWorldBasis: "Fenrir (Norse Mythology)",
+  sizeClass: "Medium",
+  tamingMethod: "Knockout",
+  tamingType: "Violent taming with tranquilizers",
+  preferredKibble: "Superior Kibble",
+  favoriteFood: "Superior Kibble",
+  tamingSpeed: "Moderate",
   torpor: {
     baseValue: 700,
-    depleteRate: 'Fast'
+    depleteRate: "Fast"
   },
-  specialRequirements: 'Unlike the vanilla Fenrir which is a boss reward, the S-Fenrir is a knockout tame. It is aggressive and its abilities make it dangerous to subdue.',
-
-  // Base Statistics (Level 1 Wild)
+  specialRequirements: "Unlike the vanilla Fenrir which is a boss reward, the S-Fenrir is a knockout tame. It is aggressive and its abilities make it dangerous to subdue.",
   baseStats: {
     health: 540,
     stamina: 400,
@@ -35662,8 +31681,6 @@ const SPECIES_DATABASE = {
     speed: 100,
     torpor: 700
   },
-
-  // Stat Scaling (Per Level)
   statScaling: {
     health: 108,
     stamina: 40,
@@ -35673,20 +31690,16 @@ const SPECIES_DATABASE = {
     melee: 1.7,
     speed: 2
   },
-
-  // Equipment & Combat
   saddleLevel: 0,
-  saddleType: 'No saddle required',
+  saddleType: "No saddle required",
   saddleArmor: 0,
   platformLimit: 0,
-  specialAbilities: ['Ice Armor (howl activates damaging ice spikes)', 'slowing ice bite', 'pack howl', 'radiation immunity', 'constant snow particle effect.'],
-  attackTypes: ['Bite (slows target)', 'Claw Attack', 'Howl (activates ice armor)'],
-  canCarry: ['None'],
-
-  // Utility & Roles
-  primaryRole: 'Fast combat and scouting mount',
-  secondaryRoles: ['Crowd control', 'pack hunter', 'cold-weather exploration'],
-  gatheringResources: ['Meat, Hide, Pelt'],
+  specialAbilities: ["Ice Armor (howl activates damaging ice spikes)", "slowing ice bite", "pack howl", "radiation immunity", "constant snow particle effect."],
+  attackTypes: ["Bite (slows target)", "Claw Attack", "Howl (activates ice armor)"],
+  canCarry: ["None"],
+  primaryRole: "Fast combat and scouting mount",
+  secondaryRoles: ["Crowd control", "pack hunter", "cold-weather exploration"],
+  gatheringResources: ["Meat, Hide, Pelt"],
   gatheringEfficiency: {
     Meat: 8,
     Pelt: 9
@@ -35697,93 +31710,74 @@ const SPECIES_DATABASE = {
     speed: 9,
     survivability: 7
   },
-
-  // Environmental Data
   speeds: {
     land: 38,
     flying: 0,
     swimming: 25,
     climbing: 0
   },
-  environmentalResistances: ['Cold immunity', 'radiation immunity'],
-  preferredBiome: 'Snow biomes, mountains, tundra',
+  environmentalResistances: ["Cold immunity", "radiation immunity"],
+  preferredBiome: "Snow biomes, mountains, tundra",
   temperatureRange: {
     min: -20,
     max: 15
   },
-  oxygenRequirement: 'Air breathing',
-
-  // Breeding Genetics
+  oxygenRequirement: "Air breathing",
   breeding: {
-    cooldown: '18-48 hours',
-    gestationTime: '4 hours, 15 minutes',
-    babyFoodConsumption: 'High',
-    maturationTime: '1 day, 20 hours',
+    cooldown: "18-48 hours",
+    gestationTime: "4 hours, 15 minutes",
+    babyFoodConsumption: "High",
+    maturationTime: "1 day, 20 hours",
     colorRegions: 6,
-    colorRegionNames: ['Body', 'stripes', 'claws', 'inner ear', 'belly', 'back'],
+    colorRegionNames: ["Body", "stripes", "claws", "inner ear", "belly", "back"],
     mutationChance: 7.31,
-    breedingDifficulty: 'Medium'
+    breedingDifficulty: "Medium"
   },
-
-  // Special Functions
-  workstation: 'None',
-  resourceProduction: 'Inventory acts as a Refrigerator, preserving perishables.',
-  structureFunctions: 'None',
-  buffAuras: ['Pack leader howl provides damage bonus to nearby pack members.'],
-  debuffAbilities: ['None'],
-  uniqueMechanics: ['Knockout tame and breedable (unlike vanilla Fenrir). Ice armor activated by howl. S-Dinos can crossbreed with non-S-Dinos.'],
-
-  // Spawn & Location
-  spawnMaps: ['The Island', 'The Center', 'Ragnarok', 'Valguero', 'Crystal Isles', 'Lost Island', 'Fjordur'],
-  spawnZones: ['Uses "DinoSpawnEntriesSnow" spawn container. Has a 10% chance to spawn in place of its vanilla variant\'s normal spawns.'],
-  rarityRating: 'Rare',
-  levelRange: '1-150',
-  packBehavior: 'Packs of 3-6',
-  territorialBehavior: 'Aggressively social, hunt in coordinated packs',
-
-  // Management Metadata
-  difficultyRating: 'Hard',
+  workstation: "None",
+  resourceProduction: "Inventory acts as a Refrigerator, preserving perishables.",
+  structureFunctions: "None",
+  buffAuras: ["Pack leader howl provides damage bonus to nearby pack members."],
+  debuffAbilities: ["None"],
+  uniqueMechanics: ["Knockout tame and breedable (unlike vanilla Fenrir). Ice armor activated by howl. S-Dinos can crossbreed with non-S-Dinos."],
+  spawnMaps: ["The Island", "The Center", "Ragnarok", "Valguero", "Crystal Isles", "Lost Island", "Fjordur"],
+  spawnZones: ["Uses \"DinoSpawnEntriesSnow\" spawn container. Has a 10% chance to spawn in place of its vanilla variant's normal spawns."],
+  rarityRating: "Rare",
+  levelRange: "1-150",
+  packBehavior: "Packs of 3-6",
+  territorialBehavior: "Aggressively social, hunt in coordinated packs",
+  difficultyRating: "Hard",
   beginnerFriendly: false,
   endGameViable: true,
   bossFightCapable: true,
-  pvpMeta: 'High',
-  resourceInvestment: 'High',
-  maintenanceLevel: 'Medium',
-
-  // Badge Categories
-  badgeCategories: ['combat', 'boss']
+  pvpMeta: "High",
+  resourceInvestment: "High",
+  maintenanceLevel: "Medium",
+  badgeCategories: ["combat", "boss"]
 },
 'S-Fire Wyvern': {
-  // Basic Info
-  id: 'S_FIRE_WYVERN_104',
-  name: 'S-Fire Wyvern',
-  icon: '🔥',
-  category: 'combat',
-  rarity: 'legendary',
-  source: 'Scorched Earth DLC (S-Variant)',
-  variants: ['Standard', 'S-Variant'],
-
-  // Biology & Lore
-  dossierText: "As if a normal Wyvern wasn't terrifying enough, these anomalous variants now patrol the skies above the deepest scars and trenches. Whether it be Fire, Lightning, Poison, or Ice, each S-Variant possesses the same elemental fury as its common counterpart, but with enhanced speed and physical strength. They are, of course, immune to radiation and are surrounded by a faint shimmer, but these are minor details in the face of their raw, elemental power. Stealing an egg from one of these creatures is an even more perilous undertaking than before. Raising an S-Wyvern is a monumental task, but the reward is one of the most powerful creatures on the ARK. The S-Variant stat boosts make them faster flyers and more potent in close-quarters combat, though their true strength still lies in their respective elemental breath attacks. The reduced health is a notable drawback, making them more susceptible to focused fire from turrets or the attacks of other Wyverns. An S-Wyvern is a glass cannon on a colossal scale, a creature capable of wiping out entire armies but demanding a skilled and cautious rider to keep it from being shattered in the process.",
-  temperament: 'Extremely Aggressive',
-  diet: 'Carnivore (large prey, elemental energy)',
-  habitat: 'Wyvern trenches, volcanic areas, high altitude nests, irradiated zones',
-  realWorldBasis: 'Draco (Dragon mythology)',
-  sizeClass: 'Colossal',
-
-  // Taming System
-  tamingMethod: 'Special (Egg Stealing)',
-  tamingType: 'Must steal and incubate Wyvern eggs, then imprint on babies',
-  preferredKibble: 'N/A',
-  favoriteFood: 'Wyvern Milk',
-  tamingSpeed: 'N/A',
+  id: "S_FIRE_WYVERN_104",
+  name: "S-Fire Wyvern",
+  icon: "🔥",
+  category: "combat",
+  rarity: "legendary",
+  source: "Scorched Earth DLC (S-Variant)",
+  variants: ["Standard", "S-Variant"],
+  dossierText: "As if a normal Wyvern wasn't terrifying enough, these anomalous variants now patrol the skies above the deepest scars and trenches. Whether it be Fire, Lightning, Poison, or Ice, each S-Variant possesses the same elemental fury as its common counterpart, but with enhanced speed and physical strength. They are, of course, immune to radiation and are surrounded by a faint shimmer, but these are minor details in the face of their raw, elemental power. Stealing an egg from one of these creatures is an even more perilous undertaking than before. Raising an S-Wyvern is a monumental task, but the reward is one of the most powerful creatures on the ARK. The S-Variant stat boosts make them faster flyers and more potent in close-quarters combat, though their true strength still lies in their respective elemental breath attacks. The reduced health is a notable drawback, making them more susceptible to focused fire from turrets or the attacks of other Wyverns. An S-Wyvern is a glass cannon on a colossal scale, a creature capable of wiping out entire armies but demanding a skilled and cautious rider to keep it from being shattered in the process. Like all S-variants from Nekatus's S-Dino mod, this creature carries full radiation immunity — a meaningful passive advantage in environments like Aberration and the Genesis simulations where unprotected tames quickly become liabilities. In the wild, it has a 10% chance of spawning as an S-variant in place of the standard creature, identifiable by its distinctive bioluminescent shimmer. Holding E while mounted toggles special particle effects. Crossbreeding with the non-S variant is fully supported, allowing survivors to introduce the radiation immunity and S-variant glow into an established breeding line without sacrificing existing stat gains.",
+  temperament: "Extremely Aggressive",
+  diet: "Carnivore (large prey, elemental energy)",
+  habitat: "Wyvern trenches, volcanic areas, high altitude nests, irradiated zones",
+  realWorldBasis: "Draco (Dragon mythology)",
+  sizeClass: "Colossal",
+  tamingMethod: "Special (Egg Stealing)",
+  tamingType: "Must steal and incubate Wyvern eggs, then imprint on babies",
+  preferredKibble: "N/A",
+  favoriteFood: "Wyvern Milk",
+  tamingSpeed: "N/A",
   torpor: {
     baseValue: 1550,
-    depleteRate: 'N/A'
+    depleteRate: "N/A"
   },
-  specialRequirements: 'Must steal eggs from Wyvern nests, requires Wyvern Milk for babies, extreme heat for incubation.',
-
-  // Base Statistics (Level 1 Wild)
+  specialRequirements: "Must steal eggs from Wyvern nests, requires Wyvern Milk for babies, extreme heat for incubation.",
   baseStats: {
     health: 1552.5,
     stamina: 400,
@@ -35794,8 +31788,6 @@ const SPECIES_DATABASE = {
     speed: 100,
     torpor: 1550
   },
-
-  // Stat Scaling (Per Level)
   statScaling: {
     health: 345,
     stamina: 40,
@@ -35805,22 +31797,18 @@ const SPECIES_DATABASE = {
     melee: 4,
     speed: 1.5
   },
-
-  // Equipment & Combat
   saddleLevel: 0,
-  saddleType: 'No saddle required',
+  saddleType: "No saddle required",
   saddleArmor: 0,
   platformLimit: 0,
-  specialAbilities: ['Fire breath', 'burning damage over time', 'structure ignition', 'aerial dominance', 'radiation immunity', 'toggleable particle effects.'],
-  attackTypes: ['Fire breath (long range AoE)', 'bite', 'claw strikes', 'tail attacks'],
-  canCarry: ['Large amounts of cargo'],
-
-  // Utility & Roles
-  primaryRole: 'Aerial fire support and structure destruction specialist',
-  secondaryRoles: ['Long-range bombing', 'area denial', 'aerial supremacy'],
-  gatheringResources: ['Raw meat, hide (standard carnivore gathering)'],
+  specialAbilities: ["Fire breath", "burning damage over time", "structure ignition", "aerial dominance", "radiation immunity", "toggleable particle effects."],
+  attackTypes: ["Fire breath (long range AoE)", "bite", "claw strikes", "tail attacks"],
+  canCarry: ["Large amounts of cargo"],
+  primaryRole: "Aerial fire support and structure destruction specialist",
+  secondaryRoles: ["Long-range bombing", "area denial", "aerial supremacy"],
+  gatheringResources: ["Raw meat, hide (standard carnivore gathering)"],
   gatheringEfficiency: {
-    'Raw meat': 7,
+    "Raw meat": 7,
     Hide: 6
   },
   ratings: {
@@ -35829,93 +31817,74 @@ const SPECIES_DATABASE = {
     speed: 10,
     survivability: 8
   },
-
-  // Environmental Data
   speeds: {
     land: 10,
     flying: 50,
     swimming: 20,
     climbing: 0
   },
-  environmentalResistances: ['Fire immunity', 'heat immunity', 'lava resistance', 'radiation immunity.'],
-  preferredBiome: 'Wyvern trenches, volcanic areas, high altitude regions',
+  environmentalResistances: ["Fire immunity", "heat immunity", "lava resistance", "radiation immunity."],
+  preferredBiome: "Wyvern trenches, volcanic areas, high altitude regions",
   temperatureRange: {
     min: 20,
     max: 100
   },
-  oxygenRequirement: 'Air breathing',
-
-  // Breeding Genetics
+  oxygenRequirement: "Air breathing",
   breeding: {
-    cooldown: '18-48 hours',
-    gestationTime: '4 hours, 59 minutes',
-    babyFoodConsumption: 'Extreme (Wyvern Milk only)',
-    maturationTime: '3 days, 20 hours',
+    cooldown: "18-48 hours",
+    gestationTime: "4 hours, 59 minutes",
+    babyFoodConsumption: "Extreme (Wyvern Milk only)",
+    maturationTime: "3 days, 20 hours",
     colorRegions: 6,
-    colorRegionNames: ['Body', 'wings', 'fire elements', 'belly', 'spines', 'glow'],
+    colorRegionNames: ["Body", "wings", "fire elements", "belly", "spines", "glow"],
     mutationChance: 7.31,
-    breedingDifficulty: 'Extreme'
+    breedingDifficulty: "Extreme"
   },
-
-  // Special Functions
-  workstation: 'None',
-  resourceProduction: 'None',
-  structureFunctions: 'Can ignite and destroy structures with fire breath',
-  buffAuras: ['None'],
-  debuffAbilities: ['Fire breath causes burning damage over time'],
-  uniqueMechanics: ['Egg stealing acquisition, fire breath weapon, elemental immunity. S-Dinos can crossbreed with non-S-Dinos.'],
-
-  // Spawn & Location
-  spawnMaps: ['Scorched Earth', 'Ragnarok', 'Valguero', 'Crystal Isles', 'Lost Island', 'Fjordur'],
-  spawnZones: ['Wyvern trenches, volcanic areas, high altitude nesting sites. Has a 10% chance to spawn in place of a standard Fire Wyvern.'],
-  rarityRating: 'Legendary',
-  levelRange: '1-190 (eggs)',
-  packBehavior: 'Small flights (2-4)',
-  territorialBehavior: 'Extremely aggressive, defends nesting areas',
-
-  // Management Metadata
-  difficultyRating: 'Extreme',
+  workstation: "None",
+  resourceProduction: "None",
+  structureFunctions: "Can ignite and destroy structures with fire breath",
+  buffAuras: ["None"],
+  debuffAbilities: ["Fire breath causes burning damage over time"],
+  uniqueMechanics: ["Egg stealing acquisition, fire breath weapon, elemental immunity. S-Dinos can crossbreed with non-S-Dinos."],
+  spawnMaps: ["Scorched Earth", "Ragnarok", "Valguero", "Crystal Isles", "Lost Island", "Fjordur"],
+  spawnZones: ["Wyvern trenches, volcanic areas, high altitude nesting sites. Has a 10% chance to spawn in place of a standard Fire Wyvern."],
+  rarityRating: "Legendary",
+  levelRange: "1-190 (eggs)",
+  packBehavior: "Small flights (2-4)",
+  territorialBehavior: "Extremely aggressive, defends nesting areas",
+  difficultyRating: "Extreme",
   beginnerFriendly: false,
   endGameViable: true,
   bossFightCapable: true,
-  pvpMeta: 'Ultimate',
-  resourceInvestment: 'Extreme',
-  maintenanceLevel: 'High',
-
-  // Badge Categories
-  badgeCategories: ['boss', 'combat']
+  pvpMeta: "Ultimate",
+  resourceInvestment: "Extreme",
+  maintenanceLevel: "High",
+  badgeCategories: ["boss", "combat"]
 },
 'S-Griffin': {
-  // Basic Info
-  id: 'S_GRIFFIN_128',
-  name: 'S-Griffin',
-  icon: '🦅',
-  category: 'combat',
-  rarity: 'legendary',
-  source: 'Ragnarok DLC (S-Variant)',
-  variants: ['Standard', 'S-Variant'],
-
-  // Biology & Lore
-  dossierText: "The Griffin is a majestic and deadly predator of the skies, a creature that demands respect and a high price for taming. This S-Variant is a more potent version of this aerial master. It flies with greater speed and dives with more force than its common kin. It is surrounded by the faint, shimmering aura of an S-Variant and is immune to radiation, allowing it to soar over the most blighted landscapes with impunity. An S-Griffin is the ultimate aerial assault mount. Its enhanced speed makes its signature dive-bomb attack even more devastating, allowing a skilled rider to execute high-speed strafing runs with lethal precision. The standard S-Variant trade-off applies: it is faster and hits harder, but has less health. This makes it less forgiving of pilot error, but for a survivor who has mastered aerial combat, the S-Griffin is an unparalleled weapon, a true king of the skies.",
-  temperament: 'Aggressive (Territorial)',
-  diet: 'Carnivore',
-  habitat: 'Mountainous regions, high cliffs, rocky outcrops, elevated terrain, irradiated zones',
-  realWorldBasis: 'Mythological griffin (eagle + lion hybrid)',
-  sizeClass: 'Large',
-
-  // Taming System
-  tamingMethod: 'Knockout',
-  tamingType: 'Extremely difficult due to speed and aggression, requires respect mechanic.',
-  preferredKibble: 'Extraordinary Kibble',
-  favoriteFood: 'Extraordinary Kibble',
-  tamingSpeed: 'Medium',
+  id: "S_GRIFFIN_128",
+  name: "S-Griffin",
+  icon: "🦅",
+  category: "combat",
+  rarity: "legendary",
+  source: "Ragnarok DLC (S-Variant)",
+  variants: ["Standard", "S-Variant"],
+  dossierText: "The Griffin is a majestic and deadly predator of the skies, a creature that demands respect and a high price for taming. This S-Variant is a more potent version of this aerial master. It flies with greater speed and dives with more force than its common kin. It is surrounded by the faint, shimmering aura of an S-Variant and is immune to radiation, allowing it to soar over the most blighted landscapes with impunity. An S-Griffin is the ultimate aerial assault mount. Its enhanced speed makes its signature dive-bomb attack even more devastating, allowing a skilled rider to execute high-speed strafing runs with lethal precision. The standard S-Variant trade-off applies: it is faster and hits harder, but has less health. This makes it less forgiving of pilot error, but for a survivor who has mastered aerial combat, the S-Griffin is an unparalleled weapon, a true king of the skies. Like all S-variants from Nekatus's S-Dino mod, this creature carries full radiation immunity — a meaningful passive advantage in environments like Aberration and the Genesis simulations where unprotected tames quickly become liabilities. In the wild, it has a 10% chance of spawning as an S-variant in place of the standard creature, identifiable by its distinctive bioluminescent shimmer. Holding E while mounted toggles special particle effects. Crossbreeding with the non-S variant is fully supported, allowing survivors to introduce the radiation immunity and S-variant glow into an established breeding line without sacrificing existing stat gains.",
+  temperament: "Aggressive (Territorial)",
+  diet: "Carnivore",
+  habitat: "Mountainous regions, high cliffs, rocky outcrops, elevated terrain, irradiated zones",
+  realWorldBasis: "Mythological griffin (eagle + lion hybrid)",
+  sizeClass: "Large",
+  tamingMethod: "Knockout",
+  tamingType: "Extremely difficult due to speed and aggression, requires respect mechanic.",
+  preferredKibble: "Extraordinary Kibble",
+  favoriteFood: "Extraordinary Kibble",
+  tamingSpeed: "Medium",
   torpor: {
     baseValue: 725,
-    depleteRate: 'Medium'
+    depleteRate: "Medium"
   },
-  specialRequirements: 'Extremely mobile target requiring a trap. Wild Griffins take reduced damage from ranged sources unless trapped.',
-
-  // Base Statistics (Level 1 Wild)
+  specialRequirements: "Extremely mobile target requiring a trap. Wild Griffins take reduced damage from ranged sources unless trapped.",
   baseStats: {
     health: 675,
     stamina: 750,
@@ -35926,8 +31895,6 @@ const SPECIES_DATABASE = {
     speed: 100,
     torpor: 725
   },
-
-  // Stat Scaling (Per Level)
   statScaling: {
     health: 150,
     stamina: 75,
@@ -35937,20 +31904,16 @@ const SPECIES_DATABASE = {
     melee: 11.25,
     speed: 3
   },
-
-  // Equipment & Combat
   saddleLevel: 0,
-  saddleType: 'Bareback riding (multi-passenger)',
+  saddleType: "Bareback riding (multi-passenger)",
   saddleArmor: 0,
   platformLimit: 0,
-  specialAbilities: ['High-speed flight', 'diving attack', 'creature pickup', 'gliding flight', 'no saddle requirement', 'radiation immunity', 'toggleable particle effects.'],
-  attackTypes: ['Dive attack', 'talon grab', 'beak strike', 'aerial swooping attacks'],
-  canCarry: ['Can pick up medium-sized creatures and survivors'],
-
-  // Utility & Roles
-  primaryRole: 'High-speed transport and aerial combat',
-  secondaryRoles: ['Scout', 'creature transport', 'aerial reconnaissance', 'hit-and-run combat'],
-  gatheringResources: ['Limited gathering through hunting'],
+  specialAbilities: ["High-speed flight", "diving attack", "creature pickup", "gliding flight", "no saddle requirement", "radiation immunity", "toggleable particle effects."],
+  attackTypes: ["Dive attack", "talon grab", "beak strike", "aerial swooping attacks"],
+  canCarry: ["Can pick up medium-sized creatures and survivors"],
+  primaryRole: "High-speed transport and aerial combat",
+  secondaryRoles: ["Scout", "creature transport", "aerial reconnaissance", "hit-and-run combat"],
+  gatheringResources: ["Limited gathering through hunting"],
   gatheringEfficiency: {
     Hunting: 4
   },
@@ -35960,93 +31923,74 @@ const SPECIES_DATABASE = {
     speed: 10,
     survivability: 6
   },
-
-  // Environmental Data
   speeds: {
     land: 35,
     flying: 50,
     swimming: 25,
     climbing: 0
   },
-  environmentalResistances: ['Immune to radiation'],
-  preferredBiome: 'Mountainous regions, high altitudes, cliff areas, open sky',
+  environmentalResistances: ["Immune to radiation"],
+  preferredBiome: "Mountainous regions, high altitudes, cliff areas, open sky",
   temperatureRange: {
     min: 0,
     max: 40
   },
-  oxygenRequirement: 'Air breathing',
-
-  // Breeding Genetics
+  oxygenRequirement: "Air breathing",
   breeding: {
-    cooldown: '18-48 hours',
-    gestationTime: '1 hour, 39 minutes',
-    babyFoodConsumption: 'High',
-    maturationTime: '1 day, 2 hours',
+    cooldown: "18-48 hours",
+    gestationTime: "1 hour, 39 minutes",
+    babyFoodConsumption: "High",
+    maturationTime: "1 day, 2 hours",
     colorRegions: 6,
-    colorRegionNames: ['Body', 'wings', 'mane', 'talons', 'beak', 'markings'],
+    colorRegionNames: ["Body", "wings", "mane", "talons", "beak", "markings"],
     mutationChance: 7.31,
-    breedingDifficulty: 'Hard'
+    breedingDifficulty: "Hard"
   },
-
-  // Special Functions
-  workstation: 'None',
-  resourceProduction: 'None',
-  structureFunctions: 'None',
-  buffAuras: ['None'],
-  debuffAbilities: ['None'],
-  uniqueMechanics: ['No saddle requirement', 'multi-passenger capability. S-Dinos can crossbreed with non-S-Dinos.'],
-
-  // Spawn & Location
-  spawnMaps: ['Ragnarok', 'Valguero', 'Crystal Isles', 'Lost Island', 'Fjordur', 'The Center'],
-  spawnZones: ['Mountainous regions, highlands, cliff areas, elevated terrain. Has a 10% chance to spawn in place of a standard Griffin.'],
-  rarityRating: 'Legendary',
-  levelRange: '1-150',
-  packBehavior: 'Solitary or mated pairs',
-  territorialBehavior: 'Highly territorial, aggressive to approach',
-
-  // Management Metadata
-  difficultyRating: 'Extreme',
+  workstation: "None",
+  resourceProduction: "None",
+  structureFunctions: "None",
+  buffAuras: ["None"],
+  debuffAbilities: ["None"],
+  uniqueMechanics: ["No saddle requirement", "multi-passenger capability. S-Dinos can crossbreed with non-S-Dinos."],
+  spawnMaps: ["Ragnarok", "Valguero", "Crystal Isles", "Lost Island", "Fjordur", "The Center"],
+  spawnZones: ["Mountainous regions, highlands, cliff areas, elevated terrain. Has a 10% chance to spawn in place of a standard Griffin."],
+  rarityRating: "Legendary",
+  levelRange: "1-150",
+  packBehavior: "Solitary or mated pairs",
+  territorialBehavior: "Highly territorial, aggressive to approach",
+  difficultyRating: "Extreme",
   beginnerFriendly: false,
   endGameViable: true,
   bossFightCapable: true,
-  pvpMeta: 'High',
-  resourceInvestment: 'Medium',
-  maintenanceLevel: 'Medium',
-
-  // Badge Categories
-  badgeCategories: ['combat', 'transport', 'boss']
+  pvpMeta: "High",
+  resourceInvestment: "Medium",
+  maintenanceLevel: "Medium",
+  badgeCategories: ["combat", "transport", "boss"]
 },
 'S-Ice Wyvern': {
-  // Basic Info
-  id: 'S_ICE_WYVERN_131',
-  name: 'S-Ice Wyvern',
-  icon: '❄️',
-  category: 'combat',
-  rarity: 'legendary',
-  source: 'Ragnarok DLC (S-Variant)',
-  variants: ['Standard', 'S-Variant'],
-
-  // Biology & Lore
-  dossierText: "As if a normal Wyvern wasn't terrifying enough, these anomalous variants now patrol the skies above the deepest scars and trenches. Whether it be Fire, Lightning, Poison, or Ice, each S-Variant possesses the same elemental fury as its common counterpart, but with enhanced speed and physical strength. They are, of course, immune to radiation and are surrounded by a faint shimmer, but these are minor details in the face of their raw, elemental power. Stealing an egg from one of these creatures is an even more perilous undertaking than before. Raising an S-Wyvern is a monumental task, but the reward is one of the most powerful creatures on the ARK. The S-Variant stat boosts make them faster flyers and more potent in close-quarters combat, though their true strength still lies in their respective elemental breath attacks. The reduced health is a notable drawback, making them more susceptible to focused fire from turrets or the attacks of other Wyverns. An S-Wyvern is a glass cannon on a colossal scale, a creature capable of wiping out entire armies but demanding a skilled and cautious rider to keep it from being shattered in the process.",
-  temperament: 'Extremely Aggressive',
-  diet: 'Carnivore (meat, prime meat, wyvern milk as baby)',
-  habitat: 'Snow biomes, frozen caves, tundra regions, ice formations, irradiated zones',
-  realWorldBasis: 'European dragon adapted to arctic environments',
-  sizeClass: 'Massive',
-
-  // Taming System
-  tamingMethod: 'Special (Egg Stealing and Raising)',
-  tamingType: 'Cannot be tamed directly - must steal egg and raise from hatching',
-  preferredKibble: 'N/A',
-  favoriteFood: 'Wyvern Milk',
-  tamingSpeed: 'N/A',
+  id: "S_ICE_WYVERN_131",
+  name: "S-Ice Wyvern",
+  icon: "❄️",
+  category: "combat",
+  rarity: "legendary",
+  source: "Ragnarok DLC (S-Variant)",
+  variants: ["Standard", "S-Variant"],
+  dossierText: "As if a normal Wyvern wasn't terrifying enough, these anomalous variants now patrol the skies above the deepest scars and trenches. Whether it be Fire, Lightning, Poison, or Ice, each S-Variant possesses the same elemental fury as its common counterpart, but with enhanced speed and physical strength. They are, of course, immune to radiation and are surrounded by a faint shimmer, but these are minor details in the face of their raw, elemental power. Stealing an egg from one of these creatures is an even more perilous undertaking than before. Raising an S-Wyvern is a monumental task, but the reward is one of the most powerful creatures on the ARK. The S-Variant stat boosts make them faster flyers and more potent in close-quarters combat, though their true strength still lies in their respective elemental breath attacks. The reduced health is a notable drawback, making them more susceptible to focused fire from turrets or the attacks of other Wyverns. An S-Wyvern is a glass cannon on a colossal scale, a creature capable of wiping out entire armies but demanding a skilled and cautious rider to keep it from being shattered in the process. Like all S-variants from Nekatus's S-Dino mod, this creature carries full radiation immunity — a meaningful passive advantage in environments like Aberration and the Genesis simulations where unprotected tames quickly become liabilities. In the wild, it has a 10% chance of spawning as an S-variant in place of the standard creature, identifiable by its distinctive bioluminescent shimmer. Holding E while mounted toggles special particle effects. Crossbreeding with the non-S variant is fully supported, allowing survivors to introduce the radiation immunity and S-variant glow into an established breeding line without sacrificing existing stat gains.",
+  temperament: "Extremely Aggressive",
+  diet: "Carnivore (meat, prime meat, wyvern milk as baby)",
+  habitat: "Snow biomes, frozen caves, tundra regions, ice formations, irradiated zones",
+  realWorldBasis: "European dragon adapted to arctic environments",
+  sizeClass: "Massive",
+  tamingMethod: "Special (Egg Stealing and Raising)",
+  tamingType: "Cannot be tamed directly - must steal egg and raise from hatching",
+  preferredKibble: "N/A",
+  favoriteFood: "Wyvern Milk",
+  tamingSpeed: "N/A",
   torpor: {
     baseValue: 725,
-    depleteRate: 'N/A'
+    depleteRate: "N/A"
   },
-  specialRequirements: 'Must steal Ice Wyvern egg from dangerous nests, requires extreme heat for incubation, babies need Wyvern Milk.',
-
-  // Base Statistics (Level 1 Wild)
+  specialRequirements: "Must steal Ice Wyvern egg from dangerous nests, requires extreme heat for incubation, babies need Wyvern Milk.",
   baseStats: {
     health: 1165.5,
     stamina: 315,
@@ -36057,8 +32001,6 @@ const SPECIES_DATABASE = {
     speed: 100,
     torpor: 725
   },
-
-  // Stat Scaling (Per Level)
   statScaling: {
     health: 194.25,
     stamina: 15.75,
@@ -36068,20 +32010,16 @@ const SPECIES_DATABASE = {
     melee: 4,
     speed: 2
   },
-
-  // Equipment & Combat
   saddleLevel: 0,
-  saddleType: 'Bareback riding',
+  saddleType: "Bareback riding",
   saddleArmor: 0,
   platformLimit: 0,
-  specialAbilities: ['Ice breath (damage + slow)', 'high-speed flight', 'creature pickup', 'diving attacks', 'frost immunity', 'radiation immunity', 'toggleable particle effects.'],
-  attackTypes: ['Ice breath attack', 'bite', 'claw strikes', 'aerial dive attacks'],
-  canCarry: ['Can grab and carry medium-sized creatures'],
-
-  // Utility & Roles
-  primaryRole: 'Aerial combat and crowd control specialist',
-  secondaryRoles: ['High-speed transport', 'creature transport', 'ice warfare', 'crowd control'],
-  gatheringResources: ['Limited gathering through combat'],
+  specialAbilities: ["Ice breath (damage + slow)", "high-speed flight", "creature pickup", "diving attacks", "frost immunity", "radiation immunity", "toggleable particle effects."],
+  attackTypes: ["Ice breath attack", "bite", "claw strikes", "aerial dive attacks"],
+  canCarry: ["Can grab and carry medium-sized creatures"],
+  primaryRole: "Aerial combat and crowd control specialist",
+  secondaryRoles: ["High-speed transport", "creature transport", "ice warfare", "crowd control"],
+  gatheringResources: ["Limited gathering through combat"],
   gatheringEfficiency: {
     Combat: 4
   },
@@ -36091,93 +32029,74 @@ const SPECIES_DATABASE = {
     speed: 10,
     survivability: 8
   },
-
-  // Environmental Data
   speeds: {
     land: 40,
     flying: 55,
     swimming: 30,
     climbing: 0
   },
-  environmentalResistances: ['Cold immunity', 'ice immunity', 'frost resistance', 'radiation immunity.'],
-  preferredBiome: 'Snow biomes, tundra, frozen caves, ice formations',
+  environmentalResistances: ["Cold immunity", "ice immunity", "frost resistance", "radiation immunity."],
+  preferredBiome: "Snow biomes, tundra, frozen caves, ice formations",
   temperatureRange: {
     min: -50,
     max: 10
   },
-  oxygenRequirement: 'Air breathing',
-
-  // Breeding Genetics
+  oxygenRequirement: "Air breathing",
   breeding: {
-    cooldown: '18-48 hours',
-    gestationTime: '5 hours',
-    babyFoodConsumption: 'Extreme (Wyvern Milk only)',
-    maturationTime: '3 days, 20 hours',
+    cooldown: "18-48 hours",
+    gestationTime: "5 hours",
+    babyFoodConsumption: "Extreme (Wyvern Milk only)",
+    maturationTime: "3 days, 20 hours",
     colorRegions: 6,
-    colorRegionNames: ['Body', 'wings', 'spikes', 'belly', 'ice crystals', 'markings'],
+    colorRegionNames: ["Body", "wings", "spikes", "belly", "ice crystals", "markings"],
     mutationChance: 7.31,
-    breedingDifficulty: 'Extreme'
+    breedingDifficulty: "Extreme"
   },
-
-  // Special Functions
-  workstation: 'None',
-  resourceProduction: 'None',
-  structureFunctions: 'None',
-  buffAuras: ['None'],
-  debuffAbilities: ['Ice breath slows enemies dramatically'],
-  uniqueMechanics: ['Egg stealing acquisition, milk dependency, crowd control specialization. S-Dinos can crossbreed with non-S-Dinos.'],
-
-  // Spawn & Location
-  spawnMaps: ['Ragnarok', 'Valguero', 'Lost Island', 'Fjordur'],
-  spawnZones: ['Snow biomes, frozen areas, ice caves, wyvern trenches in cold regions. Has a 10% chance to spawn in place of a standard Ice Wyvern.'],
-  rarityRating: 'Legendary',
-  levelRange: '15-190 (eggs)',
-  packBehavior: 'Small groups around nests',
-  territorialBehavior: 'Extremely aggressive, defends nesting areas fiercely',
-
-  // Management Metadata
-  difficultyRating: 'Extreme',
+  workstation: "None",
+  resourceProduction: "None",
+  structureFunctions: "None",
+  buffAuras: ["None"],
+  debuffAbilities: ["Ice breath slows enemies dramatically"],
+  uniqueMechanics: ["Egg stealing acquisition, milk dependency, crowd control specialization. S-Dinos can crossbreed with non-S-Dinos."],
+  spawnMaps: ["Ragnarok", "Valguero", "Lost Island", "Fjordur"],
+  spawnZones: ["Snow biomes, frozen areas, ice caves, wyvern trenches in cold regions. Has a 10% chance to spawn in place of a standard Ice Wyvern."],
+  rarityRating: "Legendary",
+  levelRange: "15-190 (eggs)",
+  packBehavior: "Small groups around nests",
+  territorialBehavior: "Extremely aggressive, defends nesting areas fiercely",
+  difficultyRating: "Extreme",
   beginnerFriendly: false,
   endGameViable: true,
   bossFightCapable: true,
-  pvpMeta: 'High',
-  resourceInvestment: 'Extreme',
-  maintenanceLevel: 'High',
-
-  // Badge Categories
-  badgeCategories: ['boss', 'combat']
+  pvpMeta: "High",
+  resourceInvestment: "Extreme",
+  maintenanceLevel: "High",
+  badgeCategories: ["boss", "combat"]
 },
 'S-Lightning Wyvern': {
-  // Basic Info
-  id: 'S_LIGHTNING_WYVERN_105',
-  name: 'S-Lightning Wyvern',
-  icon: '⚡',
-  category: 'combat',
-  rarity: 'legendary',
-  source: 'Scorched Earth DLC (S-Variant)',
-  variants: ['Standard', 'S-Variant'],
-
-  // Biology & Lore
-  dossierText: "As if a normal Wyvern wasn't terrifying enough, these anomalous variants now patrol the skies above the deepest scars and trenches. Whether it be Fire, Lightning, Poison, or Ice, each S-Variant possesses the same elemental fury as its common counterpart, but with enhanced speed and physical strength. They are, of course, immune to radiation and are surrounded by a faint shimmer, but these are minor details in the face of their raw, elemental power. Stealing an egg from one of these creatures is an even more perilous undertaking than before. Raising an S-Wyvern is a monumental task, but the reward is one of the most powerful creatures on the ARK. The S-Variant stat boosts make them faster flyers and more potent in close-quarters combat, though their true strength still lies in their respective elemental breath attacks. The reduced health is a notable drawback, making them more susceptible to focused fire from turrets or the attacks of other Wyverns. An S-Wyvern is a glass cannon on a colossal scale, a creature capable of wiping out entire armies but demanding a skilled and cautious rider to keep it from being shattered in the process.",
-  temperament: 'Extremely Aggressive',
-  diet: 'Carnivore (large prey, electrical energy)',
-  habitat: 'Wyvern trenches, storm-prone areas, high altitude nests, irradiated zones',
-  realWorldBasis: 'Draco (Dragon mythology)',
-  sizeClass: 'Colossal',
-
-  // Taming System
-  tamingMethod: 'Special (Egg Stealing)',
-  tamingType: 'Must steal and incubate Wyvern eggs, then imprint on babies',
-  preferredKibble: 'N/A',
-  favoriteFood: 'Wyvern Milk',
-  tamingSpeed: 'N/A',
+  id: "S_LIGHTNING_WYVERN_105",
+  name: "S-Lightning Wyvern",
+  icon: "⚡",
+  category: "combat",
+  rarity: "legendary",
+  source: "Scorched Earth DLC (S-Variant)",
+  variants: ["Standard", "S-Variant"],
+  dossierText: "As if a normal Wyvern wasn't terrifying enough, these anomalous variants now patrol the skies above the deepest scars and trenches. Whether it be Fire, Lightning, Poison, or Ice, each S-Variant possesses the same elemental fury as its common counterpart, but with enhanced speed and physical strength. They are, of course, immune to radiation and are surrounded by a faint shimmer, but these are minor details in the face of their raw, elemental power. Stealing an egg from one of these creatures is an even more perilous undertaking than before. Raising an S-Wyvern is a monumental task, but the reward is one of the most powerful creatures on the ARK. The S-Variant stat boosts make them faster flyers and more potent in close-quarters combat, though their true strength still lies in their respective elemental breath attacks. The reduced health is a notable drawback, making them more susceptible to focused fire from turrets or the attacks of other Wyverns. An S-Wyvern is a glass cannon on a colossal scale, a creature capable of wiping out entire armies but demanding a skilled and cautious rider to keep it from being shattered in the process. Like all S-variants from Nekatus's S-Dino mod, this creature carries full radiation immunity — a meaningful passive advantage in environments like Aberration and the Genesis simulations where unprotected tames quickly become liabilities. In the wild, it has a 10% chance of spawning as an S-variant in place of the standard creature, identifiable by its distinctive bioluminescent shimmer. Holding E while mounted toggles special particle effects. Crossbreeding with the non-S variant is fully supported, allowing survivors to introduce the radiation immunity and S-variant glow into an established breeding line without sacrificing existing stat gains.",
+  temperament: "Extremely Aggressive",
+  diet: "Carnivore (large prey, electrical energy)",
+  habitat: "Wyvern trenches, storm-prone areas, high altitude nests, irradiated zones",
+  realWorldBasis: "Draco (Dragon mythology)",
+  sizeClass: "Colossal",
+  tamingMethod: "Special (Egg Stealing)",
+  tamingType: "Must steal and incubate Wyvern eggs, then imprint on babies",
+  preferredKibble: "N/A",
+  favoriteFood: "Wyvern Milk",
+  tamingSpeed: "N/A",
   torpor: {
     baseValue: 1550,
-    depleteRate: 'N/A'
+    depleteRate: "N/A"
   },
-  specialRequirements: 'Must steal eggs from Wyvern nests, requires Wyvern Milk for babies, extreme heat for incubation.',
-
-  // Base Statistics (Level 1 Wild)
+  specialRequirements: "Must steal eggs from Wyvern nests, requires Wyvern Milk for babies, extreme heat for incubation.",
   baseStats: {
     health: 1552.5,
     stamina: 400,
@@ -36188,8 +32107,6 @@ const SPECIES_DATABASE = {
     speed: 100,
     torpor: 1550
   },
-
-  // Stat Scaling (Per Level)
   statScaling: {
     health: 345,
     stamina: 40,
@@ -36199,22 +32116,18 @@ const SPECIES_DATABASE = {
     melee: 4,
     speed: 1.5
   },
-
-  // Equipment & Combat
   saddleLevel: 0,
-  saddleType: 'No saddle required',
+  saddleType: "No saddle required",
   saddleArmor: 0,
   platformLimit: 0,
-  specialAbilities: ['Lightning beam', 'electrical discharge', 'chain lightning', 'aerial dominance', 'radiation immunity', 'toggleable particle effects.'],
-  attackTypes: ['Lightning beam (precision long-range)', 'bite', 'claw strikes', 'electrical aura'],
-  canCarry: ['Large amounts of cargo'],
-
-  // Utility & Roles
-  primaryRole: 'Precision aerial striker and anti-armor specialist',
-  secondaryRoles: ['Single-target elimination', 'electrical warfare', 'aerial supremacy'],
-  gatheringResources: ['Raw meat, hide (standard carnivore gathering)'],
+  specialAbilities: ["Lightning beam", "electrical discharge", "chain lightning", "aerial dominance", "radiation immunity", "toggleable particle effects."],
+  attackTypes: ["Lightning beam (precision long-range)", "bite", "claw strikes", "electrical aura"],
+  canCarry: ["Large amounts of cargo"],
+  primaryRole: "Precision aerial striker and anti-armor specialist",
+  secondaryRoles: ["Single-target elimination", "electrical warfare", "aerial supremacy"],
+  gatheringResources: ["Raw meat, hide (standard carnivore gathering)"],
   gatheringEfficiency: {
-    'Raw meat': 7,
+    "Raw meat": 7,
     Hide: 6
   },
   ratings: {
@@ -36223,93 +32136,74 @@ const SPECIES_DATABASE = {
     speed: 10,
     survivability: 8
   },
-
-  // Environmental Data
   speeds: {
     land: 10,
     flying: 50,
     swimming: 20,
     climbing: 0
   },
-  environmentalResistances: ['Electrical immunity', 'shock resistance', 'radiation immunity.'],
-  preferredBiome: 'Wyvern trenches, storm-prone areas, high altitude regions',
+  environmentalResistances: ["Electrical immunity", "shock resistance", "radiation immunity."],
+  preferredBiome: "Wyvern trenches, storm-prone areas, high altitude regions",
   temperatureRange: {
     min: 10,
     max: 60
   },
-  oxygenRequirement: 'Air breathing',
-
-  // Breeding Genetics
+  oxygenRequirement: "Air breathing",
   breeding: {
-    cooldown: '18-48 hours',
-    gestationTime: '4 hours, 59 minutes',
-    babyFoodConsumption: 'Extreme (Wyvern Milk only)',
-    maturationTime: '3 days, 20 hours',
+    cooldown: "18-48 hours",
+    gestationTime: "4 hours, 59 minutes",
+    babyFoodConsumption: "Extreme (Wyvern Milk only)",
+    maturationTime: "3 days, 20 hours",
     colorRegions: 6,
-    colorRegionNames: ['Body', 'wings', 'electrical elements', 'belly', 'spines', 'lightning glow'],
+    colorRegionNames: ["Body", "wings", "electrical elements", "belly", "spines", "lightning glow"],
     mutationChance: 7.31,
-    breedingDifficulty: 'Extreme'
+    breedingDifficulty: "Extreme"
   },
-
-  // Special Functions
-  workstation: 'None',
-  resourceProduction: 'None',
-  structureFunctions: 'Can destroy electronics and shock systems',
-  buffAuras: ['None'],
-  debuffAbilities: ['Lightning attacks cause electrical damage and stunning'],
-  uniqueMechanics: ['Egg stealing acquisition, precision lightning weapon, elemental immunity. S-Dinos can crossbreed with non-S-Dinos.'],
-
-  // Spawn & Location
-  spawnMaps: ['Scorched Earth', 'Ragnarok', 'Valguero', 'Crystal Isles', 'Lost Island', 'Fjordur'],
-  spawnZones: ['Wyvern trenches, storm-prone areas, high altitude nesting sites. Has a 10% chance to spawn in place of a standard Lightning Wyvern.'],
-  rarityRating: 'Legendary',
-  levelRange: '1-190 (eggs)',
-  packBehavior: 'Small flights (2-4)',
-  territorialBehavior: 'Extremely aggressive, defends nesting areas',
-
-  // Management Metadata
-  difficultyRating: 'Extreme',
+  workstation: "None",
+  resourceProduction: "None",
+  structureFunctions: "Can destroy electronics and shock systems",
+  buffAuras: ["None"],
+  debuffAbilities: ["Lightning attacks cause electrical damage and stunning"],
+  uniqueMechanics: ["Egg stealing acquisition, precision lightning weapon, elemental immunity. S-Dinos can crossbreed with non-S-Dinos."],
+  spawnMaps: ["Scorched Earth", "Ragnarok", "Valguero", "Crystal Isles", "Lost Island", "Fjordur"],
+  spawnZones: ["Wyvern trenches, storm-prone areas, high altitude nesting sites. Has a 10% chance to spawn in place of a standard Lightning Wyvern."],
+  rarityRating: "Legendary",
+  levelRange: "1-190 (eggs)",
+  packBehavior: "Small flights (2-4)",
+  territorialBehavior: "Extremely aggressive, defends nesting areas",
+  difficultyRating: "Extreme",
   beginnerFriendly: false,
   endGameViable: true,
   bossFightCapable: true,
-  pvpMeta: 'Ultimate',
-  resourceInvestment: 'Extreme',
-  maintenanceLevel: 'High',
-
-  // Badge Categories
-  badgeCategories: ['boss', 'combat']
+  pvpMeta: "Ultimate",
+  resourceInvestment: "Extreme",
+  maintenanceLevel: "High",
+  badgeCategories: ["boss", "combat"]
 },
 'S-Maeguana': {
-  // Basic Info
-  id: 'S_MAEGUANA_222',
-  name: 'S-Maeguana',
-  icon: '🦎',
-  category: 'utility',
-  rarity: 'uncommon',
-  source: 'Base Game (S-Variant)',
-  variants: ['Standard', 'S-Variant'],
-
-  // Biology & Lore
+  id: "S_MAEGUANA_222",
+  name: "S-Maeguana",
+  icon: "🦎",
+  category: "utility",
+  rarity: "uncommon",
+  source: "Astraeos DLC (S-Variant)",
+  variants: ["Standard", "S-Variant"],
   dossierText: "The Maeguana is a curious, glider-like creature that is typically shy and elusive. This S-Variant shares that skittish temperament but possesses the standard anomalous traits: a shimmering aura, radiation immunity, and enhanced physical stats. It can be found grazing peacefully, but will take to the air and glide away at the first sign of danger. The S-Maeguana's most significant alteration is a surprising one. Like the S-Ceratosaurus, a survivor can wield their own weapons while riding it. This transforms the creature from a simple transport mount into a mobile archery or sniper's platform. Its gliding ability allows a rider to silently position themselves on high cliffs or behind enemy lines, providing a stable and elevated vantage point for ranged attacks. This unique combination of stealthy mobility and rider weaponry makes the S-Maeguana an unexpectedly versatile tool for both hunting and tactical warfare.",
-  temperament: 'Skittish',
-  diet: 'Herbivore',
-  habitat: 'Jungles, irradiated zones',
-  realWorldBasis: 'Maewing with Iguana characteristics',
-  sizeClass: 'Medium',
-
-  // Taming System
-  tamingMethod: 'Passive',
-  tamingType: 'Gentle approach with preferred foods',
-  preferredKibble: 'Regular Kibble',
-  favoriteFood: 'Regular Kibble',
-  tamingSpeed: 'Fast',
+  temperament: "Skittish",
+  diet: "Herbivore",
+  habitat: "Jungles, irradiated zones",
+  realWorldBasis: "Maewing with Iguana characteristics",
+  sizeClass: "Medium",
+  tamingMethod: "Passive",
+  tamingType: "Gentle approach with preferred foods",
+  preferredKibble: "Regular Kibble",
+  favoriteFood: "Regular Kibble",
+  tamingSpeed: "Fast",
   torpor: {
     baseValue: 250,
-    depleteRate: 'N/A'
+    depleteRate: "N/A"
   },
-  specialRequirements: 'Must approach carefully, protective of young.',
-
-  // Base Statistics (Level 1 Wild)
+  specialRequirements: "Must approach carefully, protective of young.",
   baseStats: {
     health: 270,
     stamina: 300,
@@ -36320,8 +32214,6 @@ const SPECIES_DATABASE = {
     speed: 100,
     torpor: 250
   },
-
-  // Stat Scaling (Per Level)
   statScaling: {
     health: 60,
     stamina: 30,
@@ -36331,20 +32223,16 @@ const SPECIES_DATABASE = {
     melee: 1.25,
     speed: 2
   },
-
-  // Equipment & Combat
   saddleLevel: 19,
-  saddleType: 'Maeguana Saddle',
+  saddleType: "Maeguana Saddle",
   saddleArmor: 25,
   platformLimit: 0,
-  specialAbilities: ['Allows mounted weaponry', 'nursing pouch (baby care)', 'gliding', 'gentle nature', 'radiation immunity', 'toggleable particle effects.'],
-  attackTypes: ['Gentle bite (defensive only)'],
-  canCarry: ['Excellent baby carrying capacity in pouch'],
-
-  // Utility & Roles
-  primaryRole: 'Mobile weapons platform and gliding scout',
-  secondaryRoles: ['Baby care specialist', 'breeding support', 'gliding transport'],
-  gatheringResources: ['Berries', 'fiber', 'thatch'],
+  specialAbilities: ["Allows mounted weaponry", "nursing pouch (baby care)", "gliding", "gentle nature", "radiation immunity", "toggleable particle effects."],
+  attackTypes: ["Gentle bite (defensive only)"],
+  canCarry: ["Excellent baby carrying capacity in pouch"],
+  primaryRole: "Mobile weapons platform and gliding scout",
+  secondaryRoles: ["Baby care specialist", "breeding support", "gliding transport"],
+  gatheringResources: ["Berries", "fiber", "thatch"],
   gatheringEfficiency: {
     Berries: 7,
     Fiber: 6,
@@ -36356,93 +32244,74 @@ const SPECIES_DATABASE = {
     speed: 8,
     survivability: 6
   },
-
-  // Environmental Data
   speeds: {
     land: 25,
     flying: 35,
     swimming: 20,
     climbing: 0
   },
-  environmentalResistances: ['Heat resistance', 'radiation immunity'],
-  preferredBiome: 'Jungles, Mediterranean regions, rocky coastal areas, warm zones',
+  environmentalResistances: ["Heat resistance", "radiation immunity"],
+  preferredBiome: "Jungles, Mediterranean regions, rocky coastal areas, warm zones",
   temperatureRange: {
     min: 15,
     max: 50
   },
-  oxygenRequirement: 'Air breathing',
-
-  // Breeding Genetics
+  oxygenRequirement: "Air breathing",
   breeding: {
-    cooldown: '18-48 hours',
-    gestationTime: '3 hours, 20 minutes',
-    babyFoodConsumption: 'Low',
-    maturationTime: '2 days, 10 hours',
+    cooldown: "18-48 hours",
+    gestationTime: "3 hours, 20 minutes",
+    babyFoodConsumption: "Low",
+    maturationTime: "2 days, 10 hours",
     colorRegions: 6,
-    colorRegionNames: ['Body', 'belly', 'back', 'markings', 'pouch', 'accents'],
+    colorRegionNames: ["Body", "belly", "back", "markings", "pouch", "accents"],
     mutationChance: 7.31,
-    breedingDifficulty: 'Easy'
+    breedingDifficulty: "Easy"
   },
-
-  // Special Functions
-  workstation: 'None',
-  resourceProduction: 'None',
-  structureFunctions: 'None',
-  buffAuras: ['Breeding efficiency bonus for nearby creatures.'],
-  debuffAbilities: ['None'],
-  uniqueMechanics: ['Rider can use weapons while mounted. Nursing pouch system, gliding capabilities, baby care specialization. S-Dinos can crossbreed with non-S-Dinos.'],
-
-  // Spawn & Location
-  spawnMaps: ['Astraeos (primary)', 'other Mediterranean-style maps', 'Jungle biomes.'],
-  spawnZones: ['Rocky coastal areas, Mediterranean biomes, warm regions, Jungles. Has a 10% chance to spawn in place of a standard Maeguana.'],
-  rarityRating: 'Uncommon',
-  levelRange: '1-150',
-  packBehavior: 'Family groups (2-4 with young)',
-  territorialBehavior: 'Protective but peaceful',
-
-  // Management Metadata
-  difficultyRating: 'Easy',
+  workstation: "None",
+  resourceProduction: "None",
+  structureFunctions: "None",
+  buffAuras: ["Breeding efficiency bonus for nearby creatures."],
+  debuffAbilities: ["None"],
+  uniqueMechanics: ["Rider can use weapons while mounted. Nursing pouch system, gliding capabilities, baby care specialization. S-Dinos can crossbreed with non-S-Dinos."],
+  spawnMaps: ["Astraeos (primary)", "other Mediterranean-style maps", "Jungle biomes."],
+  spawnZones: ["Rocky coastal areas, Mediterranean biomes, warm regions, Jungles. Has a 10% chance to spawn in place of a standard Maeguana."],
+  rarityRating: "Uncommon",
+  levelRange: "1-150",
+  packBehavior: "Family groups (2-4 with young)",
+  territorialBehavior: "Protective but peaceful",
+  difficultyRating: "Easy",
   beginnerFriendly: true,
   endGameViable: true,
   bossFightCapable: false,
-  pvpMeta: 'Medium',
-  resourceInvestment: 'Low',
-  maintenanceLevel: 'Very Low',
-
-  // Badge Categories
-  badgeCategories: ['utility', 'transport']
+  pvpMeta: "Medium",
+  resourceInvestment: "Low",
+  maintenanceLevel: "Very Low",
+  badgeCategories: ["utility", "transport"]
 },
 'S-Maewing': {
-  // Basic Info
-  id: 'S_MAEWING_2241',
-  name: 'S-Maewing',
-  icon: '🦦',
-  category: 'utility',
-  rarity: 'uncommon',
-  source: 'Base Game (S-Variant)',
-  variants: ['Standard', 'S-Variant'],
-
-  // Biology & Lore
-  dossierText: "The Maewing is a bizarre and wonderful creature, a platypus-like mammal capable of incredible gliding speeds and acting as a surrogate parent to the young of other species. The S-Variant is a more potent version of this already remarkable animal. It is faster and stronger, immune to radiation, and can now be found in jungle environments where it was not previously seen. Its skittish nature remains, and it will often flee into the water or glide away when approached. The S-Maewing is a master of logistics and mobility. Its gliding speed is enhanced, making it one of the fastest creatures for traversing the ARK. Its role as a mobile nursery is unchanged, but it now possesses a new trick: its rider can now use their own weapons while seated in the saddle. This allows a survivor to protect the precious cargo in its pouches, firing tranquilizer darts at predators or defending against rival tribes while on the move. It is the ultimate jack-of-all-trades, a high-speed transport, a mobile nursery, and a weapons platform all rolled into one.",
-  temperament: 'Skittish',
-  diet: 'Omnivore',
-  habitat: 'Jungles, rivers, irradiated zones',
-  realWorldBasis: 'Platypus / Flying Squirrel Hybrid',
-  sizeClass: 'Medium',
-
-  // Taming System
-  tamingMethod: 'Knockout',
-  tamingType: 'Violent taming with tranquilizers',
-  preferredKibble: 'Basic Kibble',
-  favoriteFood: 'Basic Kibble',
-  tamingSpeed: 'Fast',
+  id: "S_MAEWING_2241",
+  name: "S-Maewing",
+  icon: "🦦",
+  category: "utility",
+  rarity: "uncommon",
+  source: "Genesis Part 2 DLC (S-Variant)",
+  variants: ["Standard", "S-Variant"],
+  dossierText: "The Maewing is a bizarre and wonderful creature, a platypus-like mammal capable of incredible gliding speeds and acting as a surrogate parent to the young of other species. The S-Variant is a more potent version of this already remarkable animal. It is faster and stronger, immune to radiation, and can now be found in jungle environments where it was not previously seen. Its skittish nature remains, and it will often flee into the water or glide away when approached. The S-Maewing is a master of logistics and mobility. Its gliding speed is enhanced, making it one of the fastest creatures for traversing the ARK. Its role as a mobile nursery is unchanged, but it now possesses a new trick: its rider can now use their own weapons while seated in the saddle. This allows a survivor to protect the precious cargo in its pouches, firing tranquilizer darts at predators or defending against rival tribes while on the move. It is the ultimate jack-of-all-trades, a high-speed transport, a mobile nursery, and a weapons platform all rolled into one. Like all S-variants from Nekatus's S-Dino mod, this creature carries full radiation immunity — a meaningful passive advantage in environments like Aberration and the Genesis simulations where unprotected tames quickly become liabilities. In the wild, it has a 10% chance of spawning as an S-variant in place of the standard creature, identifiable by its distinctive bioluminescent shimmer. Holding E while mounted toggles special particle effects. Crossbreeding with the non-S variant is fully supported, allowing survivors to introduce the radiation immunity and S-variant glow into an established breeding line without sacrificing existing stat gains.",
+  temperament: "Skittish",
+  diet: "Omnivore",
+  habitat: "Jungles, rivers, irradiated zones",
+  realWorldBasis: "Platypus / Flying Squirrel Hybrid",
+  sizeClass: "Medium",
+  tamingMethod: "Passive",
+  tamingType: "Passive tame. Approach carefully without weapons drawn. Place preferred food in last hotbar slot and feed when prompted. Repeat until tamed.",
+  preferredKibble: "Basic Kibble",
+  favoriteFood: "Basic Kibble",
+  tamingSpeed: "Fast",
   torpor: {
     baseValue: 250,
-    depleteRate: 'Very Fast'
+    depleteRate: "Very Fast"
   },
-  specialRequirements: 'Skittish and fast, requires a Bola or trap to effectively knock out.',
-
-  // Base Statistics (Level 1 Wild)
+  specialRequirements: "Skittish and fast, requires a Bola or trap to effectively knock out.",
   baseStats: {
     health: 270,
     stamina: 300,
@@ -36453,8 +32322,6 @@ const SPECIES_DATABASE = {
     speed: 100,
     torpor: 250
   },
-
-  // Stat Scaling (Per Level)
   statScaling: {
     health: 60,
     stamina: 30,
@@ -36464,20 +32331,16 @@ const SPECIES_DATABASE = {
     melee: 1.25,
     speed: 2
   },
-
-  // Equipment & Combat
   saddleLevel: 19,
-  saddleType: 'Maewing Saddle',
+  saddleType: "Maewing Saddle",
   saddleArmor: 25,
   platformLimit: 0,
-  specialAbilities: ['Allows mounted weaponry', 'nursing pouch (can act as feeding trough for babies)', 'gliding', 'high speed', 'radiation immunity', 'toggleable particle effects.'],
-  attackTypes: ['Bite'],
-  canCarry: ['None'],
-
-  // Utility & Roles
-  primaryRole: 'Mobile nursery and high-speed transport',
-  secondaryRoles: ['Mobile weapons platform', 'berry harvester', 'travel mount'],
-  gatheringResources: ['Berries', 'Fiber', 'Meat'],
+  specialAbilities: ["Allows mounted weaponry", "nursing pouch (can act as feeding trough for babies)", "gliding", "high speed", "radiation immunity", "toggleable particle effects."],
+  attackTypes: ["Bite"],
+  canCarry: ["None"],
+  primaryRole: "Mobile nursery and high-speed transport",
+  secondaryRoles: ["Mobile weapons platform", "berry harvester", "travel mount"],
+  gatheringResources: ["Berries", "Fiber", "Meat"],
   gatheringEfficiency: {
     Berries: 8,
     Fiber: 6
@@ -36488,93 +32351,74 @@ const SPECIES_DATABASE = {
     speed: 10,
     survivability: 6
   },
-
-  // Environmental Data
   speeds: {
     land: 25,
     flying: 50,
     swimming: 30,
     climbing: 0
   },
-  environmentalResistances: ['Immune to radiation'],
-  preferredBiome: 'Jungles, Rivers',
+  environmentalResistances: ["Immune to radiation"],
+  preferredBiome: "Jungles, Rivers",
   temperatureRange: {
     min: 15,
     max: 35
   },
-  oxygenRequirement: 'Air breathing',
-
-  // Breeding Genetics
+  oxygenRequirement: "Air breathing",
   breeding: {
-    cooldown: '18-48 hours',
-    gestationTime: '3 hours, 20 minutes',
-    babyFoodConsumption: 'Low',
-    maturationTime: '2 days, 10 hours',
+    cooldown: "18-48 hours",
+    gestationTime: "3 hours, 20 minutes",
+    babyFoodConsumption: "Low",
+    maturationTime: "2 days, 10 hours",
     colorRegions: 6,
-    colorRegionNames: ['Body', 'Underside', 'Back', 'Markings', 'Pouch', 'Accents'],
+    colorRegionNames: ["Body", "Underside", "Back", "Markings", "Pouch", "Accents"],
     mutationChance: 7.31,
-    breedingDifficulty: 'Easy'
+    breedingDifficulty: "Easy"
   },
-
-  // Special Functions
-  workstation: 'None',
-  resourceProduction: 'None',
-  structureFunctions: 'None',
-  buffAuras: ['Acts as a feeding trough for baby dinosaurs placed in its pouch.'],
-  debuffAbilities: ['None'],
-  uniqueMechanics: ['Rider can use weapons while mounted. Nursing pouch system. S-Dinos can crossbreed with non-S-Dinos.'],
-
-  // Spawn & Location
-  spawnMaps: ['Genesis Part 2', 'Lost Island', 'Fjordur'],
-  spawnZones: ['Jungles. Has a 10% chance to spawn in place of a standard Maewing.'],
-  rarityRating: 'Uncommon',
-  levelRange: '1-150',
-  packBehavior: 'Solitary or pairs',
-  territorialBehavior: 'Skittish',
-
-  // Management Metadata
-  difficultyRating: 'Medium',
+  workstation: "None",
+  resourceProduction: "None",
+  structureFunctions: "None",
+  buffAuras: ["Acts as a feeding trough for baby dinosaurs placed in its pouch."],
+  debuffAbilities: ["None"],
+  uniqueMechanics: ["Rider can use weapons while mounted. Nursing pouch system. S-Dinos can crossbreed with non-S-Dinos."],
+  spawnMaps: ["Genesis Part 2", "Lost Island", "Fjordur"],
+  spawnZones: ["Jungles. Has a 10% chance to spawn in place of a standard Maewing."],
+  rarityRating: "Uncommon",
+  levelRange: "1-150",
+  packBehavior: "Solitary or pairs",
+  territorialBehavior: "Skittish",
+  difficultyRating: "Medium",
   beginnerFriendly: true,
   endGameViable: true,
   bossFightCapable: false,
-  pvpMeta: 'High',
-  resourceInvestment: 'Low',
-  maintenanceLevel: 'Low',
-
-  // Badge Categories
-  badgeCategories: ['utility', 'transport']
+  pvpMeta: "High",
+  resourceInvestment: "Low",
+  maintenanceLevel: "Low",
+  badgeCategories: ["utility", "transport"]
 },
 'S-Mantis': {
-  // Basic Info
-  id: 'S_MANTIS_098',
-  name: 'S-Mantis',
-  icon: '🦂',
-  category: 'harvesting',
-  rarity: 'rare',
-  source: 'Scorched Earth DLC (S-Variant)',
-  variants: ['Standard', 'S-Variant'],
-
-  // Biology & Lore
-  dossierText: "The Mantis is one of the desert's most formidable predators, a giant insect that can wield tools and weapons with startling dexterity. The S-Variant is a more dangerous version of this creature, with greater speed and strength. It stalks the dunes with the same aggressive territoriality, its shimmering aura making it stand out against the sand. It is, of course, immune to the radiation that permeates some of the harshest desert caves. An S-Mantis is a harvester and warrior of unparalleled versatility. In addition to its enhanced combat stats, it possesses an incredible 50% weight reduction for a vast array of heavy resources, including metal, crystal, obsidian, and polymer. This allows it to gather materials with incredible efficiency when equipped with the proper tools. A pair of S-Mantis, one wielding a pickaxe and the other a hatchet, can clear a mountain of resources in a fraction of the time it would take other creatures, all while being able to defend themselves with deadly force.",
-  temperament: 'Aggressive',
-  diet: 'Carnivore (insects, small creatures, opportunistic)',
-  habitat: 'Deserts, caves, irradiated zones',
-  realWorldBasis: 'Empusa (Mantis species)',
-  sizeClass: 'Large',
-
-  // Taming System
-  tamingMethod: 'Passive',
-  tamingType: 'Non-violent. Requires Bug Repellent to approach. Taming is initiated by feeding it Deathworm Horns or other preferred foods.',
-  preferredKibble: 'N/A',
-  favoriteFood: 'Deathworm Horn',
-  tamingSpeed: 'Slow',
+  id: "S_MANTIS_098",
+  name: "S-Mantis",
+  icon: "🦂",
+  category: "harvesting",
+  rarity: "rare",
+  source: "Scorched Earth DLC (S-Variant)",
+  variants: ["Standard", "S-Variant"],
+  dossierText: "The Mantis is one of the desert's most formidable predators, a giant insect that can wield tools and weapons with startling dexterity. The S-Variant is a more dangerous version of this creature, with greater speed and strength. It stalks the dunes with the same aggressive territoriality, its shimmering aura making it stand out against the sand. It is, of course, immune to the radiation that permeates some of the harshest desert caves. An S-Mantis is a harvester and warrior of unparalleled versatility. In addition to its enhanced combat stats, it possesses an incredible 50% weight reduction for a vast array of heavy resources, including metal, crystal, obsidian, and polymer. This allows it to gather materials with incredible efficiency when equipped with the proper tools. A pair of S-Mantis, one wielding a pickaxe and the other a hatchet, can clear a mountain of resources in a fraction of the time it would take other creatures, all while being able to defend themselves with deadly force. Like all S-variants from Nekatus's S-Dino mod, this creature carries full radiation immunity — a meaningful passive advantage in environments like Aberration and the Genesis simulations where unprotected tames quickly become liabilities. In the wild, it has a 10% chance of spawning as an S-variant in place of the standard creature, identifiable by its distinctive bioluminescent shimmer. Holding E while mounted toggles special particle effects. Crossbreeding with the non-S variant is fully supported, allowing survivors to introduce the radiation immunity and S-variant glow into an established breeding line without sacrificing existing stat gains.",
+  temperament: "Aggressive",
+  diet: "Carnivore (insects, small creatures, opportunistic)",
+  habitat: "Deserts, caves, irradiated zones",
+  realWorldBasis: "Empusa (Mantis species)",
+  sizeClass: "Large",
+  tamingMethod: "Passive",
+  tamingType: "Non-violent. Requires Bug Repellent to approach. Taming is initiated by feeding it Deathworm Horns or other preferred foods.",
+  preferredKibble: "N/A",
+  favoriteFood: "Deathworm Horn",
+  tamingSpeed: "Slow",
   torpor: {
     baseValue: 420,
-    depleteRate: 'N/A'
+    depleteRate: "N/A"
   },
-  specialRequirements: 'Must use Bug Repellent. Can be very aggressive if approached without repellent.',
-
-  // Base Statistics (Level 1 Wild)
+  specialRequirements: "Must use Bug Repellent. Can be very aggressive if approached without repellent.",
   baseStats: {
     health: 247.5,
     stamina: 300,
@@ -36585,8 +32429,6 @@ const SPECIES_DATABASE = {
     speed: 100,
     torpor: 420
   },
-
-  // Stat Scaling (Per Level)
   statScaling: {
     health: 55,
     stamina: 30,
@@ -36596,22 +32438,18 @@ const SPECIES_DATABASE = {
     melee: 1.6,
     speed: 1.5
   },
-
-  // Equipment & Combat
   saddleLevel: 0,
-  saddleType: 'No saddle required',
+  saddleType: "No saddle required",
   saddleArmor: 0,
   platformLimit: 0,
-  specialAbilities: ['Tool wielding', 'weapon use', 'camouflage invisibility', 'resource gathering', 'radiation immunity', 'toggleable particle effects', 'massive weight reduction.'],
-  attackTypes: ['Tool/weapon attacks', 'natural claw strikes', 'precise strikes', 'pounce attack.'],
-  canCarry: ['None'],
-
-  // Utility & Roles
-  primaryRole: 'Tool-wielding resource harvester',
-  secondaryRoles: ['Specialized combat', 'stealth scouting', 'transport'],
-  gatheringResources: ['Enhanced gathering with tools (varies by tool used)'],
+  specialAbilities: ["Tool wielding", "weapon use", "camouflage invisibility", "resource gathering", "radiation immunity", "toggleable particle effects", "massive weight reduction."],
+  attackTypes: ["Tool/weapon attacks", "natural claw strikes", "precise strikes", "pounce attack."],
+  canCarry: ["None"],
+  primaryRole: "Tool-wielding resource harvester",
+  secondaryRoles: ["Specialized combat", "stealth scouting", "transport"],
+  gatheringResources: ["Enhanced gathering with tools (varies by tool used)"],
   gatheringEfficiency: {
-    'With Tools': 10,
+    "With Tools": 10,
     Natural: 5
   },
   ratings: {
@@ -36620,93 +32458,74 @@ const SPECIES_DATABASE = {
     speed: 7,
     survivability: 7
   },
-
-  // Environmental Data
   speeds: {
     land: 25,
     flying: 0,
     swimming: 15,
     climbing: 0
   },
-  environmentalResistances: ['Heat tolerance', 'radiation immunity'],
-  preferredBiome: 'Deserts, caves',
+  environmentalResistances: ["Heat tolerance", "radiation immunity"],
+  preferredBiome: "Deserts, caves",
   temperatureRange: {
     min: 15,
     max: 55
   },
-  oxygenRequirement: 'Air breathing',
-
-  // Breeding Genetics
+  oxygenRequirement: "Air breathing",
   breeding: {
-    cooldown: '18-48 hours',
-    gestationTime: '1 hour, 39 minutes',
-    babyFoodConsumption: 'High',
-    maturationTime: '1 day, 2 hours',
+    cooldown: "18-48 hours",
+    gestationTime: "1 hour, 39 minutes",
+    babyFoodConsumption: "High",
+    maturationTime: "1 day, 2 hours",
     colorRegions: 6,
-    colorRegionNames: ['Body', 'limbs', 'claws', 'segments', 'eyes', 'patterns'],
+    colorRegionNames: ["Body", "limbs", "claws", "segments", "eyes", "patterns"],
     mutationChance: 7.31,
-    breedingDifficulty: 'Hard'
+    breedingDifficulty: "Hard"
   },
-
-  // Special Functions
-  workstation: 'Can use tools as workstations',
-  resourceProduction: 'Enhanced resource production with appropriate tools',
-  structureFunctions: 'None',
-  buffAuras: ['None'],
-  debuffAbilities: ['None'],
-  uniqueMechanics: ['50% weight reduction for Metal, Metal Ingots, Obsidian, Crystal, Stone, Polymer & Black Pearls. Can wield tools and weapons. S-Dinos can crossbreed with non-S-Dinos.'],
-
-  // Spawn & Location
-  spawnMaps: ['Scorched Earth', 'Ragnarok', 'Valguero', 'Crystal Isles', 'Lost Island', 'Fjordur'],
-  spawnZones: ['Deserts, caves, areas with rocky terrain. Has a 10% chance to spawn in place of a standard Mantis.'],
-  rarityRating: 'Rare',
-  levelRange: '1-150',
-  packBehavior: 'Solitary',
-  territorialBehavior: 'Aggressive, uses camouflage for ambush attacks',
-
-  // Management Metadata
-  difficultyRating: 'Hard',
+  workstation: "Can use tools as workstations",
+  resourceProduction: "Enhanced resource production with appropriate tools",
+  structureFunctions: "None",
+  buffAuras: ["None"],
+  debuffAbilities: ["None"],
+  uniqueMechanics: ["50% weight reduction for Metal, Metal Ingots, Obsidian, Crystal, Stone, Polymer & Black Pearls. Can wield tools and weapons. S-Dinos can crossbreed with non-S-Dinos."],
+  spawnMaps: ["Scorched Earth", "Ragnarok", "Valguero", "Crystal Isles", "Lost Island", "Fjordur"],
+  spawnZones: ["Deserts, caves, areas with rocky terrain. Has a 10% chance to spawn in place of a standard Mantis."],
+  rarityRating: "Rare",
+  levelRange: "1-150",
+  packBehavior: "Solitary",
+  territorialBehavior: "Aggressive, uses camouflage for ambush attacks",
+  difficultyRating: "Hard",
   beginnerFriendly: false,
   endGameViable: true,
   bossFightCapable: true,
-  pvpMeta: 'High',
-  resourceInvestment: 'High',
-  maintenanceLevel: 'Medium',
-
-  // Badge Categories
-  badgeCategories: ['harvesting', 'combat', 'boss']
+  pvpMeta: "High",
+  resourceInvestment: "High",
+  maintenanceLevel: "Medium",
+  badgeCategories: ["harvesting", "combat", "boss"]
 },
 'S-Megalodon': {
-  // Basic Info
-  id: 'S_MEGALODON_052',
-  name: 'S-Megalodon',
-  icon: '🦈',
-  category: 'combat',
-  rarity: 'common',
-  source: 'Base Game (S-Variant)',
-  variants: ['Standard', 'Tek', 'Alpha', 'S-Variant'],
-
-  // Biology & Lore
-  dossierText: "The Megalodon is the most common large predator in the island's oceans, a relentless hunter that strikes fear into any swimmer. This S-Variant, however, is a completely different kind of terror. It attacks 50% slower, its movements more deliberate and measured. But each bite lands with 50% more force, a truly bone-shattering impact. Most terrifying of all, it possesses the 'Bloodrage' ability of a Carcharodontosaurus, growing faster and stronger with every kill. It is also immune to the stuns of jellyfish, making it an unstoppable juggernaut of the deep. The S-Megalodon is not a skirmisher; it is a finisher. Its slower attack speed makes it less suited for dealing with swarms of smaller creatures, but its immense single-bite damage and Bloodrage mechanic make it the ultimate big-game hunter of the seas. A rider can use it to methodically eliminate smaller fish, building its rage to incredible levels before unleashing its full, devastating power on a Mosasaurus or Tusoteuthis. It is a creature that rewards a patient and strategic hunter, a true apex predator that can snowball into an unstoppable force of nature.",
-  temperament: 'Aggressive',
-  diet: 'Carnivore (large fish, marine creatures)',
-  habitat: 'Deep ocean, open water, irradiated waters',
-  realWorldBasis: 'Carcharocles megalodon',
-  sizeClass: 'Massive',
-
-  // Taming System
-  tamingMethod: 'Knockout',
-  tamingType: 'Violent taming with tranquilizers',
-  preferredKibble: 'Superior Kibble',
-  favoriteFood: 'Superior Kibble',
-  tamingSpeed: 'Slow',
+  id: "S_MEGALODON_052",
+  name: "S-Megalodon",
+  icon: "🦈",
+  category: "combat",
+  rarity: "common",
+  source: "Base Game (S-Variant)",
+  variants: ["Standard", "Tek", "Alpha", "S-Variant"],
+  dossierText: "The Megalodon is the most common large predator in the island's oceans, a relentless hunter that strikes fear into any swimmer. This S-Variant, however, is a completely different kind of terror. It attacks 50% slower, its movements more deliberate and measured. But each bite lands with 50% more force, a truly bone-shattering impact. Most terrifying of all, it possesses the 'Bloodrage' ability of a Carcharodontosaurus, growing faster and stronger with every kill. It is also immune to the stuns of jellyfish, making it an unstoppable juggernaut of the deep. The S-Megalodon is not a skirmisher; it is a finisher. Its slower attack speed makes it less suited for dealing with swarms of smaller creatures, but its immense single-bite damage and Bloodrage mechanic make it the ultimate big-game hunter of the seas. A rider can use it to methodically eliminate smaller fish, building its rage to incredible levels before unleashing its full, devastating power on a Mosasaurus or Tusoteuthis. It is a creature that rewards a patient and strategic hunter, a true apex predator that can snowball into an unstoppable force of nature. Like all S-variants from Nekatus's S-Dino mod, this creature carries full radiation immunity — a meaningful passive advantage in environments like Aberration and the Genesis simulations where unprotected tames quickly become liabilities. In the wild, it has a 10% chance of spawning as an S-variant in place of the standard creature, identifiable by its distinctive bioluminescent shimmer. Holding E while mounted toggles special particle effects. Crossbreeding with the non-S variant is fully supported, allowing survivors to introduce the radiation immunity and S-variant glow into an established breeding line without sacrificing existing stat gains.",
+  temperament: "Aggressive",
+  diet: "Carnivore (large fish, marine creatures)",
+  habitat: "Deep ocean, open water, irradiated waters",
+  realWorldBasis: "Carcharocles megalodon",
+  sizeClass: "Massive",
+  tamingMethod: "Knockout",
+  tamingType: "Violent taming with tranquilizers",
+  preferredKibble: "Superior Kibble",
+  favoriteFood: "Superior Kibble",
+  tamingSpeed: "Slow",
   torpor: {
     baseValue: 1000,
-    depleteRate: 'Fast'
+    depleteRate: "Fast"
   },
-  specialRequirements: 'Underwater taming, extremely aggressive.',
-
-  // Base Statistics (Level 1 Wild)
+  specialRequirements: "Underwater taming, extremely aggressive.",
   baseStats: {
     health: 540,
     stamina: 320,
@@ -36717,8 +32536,6 @@ const SPECIES_DATABASE = {
     speed: 100,
     torpor: 1000
   },
-
-  // Stat Scaling (Per Level)
   statScaling: {
     health: 120,
     stamina: 32,
@@ -36728,23 +32545,19 @@ const SPECIES_DATABASE = {
     melee: 2,
     speed: 1.5
   },
-
-  // Equipment & Combat
   saddleLevel: 47,
-  saddleType: 'Megalodon Saddle',
+  saddleType: "Megalodon Saddle",
   saddleArmor: 25,
   platformLimit: 0,
-  specialAbilities: ['Bloodrage (damage and speed boost from kills)', 'powerful bite', 'Jellyfish stun immunity', 'radiation immunity', 'toggleable particle effects.'],
-  attackTypes: ['Devastating bite (slower but stronger)', 'ram attack', 'thrashing'],
-  canCarry: ['Large underwater creatures and substantial cargo'],
-
-  // Utility & Roles
-  primaryRole: 'Big-game hunter and aquatic apex predator',
-  secondaryRoles: ['Deep sea exploration', 'underwater hunting', 'ocean transport'],
-  gatheringResources: ['Raw fish meat', 'prime fish meat', 'oil'],
+  specialAbilities: ["Bloodrage (damage and speed boost from kills)", "powerful bite", "Jellyfish stun immunity", "radiation immunity", "toggleable particle effects."],
+  attackTypes: ["Devastating bite (slower but stronger)", "ram attack", "thrashing"],
+  canCarry: ["Large underwater creatures and substantial cargo"],
+  primaryRole: "Big-game hunter and aquatic apex predator",
+  secondaryRoles: ["Deep sea exploration", "underwater hunting", "ocean transport"],
+  gatheringResources: ["Raw fish meat", "prime fish meat", "oil"],
   gatheringEfficiency: {
-    'Raw fish meat': 8,
-    'Prime fish meat': 7,
+    "Raw fish meat": 8,
+    "Prime fish meat": 7,
     Oil: 6
   },
   ratings: {
@@ -36753,93 +32566,74 @@ const SPECIES_DATABASE = {
     speed: 9,
     survivability: 8
   },
-
-  // Environmental Data
   speeds: {
     land: 0,
     flying: 0,
     swimming: 40,
     climbing: 0
   },
-  environmentalResistances: ['Pressure immunity, immune to Jellyfish stun & dismount, radiation immunity.'],
-  preferredBiome: 'Deep ocean, open water, underwater caves',
+  environmentalResistances: ["Pressure immunity, immune to Jellyfish stun & dismount, radiation immunity."],
+  preferredBiome: "Deep ocean, open water, underwater caves",
   temperatureRange: {
     min: 10,
     max: 30
   },
-  oxygenRequirement: 'Water breathing only',
-
-  // Breeding Genetics
+  oxygenRequirement: "Water breathing only",
   breeding: {
-    cooldown: '18-48 hours',
-    gestationTime: '7 hours, 56 minutes',
-    babyFoodConsumption: 'High',
-    maturationTime: '2 days, 22 hours',
+    cooldown: "18-48 hours",
+    gestationTime: "7 hours, 56 minutes",
+    babyFoodConsumption: "High",
+    maturationTime: "2 days, 22 hours",
     colorRegions: 6,
-    colorRegionNames: ['Body', 'stripes', 'fins', 'belly', 'spots', 'tail'],
+    colorRegionNames: ["Body", "stripes", "fins", "belly", "spots", "tail"],
     mutationChance: 7.31,
-    breedingDifficulty: 'Medium'
+    breedingDifficulty: "Medium"
   },
-
-  // Special Functions
-  workstation: 'None',
-  resourceProduction: 'None',
-  structureFunctions: 'None',
-  buffAuras: ['Bloodrage'],
-  debuffAbilities: ['None'],
-  uniqueMechanics: ['Attacks 50% slower but 50% stronger. Has Carcharodontosaurus Bloodrage ability. S-Dinos can crossbreed with non-S-Dinos.'],
-
-  // Spawn & Location
-  spawnMaps: ['The Island', 'The Center', 'Ragnarok', 'Valguero', 'Crystal Isles', 'Lost Island', 'Fjordur'],
-  spawnZones: ['Deep ocean, open water areas, underwater trenches. Uses "DinoSpawnEntries_Ocean" spawner. Has a 10% chance to spawn in place of a standard Megalodon.'],
-  rarityRating: 'Common',
-  levelRange: '1-150',
-  packBehavior: 'Solitary or small groups (2-3)',
-  territorialBehavior: 'Extremely aggressive, attacks on sight',
-
-  // Management Metadata
-  difficultyRating: 'Medium-Hard',
+  workstation: "None",
+  resourceProduction: "None",
+  structureFunctions: "None",
+  buffAuras: ["Bloodrage"],
+  debuffAbilities: ["None"],
+  uniqueMechanics: ["Attacks 50% slower but 50% stronger. Has Carcharodontosaurus Bloodrage ability. S-Dinos can crossbreed with non-S-Dinos."],
+  spawnMaps: ["The Island", "The Center", "Ragnarok", "Valguero", "Crystal Isles", "Lost Island", "Fjordur"],
+  spawnZones: ["Deep ocean, open water areas, underwater trenches. Uses \"DinoSpawnEntries_Ocean\" spawner. Has a 10% chance to spawn in place of a standard Megalodon."],
+  rarityRating: "Common",
+  levelRange: "1-150",
+  packBehavior: "Solitary or small groups (2-3)",
+  territorialBehavior: "Extremely aggressive, attacks on sight",
+  difficultyRating: "Medium-Hard",
   beginnerFriendly: false,
   endGameViable: true,
   bossFightCapable: false,
-  pvpMeta: 'High',
-  resourceInvestment: 'Medium',
-  maintenanceLevel: 'Medium',
-
-  // Badge Categories
-  badgeCategories: ['combat']
+  pvpMeta: "High",
+  resourceInvestment: "Medium",
+  maintenanceLevel: "Medium",
+  badgeCategories: ["combat"]
 },
 'S-Megalosaurus': {
-  // Basic Info
-  id: 'S_MEGALOSAURUS_053',
-  name: 'S-Megalosaurus',
-  icon: '🦕',
-  category: 'combat',
-  rarity: 'uncommon',
-  source: 'Base Game (S-Variant)',
-  variants: ['Standard', 'Aberrant', 'S-Variant'],
-
-  // Biology & Lore
+  id: "S_MEGALOSAURUS_053",
+  name: "S-Megalosaurus",
+  icon: "🦕",
+  category: "combat",
+  rarity: "uncommon",
+  source: "Base Game (S-Variant)",
+  variants: ["Standard", "Aberrant", "S-Variant"],
   dossierText: "The Megalosaurus is a creature of the night, a powerful predator that slumbers during the day and becomes a terror after dusk. This S-Variant breaks that fundamental rule. While it is still significantly stronger at night, it no longer enters a forced sleep state during the day. This makes it a constant threat, a powerful theropod that is always active and always dangerous. It possesses the standard S-Variant shimmer and radiation immunity, making it a potent predator in the aberrant depths where the concept of 'day' is meaningless. The S-Megalosaurus is a far more reliable and versatile mount than its common counterpart. The removal of its forced sleep mechanic means it can be used at any time, without the risk of it suddenly becoming sluggish and weak in the middle of an operation. This makes it an exceptional choice for exploring the deep, perpetually dark caves of the ARK, where its night-time buff is always active. It is a direct upgrade, taking the raw power of the Megalosaurus and making it available 24/7.",
-  temperament: 'Nocturnally Aggressive',
-  diet: 'Carnivore',
-  habitat: 'Caves, dark areas, emerges at night, irradiated zones',
-  realWorldBasis: 'Megalosaurus bucklandii',
-  sizeClass: 'Large',
-
-  // Taming System
-  tamingMethod: 'Knockout',
-  tamingType: 'Violent taming with tranquilizers',
-  preferredKibble: 'Superior Kibble',
-  favoriteFood: 'Superior Kibble',
-  tamingSpeed: 'Moderate',
+  temperament: "Nocturnally Aggressive",
+  diet: "Carnivore",
+  habitat: "Caves, dark areas, emerges at night, irradiated zones",
+  realWorldBasis: "Megalosaurus bucklandii",
+  sizeClass: "Large",
+  tamingMethod: "Knockout",
+  tamingType: "Violent taming with tranquilizers",
+  preferredKibble: "Superior Kibble",
+  favoriteFood: "Superior Kibble",
+  tamingSpeed: "Moderate",
   torpor: {
     baseValue: 800,
-    depleteRate: 'Moderate'
+    depleteRate: "Moderate"
   },
-  specialRequirements: 'Much easier to tame at night, becomes sluggish during day. S-Variant is always active.',
-
-  // Base Statistics (Level 1 Wild)
+  specialRequirements: "Much easier to tame at night, becomes sluggish during day. S-Variant is always active.",
   baseStats: {
     health: 432,
     stamina: 300,
@@ -36850,8 +32644,6 @@ const SPECIES_DATABASE = {
     speed: 100,
     torpor: 800
   },
-
-  // Stat Scaling (Per Level)
   statScaling: {
     health: 96,
     stamina: 30,
@@ -36861,20 +32653,16 @@ const SPECIES_DATABASE = {
     melee: 1.6,
     speed: 1.5
   },
-
-  // Equipment & Combat
   saddleLevel: 55,
-  saddleType: 'Megalosaurus Saddle',
+  saddleType: "Megalosaurus Saddle",
   saddleArmor: 25,
   platformLimit: 0,
-  specialAbilities: ['Day/night cycle dependency (buffed at night, no longer sleeps in day)', 'night vision', 'cave adaptation', 'radiation immunity', 'toggleable particle effects.'],
-  attackTypes: ['Crushing bite', 'claw swipes', 'nighttime frenzy', 'grab and carry'],
-  canCarry: ['Medium creatures and cargo'],
-
-  // Utility & Roles
-  primaryRole: 'Nighttime combat and cave exploration specialist',
-  secondaryRoles: ['Night raids', 'cave mining', 'darkness warfare'],
-  gatheringResources: ['Meat', 'hide', 'chitin'],
+  specialAbilities: ["Day/night cycle dependency (buffed at night, no longer sleeps in day)", "night vision", "cave adaptation", "radiation immunity", "toggleable particle effects."],
+  attackTypes: ["Crushing bite", "claw swipes", "nighttime frenzy", "grab and carry"],
+  canCarry: ["Medium creatures and cargo"],
+  primaryRole: "Nighttime combat and cave exploration specialist",
+  secondaryRoles: ["Night raids", "cave mining", "darkness warfare"],
+  gatheringResources: ["Meat", "hide", "chitin"],
   gatheringEfficiency: {
     Meat: 8,
     Hide: 6,
@@ -36886,93 +32674,74 @@ const SPECIES_DATABASE = {
     speed: 8,
     survivability: 8
   },
-
-  // Environmental Data
   speeds: {
-    land: 35, // mph
+    land: 35,
     flying: 0,
     swimming: 20,
     climbing: 0
   },
-  environmentalResistances: ['Excellent night vision', 'cold resistance in caves', 'radiation immunity.'],
-  preferredBiome: 'Caves, underground areas, dark environments',
+  environmentalResistances: ["Excellent night vision", "cold resistance in caves", "radiation immunity."],
+  preferredBiome: "Caves, underground areas, dark environments",
   temperatureRange: {
     min: 5,
     max: 30
   },
-  oxygenRequirement: 'Air breathing',
-
-  // Breeding Genetics
+  oxygenRequirement: "Air breathing",
   breeding: {
-    cooldown: '18-48 hours',
-    gestationTime: '2 hours, 30 minutes',
-    babyFoodConsumption: 'High',
-    maturationTime: '1 day, 18 hours',
+    cooldown: "18-48 hours",
+    gestationTime: "2 hours, 30 minutes",
+    babyFoodConsumption: "High",
+    maturationTime: "1 day, 18 hours",
     colorRegions: 6,
-    colorRegionNames: ['Body', 'stripes', 'belly', 'back', 'claws', 'spines'],
+    colorRegionNames: ["Body", "stripes", "belly", "back", "claws", "spines"],
     mutationChance: 7.31,
-    breedingDifficulty: 'Medium'
+    breedingDifficulty: "Medium"
   },
-
-  // Special Functions
-  workstation: 'None',
-  resourceProduction: 'None',
-  structureFunctions: 'None',
-  buffAuras: ['Night vision for rider'],
-  debuffAbilities: ['None'],
-  uniqueMechanics: ['Does not go into forced sleep during daytime, but is still stronger at night.', 'S-Dinos can crossbreed with non-S-Dinos.'],
-
-  // Spawn & Location
-  spawnMaps: ['The Island', 'The Center', 'Ragnarok', 'Valguero', 'Crystal Isles', 'Lost Island', 'Fjordur', 'Aberration (Aberrant)'],
-  spawnZones: ['Caves, underground areas, dark forest depths.', 'Has a 10% chance to spawn in place of a standard Megalosaurus.'],
-  rarityRating: 'Uncommon',
-  levelRange: '1-150',
-  packBehavior: 'Solitary',
-  territorialBehavior: 'Nocturnal aggression, sluggish during day',
-
-  // Management Metadata
-  difficultyRating: 'Medium',
+  workstation: "None",
+  resourceProduction: "None",
+  structureFunctions: "None",
+  buffAuras: ["Night vision for rider"],
+  debuffAbilities: ["None"],
+  uniqueMechanics: ["Does not go into forced sleep during daytime, but is still stronger at night.", "S-Dinos can crossbreed with non-S-Dinos."],
+  spawnMaps: ["The Island", "The Center", "Ragnarok", "Valguero", "Crystal Isles", "Lost Island", "Fjordur", "Aberration (Aberrant)"],
+  spawnZones: ["Caves, underground areas, dark forest depths.", "Has a 10% chance to spawn in place of a standard Megalosaurus."],
+  rarityRating: "Uncommon",
+  levelRange: "1-150",
+  packBehavior: "Solitary",
+  territorialBehavior: "Nocturnal aggression, sluggish during day",
+  difficultyRating: "Medium",
   beginnerFriendly: false,
   endGameViable: true,
   bossFightCapable: true,
-  pvpMeta: 'High',
-  resourceInvestment: 'Medium',
-  maintenanceLevel: 'Medium',
-
-  // Badge Categories
-  badgeCategories: ['combat', 'boss']
+  pvpMeta: "High",
+  resourceInvestment: "Medium",
+  maintenanceLevel: "Medium",
+  badgeCategories: ["combat", "boss"]
 },
 'S-Mosasaurus': {
-  // Basic Info
-  id: 'S_MOSASAURUS_058',
-  name: 'S-Mosasaurus',
-  icon: '🐊',
-  category: 'combat',
-  rarity: 'rare',
-  source: 'Base Game (S-Variant)',
-  variants: ['Standard', 'Tek', 'Alpha', 'S-Variant'],
-
-  // Biology & Lore
-  dossierText: "If the Plesiosaur is a frigate, the Mosasaurus is a battleship. It is one of the largest and most powerful predators in the ocean, a true leviathan of the deep. The S-Variant is that battleship with bigger guns. It is faster, stronger, and more resilient than the standard species, though this comes at the cost of some of its health. Its shimmering aura is a terrifying sight in the abyssal depths, a warning that the undisputed king of the ocean has become even more formidable. Taming an S-Mosasaurus is to command the pinnacle of aquatic power. Its enhanced speed makes it a surprisingly agile combatant for its size, and its increased bite force can make short work of almost any oceanic threat. While its health pool is slightly reduced, its immense base durability means it remains an incredible tank, especially when equipped with a high-quality platform saddle. It is the ultimate deep-sea war mount, a creature capable of projecting immense power and serving as a mobile, submersible fortress for its tribe.",
-  temperament: 'Aggressive',
-  diet: 'Carnivore',
-  habitat: 'Deep ocean, underwater trenches, irradiated waters',
-  realWorldBasis: 'Mosasaurus hoffmanni',
-  sizeClass: 'Colossal',
-
-  // Taming System
-  tamingMethod: 'Knockout',
-  tamingType: 'Violent taming with tranquilizers',
-  preferredKibble: 'Exceptional Kibble',
-  favoriteFood: 'Exceptional Kibble',
-  tamingSpeed: 'Extremely Slow',
+  id: "S_MOSASAURUS_058",
+  name: "S-Mosasaurus",
+  icon: "🐊",
+  category: "combat",
+  rarity: "rare",
+  source: "Base Game (S-Variant)",
+  variants: ["Standard", "Tek", "Alpha", "S-Variant"],
+  dossierText: "If the Plesiosaur is a frigate, the Mosasaurus is a battleship. It is one of the largest and most powerful predators in the ocean, a true leviathan of the deep. The S-Variant is that battleship with bigger guns. It is faster, stronger, and more resilient than the standard species, though this comes at the cost of some of its health. Its shimmering aura is a terrifying sight in the abyssal depths, a warning that the undisputed king of the ocean has become even more formidable. Taming an S-Mosasaurus is to command the pinnacle of aquatic power. Its enhanced speed makes it a surprisingly agile combatant for its size, and its increased bite force can make short work of almost any oceanic threat. While its health pool is slightly reduced, its immense base durability means it remains an incredible tank, especially when equipped with a high-quality platform saddle. It is the ultimate deep-sea war mount, a creature capable of projecting immense power and serving as a mobile, submersible fortress for its tribe. Like all S-variants from Nekatus's S-Dino mod, this creature carries full radiation immunity — a meaningful passive advantage in environments like Aberration and the Genesis simulations where unprotected tames quickly become liabilities. In the wild, it has a 10% chance of spawning as an S-variant in place of the standard creature, identifiable by its distinctive bioluminescent shimmer. Holding E while mounted toggles special particle effects. Crossbreeding with the non-S variant is fully supported, allowing survivors to introduce the radiation immunity and S-variant glow into an established breeding line without sacrificing existing stat gains.",
+  temperament: "Aggressive",
+  diet: "Carnivore",
+  habitat: "Deep ocean, underwater trenches, irradiated waters",
+  realWorldBasis: "Mosasaurus hoffmanni",
+  sizeClass: "Colossal",
+  tamingMethod: "Knockout",
+  tamingType: "Violent taming with tranquilizers",
+  preferredKibble: "Exceptional Kibble",
+  favoriteFood: "Exceptional Kibble",
+  tamingSpeed: "Extremely Slow",
   torpor: {
     baseValue: 3000,
-    depleteRate: 'Very Slow'
+    depleteRate: "Very Slow"
   },
-  specialRequirements: 'Underwater taming, massive torpor requirement.',
-
-  // Base Statistics (Level 1 Wild)
+  specialRequirements: "Underwater taming, massive torpor requirement.",
   baseStats: {
     health: 2880,
     stamina: 400,
@@ -36983,8 +32752,6 @@ const SPECIES_DATABASE = {
     speed: 100,
     torpor: 3000
   },
-
-  // Stat Scaling (Per Level)
   statScaling: {
     health: 640,
     stamina: 40,
@@ -36994,25 +32761,21 @@ const SPECIES_DATABASE = {
     melee: 5,
     speed: 1
   },
-
-  // Equipment & Combat
   saddleLevel: 78,
-  saddleType: 'Mosasaurus Platform Saddle',
+  saddleType: "Mosasaurus Platform Saddle",
   saddleArmor: 25,
   platformLimit: 1,
-  specialAbilities: ['Massive bite force', 'platform building', 'deep sea dominance', 'radiation immunity', 'toggleable particle effects.'],
-  attackTypes: ['Devastating bite', 'ram attack', 'tail swipe'],
-  canCarry: ['Massive amounts of cargo, multiple passengers on platform'],
-
-  // Utility & Roles
-  primaryRole: 'Mobile underwater fortress and siege mount',
-  secondaryRoles: ['Deep ocean exploration', 'underwater combat', 'mobile base'],
-  gatheringResources: ['Raw fish meat', 'prime fish meat', 'oil', 'black pearls'],
+  specialAbilities: ["Massive bite force", "platform building", "deep sea dominance", "radiation immunity", "toggleable particle effects."],
+  attackTypes: ["Devastating bite", "ram attack", "tail swipe"],
+  canCarry: ["Massive amounts of cargo, multiple passengers on platform"],
+  primaryRole: "Mobile underwater fortress and siege mount",
+  secondaryRoles: ["Deep ocean exploration", "underwater combat", "mobile base"],
+  gatheringResources: ["Raw fish meat", "prime fish meat", "oil", "black pearls"],
   gatheringEfficiency: {
-    'Raw fish meat': 9,
-    'Prime fish meat': 8,
+    "Raw fish meat": 9,
+    "Prime fish meat": 8,
     Oil: 7,
-    'Black pearls': 6
+    "Black pearls": 6
   },
   ratings: {
     combat: 10,
@@ -37020,93 +32783,74 @@ const SPECIES_DATABASE = {
     speed: 7,
     survivability: 9
   },
-
-  // Environmental Data
   speeds: {
-    land: 0, // mph
+    land: 0,
     flying: 0,
     swimming: 30,
     climbing: 0
   },
-  environmentalResistances: ['Pressure immunity', 'massive size protection', 'radiation immunity.'],
-  preferredBiome: 'Deep ocean, underwater trenches, open water',
+  environmentalResistances: ["Pressure immunity", "massive size protection", "radiation immunity."],
+  preferredBiome: "Deep ocean, underwater trenches, open water",
   temperatureRange: {
     min: 0,
     max: 30
   },
-  oxygenRequirement: 'Water breathing only',
-
-  // Breeding Genetics
+  oxygenRequirement: "Water breathing only",
   breeding: {
-    cooldown: '18-48 hours',
-    gestationTime: '7 hours, 56 minutes',
-    babyFoodConsumption: 'Extreme',
-    maturationTime: '4 days, 22 hours',
+    cooldown: "18-48 hours",
+    gestationTime: "7 hours, 56 minutes",
+    babyFoodConsumption: "Extreme",
+    maturationTime: "4 days, 22 hours",
     colorRegions: 6,
-    colorRegionNames: ['Body', 'fins', 'stripes', 'belly', 'back', 'markings'],
+    colorRegionNames: ["Body", "fins", "stripes", "belly", "back", "markings"],
     mutationChance: 7.31,
-    breedingDifficulty: 'Very Hard'
+    breedingDifficulty: "Very Hard"
   },
-
-  // Special Functions
-  workstation: 'Platform saddle allows full base construction',
-  resourceProduction: 'None',
-  structureFunctions: 'Mobile underwater base platform',
-  buffAuras: ['None'],
-  debuffAbilities: ['None'],
-  uniqueMechanics: ['Platform building capability', 'underwater siege warfare', 'colossal size.', 'S-Dinos can crossbreed with non-S-Dinos by default.'],
-
-  // Spawn & Location
-  spawnMaps: ['The Island', 'The Center', 'Ragnarok', 'Valguero', 'Crystal Isles', 'Lost Island', 'Fjordur'],
-  spawnZones: ['Deep ocean, underwater trenches, very deep water only.', 'Has a 10% chance to spawn in place of a standard Mosasaurus.'],
-  rarityRating: 'Rare',
-  levelRange: '1-150',
-  packBehavior: 'Solitary',
-  territorialBehavior: 'Extremely aggressive, attacks everything',
-
-  // Management Metadata
-  difficultyRating: 'Extreme',
+  workstation: "Platform saddle allows full base construction",
+  resourceProduction: "None",
+  structureFunctions: "Mobile underwater base platform",
+  buffAuras: ["None"],
+  debuffAbilities: ["None"],
+  uniqueMechanics: ["Platform building capability", "underwater siege warfare", "colossal size.", "S-Dinos can crossbreed with non-S-Dinos by default."],
+  spawnMaps: ["The Island", "The Center", "Ragnarok", "Valguero", "Crystal Isles", "Lost Island", "Fjordur"],
+  spawnZones: ["Deep ocean, underwater trenches, very deep water only.", "Has a 10% chance to spawn in place of a standard Mosasaurus."],
+  rarityRating: "Rare",
+  levelRange: "1-150",
+  packBehavior: "Solitary",
+  territorialBehavior: "Extremely aggressive, attacks everything",
+  difficultyRating: "Extreme",
   beginnerFriendly: false,
   endGameViable: true,
   bossFightCapable: false,
-  pvpMeta: 'Very High',
-  resourceInvestment: 'Extreme',
-  maintenanceLevel: 'Very High',
-
-  // Badge Categories
-  badgeCategories: ['combat', 'transport']
+  pvpMeta: "Very High",
+  resourceInvestment: "Extreme",
+  maintenanceLevel: "Very High",
+  badgeCategories: ["combat", "transport"]
 },
 'S-Otter': {
-  // Basic Info
-  id: 'S_OTTER_061',
-  name: 'S-Otter',
-  icon: '🦦',
-  category: 'utility',
-  rarity: 'common',
-  source: 'Base Game (S-Variant)',
-  variants: ['Standard', 'Aberrant', 'S-Variant'],
-
-  // Biology & Lore
-  dossierText: "The common Otter is a delightful and useful companion, a friendly creature that can be seen playfully swimming in the island's rivers. This S-Variant is functionally identical, though it possesses the standard anomalous traits. It is slightly faster and stronger, immune to radiation, and surrounded by a faint shimmer. Its friendly disposition is unchanged, and it will still eagerly accept fish from any survivor who offers them. An S-Otter serves the same roles as its common cousin, but with slightly enhanced capabilities. It provides excellent insulation against both heat and cold, can carry multiple artifacts, and is an adept hunter of fish. The S-Variant's stat boosts are marginal for a creature of its size, but they do make it slightly more resilient to accidental harm. For the survivor who values the utility and charm of this furry companion, the S-Variant is a small but welcome upgrade.",
-  temperament: 'Friendly',
-  diet: 'Omnivore',
-  habitat: 'Rivers, coastal areas, freshwater sources, irradiated zones',
-  realWorldBasis: 'Lutra lutra (Eurasian Otter)',
-  sizeClass: 'Small',
-
-  // Taming System
-  tamingMethod: 'Passive',
-  tamingType: 'Hand-feeding (non-violent)',
-  preferredKibble: 'Simple Kibble',
-  favoriteFood: 'Simple Kibble',
-  tamingSpeed: 'Fast',
+  id: "S_OTTER_061",
+  name: "S-Otter",
+  icon: "🦦",
+  category: "utility",
+  rarity: "common",
+  source: "Base Game (S-Variant)",
+  variants: ["Standard", "Aberrant", "S-Variant"],
+  dossierText: "The common Otter is a delightful and useful companion, a friendly creature that can be seen playfully swimming in the island's rivers. This S-Variant is functionally identical, though it possesses the standard anomalous traits. It is slightly faster and stronger, immune to radiation, and surrounded by a faint shimmer. Its friendly disposition is unchanged, and it will still eagerly accept fish from any survivor who offers them. An S-Otter serves the same roles as its common cousin, but with slightly enhanced capabilities. It provides excellent insulation against both heat and cold, can carry multiple artifacts, and is an adept hunter of fish. The S-Variant's stat boosts are marginal for a creature of its size, but they do make it slightly more resilient to accidental harm. For the survivor who values the utility and charm of this furry companion, the S-Variant is a small but welcome upgrade. Like all S-variants from Nekatus's S-Dino mod, this creature carries full radiation immunity — a meaningful passive advantage in environments like Aberration and the Genesis simulations where unprotected tames quickly become liabilities. In the wild, it has a 10% chance of spawning as an S-variant in place of the standard creature, identifiable by its distinctive bioluminescent shimmer. Holding E while mounted toggles special particle effects. Crossbreeding with the non-S variant is fully supported, allowing survivors to introduce the radiation immunity and S-variant glow into an established breeding line without sacrificing existing stat gains.",
+  temperament: "Friendly",
+  diet: "Omnivore",
+  habitat: "Rivers, coastal areas, freshwater sources, irradiated zones",
+  realWorldBasis: "Lutra lutra (Eurasian Otter)",
+  sizeClass: "Small",
+  tamingMethod: "Passive",
+  tamingType: "Hand-feeding (non-violent)",
+  preferredKibble: "Simple Kibble",
+  favoriteFood: "Simple Kibble",
+  tamingSpeed: "Fast",
   torpor: {
     baseValue: 60,
-    depleteRate: 'N/A'
+    depleteRate: "N/A"
   },
-  specialRequirements: 'Must feed fish, found near water sources, excellent thermal regulation.',
-
-  // Base Statistics (Level 1 Wild)
+  specialRequirements: "Must feed fish, found near water sources, excellent thermal regulation.",
   baseStats: {
     health: 72,
     stamina: 200,
@@ -37117,8 +32861,6 @@ const SPECIES_DATABASE = {
     speed: 100,
     torpor: 60
   },
-
-  // Stat Scaling (Per Level)
   statScaling: {
     health: 16,
     stamina: 20,
@@ -37128,24 +32870,20 @@ const SPECIES_DATABASE = {
     melee: 0.4,
     speed: 2
   },
-
-  // Equipment & Combat
   saddleLevel: 0,
-  saddleType: 'Shoulder pet',
+  saddleType: "Shoulder pet",
   saddleArmor: 0,
   platformLimit: 0,
-  specialAbilities: ['Temperature regulation', 'pearl diving', 'fish gathering', 'artifact carrying', 'radiation immunity', 'toggleable particle effects.'],
-  attackTypes: ['Weak bite (rarely used, defensive only)'],
-  canCarry: ['Artifacts and small items'],
-
-  // Utility & Roles
-  primaryRole: 'Temperature regulation shoulder pet and artifact carrier',
-  secondaryRoles: ['Fish gathering', 'pearl diving', 'insulation provider'],
-  gatheringResources: ['Silica pearls', 'black pearls', 'fish meat'],
+  specialAbilities: ["Temperature regulation", "pearl diving", "fish gathering", "artifact carrying", "radiation immunity", "toggleable particle effects."],
+  attackTypes: ["Weak bite (rarely used, defensive only)"],
+  canCarry: ["Artifacts and small items"],
+  primaryRole: "Temperature regulation shoulder pet and artifact carrier",
+  secondaryRoles: ["Fish gathering", "pearl diving", "insulation provider"],
+  gatheringResources: ["Silica pearls", "black pearls", "fish meat"],
   gatheringEfficiency: {
-    'Silica pearls': 10,
-    'Black pearls': 8,
-    'Fish meat': 7
+    "Silica pearls": 10,
+    "Black pearls": 8,
+    "Fish meat": 7
   },
   ratings: {
     combat: 2,
@@ -37153,93 +32891,74 @@ const SPECIES_DATABASE = {
     speed: 7,
     survivability: 5
   },
-
-  // Environmental Data
   speeds: {
-    land: 25, // mph
+    land: 25,
     flying: 0,
     swimming: 40,
     climbing: 0
   },
-  environmentalResistances: ['Thermal regulation (heating and cooling)', 'radiation immunity.'],
-  preferredBiome: 'Rivers, coastal areas, freshwater and saltwater environments',
+  environmentalResistances: ["Thermal regulation (heating and cooling)", "radiation immunity."],
+  preferredBiome: "Rivers, coastal areas, freshwater and saltwater environments",
   temperatureRange: {
     min: -20,
     max: 50
   },
-  oxygenRequirement: 'Air breathing',
-
-  // Breeding Genetics
+  oxygenRequirement: "Air breathing",
   breeding: {
-    cooldown: '18-48 hours',
-    gestationTime: '1 hour, 25 minutes',
-    babyFoodConsumption: 'Low',
-    maturationTime: '1 day, 20 hours',
+    cooldown: "18-48 hours",
+    gestationTime: "1 hour, 25 minutes",
+    babyFoodConsumption: "Low",
+    maturationTime: "1 day, 20 hours",
     colorRegions: 5,
-    colorRegionNames: ['Body', 'stripes', 'belly', 'paws', 'tail'],
+    colorRegionNames: ["Body", "stripes", "belly", "paws", "tail"],
     mutationChance: 7.31,
-    breedingDifficulty: 'Easy'
+    breedingDifficulty: "Easy"
   },
-
-  // Special Functions
-  workstation: 'None',
-  resourceProduction: 'None',
-  structureFunctions: 'None',
-  buffAuras: ['Temperature regulation for rider'],
-  debuffAbilities: ['None'],
-  uniqueMechanics: ['Artifact carrying capability', 'thermal regulation', 'excellent pearl diver.', 'S-Dinos can crossbreed with non-S-Dinos.'],
-
-  // Spawn & Location
-  spawnMaps: ['The Island', 'The Center', 'Ragnarok', 'Valguero', 'Crystal Isles', 'Lost Island', 'Fjordur', 'Aberration (Aberrant)'],
-  spawnZones: ['Rivers, coastal areas, freshwater sources, near water.', 'Has a 10% chance to spawn in place of a standard Otter.'],
-  rarityRating: 'Common',
-  levelRange: '1-150',
-  packBehavior: 'Pairs or small groups (2-4)',
-  territorialBehavior: 'Friendly, social, approaches humans',
-
-  // Management Metadata
-  difficultyRating: 'Easy',
+  workstation: "None",
+  resourceProduction: "None",
+  structureFunctions: "None",
+  buffAuras: ["Temperature regulation for rider"],
+  debuffAbilities: ["None"],
+  uniqueMechanics: ["Artifact carrying capability", "thermal regulation", "excellent pearl diver.", "S-Dinos can crossbreed with non-S-Dinos."],
+  spawnMaps: ["The Island", "The Center", "Ragnarok", "Valguero", "Crystal Isles", "Lost Island", "Fjordur", "Aberration (Aberrant)"],
+  spawnZones: ["Rivers, coastal areas, freshwater sources, near water.", "Has a 10% chance to spawn in place of a standard Otter."],
+  rarityRating: "Common",
+  levelRange: "1-150",
+  packBehavior: "Pairs or small groups (2-4)",
+  territorialBehavior: "Friendly, social, approaches humans",
+  difficultyRating: "Easy",
   beginnerFriendly: true,
   endGameViable: true,
   bossFightCapable: false,
-  pvpMeta: 'Medium',
-  resourceInvestment: 'Very Low',
-  maintenanceLevel: 'Very Low',
-
-  // Badge Categories
-  badgeCategories: ['utility']
+  pvpMeta: "Medium",
+  resourceInvestment: "Very Low",
+  maintenanceLevel: "Very Low",
+  badgeCategories: ["utility"]
 },
 'S-Plesiosaur': {
-  // Basic Info
-  id: 'S_PLESIOSAUR_072',
-  name: 'S-Plesiosaur',
-  icon: '🐉',
-  category: 'combat',
-  rarity: 'rare',
-  source: 'Base Game (S-Variant)',
-  variants: ['Standard', 'S-Variant'],
-
-  // Biology & Lore
-  dossierText: "The Plesiosaurus is a swift and graceful hunter of the deep, its long neck allowing it to strike at prey from unexpected angles. The S-Variant is a more potent version of this aquatic predator. It moves through the water with greater speed and its bite carries more force. Like all S-Variants, it is immune to radiation and is surrounded by a shimmering aura, making it a formidable presence in the ocean's depths. The S-Plesiosaur is an excellent naval combat mount. Its enhanced speed makes it a superior interceptor and skirmisher, capable of outmaneuvering larger, slower threats like the Mosasaurus. The increased damage makes it more effective in a direct confrontation, though its reduced health means it cannot afford to trade blows for long. It is a creature that excels in a fast, tactical role, a naval fighter jet to the Mosasaurus's battleship.",
-  temperament: 'Defensive',
-  diet: 'Carnivore',
-  habitat: 'Deep ocean, underwater trenches, irradiated waters',
-  realWorldBasis: 'Cryptoclidus oxoniensis (Plesiosaur)',
-  sizeClass: 'Colossal',
-
-  // Taming System
-  tamingMethod: 'Knockout',
-  tamingType: 'Violent taming with tranquilizers',
-  preferredKibble: 'Exceptional Kibble',
-  favoriteFood: 'Exceptional Kibble',
-  tamingSpeed: 'Extremely Slow',
+  id: "S_PLESIOSAUR_072",
+  name: "S-Plesiosaur",
+  icon: "🐉",
+  category: "combat",
+  rarity: "rare",
+  source: "Base Game (S-Variant)",
+  variants: ["Standard", "S-Variant"],
+  dossierText: "The Plesiosaurus is a swift and graceful hunter of the deep, its long neck allowing it to strike at prey from unexpected angles. The S-Variant is a more potent version of this aquatic predator. It moves through the water with greater speed and its bite carries more force. Like all S-Variants, it is immune to radiation and is surrounded by a shimmering aura, making it a formidable presence in the ocean's depths. The S-Plesiosaur is an excellent naval combat mount. Its enhanced speed makes it a superior interceptor and skirmisher, capable of outmaneuvering larger, slower threats like the Mosasaurus. The increased damage makes it more effective in a direct confrontation, though its reduced health means it cannot afford to trade blows for long. It is a creature that excels in a fast, tactical role, a naval fighter jet to the Mosasaurus's battleship. Like all S-variants from Nekatus's S-Dino mod, this creature carries full radiation immunity — a meaningful passive advantage in environments like Aberration and the Genesis simulations where unprotected tames quickly become liabilities. In the wild, it has a 10% chance of spawning as an S-variant in place of the standard creature, identifiable by its distinctive bioluminescent shimmer. Holding E while mounted toggles special particle effects. Crossbreeding with the non-S variant is fully supported, allowing survivors to introduce the radiation immunity and S-variant glow into an established breeding line without sacrificing existing stat gains.",
+  temperament: "Defensive",
+  diet: "Carnivore",
+  habitat: "Deep ocean, underwater trenches, irradiated waters",
+  realWorldBasis: "Cryptoclidus oxoniensis (Plesiosaur)",
+  sizeClass: "Colossal",
+  tamingMethod: "Knockout",
+  tamingType: "Violent taming with tranquilizers",
+  preferredKibble: "Exceptional Kibble",
+  favoriteFood: "Exceptional Kibble",
+  tamingSpeed: "Extremely Slow",
   torpor: {
     baseValue: 3000,
-    depleteRate: 'Very Slow'
+    depleteRate: "Very Slow"
   },
-  specialRequirements: 'Underwater taming, massive torpor requirement, extremely dangerous when provoked.',
-
-  // Base Statistics (Level 1 Wild)
+  specialRequirements: "Underwater taming, massive torpor requirement, extremely dangerous when provoked.",
   baseStats: {
     health: 2160,
     stamina: 800,
@@ -37250,8 +32969,6 @@ const SPECIES_DATABASE = {
     speed: 100,
     torpor: 3000
   },
-
-  // Stat Scaling (Per Level)
   statScaling: {
     health: 480,
     stamina: 80,
@@ -37261,25 +32978,21 @@ const SPECIES_DATABASE = {
     melee: 3.75,
     speed: 1
   },
-
-  // Equipment & Combat
   saddleLevel: 64,
-  saddleType: 'Plesiosaur Platform Saddle',
+  saddleType: "Plesiosaur Platform Saddle",
   saddleArmor: 25,
   platformLimit: 1,
-  specialAbilities: ['Platform building', 'long-range neck attack', 'massive health pool', 'radiation immunity', 'toggleable particle effects.'],
-  attackTypes: ['Long-range bite', 'tail sweep', 'body slam'],
-  canCarry: ['Massive cargo and structures on platform saddle'],
-
-  // Utility & Roles
-  primaryRole: 'Mobile underwater fortress and deep sea exploration',
-  secondaryRoles: ['Underwater base platform', 'group transport', 'deep ocean combat'],
-  gatheringResources: ['Raw fish meat', 'prime fish meat', 'oil', 'black pearls'],
+  specialAbilities: ["Platform building", "long-range neck attack", "massive health pool", "radiation immunity", "toggleable particle effects."],
+  attackTypes: ["Long-range bite", "tail sweep", "body slam"],
+  canCarry: ["Massive cargo and structures on platform saddle"],
+  primaryRole: "Mobile underwater fortress and deep sea exploration",
+  secondaryRoles: ["Underwater base platform", "group transport", "deep ocean combat"],
+  gatheringResources: ["Raw fish meat", "prime fish meat", "oil", "black pearls"],
   gatheringEfficiency: {
-    'Raw fish meat': 8,
-    'Prime fish meat': 7,
+    "Raw fish meat": 8,
+    "Prime fish meat": 7,
     Oil: 6,
-    'Black pearls': 5
+    "Black pearls": 5
   },
   ratings: {
     combat: 9,
@@ -37287,93 +33000,74 @@ const SPECIES_DATABASE = {
     speed: 6,
     survivability: 9
   },
-
-  // Environmental Data
   speeds: {
-    land: 0, // mph
+    land: 0,
     flying: 0,
     swimming: 25,
     climbing: 0
   },
-  environmentalResistances: ['Pressure immunity', 'excellent deep water adaptation', 'radiation immunity.'],
-  preferredBiome: 'Deep ocean, underwater trenches, very deep water',
+  environmentalResistances: ["Pressure immunity", "excellent deep water adaptation", "radiation immunity."],
+  preferredBiome: "Deep ocean, underwater trenches, very deep water",
   temperatureRange: {
     min: 0,
     max: 25
   },
-  oxygenRequirement: 'Water breathing only',
-
-  // Breeding Genetics
+  oxygenRequirement: "Water breathing only",
   breeding: {
-    cooldown: '18-48 hours',
-    gestationTime: '7 hours, 56 minutes',
-    babyFoodConsumption: 'Extreme',
-    maturationTime: '4 days, 22 hours',
+    cooldown: "18-48 hours",
+    gestationTime: "7 hours, 56 minutes",
+    babyFoodConsumption: "Extreme",
+    maturationTime: "4 days, 22 hours",
     colorRegions: 6,
-    colorRegionNames: ['Body', 'fins', 'neck', 'belly', 'stripes', 'markings'],
+    colorRegionNames: ["Body", "fins", "neck", "belly", "stripes", "markings"],
     mutationChance: 7.31,
-    breedingDifficulty: 'Very Hard'
+    breedingDifficulty: "Very Hard"
   },
-
-  // Special Functions
-  workstation: 'Platform saddle allows underwater base construction',
-  resourceProduction: 'None',
-  structureFunctions: 'Mobile underwater platform for building',
-  buffAuras: ['None'],
-  debuffAbilities: ['None'],
-  uniqueMechanics: ['Platform building underwater', 'long-range neck attacks.', 'S-Dinos can crossbreed with non-S-Dinos.'],
-
-  // Spawn & Location
-  spawnMaps: ['The Island', 'The Center', 'Ragnarok', 'Valguero', 'Crystal Isles', 'Lost Island', 'Fjordur'],
-  spawnZones: ['Deep ocean, underwater trenches, very deep water only.', 'Has a 10% chance to spawn in place of a standard Plesiosaur.'],
-  rarityRating: 'Rare',
-  levelRange: '1-150',
-  packBehavior: 'Solitary or pairs',
-  territorialBehavior: 'Defensive, peaceful unless provoked',
-
-  // Management Metadata
-  difficultyRating: 'Extreme',
+  workstation: "Platform saddle allows underwater base construction",
+  resourceProduction: "None",
+  structureFunctions: "Mobile underwater platform for building",
+  buffAuras: ["None"],
+  debuffAbilities: ["None"],
+  uniqueMechanics: ["Platform building underwater", "long-range neck attacks.", "S-Dinos can crossbreed with non-S-Dinos."],
+  spawnMaps: ["The Island", "The Center", "Ragnarok", "Valguero", "Crystal Isles", "Lost Island", "Fjordur"],
+  spawnZones: ["Deep ocean, underwater trenches, very deep water only.", "Has a 10% chance to spawn in place of a standard Plesiosaur."],
+  rarityRating: "Rare",
+  levelRange: "1-150",
+  packBehavior: "Solitary or pairs",
+  territorialBehavior: "Defensive, peaceful unless provoked",
+  difficultyRating: "Extreme",
   beginnerFriendly: false,
   endGameViable: true,
   bossFightCapable: false,
-  pvpMeta: 'Very High',
-  resourceInvestment: 'Extreme',
-  maintenanceLevel: 'Very High',
-
-  // Badge Categories
-  badgeCategories: ['combat', 'transport']
+  pvpMeta: "Very High",
+  resourceInvestment: "Extreme",
+  maintenanceLevel: "Very High",
+  badgeCategories: ["combat", "transport"]
 },
 'S-Poison Wyvern': {
-  // Basic Info
-  id: 'S_POISON_WYVERN_106',
-  name: 'S-Poison Wyvern',
-  icon: '☠️',
-  category: 'combat',
-  rarity: 'legendary',
-  source: 'Scorched Earth DLC (S-Variant)',
-  variants: ['Standard', 'S-Variant'],
-
-  // Biology & Lore
-  dossierText: "As if a normal Wyvern wasn't terrifying enough, these anomalous variants now patrol the skies above the deepest scars and trenches. Whether it be Fire, Lightning, Poison, or Ice, each S-Variant possesses the same elemental fury as its common counterpart, but with enhanced speed and physical strength. They are, of course, immune to radiation and are surrounded by a faint shimmer, but these are minor details in the face of their raw, elemental power. Stealing an egg from one of these creatures is an even more perilous undertaking than before. Raising an S-Wyvern is a monumental task, but the reward is one of the most powerful creatures on the ARK. The S-Variant stat boosts make them faster flyers and more potent in close-quarters combat, though their true strength still lies in their respective elemental breath attacks. The reduced health is a notable drawback, making them more susceptible to focused fire from turrets or the attacks of other Wyverns. An S-Wyvern is a glass cannon on a colossal scale, a creature capable of wiping out entire armies but demanding a skilled and cautious rider to keep it from being shattered in the process.",
-  temperament: 'Extremely Aggressive',
-  diet: 'Carnivore',
-  habitat: 'Wyvern trenches, swampy areas, high altitude nests, irradiated zones',
-  realWorldBasis: 'Draco (Dragon mythology)',
-  sizeClass: 'Colossal',
-
-  // Taming System
-  tamingMethod: 'Special (Egg Stealing)',
-  tamingType: 'Must steal and incubate Wyvern eggs, then imprint on babies',
-  preferredKibble: 'N/A',
-  favoriteFood: 'Wyvern Milk',
-  tamingSpeed: 'N/A',
+  id: "S_POISON_WYVERN_106",
+  name: "S-Poison Wyvern",
+  icon: "☠️",
+  category: "combat",
+  rarity: "legendary",
+  source: "Scorched Earth DLC (S-Variant)",
+  variants: ["Standard", "S-Variant"],
+  dossierText: "As if a normal Wyvern wasn't terrifying enough, these anomalous variants now patrol the skies above the deepest scars and trenches. Whether it be Fire, Lightning, Poison, or Ice, each S-Variant possesses the same elemental fury as its common counterpart, but with enhanced speed and physical strength. They are, of course, immune to radiation and are surrounded by a faint shimmer, but these are minor details in the face of their raw, elemental power. Stealing an egg from one of these creatures is an even more perilous undertaking than before. Raising an S-Wyvern is a monumental task, but the reward is one of the most powerful creatures on the ARK. The S-Variant stat boosts make them faster flyers and more potent in close-quarters combat, though their true strength still lies in their respective elemental breath attacks. The reduced health is a notable drawback, making them more susceptible to focused fire from turrets or the attacks of other Wyverns. An S-Wyvern is a glass cannon on a colossal scale, a creature capable of wiping out entire armies but demanding a skilled and cautious rider to keep it from being shattered in the process. Like all S-variants from Nekatus's S-Dino mod, this creature carries full radiation immunity — a meaningful passive advantage in environments like Aberration and the Genesis simulations where unprotected tames quickly become liabilities. In the wild, it has a 10% chance of spawning as an S-variant in place of the standard creature, identifiable by its distinctive bioluminescent shimmer. Holding E while mounted toggles special particle effects. Crossbreeding with the non-S variant is fully supported, allowing survivors to introduce the radiation immunity and S-variant glow into an established breeding line without sacrificing existing stat gains.",
+  temperament: "Extremely Aggressive",
+  diet: "Carnivore",
+  habitat: "Wyvern trenches, swampy areas, high altitude nests, irradiated zones",
+  realWorldBasis: "Draco (Dragon mythology)",
+  sizeClass: "Colossal",
+  tamingMethod: "Special (Egg Stealing)",
+  tamingType: "Must steal and incubate Wyvern eggs, then imprint on babies",
+  preferredKibble: "N/A",
+  favoriteFood: "Wyvern Milk",
+  tamingSpeed: "N/A",
   torpor: {
     baseValue: 1550,
-    depleteRate: 'N/A'
+    depleteRate: "N/A"
   },
-  specialRequirements: 'Must steal eggs from Wyvern nests, requires Wyvern Milk for babies, extreme heat for incubation.',
-
-  // Base Statistics (Level 1 Wild)
+  specialRequirements: "Must steal eggs from Wyvern nests, requires Wyvern Milk for babies, extreme heat for incubation.",
   baseStats: {
     health: 1552.5,
     stamina: 400,
@@ -37384,8 +33078,6 @@ const SPECIES_DATABASE = {
     speed: 100,
     torpor: 1550
   },
-
-  // Stat Scaling (Per Level)
   statScaling: {
     health: 345,
     stamina: 40,
@@ -37395,20 +33087,16 @@ const SPECIES_DATABASE = {
     melee: 4,
     speed: 1.5
   },
-
-  // Equipment & Combat
   saddleLevel: 0,
-  saddleType: 'No saddle required',
+  saddleType: "No saddle required",
   saddleArmor: 0,
   platformLimit: 0,
-  specialAbilities: ['Poison gas cloud', 'toxic damage over time', 'area denial', 'aerial dominance', 'radiation immunity', 'toggleable particle effects.'],
-  attackTypes: ['Poison gas breath (area control)', 'bite', 'claw strikes', 'toxic aura'],
-  canCarry: ['Large amounts of cargo, excellent for aerial operations'],
-
-  // Utility & Roles
-  primaryRole: 'Area denial and attrition warfare specialist',
-  secondaryRoles: ['Strategic location control', 'crowd control', 'aerial supremacy'],
-  gatheringResources: ['Raw meat', 'hide'],
+  specialAbilities: ["Poison gas cloud", "toxic damage over time", "area denial", "aerial dominance", "radiation immunity", "toggleable particle effects."],
+  attackTypes: ["Poison gas breath (area control)", "bite", "claw strikes", "toxic aura"],
+  canCarry: ["Large amounts of cargo, excellent for aerial operations"],
+  primaryRole: "Area denial and attrition warfare specialist",
+  secondaryRoles: ["Strategic location control", "crowd control", "aerial supremacy"],
+  gatheringResources: ["Raw meat", "hide"],
   gatheringEfficiency: {
     Meat: 7,
     Hide: 6
@@ -37419,93 +33107,74 @@ const SPECIES_DATABASE = {
     speed: 10,
     survivability: 8
   },
-
-  // Environmental Data
   speeds: {
-    land: 10, // mph
+    land: 10,
     flying: 50,
     swimming: 20,
     climbing: 0
   },
-  environmentalResistances: ['Poison immunity', 'toxic resistance', 'radiation immunity.'],
-  preferredBiome: 'Wyvern trenches, swampy areas, high altitude regions',
+  environmentalResistances: ["Poison immunity", "toxic resistance", "radiation immunity."],
+  preferredBiome: "Wyvern trenches, swampy areas, high altitude regions",
   temperatureRange: {
     min: 10,
     max: 60
   },
-  oxygenRequirement: 'Air breathing',
-
-  // Breeding Genetics
+  oxygenRequirement: "Air breathing",
   breeding: {
-    cooldown: '18-48 hours',
-    gestationTime: '4 hours, 59 minutes',
-    babyFoodConsumption: 'Extreme',
-    maturationTime: '3 days, 20 hours',
+    cooldown: "18-48 hours",
+    gestationTime: "4 hours, 59 minutes",
+    babyFoodConsumption: "Extreme",
+    maturationTime: "3 days, 20 hours",
     colorRegions: 6,
-    colorRegionNames: ['Body', 'wings', 'poison elements', 'belly', 'spines', 'toxic glow'],
+    colorRegionNames: ["Body", "wings", "poison elements", "belly", "spines", "toxic glow"],
     mutationChance: 7.31,
-    breedingDifficulty: 'Extreme'
+    breedingDifficulty: "Extreme"
   },
-
-  // Special Functions
-  workstation: 'None',
-  resourceProduction: 'None',
-  structureFunctions: 'Can poison and weaken structures over time',
-  buffAuras: ['None'],
-  debuffAbilities: ['Poison gas causes toxic damage over time and area denial'],
-  uniqueMechanics: ['Poison gas weapon', 'elemental immunity.', 'S-Dinos can crossbreed with non-S-Dinos.'],
-
-  // Spawn & Location
-  spawnMaps: ['Scorched Earth', 'Ragnarok', 'Valguero', 'Crystal Isles', 'Lost Island', 'Fjordur'],
-  spawnZones: ['Wyvern trenches, swampy areas, high altitude nesting sites.', 'Has a 10% chance to spawn in place of a standard Poison Wyvern.'],
-  rarityRating: 'Legendary',
-  levelRange: '1-190 (eggs)',
-  packBehavior: 'Small flights (2-4)',
-  territorialBehavior: 'Extremely aggressive, defends nesting areas',
-
-  // Management Metadata
-  difficultyRating: 'Extreme',
+  workstation: "None",
+  resourceProduction: "None",
+  structureFunctions: "Can poison and weaken structures over time",
+  buffAuras: ["None"],
+  debuffAbilities: ["Poison gas causes toxic damage over time and area denial"],
+  uniqueMechanics: ["Poison gas weapon", "elemental immunity.", "S-Dinos can crossbreed with non-S-Dinos."],
+  spawnMaps: ["Scorched Earth", "Ragnarok", "Valguero", "Crystal Isles", "Lost Island", "Fjordur"],
+  spawnZones: ["Wyvern trenches, swampy areas, high altitude nesting sites.", "Has a 10% chance to spawn in place of a standard Poison Wyvern."],
+  rarityRating: "Legendary",
+  levelRange: "1-190 (eggs)",
+  packBehavior: "Small flights (2-4)",
+  territorialBehavior: "Extremely aggressive, defends nesting areas",
+  difficultyRating: "Extreme",
   beginnerFriendly: false,
   endGameViable: true,
   bossFightCapable: true,
-  pvpMeta: 'Ultimate',
-  resourceInvestment: 'Extreme',
-  maintenanceLevel: 'High',
-
-  // Badge Categories
-  badgeCategories: ['boss', 'combat']
+  pvpMeta: "Ultimate",
+  resourceInvestment: "Extreme",
+  maintenanceLevel: "High",
+  badgeCategories: ["boss", "combat"]
 },
 'S-Queen Bee': {
-  // Basic Info
-  id: 'S_QUEEN_BEE_035',
-  name: 'S-Queen Bee',
-  icon: '🐝',
-  category: 'utility',
-  rarity: 'rare',
-  source: 'Base Game (S-Variant)',
-  variants: ['Standard', 'Queen Bee', 'S-Variant'],
-
-  // Biology & Lore
-  dossierText: "This is one of the strangest variants I have yet to document. The Giant Queen Bee is typically the heart of a hive, a stationary creature that must be freed by destroying its nest. This S-Variant, however, is a solitary, free-roaming creature. I have observed it wandering through the forests and jungles, completely independent of a hive structure. It appears to subsist solely on Rare Flowers, a very particular diet for a creature on the move. The S-Queen Bee's unique nature continues after taming. Instead of being converted into a hive structure, it remains a mobile creature. When set to wander, it will passively produce Giant Bee Honey in its inventory. This completely changes the dynamic of honey production, turning it from a stationary farming activity into something that can be done on the move. A tribe could, in theory, have a whole swarm of these queens wandering within a pen, a mobile apiary that provides a constant supply of this valuable resource.",
-  temperament: 'Passive',
-  diet: 'Herbivore',
-  habitat: 'Redwood forests, flowered areas, anywhere with hives',
-  realWorldBasis: 'Apis mellifera (Honeybee, enlarged)',
-  sizeClass: 'Medium',
-
-  // Taming System
-  tamingMethod: 'Passive',
-  tamingType: 'Hand-feeding (non-violent)',
-  preferredKibble: 'N/A',
-  favoriteFood: 'Rare Flowers',
-  tamingSpeed: 'Moderate',
+  id: "S_QUEEN_BEE_035",
+  name: "S-Queen Bee",
+  icon: "🐝",
+  category: "utility",
+  rarity: "rare",
+  source: "Base Game (S-Variant)",
+  variants: ["Standard", "Queen Bee", "S-Variant"],
+  dossierText: "This is one of the strangest variants I have yet to document. The Giant Queen Bee is typically the heart of a hive, a stationary creature that must be freed by destroying its nest. This S-Variant, however, is a solitary, free-roaming creature. I have observed it wandering through the forests and jungles, completely independent of a hive structure. It appears to subsist solely on Rare Flowers, a very particular diet for a creature on the move. The S-Queen Bee's unique nature continues after taming. Instead of being converted into a hive structure, it remains a mobile creature. When set to wander, it will passively produce Giant Bee Honey in its inventory. This completely changes the dynamic of honey production, turning it from a stationary farming activity into something that can be done on the move. A tribe could, in theory, have a whole swarm of these queens wandering within a pen, a mobile apiary that provides a constant supply of this valuable resource. Like all S-variants from Nekatus's S-Dino mod, this creature carries full radiation immunity — a meaningful passive advantage in environments like Aberration and the Genesis simulations where unprotected tames quickly become liabilities. In the wild, it has a 10% chance of spawning as an S-variant in place of the standard creature, identifiable by its distinctive bioluminescent shimmer. Holding E while mounted toggles special particle effects. Crossbreeding with the non-S variant is fully supported, allowing survivors to introduce the radiation immunity and S-variant glow into an established breeding line without sacrificing existing stat gains.",
+  temperament: "Passive",
+  diet: "Herbivore",
+  habitat: "Redwood forests, flowered areas, anywhere with hives",
+  realWorldBasis: "Apis mellifera (Honeybee, enlarged)",
+  sizeClass: "Medium",
+  tamingMethod: "Passive",
+  tamingType: "Hand-feeding (non-violent)",
+  preferredKibble: "N/A",
+  favoriteFood: "Rare Flowers",
+  tamingSpeed: "Moderate",
   torpor: {
     baseValue: 800,
-    depleteRate: 'N/A'
+    depleteRate: "N/A"
   },
-  specialRequirements: 'Does not have a hive and spawns like a normal bee. Eats only Rare Flowers.',
-
-  // Base Statistics (Level 1 Wild)
+  specialRequirements: "Does not have a hive and spawns like a normal bee. Eats only Rare Flowers.",
   baseStats: {
     health: 585,
     stamina: 400,
@@ -37516,8 +33185,6 @@ const SPECIES_DATABASE = {
     speed: 100,
     torpor: 800
   },
-
-  // Stat Scaling (Per Level)
   statScaling: {
     health: 130,
     stamina: 40,
@@ -37527,22 +33194,18 @@ const SPECIES_DATABASE = {
     melee: 1.3,
     speed: 1.5
   },
-
-  // Equipment & Combat
   saddleLevel: 0,
-  saddleType: 'N/A',
+  saddleType: "N/A",
   saddleArmor: 0,
   platformLimit: 0,
-  specialAbilities: ['Mobile honey production', 'pollination', 'radiation immunity', 'toggleable particle effects.'],
-  attackTypes: ['Stinger attack (causes torpor)'],
-  canCarry: ['None'],
-
-  // Utility & Roles
-  primaryRole: 'Mobile honey production',
-  secondaryRoles: ['Crop pollination', 'rare flower consumption'],
-  gatheringResources: ['Giant Bee Honey'],
+  specialAbilities: ["Mobile honey production", "pollination", "radiation immunity", "toggleable particle effects."],
+  attackTypes: ["Stinger attack (causes torpor)"],
+  canCarry: ["None"],
+  primaryRole: "Mobile honey production",
+  secondaryRoles: ["Crop pollination", "rare flower consumption"],
+  gatheringResources: ["Giant Bee Honey"],
   gatheringEfficiency: {
-    'Giant Bee Honey': 10
+    "Giant Bee Honey": 10
   },
   ratings: {
     combat: 4,
@@ -37550,93 +33213,74 @@ const SPECIES_DATABASE = {
     speed: 7,
     survivability: 5
   },
-
-  // Environmental Data
   speeds: {
-    land: 10, // mph
+    land: 10,
     flying: 35,
     swimming: 5,
     climbing: 0
   },
-  environmentalResistances: ['Immune to radiation.'],
-  preferredBiome: 'Redwood forests, flowered areas, areas with plant diversity',
+  environmentalResistances: ["Immune to radiation."],
+  preferredBiome: "Redwood forests, flowered areas, areas with plant diversity",
   temperatureRange: {
     min: 15,
     max: 35
   },
-  oxygenRequirement: 'Air breathing',
-
-  // Breeding Genetics
+  oxygenRequirement: "Air breathing",
   breeding: {
-    cooldown: 'Cannot breed',
-    gestationTime: 'N/A',
-    babyFoodConsumption: 'N/A',
-    maturationTime: 'N/A',
+    cooldown: "Cannot breed",
+    gestationTime: "N/A",
+    babyFoodConsumption: "N/A",
+    maturationTime: "N/A",
     colorRegions: 6,
-    colorRegionNames: ['Body', 'stripes', 'wings', 'abdomen', 'legs', 'head'],
+    colorRegionNames: ["Body", "stripes", "wings", "abdomen", "legs", "head"],
     mutationChance: 0,
-    breedingDifficulty: 'N/A'
+    breedingDifficulty: "N/A"
   },
-
-  // Special Functions
-  workstation: 'None',
-  resourceProduction: 'Giant Bee Honey (produces in inventory while wandering)',
-  structureFunctions: 'None',
-  buffAuras: ['Crop pollination (increases crop yield)'],
-  debuffAbilities: ['Stinger causes torpor'],
-  uniqueMechanics: ['Does not have a hive, tamed creature is mobile and produces honey in its inventory while wandering.'],
-
-  // Spawn & Location
-  spawnMaps: ['The Island', 'The Center', 'Ragnarok', 'Valguero', 'Crystal Isles', 'Lost Island', 'Fjordur'],
-  spawnZones: ['Redwood forests, areas with natural bee hives.', 'Spawns like a normal bee, not in a hive.'],
-  rarityRating: 'Rare',
-  levelRange: '1-150',
-  packBehavior: 'Solitary',
-  territorialBehavior: 'Passive',
-
-  // Management Metadata
-  difficultyRating: 'Medium',
+  workstation: "None",
+  resourceProduction: "Giant Bee Honey (produces in inventory while wandering)",
+  structureFunctions: "None",
+  buffAuras: ["Crop pollination (increases crop yield)"],
+  debuffAbilities: ["Stinger causes torpor"],
+  uniqueMechanics: ["Does not have a hive, tamed creature is mobile and produces honey in its inventory while wandering."],
+  spawnMaps: ["The Island", "The Center", "Ragnarok", "Valguero", "Crystal Isles", "Lost Island", "Fjordur"],
+  spawnZones: ["Redwood forests, areas with natural bee hives.", "Spawns like a normal bee, not in a hive."],
+  rarityRating: "Rare",
+  levelRange: "1-150",
+  packBehavior: "Solitary",
+  territorialBehavior: "Passive",
+  difficultyRating: "Medium",
   beginnerFriendly: false,
   endGameViable: true,
   bossFightCapable: false,
-  pvpMeta: 'Low',
-  resourceInvestment: 'Medium',
-  maintenanceLevel: 'Medium',
-
-  // Badge Categories
-  badgeCategories: ['utility', 'harvesting']
+  pvpMeta: "Low",
+  resourceInvestment: "Medium",
+  maintenanceLevel: "Medium",
+  badgeCategories: ["utility", "harvesting"]
 },
 'S-Reaper': {
-  // Basic Info
-  id: 'S_REAPER_114',
-  name: 'S-Reaper',
-  icon: '👹',
-  category: 'combat',
-  rarity: 'legendary',
-  source: 'Aberration DLC (S-Variant)',
-  variants: ['Standard', 'S-Variant'],
-
-  // Biology & Lore
-  dossierText: "The Reapers are alien horrors, the apex predators of the deepest, most irradiated caverns. To encounter an S-Variant of this already terrifying species is a true nightmare. It is faster, stronger, and more resilient than the common Reaper King, though this comes at the cost of some of its health. The shimmering aura that surrounds its xenomorphic body is a terrifying sight in the pitch-black depths, a clear sign that the ultimate predator has somehow become even deadlier. Raising an S-Reaper King is one of the most challenging endeavors a survivor can undertake, but the reward is a creature of immense power. The S-Variant's stat boosts make it an even more formidable combatant, its tail swipes and acid sprays hitting with greater force. Its enhanced speed makes it a more mobile and agile fighter, capable of running down almost any prey. It is the ultimate weapon for subterranean warfare, a creature born of darkness and radiation, now honed into an even more perfect killing machine.",
-  temperament: 'Extremely Aggressive',
-  diet: 'Carnivore',
-  habitat: 'Deepest underground areas, radiation zones, Element regions',
-  realWorldBasis: 'Xenomorph (science fiction)',
-  sizeClass: 'Colossal',
-
-  // Taming System
-  tamingMethod: 'Special (Xenomorphic)',
-  tamingType: 'Must be impregnated by a Reaper Queen, then survive gestation and the birth of the Reaper King.',
-  preferredKibble: 'N/A',
-  favoriteFood: 'N/A',
-  tamingSpeed: 'N/A',
+  id: "S_REAPER_114",
+  name: "S-Reaper",
+  icon: "👹",
+  category: "combat",
+  rarity: "legendary",
+  source: "Aberration DLC (S-Variant)",
+  variants: ["Standard", "S-Variant"],
+  dossierText: "The Reapers are alien horrors, the apex predators of the deepest, most irradiated caverns. To encounter an S-Variant of this already terrifying species is a true nightmare. It is faster, stronger, and more resilient than the common Reaper King, though this comes at the cost of some of its health. The shimmering aura that surrounds its xenomorphic body is a terrifying sight in the pitch-black depths, a clear sign that the ultimate predator has somehow become even deadlier. Raising an S-Reaper King is one of the most challenging endeavors a survivor can undertake, but the reward is a creature of immense power. The S-Variant's stat boosts make it an even more formidable combatant, its tail swipes and acid sprays hitting with greater force. Its enhanced speed makes it a more mobile and agile fighter, capable of running down almost any prey. It is the ultimate weapon for subterranean warfare, a creature born of darkness and radiation, now honed into an even more perfect killing machine. Like all S-variants from Nekatus's S-Dino mod, this creature carries full radiation immunity — a meaningful passive advantage in environments like Aberration and the Genesis simulations where unprotected tames quickly become liabilities. In the wild, it has a 10% chance of spawning as an S-variant in place of the standard creature, identifiable by its distinctive bioluminescent shimmer. Holding E while mounted toggles special particle effects. Crossbreeding with the non-S variant is fully supported, allowing survivors to introduce the radiation immunity and S-variant glow into an established breeding line without sacrificing existing stat gains.",
+  temperament: "Extremely Aggressive",
+  diet: "Carnivore",
+  habitat: "Deepest underground areas, radiation zones, Element regions",
+  realWorldBasis: "Xenomorph (science fiction)",
+  sizeClass: "Colossal",
+  tamingMethod: "Special (Xenomorphic)",
+  tamingType: "Must be impregnated by a Reaper Queen, then survive gestation and the birth of the Reaper King.",
+  preferredKibble: "N/A",
+  favoriteFood: "N/A",
+  tamingSpeed: "N/A",
   torpor: {
     baseValue: 2500,
-    depleteRate: 'N/A'
+    depleteRate: "N/A"
   },
-  specialRequirements: 'Must survive Reaper Queen encounter, pregnancy process, and imprinting.',
-
-  // Base Statistics (Level 1 Wild)
+  specialRequirements: "Must survive Reaper Queen encounter, pregnancy process, and imprinting.",
   baseStats: {
     health: 1800,
     stamina: 480,
@@ -37647,8 +33291,6 @@ const SPECIES_DATABASE = {
     speed: 100,
     torpor: 2500
   },
-
-  // Stat Scaling (Per Level)
   statScaling: {
     health: 400,
     stamina: 48,
@@ -37658,20 +33300,16 @@ const SPECIES_DATABASE = {
     melee: 6,
     speed: 1.8
   },
-
-  // Equipment & Combat
   saddleLevel: 0,
-  saddleType: 'No saddle required',
+  saddleType: "No saddle required",
   saddleArmor: 0,
   platformLimit: 0,
-  specialAbilities: ['Acid immunity', 'light vulnerability/strength', 'tail grab', 'acid projectiles', 'radiation immunity', 'toggleable particle effects.'],
-  attackTypes: ['Acid spit', 'tail impale', 'bite', 'grab attacks', 'acid blood damage'],
-  canCarry: ['Can grab and carry creatures with tail'],
-
-  // Utility & Roles
-  primaryRole: 'Ultimate underground apex predator',
-  secondaryRoles: ['Radiation zone specialist', 'Element area exploration', 'xenomorphic warfare'],
-  gatheringResources: ['Raw meat', 'hide', 'element'],
+  specialAbilities: ["Acid immunity", "light vulnerability/strength", "tail grab", "acid projectiles", "radiation immunity", "toggleable particle effects."],
+  attackTypes: ["Acid spit", "tail impale", "bite", "grab attacks", "acid blood damage"],
+  canCarry: ["Can grab and carry creatures with tail"],
+  primaryRole: "Ultimate underground apex predator",
+  secondaryRoles: ["Radiation zone specialist", "Element area exploration", "xenomorphic warfare"],
+  gatheringResources: ["Raw meat", "hide", "element"],
   gatheringEfficiency: {
     Meat: 8,
     Hide: 7,
@@ -37683,93 +33321,74 @@ const SPECIES_DATABASE = {
     speed: 9,
     survivability: 9
   },
-
-  // Environmental Data
   speeds: {
-    land: 30, // mph
+    land: 30,
     flying: 0,
     swimming: 20,
     climbing: 1
   },
-  environmentalResistances: ['Acid immunity', 'radiation immunity', 'light vulnerability.'],
-  preferredBiome: 'Deepest underground areas, radiation zones, Element regions',
+  environmentalResistances: ["Acid immunity", "radiation immunity", "light vulnerability."],
+  preferredBiome: "Deepest underground areas, radiation zones, Element regions",
   temperatureRange: {
     min: 10,
     max: 60
   },
-  oxygenRequirement: 'Air breathing',
-
-  // Breeding Genetics
+  oxygenRequirement: "Air breathing",
   breeding: {
-    cooldown: 'Special xenomorphic cycle',
-    gestationTime: 'Special (pregnancy process varies)',
-    babyFoodConsumption: 'Extreme',
-    maturationTime: 'Special lifecycle',
+    cooldown: "Special xenomorphic cycle",
+    gestationTime: "Special (pregnancy process varies)",
+    babyFoodConsumption: "Extreme",
+    maturationTime: "Special lifecycle",
     colorRegions: 6,
-    colorRegionNames: ['Body', 'carapace', 'tail', 'claws', 'bio-luminescence', 'acid glow'],
+    colorRegionNames: ["Body", "carapace", "tail", "claws", "bio-luminescence", "acid glow"],
     mutationChance: 7.31,
-    breedingDifficulty: 'Extreme'
+    breedingDifficulty: "Extreme"
   },
-
-  // Special Functions
-  workstation: 'None',
-  resourceProduction: 'None',
-  structureFunctions: 'Can destroy structures with acid',
-  buffAuras: ['None'],
-  debuffAbilities: ['Acid attacks cause damage over time'],
-  uniqueMechanics: ['Xenomorphic reproduction', 'light vulnerability/strength system', 'acid immunity.', 'S-Dinos can crossbreed with non-S-Dinos.'],
-
-  // Spawn & Location
-  spawnMaps: ['Aberration', 'Crystal Isles (underground)', 'Lost Island', 'Fjordur'],
-  spawnZones: ['Deepest underground areas, radiation zones, Element regions.', 'Has a 10% chance to spawn in place of a standard Reaper.'],
-  rarityRating: 'Legendary',
-  levelRange: '1-150 (special levels through imprinting)',
-  packBehavior: 'Solitary (except during reproduction)',
-  territorialBehavior: 'Extremely aggressive, apex predator',
-
-  // Management Metadata
-  difficultyRating: 'Extreme',
+  workstation: "None",
+  resourceProduction: "None",
+  structureFunctions: "Can destroy structures with acid",
+  buffAuras: ["None"],
+  debuffAbilities: ["Acid attacks cause damage over time"],
+  uniqueMechanics: ["Xenomorphic reproduction", "light vulnerability/strength system", "acid immunity.", "S-Dinos can crossbreed with non-S-Dinos."],
+  spawnMaps: ["Aberration", "Crystal Isles (underground)", "Lost Island", "Fjordur"],
+  spawnZones: ["Deepest underground areas, radiation zones, Element regions.", "Has a 10% chance to spawn in place of a standard Reaper."],
+  rarityRating: "Legendary",
+  levelRange: "1-150 (special levels through imprinting)",
+  packBehavior: "Solitary (except during reproduction)",
+  territorialBehavior: "Extremely aggressive, apex predator",
+  difficultyRating: "Extreme",
   beginnerFriendly: false,
   endGameViable: true,
   bossFightCapable: true,
-  pvpMeta: 'Ultimate',
-  resourceInvestment: 'Extreme',
-  maintenanceLevel: 'High',
-
-  // Badge Categories
-  badgeCategories: ['combat', 'boss']
+  pvpMeta: "Ultimate",
+  resourceInvestment: "Extreme",
+  maintenanceLevel: "High",
+  badgeCategories: ["combat", "boss"]
 },
 'S-Rex': {
-  // Basic Info
-  id: 'S_REX_079',
-  name: 'S-Rex',
-  icon: '🦖',
-  category: 'combat',
-  rarity: 'legendary',
-  source: 'Base Game (S-Variant)',
-  variants: ['Standard', 'Tek', 'Alpha', 'S-Variant'],
-
-  // Biology & Lore
-  dossierText: "The Tyrannosaurus rex is the tyrant lizard king, the very symbol of prehistoric power and ferocity. This S-Variant takes that raw power and refines it. It is faster on its feet and its bone-crushing bite is even more powerful. It stalks the island's hunting grounds with the same aggressive confidence, but the shimmering aura that surrounds it marks it as something more than a simple predator. Its immunity to radiation makes it the undisputed apex of even the most blighted lands. The S-Rex is the archetypal glass cannon. It sacrifices a portion of its legendary durability for a significant increase in speed and damage. This shifts its role on the battlefield. While a standard Rex can serve as a frontline tank, absorbing immense punishment, the S-Rex excels as a shock trooper. Its enhanced speed allows it to close with the enemy and deliver a devastating alpha strike, shattering formations before they can retaliate. It is a creature for the decisive warlord, a weapon designed not for prolonged brawls, but for swift, overwhelming victory.",
-  temperament: 'Extremely Aggressive',
-  diet: 'Carnivore',
-  habitat: 'Everywhere dangerous, especially inland areas, irradiated zones',
-  realWorldBasis: 'Tyrannosaurus rex',
-  sizeClass: 'Colossal',
-
-  // Taming System
-  tamingMethod: 'Knockout',
-  tamingType: 'Violent taming with tranquilizers',
-  preferredKibble: 'Exceptional Kibble',
-  favoriteFood: 'Exceptional Kibble',
-  tamingSpeed: 'Very Slow',
+  id: "S_REX_079",
+  name: "S-Rex",
+  icon: "🦖",
+  category: "combat",
+  rarity: "legendary",
+  source: "Base Game (S-Variant)",
+  variants: ["Standard", "Tek", "Alpha", "S-Variant"],
+  dossierText: "The Tyrannosaurus rex is the tyrant lizard king, the very symbol of prehistoric power and ferocity. This S-Variant takes that raw power and refines it. It is faster on its feet and its bone-crushing bite is even more powerful. It stalks the island's hunting grounds with the same aggressive confidence, but the shimmering aura that surrounds it marks it as something more than a simple predator. Its immunity to radiation makes it the undisputed apex of even the most blighted lands. The S-Rex is the archetypal glass cannon. It sacrifices a portion of its legendary durability for a significant increase in speed and damage. This shifts its role on the battlefield. While a standard Rex can serve as a frontline tank, absorbing immense punishment, the S-Rex excels as a shock trooper. Its enhanced speed allows it to close with the enemy and deliver a devastating alpha strike, shattering formations before they can retaliate. It is a creature for the decisive warlord, a weapon designed not for prolonged brawls, but for swift, overwhelming victory. Like all S-variants from Nekatus's S-Dino mod, this creature carries full radiation immunity — a meaningful passive advantage in environments like Aberration and the Genesis simulations where unprotected tames quickly become liabilities. In the wild, it has a 10% chance of spawning as an S-variant in place of the standard creature, identifiable by its distinctive bioluminescent shimmer. Holding E while mounted toggles special particle effects. Crossbreeding with the non-S variant is fully supported, allowing survivors to introduce the radiation immunity and S-variant glow into an established breeding line without sacrificing existing stat gains.",
+  temperament: "Extremely Aggressive",
+  diet: "Carnivore",
+  habitat: "Everywhere dangerous, especially inland areas, irradiated zones",
+  realWorldBasis: "Tyrannosaurus rex",
+  sizeClass: "Colossal",
+  tamingMethod: "Knockout",
+  tamingType: "Violent taming with tranquilizers",
+  preferredKibble: "Exceptional Kibble",
+  favoriteFood: "Exceptional Kibble",
+  tamingSpeed: "Very Slow",
   torpor: {
     baseValue: 1550,
-    depleteRate: 'Fast'
+    depleteRate: "Fast"
   },
-  specialRequirements: 'Extremely dangerous, requires massive traps, thousands of tranq darts.',
-
-  // Base Statistics (Level 1 Wild)
+  specialRequirements: "Extremely dangerous, requires massive traps, thousands of tranq darts.",
   baseStats: {
     health: 990,
     stamina: 420,
@@ -37780,8 +33399,6 @@ const SPECIES_DATABASE = {
     speed: 100,
     torpor: 1550
   },
-
-  // Stat Scaling (Per Level)
   statScaling: {
     health: 220,
     stamina: 42,
@@ -37791,20 +33408,16 @@ const SPECIES_DATABASE = {
     melee: 5,
     speed: 1.75
   },
-
-  // Equipment & Combat
   saddleLevel: 74,
-  saddleType: 'Rex Saddle',
+  saddleType: "Rex Saddle",
   saddleArmor: 25,
   platformLimit: 0,
-  specialAbilities: ['Devastating bite force', 'fear roar', 'apex predator stats', 'radiation immunity', 'toggleable particle effects.'],
-  attackTypes: ['Crushing bite', 'tail sweep', 'intimidating roar'],
-  canCarry: ['Can grab and carry medium creatures'],
-
-  // Utility & Roles
-  primaryRole: 'Ultimate combat mount and boss fighter',
-  secondaryRoles: ['Alpha predator elimination', 'base assault', 'meat gathering'],
-  gatheringResources: ['Massive amounts of meat and hide'],
+  specialAbilities: ["Devastating bite force", "fear roar", "apex predator stats", "radiation immunity", "toggleable particle effects."],
+  attackTypes: ["Crushing bite", "tail sweep", "intimidating roar"],
+  canCarry: ["Can grab and carry medium creatures"],
+  primaryRole: "Ultimate combat mount and boss fighter",
+  secondaryRoles: ["Alpha predator elimination", "base assault", "meat gathering"],
+  gatheringResources: ["Massive amounts of meat and hide"],
   gatheringEfficiency: {
     Meat: 10,
     Hide: 10
@@ -37815,93 +33428,74 @@ const SPECIES_DATABASE = {
     speed: 7,
     survivability: 9
   },
-
-  // Environmental Data
   speeds: {
-    land: 25, // mph
+    land: 25,
     flying: 0,
     swimming: 15,
     climbing: 0
   },
-  environmentalResistances: ['Immune to radiation', 'intimidates most creatures.'],
-  preferredBiome: 'Inland areas, mountain foothills, dangerous zones',
+  environmentalResistances: ["Immune to radiation", "intimidates most creatures."],
+  preferredBiome: "Inland areas, mountain foothills, dangerous zones",
   temperatureRange: {
     min: 10,
     max: 50
   },
-  oxygenRequirement: 'Air breathing',
-
-  // Breeding Genetics
+  oxygenRequirement: "Air breathing",
   breeding: {
-    cooldown: '18-48 hours',
-    gestationTime: '4 hours, 59 minutes',
-    babyFoodConsumption: 'Extreme',
-    maturationTime: '3 days, 20 hours',
+    cooldown: "18-48 hours",
+    gestationTime: "4 hours, 59 minutes",
+    babyFoodConsumption: "Extreme",
+    maturationTime: "3 days, 20 hours",
     colorRegions: 6,
-    colorRegionNames: ['Body', 'spine', 'stripes', 'belly', 'legs', 'markings'],
+    colorRegionNames: ["Body", "spine", "stripes", "belly", "legs", "markings"],
     mutationChance: 7.31,
-    breedingDifficulty: 'Very Hard'
+    breedingDifficulty: "Very Hard"
   },
-
-  // Special Functions
-  workstation: 'None',
-  resourceProduction: 'None',
-  structureFunctions: 'Can destroy most structures',
-  buffAuras: ['Fear aura (intimidates smaller creatures)'],
-  debuffAbilities: ['Roar causes fear in smaller creatures'],
-  uniqueMechanics: ['THE apex predator, king of ARK creatures.', 'S-Dinos can crossbreed with non-S-Dinos.'],
-
-  // Spawn & Location
-  spawnMaps: ['The Island', 'The Center', 'Ragnarok', 'Valguero', 'Crystal Isles', 'Lost Island', 'Fjordur', 'Aberration (Aberrant)'],
-  spawnZones: ['Inland areas, mountain regions, dangerous zones.', 'Has a 10% chance to spawn in place of a standard Rex.'],
-  rarityRating: 'Legendary',
-  levelRange: '1-150',
-  packBehavior: 'Solitary or mated pairs',
-  territorialBehavior: 'Extremely territorial, attacks everything',
-
-  // Management Metadata
-  difficultyRating: 'Very Hard',
+  workstation: "None",
+  resourceProduction: "None",
+  structureFunctions: "Can destroy most structures",
+  buffAuras: ["Fear aura (intimidates smaller creatures)"],
+  debuffAbilities: ["Roar causes fear in smaller creatures"],
+  uniqueMechanics: ["THE apex predator, king of ARK creatures.", "S-Dinos can crossbreed with non-S-Dinos."],
+  spawnMaps: ["The Island", "The Center", "Ragnarok", "Valguero", "Crystal Isles", "Lost Island", "Fjordur", "Aberration (Aberrant)"],
+  spawnZones: ["Inland areas, mountain regions, dangerous zones.", "Has a 10% chance to spawn in place of a standard Rex."],
+  rarityRating: "Legendary",
+  levelRange: "1-150",
+  packBehavior: "Solitary or mated pairs",
+  territorialBehavior: "Extremely territorial, attacks everything",
+  difficultyRating: "Very Hard",
   beginnerFriendly: false,
   endGameViable: true,
   bossFightCapable: true,
-  pvpMeta: 'Extremely High',
-  resourceInvestment: 'Extreme',
-  maintenanceLevel: 'High',
-
-  // Badge Categories
-  badgeCategories: ['boss', 'combat']
+  pvpMeta: "Extremely High",
+  resourceInvestment: "Extreme",
+  maintenanceLevel: "High",
+  badgeCategories: ["boss", "combat"]
 },
 'S-Rhyniognatha': {
-  // Basic Info
-  id: 'S_RHYNIOGNATHA_080',
-  name: 'S-Rhyniognatha',
-  icon: '🪲',
-  category: 'combat',
-  rarity: 'legendary',
-  source: 'Fjordur DLC (S-Variant)',
-  variants: ['Standard', 'S-Variant'],
-
-  // Biology & Lore
-  dossierText: "The Rhyniognatha is a colossal, multi-purpose insect that defies easy categorization. It is a formidable fighter, a capable harvester, and an incredible transport vehicle. The S-Variant enhances these capabilities, boasting greater speed and strength. It patrols the swamps and redwoods with an aggressive demeanor, its shimmering, insectoid body a clear sign of its anomalous nature. Like all S-Variants, it is immune to radiation. The S-Rhyniognatha is the undisputed master of aerial logistics. While the standard version suffers a significant speed reduction when carrying heavy creatures or structures, this S-Variant has no such handicap. It can lift a Rex or an Ankylosaurus and fly at its full, unimpeded speed. This single change is revolutionary, allowing a tribe to rapidly redeploy its largest assets across the entire map. Combined with its breedability and enhanced combat stats, the S-Rhyniognatha is arguably one of the most valuable and versatile creatures a survivor could hope to tame.",
-  temperament: 'Territorial',
-  diet: 'Carnivore',
-  habitat: 'Ancient forests, areas rich in biological diversity, irradiated zones',
-  realWorldBasis: 'Rhyniognatha hirsti (ancient insect)',
-  sizeClass: 'Colossal',
-
-  // Taming System
-  tamingMethod: 'Special (Advanced)',
-  tamingType: 'Must have a tamed creature get impregnated by a wild female Rhyniognatha by feeding it a Pheromone.',
-  preferredKibble: 'N/A',
-  favoriteFood: 'Fertilized Eggs',
-  tamingSpeed: 'Extremely Slow',
+  id: "S_RHYNIOGNATHA_080",
+  name: "S-Rhyniognatha",
+  icon: "🪲",
+  category: "combat",
+  rarity: "legendary",
+  source: "Fjordur DLC (S-Variant)",
+  variants: ["Standard", "S-Variant"],
+  dossierText: "The Rhyniognatha is a colossal, multi-purpose insect that defies easy categorization. It is a formidable fighter, a capable harvester, and an incredible transport vehicle. The S-Variant enhances these capabilities, boasting greater speed and strength. It patrols the swamps and redwoods with an aggressive demeanor, its shimmering, insectoid body a clear sign of its anomalous nature. Like all S-Variants, it is immune to radiation. The S-Rhyniognatha is the undisputed master of aerial logistics. While the standard version suffers a significant speed reduction when carrying heavy creatures or structures, this S-Variant has no such handicap. It can lift a Rex or an Ankylosaurus and fly at its full, unimpeded speed. This single change is revolutionary, allowing a tribe to rapidly redeploy its largest assets across the entire map. Combined with its breedability and enhanced combat stats, the S-Rhyniognatha is arguably one of the most valuable and versatile creatures a survivor could hope to tame. Like all S-variants from Nekatus's S-Dino mod, this creature carries full radiation immunity — a meaningful passive advantage in environments like Aberration and the Genesis simulations where unprotected tames quickly become liabilities. In the wild, it has a 10% chance of spawning as an S-variant in place of the standard creature, identifiable by its distinctive bioluminescent shimmer. Holding E while mounted toggles special particle effects. Crossbreeding with the non-S variant is fully supported, allowing survivors to introduce the radiation immunity and S-variant glow into an established breeding line without sacrificing existing stat gains.",
+  temperament: "Territorial",
+  diet: "Carnivore",
+  habitat: "Ancient forests, areas rich in biological diversity, irradiated zones",
+  realWorldBasis: "Rhyniognatha hirsti (ancient insect)",
+  sizeClass: "Colossal",
+  tamingMethod: "Special (Advanced)",
+  tamingType: "Must have a tamed creature get impregnated by a wild female Rhyniognatha by feeding it a Pheromone.",
+  preferredKibble: "N/A",
+  favoriteFood: "Fertilized Eggs",
+  tamingSpeed: "Extremely Slow",
   torpor: {
     baseValue: 2500,
-    depleteRate: 'N/A'
+    depleteRate: "N/A"
   },
-  specialRequirements: 'Complex taming involving Pheromones, a host tame, and imprinting.',
-
-  // Base Statistics (Level 1 Wild)
+  specialRequirements: "Complex taming involving Pheromones, a host tame, and imprinting.",
   baseStats: {
     health: 1800,
     stamina: 1000,
@@ -37912,8 +33506,6 @@ const SPECIES_DATABASE = {
     speed: 100,
     torpor: 2500
   },
-
-  // Stat Scaling (Per Level)
   statScaling: {
     health: 400,
     stamina: 100,
@@ -37923,22 +33515,18 @@ const SPECIES_DATABASE = {
     melee: 4.25,
     speed: 1
   },
-
-  // Equipment & Combat
   saddleLevel: 89,
-  saddleType: 'Rhyniognatha Saddle',
+  saddleType: "Rhyniognatha Saddle",
   saddleArmor: 35,
   platformLimit: 0,
-  specialAbilities: ['Creature carrying', 'resin production', 'bio-mechanical interface', 'no speed nerf while carrying', 'radiation immunity', 'toggleable particle effects.'],
-  attackTypes: ['Mandible crush', 'resin spray', 'grappling appendages'],
-  canCarry: ['Multiple creatures simultaneously using specialized appendages'],
-
-  // Utility & Roles
-  primaryRole: 'Advanced transportation and logistics specialist',
-  secondaryRoles: ['Creature transport', 'resin production', 'bio-mechanical crafting'],
-  gatheringResources: ['Organic polymer', 'resin', 'sap', 'advanced materials'],
+  specialAbilities: ["Creature carrying", "resin production", "bio-mechanical interface", "no speed nerf while carrying", "radiation immunity", "toggleable particle effects."],
+  attackTypes: ["Mandible crush", "resin spray", "grappling appendages"],
+  canCarry: ["Multiple creatures simultaneously using specialized appendages"],
+  primaryRole: "Advanced transportation and logistics specialist",
+  secondaryRoles: ["Creature transport", "resin production", "bio-mechanical crafting"],
+  gatheringResources: ["Organic polymer", "resin", "sap", "advanced materials"],
   gatheringEfficiency: {
-    'Organic polymer': 10,
+    "Organic polymer": 10,
     Resin: 9,
     Sap: 8
   },
@@ -37948,93 +33536,74 @@ const SPECIES_DATABASE = {
     speed: 8,
     survivability: 8
   },
-
-  // Environmental Data
   speeds: {
-    land: 20, // mph
+    land: 20,
     flying: 35,
     swimming: 18,
     climbing: 0
   },
-  environmentalResistances: ['Bio-mechanical adaptation', 'radiation immunity.'],
-  preferredBiome: 'Ancient forests, bio-diverse areas, anywhere with rich organic matter',
+  environmentalResistances: ["Bio-mechanical adaptation", "radiation immunity."],
+  preferredBiome: "Ancient forests, bio-diverse areas, anywhere with rich organic matter",
   temperatureRange: {
     min: 10,
     max: 40
   },
-  oxygenRequirement: 'Air breathing',
-
-  // Breeding Genetics
+  oxygenRequirement: "Air breathing",
   breeding: {
-    cooldown: '18-48 hours',
-    gestationTime: 'N/A (Impregnation)',
-    babyFoodConsumption: 'Extreme',
-    maturationTime: '5 days, 10 hours',
+    cooldown: "18-48 hours",
+    gestationTime: "N/A (Impregnation)",
+    babyFoodConsumption: "Extreme",
+    maturationTime: "5 days, 10 hours",
     colorRegions: 8,
-    colorRegionNames: ['Body', 'carapace', 'appendages', 'wings', 'resin chambers', 'bio-tech', 'markings', 'eyes'],
+    colorRegionNames: ["Body", "carapace", "appendages", "wings", "resin chambers", "bio-tech", "markings", "eyes"],
     mutationChance: 7.31,
-    breedingDifficulty: 'Extreme'
+    breedingDifficulty: "Extreme"
   },
-
-  // Special Functions
-  workstation: 'Bio-mechanical crafting capabilities',
-  resourceProduction: 'Organic polymer, resin, advanced bio-materials',
-  structureFunctions: 'Bio-mechanical interface with technology',
-  buffAuras: ['Bio-enhancement field for carried creatures'],
-  debuffAbilities: ['Resin entanglement attacks'],
-  uniqueMechanics: ['Breedable.', 'No Speed nerf while carrying dinos.', 'Multi-creature carrying system', 'bio-mechanical technology interface.', 'S-Dinos can crossbreed with non-S-Dinos.'],
-
-  // Spawn & Location
-  spawnMaps: ['Fjordur', 'Lost Island'],
-  spawnZones: ['Ancient forests, bio-diverse areas, primordial regions.', 'Has a 10% spawn chance of a normal Rhynio.'],
-  rarityRating: 'Legendary',
-  levelRange: '1-150',
-  packBehavior: 'Solitary',
-  territorialBehavior: 'Territorial but not immediately aggressive',
-
-  // Management Metadata
-  difficultyRating: 'Extreme',
+  workstation: "Bio-mechanical crafting capabilities",
+  resourceProduction: "Organic polymer, resin, advanced bio-materials",
+  structureFunctions: "Bio-mechanical interface with technology",
+  buffAuras: ["Bio-enhancement field for carried creatures"],
+  debuffAbilities: ["Resin entanglement attacks"],
+  uniqueMechanics: ["Breedable.", "No Speed nerf while carrying dinos.", "Multi-creature carrying system", "bio-mechanical technology interface.", "S-Dinos can crossbreed with non-S-Dinos."],
+  spawnMaps: ["Fjordur", "Lost Island"],
+  spawnZones: ["Ancient forests, bio-diverse areas, primordial regions.", "Has a 10% spawn chance of a normal Rhynio."],
+  rarityRating: "Legendary",
+  levelRange: "1-150",
+  packBehavior: "Solitary",
+  territorialBehavior: "Territorial but not immediately aggressive",
+  difficultyRating: "Extreme",
   beginnerFriendly: false,
   endGameViable: true,
   bossFightCapable: true,
-  pvpMeta: 'Very High',
-  resourceInvestment: 'Extreme',
-  maintenanceLevel: 'Very High',
-
-  // Badge Categories
-  badgeCategories: ['utility', 'transport', 'combat', 'boss']
+  pvpMeta: "Very High",
+  resourceInvestment: "Extreme",
+  maintenanceLevel: "Very High",
+  badgeCategories: ["utility", "transport", "combat", "boss"]
 },
 'S-Rock Drake': {
-  // Basic Info
-  id: 'S_ROCK_DRAKE_115',
-  name: 'S-Rock Drake',
-  icon: '🐲',
-  category: 'combat',
-  rarity: 'legendary',
-  source: 'Aberration DLC (S-Variant)',
-  variants: ['Standard', 'S-Variant'],
-
-  // Biology & Lore
-  dossierText: "The Rock Drake is the master of the aberrant depths, a beautiful and deadly creature capable of climbing sheer cliffs and gliding through the air with incredible grace. The S-Variant is a physically superior version of this remarkable beast. It is faster in its glide and more powerful in its bite. Its feathered body is surrounded by the tell-tale shimmer of an S-Variant, and its natural immunity to radiation is, of course, retained. Finding and acquiring an egg from the nest of one of these enhanced Drakes is a task of extreme peril. An S-Rock Drake is the ultimate mount for vertical traversal and stealth operations. Its enhanced speed makes it even more adept at navigating the treacherous, cavernous environments it calls home. The increased damage makes it a more formidable combatant, capable of defending itself and its rider against the horrors of the deep. The trade-off is a slight reduction in health, demanding a more careful approach to combat. For the survivor who needs to move unseen and strike from unexpected angles, the S-Rock Drake is an invaluable ally.",
-  temperament: 'Aggressive',
-  diet: 'Carnivore',
-  habitat: 'Deep underground areas, Element regions, dangerous caverns, irradiated zones',
-  realWorldBasis: 'Drake (dragon-like creature)',
-  sizeClass: 'Large',
-
-  // Taming System
-  tamingMethod: 'Special (Egg Stealing)',
-  tamingType: 'Must steal eggs from Rock Drake nests and raise babies',
-  preferredKibble: 'N/A',
-  favoriteFood: 'Nameless Venom',
-  tamingSpeed: 'N/A',
+  id: "S_ROCK_DRAKE_115",
+  name: "S-Rock Drake",
+  icon: "🐲",
+  category: "combat",
+  rarity: "legendary",
+  source: "Aberration DLC (S-Variant)",
+  variants: ["Standard", "S-Variant"],
+  dossierText: "The Rock Drake is the master of the aberrant depths, a beautiful and deadly creature capable of climbing sheer cliffs and gliding through the air with incredible grace. The S-Variant is a physically superior version of this remarkable beast. It is faster in its glide and more powerful in its bite. Its feathered body is surrounded by the tell-tale shimmer of an S-Variant, and its natural immunity to radiation is, of course, retained. Finding and acquiring an egg from the nest of one of these enhanced Drakes is a task of extreme peril. An S-Rock Drake is the ultimate mount for vertical traversal and stealth operations. Its enhanced speed makes it even more adept at navigating the treacherous, cavernous environments it calls home. The increased damage makes it a more formidable combatant, capable of defending itself and its rider against the horrors of the deep. The trade-off is a slight reduction in health, demanding a more careful approach to combat. For the survivor who needs to move unseen and strike from unexpected angles, the S-Rock Drake is an invaluable ally. Like all S-variants from Nekatus's S-Dino mod, this creature carries full radiation immunity — a meaningful passive advantage in environments like Aberration and the Genesis simulations where unprotected tames quickly become liabilities. In the wild, it has a 10% chance of spawning as an S-variant in place of the standard creature, identifiable by its distinctive bioluminescent shimmer. Holding E while mounted toggles special particle effects. Crossbreeding with the non-S variant is fully supported, allowing survivors to introduce the radiation immunity and S-variant glow into an established breeding line without sacrificing existing stat gains.",
+  temperament: "Aggressive",
+  diet: "Carnivore",
+  habitat: "Deep underground areas, Element regions, dangerous caverns, irradiated zones",
+  realWorldBasis: "Drake (dragon-like creature)",
+  sizeClass: "Large",
+  tamingMethod: "Special (Egg Stealing)",
+  tamingType: "Must steal eggs from Rock Drake nests and raise babies",
+  preferredKibble: "N/A",
+  favoriteFood: "Nameless Venom",
+  tamingSpeed: "N/A",
   torpor: {
     baseValue: 1725,
-    depleteRate: 'N/A'
+    depleteRate: "N/A"
   },
-  specialRequirements: 'Must steal eggs from extremely dangerous nests, requires Nameless Venom.',
-
-  // Base Statistics (Level 1 Wild)
+  specialRequirements: "Must steal eggs from extremely dangerous nests, requires Nameless Venom.",
   baseStats: {
     health: 1755,
     stamina: 440,
@@ -38045,8 +33614,6 @@ const SPECIES_DATABASE = {
     speed: 100,
     torpor: 1725
   },
-
-  // Stat Scaling (Per Level)
   statScaling: {
     health: 390,
     stamina: 44,
@@ -38056,20 +33623,16 @@ const SPECIES_DATABASE = {
     melee: 3.75,
     speed: 1.8
   },
-
-  // Equipment & Combat
   saddleLevel: 75,
-  saddleType: 'Rock Drake Saddle',
+  saddleType: "Rock Drake Saddle",
   saddleArmor: 25,
   platformLimit: 0,
-  specialAbilities: ['Invisibility when motionless', 'gliding', 'wall climbing', 'stealth movement', 'radiation immunity', 'toggleable particle effects.'],
-  attackTypes: ['Bite', 'claw strikes', 'stealth attacks', 'gliding dives'],
-  canCarry: ['Excellent cargo capacity, stealth transport'],
-
-  // Utility & Roles
-  primaryRole: 'Ultimate stealth and reconnaissance specialist',
-  secondaryRoles: ['Deep exploration', 'vertical mobility', 'infiltration operations'],
-  gatheringResources: ['Raw meat', 'hide', 'element'],
+  specialAbilities: ["Invisibility when motionless", "gliding", "wall climbing", "stealth movement", "radiation immunity", "toggleable particle effects."],
+  attackTypes: ["Bite", "claw strikes", "stealth attacks", "gliding dives"],
+  canCarry: ["Excellent cargo capacity, stealth transport"],
+  primaryRole: "Ultimate stealth and reconnaissance specialist",
+  secondaryRoles: ["Deep exploration", "vertical mobility", "infiltration operations"],
+  gatheringResources: ["Raw meat", "hide", "element"],
   gatheringEfficiency: {
     Meat: 7,
     Hide: 6,
@@ -38081,93 +33644,74 @@ const SPECIES_DATABASE = {
     speed: 10,
     survivability: 9
   },
-
-  // Environmental Data
   speeds: {
-    land: 30, // mph
+    land: 30,
     flying: 45,
     swimming: 25,
     climbing: 1
   },
-  environmentalResistances: ['Radiation immunity', 'stealth capabilities.'],
-  preferredBiome: 'Deep underground areas, Element regions, dangerous caverns',
+  environmentalResistances: ["Radiation immunity", "stealth capabilities."],
+  preferredBiome: "Deep underground areas, Element regions, dangerous caverns",
   temperatureRange: {
     min: 10,
     max: 50
   },
-  oxygenRequirement: 'Air breathing',
-
-  // Breeding Genetics
+  oxygenRequirement: "Air breathing",
   breeding: {
-    cooldown: '18-48 hours',
-    gestationTime: '4 hours, 59 minutes',
-    babyFoodConsumption: 'Extreme',
-    maturationTime: '3 days, 20 hours',
+    cooldown: "18-48 hours",
+    gestationTime: "4 hours, 59 minutes",
+    babyFoodConsumption: "Extreme",
+    maturationTime: "3 days, 20 hours",
     colorRegions: 6,
-    colorRegionNames: ['Body', 'wings', 'patterns', 'belly', 'claws', 'bioluminescence'],
+    colorRegionNames: ["Body", "wings", "patterns", "belly", "claws", "bioluminescence"],
     mutationChance: 7.31,
-    breedingDifficulty: 'Extreme'
+    breedingDifficulty: "Extreme"
   },
-
-  // Special Functions
-  workstation: 'None',
-  resourceProduction: 'None',
-  structureFunctions: 'None',
-  buffAuras: ['None'],
-  debuffAbilities: ['None'],
-  uniqueMechanics: ['Invisibility system', 'wall climbing', 'gliding capability', 'egg stealing requirement.', 'S-Dinos can crossbreed with non-S-Dinos.'],
-
-  // Spawn & Location
-  spawnMaps: ['Aberration', 'Crystal Isles (underground)', 'Lost Island', 'Fjordur'],
-  spawnZones: ['Deep underground areas, Element regions, dangerous caverns with nests.', 'Has a 10% chance to spawn in place of a standard Rock Drake.'],
-  rarityRating: 'Legendary',
-  levelRange: '1-190',
-  packBehavior: 'Solitary',
-  territorialBehavior: 'Extremely aggressive, defends nesting areas viciously',
-
-  // Management Metadata
-  difficultyRating: 'Extreme',
+  workstation: "None",
+  resourceProduction: "None",
+  structureFunctions: "None",
+  buffAuras: ["None"],
+  debuffAbilities: ["None"],
+  uniqueMechanics: ["Invisibility system", "wall climbing", "gliding capability", "egg stealing requirement.", "S-Dinos can crossbreed with non-S-Dinos."],
+  spawnMaps: ["Aberration", "Crystal Isles (underground)", "Lost Island", "Fjordur"],
+  spawnZones: ["Deep underground areas, Element regions, dangerous caverns with nests.", "Has a 10% chance to spawn in place of a standard Rock Drake."],
+  rarityRating: "Legendary",
+  levelRange: "1-190",
+  packBehavior: "Solitary",
+  territorialBehavior: "Extremely aggressive, defends nesting areas viciously",
+  difficultyRating: "Extreme",
   beginnerFriendly: false,
   endGameViable: true,
   bossFightCapable: true,
-  pvpMeta: 'Ultimate',
-  resourceInvestment: 'Extreme',
-  maintenanceLevel: 'High',
-
-  // Badge Categories
-  badgeCategories: ['combat', 'boss', 'transport']
+  pvpMeta: "Ultimate",
+  resourceInvestment: "Extreme",
+  maintenanceLevel: "High",
+  badgeCategories: ["combat", "boss", "transport"]
 },
 'S-Shinehorn': {
-  // Basic Info
-  id: 'S_SHINEHORN_117',
-  name: 'S-Shinehorn',
-  icon: '🦌',
-  category: 'utility',
-  rarity: 'common',
-  source: 'Aberration DLC (S-Variant)',
-  variants: ['Standard', 'S-Variant'],
-
-  // Biology & Lore
-  dossierText: "The Shinehorn is one of the four 'charge light' creatures native to the aberrant depths, a small, glowing goat-like animal that is both adorable and essential for survival in those dark realms. The S-Variant is a slightly more robust version of this creature, with the standard enhancements to speed and damage, and a reduction in health. It is passive and can be tamed by hand-feeding it the appropriate mushrooms or seeds. The S-Shinehorn's most interesting quality is a unique ability I'm calling a 'Tamehelper.' When activated, it seems to emit a strange aura that dramatically increases the food consumption rate of any nearby unconscious wild creature. This has the effect of significantly speeding up the knockout taming process, reducing the time a creature is vulnerable and the amount of narcotics needed to keep it sedated. This makes the S-Shinehorn not just a source of light, but an invaluable assistant for any tribe looking to expand its menagerie of tamed creatures.",
-  temperament: 'Skittish',
-  diet: 'Herbivore',
-  habitat: 'Underground areas, bioluminescent zones, cave pastures, irradiated zones',
-  realWorldBasis: 'Deer with bioluminescent adaptations (fantasy)',
-  sizeClass: 'Small',
-
-  // Taming System
-  tamingMethod: 'Passive',
-  tamingType: 'Hand-feeding (non-violent)',
-  preferredKibble: 'Simple Kibble',
-  favoriteFood: 'Simple Kibble',
-  tamingSpeed: 'Fast',
+  id: "S_SHINEHORN_117",
+  name: "S-Shinehorn",
+  icon: "🦌",
+  category: "utility",
+  rarity: "common",
+  source: "Aberration DLC (S-Variant)",
+  variants: ["Standard", "S-Variant"],
+  dossierText: "The Shinehorn is one of the four 'charge light' creatures native to the aberrant depths, a small, glowing goat-like animal that is both adorable and essential for survival in those dark realms. The S-Variant is a slightly more robust version of this creature, with the standard enhancements to speed and damage, and a reduction in health. It is passive and can be tamed by hand-feeding it the appropriate mushrooms or seeds. The S-Shinehorn's most interesting quality is a unique ability I'm calling a 'Tamehelper.' When activated, it seems to emit a strange aura that dramatically increases the food consumption rate of any nearby unconscious wild creature. This has the effect of significantly speeding up the knockout taming process, reducing the time a creature is vulnerable and the amount of narcotics needed to keep it sedated. This makes the S-Shinehorn not just a source of light, but an invaluable assistant for any tribe looking to expand its menagerie of tamed creatures. Like all S-variants from Nekatus's S-Dino mod, this creature carries full radiation immunity — a meaningful passive advantage in environments like Aberration and the Genesis simulations where unprotected tames quickly become liabilities. In the wild, it has a 10% chance of spawning as an S-variant in place of the standard creature, identifiable by its distinctive bioluminescent shimmer. Holding E while mounted toggles special particle effects. Crossbreeding with the non-S variant is fully supported, allowing survivors to introduce the radiation immunity and S-variant glow into an established breeding line without sacrificing existing stat gains.",
+  temperament: "Skittish",
+  diet: "Herbivore",
+  habitat: "Underground areas, bioluminescent zones, cave pastures, irradiated zones",
+  realWorldBasis: "Deer with bioluminescent adaptations (fantasy)",
+  sizeClass: "Small",
+  tamingMethod: "Passive",
+  tamingType: "Hand-feeding (non-violent)",
+  preferredKibble: "Simple Kibble",
+  favoriteFood: "Simple Kibble",
+  tamingSpeed: "Fast",
   torpor: {
     baseValue: 85,
-    depleteRate: 'N/A'
+    depleteRate: "N/A"
   },
-  specialRequirements: 'Skittish behavior, prefers mushrooms, charges light through movement.',
-
-  // Base Statistics (Level 1 Wild)
+  specialRequirements: "Skittish behavior, prefers mushrooms, charges light through movement.",
   baseStats: {
     health: 76.5,
     stamina: 120,
@@ -38178,8 +33722,6 @@ const SPECIES_DATABASE = {
     speed: 100,
     torpor: 85
   },
-
-  // Stat Scaling (Per Level)
   statScaling: {
     health: 17,
     stamina: 12,
@@ -38189,20 +33731,16 @@ const SPECIES_DATABASE = {
     melee: 0.35,
     speed: 2.2
   },
-
-  // Equipment & Combat
   saddleLevel: 0,
-  saddleType: 'Shoulder pet',
+  saddleType: "Shoulder pet",
   saddleArmor: 0,
   platformLimit: 0,
-  specialAbilities: ['Movement-charged bioluminescent light', 'creature detection', 'sustained illumination', 'Tamehelper ability', 'radiation immunity', 'toggleable particle effects.'],
-  attackTypes: ['Weak headbutt (rarely used, mainly evasive)'],
-  canCarry: ['Small items, primarily provides light and detection'],
-
-  // Utility & Roles
-  primaryRole: 'Taming assistant and light source',
-  secondaryRoles: ['Creature awareness', 'underground navigation', 'Reaper protection'],
-  gatheringResources: ['Mushrooms'],
+  specialAbilities: ["Movement-charged bioluminescent light", "creature detection", "sustained illumination", "Tamehelper ability", "radiation immunity", "toggleable particle effects."],
+  attackTypes: ["Weak headbutt (rarely used, mainly evasive)"],
+  canCarry: ["Small items, primarily provides light and detection"],
+  primaryRole: "Taming assistant and light source",
+  secondaryRoles: ["Creature awareness", "underground navigation", "Reaper protection"],
+  gatheringResources: ["Mushrooms"],
   gatheringEfficiency: {
     Mushrooms: 4
   },
@@ -38212,93 +33750,74 @@ const SPECIES_DATABASE = {
     speed: 7,
     survivability: 4
   },
-
-  // Environmental Data
   speeds: {
-    land: 22, // mph
+    land: 22,
     flying: 0,
     swimming: 15,
     climbing: 1
   },
-  environmentalResistances: ['Radiation tolerance'],
-  preferredBiome: 'Underground areas, bioluminescent zones, cave pastures',
+  environmentalResistances: ["Radiation tolerance"],
+  preferredBiome: "Underground areas, bioluminescent zones, cave pastures",
   temperatureRange: {
     min: 10,
     max: 30
   },
-  oxygenRequirement: 'Air breathing',
-
-  // Breeding Genetics
+  oxygenRequirement: "Air breathing",
   breeding: {
-    cooldown: '18-48 hours',
-    gestationTime: '1 hour, 25 minutes',
-    babyFoodConsumption: 'Low',
-    maturationTime: '1 day, 20 hours',
+    cooldown: "18-48 hours",
+    gestationTime: "1 hour, 25 minutes",
+    babyFoodConsumption: "Low",
+    maturationTime: "1 day, 20 hours",
     colorRegions: 6,
-    colorRegionNames: ['Body', 'horns', 'light organs', 'spots', 'belly', 'legs'],
+    colorRegionNames: ["Body", "horns", "light organs", "spots", "belly", "legs"],
     mutationChance: 7.31,
-    breedingDifficulty: 'Easy'
+    breedingDifficulty: "Easy"
   },
-
-  // Special Functions
-  workstation: 'None',
-  resourceProduction: 'None',
-  structureFunctions: 'None',
-  buffAuras: ['Tamehelper aura increases food consumption of wild unconscious creatures.', 'Light projection wards off light-sensitive creatures.'],
-  debuffAbilities: ['None'],
-  uniqueMechanics: ['Tamehelper ability can be toggled in server settings.', 'Movement-charged light system', 'creature detection.', 'S-Dinos can crossbreed with non-S-Dinos.'],
-
-  // Spawn & Location
-  spawnMaps: ['Aberration', 'Valguero (underground)', 'Crystal Isles', 'Lost Island', 'Fjordur'],
-  spawnZones: ['Underground areas, bioluminescent zones, cave pastures.', 'Replaces 10% of Shinehorn spawns.'],
-  rarityRating: 'Common',
-  levelRange: '1-150',
-  packBehavior: 'Small herds (2-5)',
-  territorialBehavior: 'Skittish, flees when threatened',
-
-  // Management Metadata
-  difficultyRating: 'Easy',
+  workstation: "None",
+  resourceProduction: "None",
+  structureFunctions: "None",
+  buffAuras: ["Tamehelper aura increases food consumption of wild unconscious creatures.", "Light projection wards off light-sensitive creatures."],
+  debuffAbilities: ["None"],
+  uniqueMechanics: ["Tamehelper ability can be toggled in server settings.", "Movement-charged light system", "creature detection.", "S-Dinos can crossbreed with non-S-Dinos."],
+  spawnMaps: ["Aberration", "Valguero (underground)", "Crystal Isles", "Lost Island", "Fjordur"],
+  spawnZones: ["Underground areas, bioluminescent zones, cave pastures.", "Replaces 10% of Shinehorn spawns."],
+  rarityRating: "Common",
+  levelRange: "1-150",
+  packBehavior: "Small herds (2-5)",
+  territorialBehavior: "Skittish, flees when threatened",
+  difficultyRating: "Easy",
   beginnerFriendly: true,
   endGameViable: true,
   bossFightCapable: false,
-  pvpMeta: 'Low',
-  resourceInvestment: 'Very Low',
-  maintenanceLevel: 'Very Low',
-
-  // Badge Categories
-  badgeCategories: ['utility']
+  pvpMeta: "Low",
+  resourceInvestment: "Very Low",
+  maintenanceLevel: "Very Low",
+  badgeCategories: ["utility"]
 },
 'S-Snow Owl': {
-  // Basic Info
-  id: 'S_SNOW_OWL_126',
-  name: 'S-Snow Owl',
-  icon: '🦉',
-  category: 'combat',
-  rarity: 'uncommon',
-  source: 'Extinction DLC (S-Variant)',
-  variants: ['Standard', 'R-Snow Owl', 'S-Variant'],
-
-  // Biology & Lore
-  dossierText: "The Snow Owl is a majestic flyer from the coldest wastes, known for its ability to freeze itself into a healing stasis and dive-bomb with incredible force. This S-Variant is a significant upgrade in almost every respect. It is faster and stronger, but its most notable changes are entirely new abilities. I have observed it flying backward with perfect control, a feat no other flyer can manage. The S-Snow Owl is the premier aerial support creature. Its healing ability is twice as effective as the standard species, allowing it to regenerate its allies with incredible speed. Furthermore, its rider can now use their own weapons from the saddle, turning this healer into a mobile aerial turret. These new abilities, combined with its enhanced stats, make the S-Snow Owl an incredibly versatile and powerful mount. However, this power comes at a cost; it is significantly more difficult to tame, requiring more time and resources than its common counterpart.",
-  temperament: 'Aggressive',
-  diet: 'Carnivore',
-  habitat: 'Snow biomes, tundra, frozen areas, mountainous regions, irradiated zones',
-  realWorldBasis: 'Great horned owl - greatly enlarged',
-  sizeClass: 'Large',
-
-  // Taming System
-  tamingMethod: 'Knockout',
-  tamingType: 'Difficult due to speed and aggression, requires precision.',
-  preferredKibble: 'Superior Kibble',
-  favoriteFood: 'Superior Kibble',
-  tamingSpeed: 'Slow',
+  id: "S_SNOW_OWL_126",
+  name: "S-Snow Owl",
+  icon: "🦉",
+  category: "combat",
+  rarity: "uncommon",
+  source: "Extinction DLC (S-Variant)",
+  variants: ["Standard", "R-Snow Owl", "S-Variant"],
+  dossierText: "The Snow Owl is a majestic flyer from the coldest wastes, known for its ability to freeze itself into a healing stasis and dive-bomb with incredible force. This S-Variant is a significant upgrade in almost every respect. It is faster and stronger, but its most notable changes are entirely new abilities. I have observed it flying backward with perfect control, a feat no other flyer can manage. The S-Snow Owl is the premier aerial support creature. Its healing ability is twice as effective as the standard species, allowing it to regenerate its allies with incredible speed. Furthermore, its rider can now use their own weapons from the saddle, turning this healer into a mobile aerial turret. These new abilities, combined with its enhanced stats, make the S-Snow Owl an incredibly versatile and powerful mount. However, this power comes at a cost; it is significantly more difficult to tame, requiring more time and resources than its common counterpart. Like all S-variants from Nekatus's S-Dino mod, this creature carries full radiation immunity — a meaningful passive advantage in environments like Aberration and the Genesis simulations where unprotected tames quickly become liabilities. In the wild, it has a 10% chance of spawning as an S-variant in place of the standard creature, identifiable by its distinctive bioluminescent shimmer. Holding E while mounted toggles special particle effects. Crossbreeding with the non-S variant is fully supported, allowing survivors to introduce the radiation immunity and S-variant glow into an established breeding line without sacrificing existing stat gains.",
+  temperament: "Aggressive",
+  diet: "Carnivore",
+  habitat: "Snow biomes, tundra, frozen areas, mountainous regions, irradiated zones",
+  realWorldBasis: "Great horned owl - greatly enlarged",
+  sizeClass: "Large",
+  tamingMethod: "Knockout",
+  tamingType: "Difficult due to speed and aggression, requires precision.",
+  preferredKibble: "Superior Kibble",
+  favoriteFood: "Superior Kibble",
+  tamingSpeed: "Slow",
   torpor: {
     baseValue: 550,
-    depleteRate: 'Low'
+    depleteRate: "Low"
   },
-  specialRequirements: 'High-speed target, trap recommended, low base health requires careful tranquilizing. Needs 30% more food for taming and takes longer than the standard variant.',
-
-  // Base Statistics (Level 1 Wild)
+  specialRequirements: "High-speed target, trap recommended, low base health requires careful tranquilizing. Needs 30% more food for taming and takes longer than the standard variant.",
   baseStats: {
     health: 337.5,
     stamina: 300,
@@ -38309,8 +33828,6 @@ const SPECIES_DATABASE = {
     speed: 100,
     torpor: 550
   },
-
-  // Stat Scaling (Per Level)
   statScaling: {
     health: 75,
     stamina: 30,
@@ -38320,23 +33837,19 @@ const SPECIES_DATABASE = {
     melee: 9,
     speed: 3
   },
-
-  // Equipment & Combat
   saddleLevel: 61,
-  saddleType: 'Snow Owl Saddle',
+  saddleType: "Snow Owl Saddle",
   saddleArmor: 25,
   platformLimit: 0,
-  specialAbilities: ['Freeze attack', 'enhanced healing aura (2x effective)', 'thermal vision', 'gliding flight', 'dive attack', 'allows mounted weaponry', 'can fly backwards', 'radiation immunity', 'toggleable particle effects.'],
-  attackTypes: ['Talons (freeze effect)', 'dive attack', 'wing buffet'],
-  canCarry: ['Moderate weight, excellent for reconnaissance'],
-
-  // Utility & Roles
-  primaryRole: 'Aerial support and reconnaissance mount',
-  secondaryRoles: ['Healer', 'crowd control (freeze)', 'thermal detection', 'pellet production'],
-  gatheringResources: ['Snow Owl Pellets (fertilizer)', 'limited meat gathering'],
+  specialAbilities: ["Freeze attack", "enhanced healing aura (2x effective)", "thermal vision", "gliding flight", "dive attack", "allows mounted weaponry", "can fly backwards", "radiation immunity", "toggleable particle effects."],
+  attackTypes: ["Talons (freeze effect)", "dive attack", "wing buffet"],
+  canCarry: ["Moderate weight, excellent for reconnaissance"],
+  primaryRole: "Aerial support and reconnaissance mount",
+  secondaryRoles: ["Healer", "crowd control (freeze)", "thermal detection", "pellet production"],
+  gatheringResources: ["Snow Owl Pellets (fertilizer)", "limited meat gathering"],
   gatheringEfficiency: {
-    'Pellet production': 6,
-    'Meat gathering': 4
+    "Pellet production": 6,
+    "Meat gathering": 4
   },
   ratings: {
     combat: 8,
@@ -38344,93 +33857,74 @@ const SPECIES_DATABASE = {
     speed: 9,
     survivability: 7
   },
-
-  // Environmental Data
   speeds: {
-    land: 25, // mph
+    land: 25,
     flying: 40,
     swimming: 20,
     climbing: 0
   },
-  environmentalResistances: ['Cold resistance', 'ice immunity', 'radiation immunity.'],
-  preferredBiome: 'Snow biomes, tundra, frozen areas, mountains',
+  environmentalResistances: ["Cold resistance", "ice immunity", "radiation immunity."],
+  preferredBiome: "Snow biomes, tundra, frozen areas, mountains",
   temperatureRange: {
     min: -40,
     max: 5
   },
-  oxygenRequirement: 'Air breathing',
-
-  // Breeding Genetics
+  oxygenRequirement: "Air breathing",
   breeding: {
-    cooldown: '18-48 hours',
-    gestationTime: '1 hour, 39 minutes',
-    babyFoodConsumption: 'High',
-    maturationTime: '1 day, 2 hours',
+    cooldown: "18-48 hours",
+    gestationTime: "1 hour, 39 minutes",
+    babyFoodConsumption: "High",
+    maturationTime: "1 day, 2 hours",
     colorRegions: 6,
-    colorRegionNames: ['Body', 'wings', 'belly', 'head', 'talons', 'markings'],
+    colorRegionNames: ["Body", "wings", "belly", "head", "talons", "markings"],
     mutationChance: 7.31,
-    breedingDifficulty: 'Medium'
+    breedingDifficulty: "Medium"
   },
-
-  // Special Functions
-  workstation: 'None',
-  resourceProduction: 'Snow Owl Pellets (excellent fertilizer and taming aid)',
-  structureFunctions: 'None',
-  buffAuras: ['Healing aura (flying and ground versions), 2x as effective as standard.'],
-  debuffAbilities: ['Freeze attack immobilizes targets'],
-  uniqueMechanics: ['Rider can use weapons while mounted.', 'Can fly backwards.', 'Heals twice as much as a normal owl.', 'Thermal vision', 'healing aura system', 'gliding flight mechanics.', 'S-Dinos can crossbreed with non-S-Dinos.'],
-
-  // Spawn & Location
-  spawnMaps: ['Extinction', 'Genesis Part 1', 'Genesis Part 2', 'Lost Island', 'Fjordur'],
-  spawnZones: ['Snow Dome (Extinction), frozen biomes, tundra areas.', 'Has a 10% chance to spawn in place of a standard Snow Owl.'],
-  rarityRating: 'Uncommon',
-  levelRange: '1-150',
-  packBehavior: 'Small groups (2-3)',
-  territorialBehavior: 'Aggressive, defends territory fiercely',
-
-  // Management Metadata
-  difficultyRating: 'Hard',
+  workstation: "None",
+  resourceProduction: "Snow Owl Pellets (excellent fertilizer and taming aid)",
+  structureFunctions: "None",
+  buffAuras: ["Healing aura (flying and ground versions), 2x as effective as standard."],
+  debuffAbilities: ["Freeze attack immobilizes targets"],
+  uniqueMechanics: ["Rider can use weapons while mounted.", "Can fly backwards.", "Heals twice as much as a normal owl.", "Thermal vision", "healing aura system", "gliding flight mechanics.", "S-Dinos can crossbreed with non-S-Dinos."],
+  spawnMaps: ["Extinction", "Genesis Part 1", "Genesis Part 2", "Lost Island", "Fjordur"],
+  spawnZones: ["Snow Dome (Extinction), frozen biomes, tundra areas.", "Has a 10% chance to spawn in place of a standard Snow Owl."],
+  rarityRating: "Uncommon",
+  levelRange: "1-150",
+  packBehavior: "Small groups (2-3)",
+  territorialBehavior: "Aggressive, defends territory fiercely",
+  difficultyRating: "Hard",
   beginnerFriendly: false,
   endGameViable: true,
   bossFightCapable: true,
-  pvpMeta: 'High',
-  resourceInvestment: 'High',
-  maintenanceLevel: 'Low',
-
-  // Badge Categories
-  badgeCategories: ['utility', 'combat', 'boss']
+  pvpMeta: "High",
+  resourceInvestment: "High",
+  maintenanceLevel: "Low",
+  badgeCategories: ["utility", "combat", "boss"]
 },
 'S-Spinosaurus': {
-  // Basic Info
-  id: 'S_SPINOSAURUS_083',
-  name: 'S-Spinosaurus',
-  icon: '🦕',
-  category: 'combat',
-  rarity: 'uncommon',
-  source: 'Base Game (S-Variant)',
-  variants: ['Standard', 'Aberrant', 'S-Variant'],
-
-  // Biology & Lore
-  dossierText: "The Spinosaurus is a versatile and deadly semi-aquatic predator, equally at home on land and in water. The S-Variant is a more potent version of this adaptable hunter. It is faster in both its quadrupedal and bipedal stances, and its claws and teeth strike with greater force. When it enters the water, its hydration buff seems to amplify these enhancements even further. Its shimmering sail and immunity to radiation make it a terrifying sight in any river or swamp. An S-Spinosaurus is a master of amphibious warfare. Its enhanced speed and power make it a formidable opponent in any environment. On land, it can switch to its bipedal stance for increased damage, and in the water, its speed and agility are unmatched by most terrestrial creatures. The standard S-Variant trade-off of reduced health is a factor to consider, but its high base mobility and the potent regeneration from its hydration buff help to mitigate this weakness. It is a perfect mount for the survivor who needs to control both the land and the water.",
-  temperament: 'Territorial',
-  diet: 'Carnivore',
-  habitat: 'Rivers, lakes, coastal areas, anywhere near water, irradiated zones',
-  realWorldBasis: 'Spinosaurus aegyptiacus',
-  sizeClass: 'Colossal',
-
-  // Taming System
-  tamingMethod: 'Knockout',
-  tamingType: 'Violent taming with tranquilizers',
-  preferredKibble: 'Exceptional Kibble',
-  favoriteFood: 'Exceptional Kibble',
-  tamingSpeed: 'Very Slow',
+  id: "S_SPINOSAURUS_083",
+  name: "S-Spinosaurus",
+  icon: "🦕",
+  category: "combat",
+  rarity: "uncommon",
+  source: "Base Game (S-Variant)",
+  variants: ["Standard", "Aberrant", "S-Variant"],
+  dossierText: "The Spinosaurus is a versatile and deadly semi-aquatic predator, equally at home on land and in water. The S-Variant is a more potent version of this adaptable hunter. It is faster in both its quadrupedal and bipedal stances, and its claws and teeth strike with greater force. When it enters the water, its hydration buff seems to amplify these enhancements even further. Its shimmering sail and immunity to radiation make it a terrifying sight in any river or swamp. An S-Spinosaurus is a master of amphibious warfare. Its enhanced speed and power make it a formidable opponent in any environment. On land, it can switch to its bipedal stance for increased damage, and in the water, its speed and agility are unmatched by most terrestrial creatures. The standard S-Variant trade-off of reduced health is a factor to consider, but its high base mobility and the potent regeneration from its hydration buff help to mitigate this weakness. It is a perfect mount for the survivor who needs to control both the land and the water. Like all S-variants from Nekatus's S-Dino mod, this creature carries full radiation immunity — a meaningful passive advantage in environments like Aberration and the Genesis simulations where unprotected tames quickly become liabilities. In the wild, it has a 10% chance of spawning as an S-variant in place of the standard creature, identifiable by its distinctive bioluminescent shimmer. Holding E while mounted toggles special particle effects. Crossbreeding with the non-S variant is fully supported, allowing survivors to introduce the radiation immunity and S-variant glow into an established breeding line without sacrificing existing stat gains.",
+  temperament: "Territorial",
+  diet: "Carnivore",
+  habitat: "Rivers, lakes, coastal areas, anywhere near water, irradiated zones",
+  realWorldBasis: "Spinosaurus aegyptiacus",
+  sizeClass: "Colossal",
+  tamingMethod: "Knockout",
+  tamingType: "Violent taming with tranquilizers",
+  preferredKibble: "Exceptional Kibble",
+  favoriteFood: "Exceptional Kibble",
+  tamingSpeed: "Very Slow",
   torpor: {
     baseValue: 1000,
-    depleteRate: 'Moderate'
+    depleteRate: "Moderate"
   },
-  specialRequirements: 'Territorial behavior, prefers fish, amphibious nature.',
-
-  // Base Statistics (Level 1 Wild)
+  specialRequirements: "Territorial behavior, prefers fish, amphibious nature.",
   baseStats: {
     health: 630,
     stamina: 450,
@@ -38441,8 +33935,6 @@ const SPECIES_DATABASE = {
     speed: 100,
     torpor: 1000
   },
-
-  // Stat Scaling (Per Level)
   statScaling: {
     health: 140,
     stamina: 45,
@@ -38452,23 +33944,19 @@ const SPECIES_DATABASE = {
     melee: 3,
     speed: 1.5
   },
-
-  // Equipment & Combat
   saddleLevel: 71,
-  saddleType: 'Spinosaurus Saddle',
+  saddleType: "Spinosaurus Saddle",
   saddleArmor: 25,
   platformLimit: 0,
-  specialAbilities: ['Bipedal/quadrupedal stance switching', 'swimming speed boost (Hydration buff)', 'thermoregulation', 'radiation immunity', 'toggleable particle effects.'],
-  attackTypes: ['Powerful bite', 'claw swipes', 'tail attack', 'bipedal charge'],
-  canCarry: ['Large creatures and substantial cargo'],
-
-  // Utility & Roles
-  primaryRole: 'Amphibious apex predator and versatile combat mount',
-  secondaryRoles: ['Fish gathering', 'water exploration', 'versatile transport'],
-  gatheringResources: ['Raw fish meat', 'raw meat', 'hide'],
+  specialAbilities: ["Bipedal/quadrupedal stance switching", "swimming speed boost (Hydration buff)", "thermoregulation", "radiation immunity", "toggleable particle effects."],
+  attackTypes: ["Powerful bite", "claw swipes", "tail attack", "bipedal charge"],
+  canCarry: ["Large creatures and substantial cargo"],
+  primaryRole: "Amphibious apex predator and versatile combat mount",
+  secondaryRoles: ["Fish gathering", "water exploration", "versatile transport"],
+  gatheringResources: ["Raw fish meat", "raw meat", "hide"],
   gatheringEfficiency: {
-    'Raw fish meat': 9,
-    'Raw meat': 8,
+    "Raw fish meat": 9,
+    "Raw meat": 8,
     Hide: 7
   },
   ratings: {
@@ -38477,93 +33965,74 @@ const SPECIES_DATABASE = {
     speed: 8,
     survivability: 8
   },
-
-  // Environmental Data
   speeds: {
-    land: 30, // mph
+    land: 30,
     flying: 0,
     swimming: 40,
     climbing: 0
   },
-  environmentalResistances: ['Thermoregulation', 'amphibious adaptation', 'radiation immunity.'],
-  preferredBiome: 'Rivers, lakes, coastal areas, anywhere near water',
+  environmentalResistances: ["Thermoregulation", "amphibious adaptation", "radiation immunity."],
+  preferredBiome: "Rivers, lakes, coastal areas, anywhere near water",
   temperatureRange: {
     min: 10,
     max: 45
   },
-  oxygenRequirement: 'Air breathing (excellent underwater capability)',
-
-  // Breeding Genetics
+  oxygenRequirement: "Air breathing (excellent underwater capability)",
   breeding: {
-    cooldown: '18-48 hours',
-    gestationTime: '4 hours, 59 minutes',
-    babyFoodConsumption: 'Extreme',
-    maturationTime: '3 days, 20 hours',
+    cooldown: "18-48 hours",
+    gestationTime: "4 hours, 59 minutes",
+    babyFoodConsumption: "Extreme",
+    maturationTime: "3 days, 20 hours",
     colorRegions: 6,
-    colorRegionNames: ['Body', 'sail', 'stripes', 'belly', 'claws', 'markings'],
+    colorRegionNames: ["Body", "sail", "stripes", "belly", "claws", "markings"],
     mutationChance: 7.31,
-    breedingDifficulty: 'Hard'
+    breedingDifficulty: "Hard"
   },
-
-  // Special Functions
-  workstation: 'None',
-  resourceProduction: 'None',
-  structureFunctions: 'None',
-  buffAuras: ['Hydration buff when in water.'],
-  debuffAbilities: ['None'],
-  uniqueMechanics: ['Stance switching system', 'amphibious specialization', 'thermoregulation.', 'S-Dinos can crossbreed with non-S-Dinos.'],
-
-  // Spawn & Location
-  spawnMaps: ['The Island', 'The Center', 'Ragnarok', 'Valguero', 'Crystal Isles', 'Lost Island', 'Fjordur', 'Aberration (Aberrant)'],
-  spawnZones: ['Rivers, lakes, coastal areas, anywhere near water.', 'Has a 10% chance to spawn in place of a standard Spinosaurus.'],
-  rarityRating: 'Uncommon',
-  levelRange: '1-150',
-  packBehavior: 'Solitary or pairs',
-  territorialBehavior: 'Territorial, especially near water sources',
-
-  // Management Metadata
-  difficultyRating: 'Hard',
+  workstation: "None",
+  resourceProduction: "None",
+  structureFunctions: "None",
+  buffAuras: ["Hydration buff when in water."],
+  debuffAbilities: ["None"],
+  uniqueMechanics: ["Stance switching system", "amphibious specialization", "thermoregulation.", "S-Dinos can crossbreed with non-S-Dinos."],
+  spawnMaps: ["The Island", "The Center", "Ragnarok", "Valguero", "Crystal Isles", "Lost Island", "Fjordur", "Aberration (Aberrant)"],
+  spawnZones: ["Rivers, lakes, coastal areas, anywhere near water.", "Has a 10% chance to spawn in place of a standard Spinosaurus."],
+  rarityRating: "Uncommon",
+  levelRange: "1-150",
+  packBehavior: "Solitary or pairs",
+  territorialBehavior: "Territorial, especially near water sources",
+  difficultyRating: "Hard",
   beginnerFriendly: false,
   endGameViable: true,
   bossFightCapable: true,
-  pvpMeta: 'High',
-  resourceInvestment: 'High',
-  maintenanceLevel: 'High',
-
-  // Badge Categories
-  badgeCategories: ['combat', 'boss']
+  pvpMeta: "High",
+  resourceInvestment: "High",
+  maintenanceLevel: "High",
+  badgeCategories: ["combat", "boss"]
 },
 'S-Therizinosaurus': {
-  // Basic Info
-  id: 'S_THERIZINOSAUR_087',
-  name: 'S-Therizinosaurus',
-  icon: '🦕',
-  category: 'harvesting',
-  rarity: 'rare',
-  source: 'Base Game (S-Variant)',
-  variants: ['Standard', 'Aberrant', 'S-Variant'],
-
-  // Biology & Lore
+  id: "S_THERIZINOSAUR_087",
+  name: "S-Therizinosaurus",
+  icon: "🦕",
+  category: "harvesting",
+  rarity: "rare",
+  source: "Base Game (S-Variant)",
+  variants: ["Standard", "Aberrant", "S-Variant"],
   dossierText: "The Therizinosaurus is a paradox of nature, a herbivore with the temperament of a carnivore and claws that can shred metal. The S-Variant is this paradox sharpened to a razor's edge. It is faster and its devastating claws are even more powerful. It wanders the jungles and forests with a territorial aggression that is truly terrifying, its shimmering feathers and radiation immunity marking it as an anomalous apex herbivore. There are few creatures as versatile as a tamed S-Therizinosaurus. Its harvesting abilities are legendary; with its delicate 'tickle' attack it can gather fiber and rare flowers by the thousands, while its power swipe can fell entire forests for wood. In combat, it is a true monster, its enhanced damage output making it a viable contender for taking on the island's guardians. The reduction in health is a minor concern for a creature with such a high base health pool and damage potential. It is, without a doubt, one of the most powerful and useful all-purpose creatures on the ARK.",
-  temperament: 'Aggressive',
-  diet: 'Herbivore',
-  habitat: 'Forests, jungles, areas with dense vegetation, irradiated zones',
-  realWorldBasis: 'Therizinosaurus cheloniformis',
-  sizeClass: 'Massive',
-
-  // Taming System
-  tamingMethod: 'Knockout',
-  tamingType: 'Violent taming with tranquilizers',
-  preferredKibble: 'Exceptional Kibble',
-  favoriteFood: 'Exceptional Kibble',
-  tamingSpeed: 'Extremely Slow',
+  temperament: "Aggressive",
+  diet: "Herbivore",
+  habitat: "Forests, jungles, areas with dense vegetation, irradiated zones",
+  realWorldBasis: "Therizinosaurus cheloniformis",
+  sizeClass: "Massive",
+  tamingMethod: "Knockout",
+  tamingType: "Violent taming with tranquilizers",
+  preferredKibble: "Exceptional Kibble",
+  favoriteFood: "Exceptional Kibble",
+  tamingSpeed: "Extremely Slow",
   torpor: {
     baseValue: 1500,
-    depleteRate: 'Very Slow'
+    depleteRate: "Very Slow"
   },
-  specialRequirements: 'Extremely aggressive, massive torpor requirement, dangerous claws.',
-
-  // Base Statistics (Level 1 Wild)
+  specialRequirements: "Extremely aggressive, massive torpor requirement, dangerous claws.",
   baseStats: {
     health: 783,
     stamina: 300,
@@ -38574,8 +34043,6 @@ const SPECIES_DATABASE = {
     speed: 100,
     torpor: 1500
   },
-
-  // Stat Scaling (Per Level)
   statScaling: {
     health: 174,
     stamina: 30,
@@ -38585,26 +34052,22 @@ const SPECIES_DATABASE = {
     melee: 3,
     speed: 1
   },
-
-  // Equipment & Combat
   saddleLevel: 69,
-  saddleType: 'Therizinosaur Saddle',
+  saddleType: "Therizinosaur Saddle",
   saddleArmor: 25,
   platformLimit: 0,
-  specialAbilities: ['Multi-resource gathering', 'devastating claw attacks', 'power harvesting', 'delicate harvesting', 'radiation immunity', 'toggleable particle effects.'],
-  attackTypes: ['Massive claw swipes', 'power attacks', 'delicate harvesting'],
-  canCarry: ['Large amounts of resources, excellent gathering capacity'],
-
-  // Utility & Roles
-  primaryRole: 'Ultimate resource gatherer and versatile combat mount',
-  secondaryRoles: ['Wood gathering', 'fiber production', 'defensive combat', 'boss fighter'],
-  gatheringResources: ['Wood', 'fiber', 'thatch', 'berries', 'rare resources', 'hide', 'meat'],
+  specialAbilities: ["Multi-resource gathering", "devastating claw attacks", "power harvesting", "delicate harvesting", "radiation immunity", "toggleable particle effects."],
+  attackTypes: ["Massive claw swipes", "power attacks", "delicate harvesting"],
+  canCarry: ["Large amounts of resources, excellent gathering capacity"],
+  primaryRole: "Ultimate resource gatherer and versatile combat mount",
+  secondaryRoles: ["Wood gathering", "fiber production", "defensive combat", "boss fighter"],
+  gatheringResources: ["Wood", "fiber", "thatch", "berries", "rare resources", "hide", "meat"],
   gatheringEfficiency: {
     Fiber: 10,
     Wood: 9,
     Thatch: 8,
     Berries: 7,
-    'Rare resources': 6
+    "Rare resources": 6
   },
   ratings: {
     combat: 9,
@@ -38612,93 +34075,74 @@ const SPECIES_DATABASE = {
     speed: 6,
     survivability: 8
   },
-
-  // Environmental Data
   speeds: {
-    land: 20, // mph
+    land: 20,
     flying: 0,
     swimming: 15,
     climbing: 0
   },
-  environmentalResistances: ['Immune to radiation.'],
-  preferredBiome: 'Forests, jungles, areas with dense vegetation',
+  environmentalResistances: ["Immune to radiation."],
+  preferredBiome: "Forests, jungles, areas with dense vegetation",
   temperatureRange: {
     min: 15,
     max: 35
   },
-  oxygenRequirement: 'Air breathing',
-
-  // Breeding Genetics
+  oxygenRequirement: "Air breathing",
   breeding: {
-    cooldown: '18-48 hours',
-    gestationTime: '4 hours, 59 minutes',
-    babyFoodConsumption: 'Extreme',
-    maturationTime: '3 days, 20 hours',
+    cooldown: "18-48 hours",
+    gestationTime: "4 hours, 59 minutes",
+    babyFoodConsumption: "Extreme",
+    maturationTime: "3 days, 20 hours",
     colorRegions: 6,
-    colorRegionNames: ['Body', 'feathers', 'claws', 'stripes', 'belly', 'markings'],
+    colorRegionNames: ["Body", "feathers", "claws", "stripes", "belly", "markings"],
     mutationChance: 7.31,
-    breedingDifficulty: 'Very Hard'
+    breedingDifficulty: "Very Hard"
   },
-
-  // Special Functions
-  workstation: 'None',
-  resourceProduction: 'None',
-  structureFunctions: 'None',
-  buffAuras: ['None'],
-  debuffAbilities: ['None'],
-  uniqueMechanics: ['Multi-resource gathering system (delicate vs power harvesting modes).', 'S-Dinos can crossbreed with non-S-Dinos.'],
-
-  // Spawn & Location
-  spawnMaps: ['The Island', 'The Center', 'Ragnarok', 'Valguero', 'Crystal Isles', 'Lost Island', 'Fjordur', 'Aberration (Aberrant)'],
-  spawnZones: ['Forests, jungles, areas with dense vegetation.', 'Has a 10% chance to spawn in place of a standard Therizinosaurus.'],
-  rarityRating: 'Rare',
-  levelRange: '1-150',
-  packBehavior: 'Solitary or pairs',
-  territorialBehavior: 'Extremely aggressive, attacks on sight',
-
-  // Management Metadata
-  difficultyRating: 'Very Hard',
+  workstation: "None",
+  resourceProduction: "None",
+  structureFunctions: "None",
+  buffAuras: ["None"],
+  debuffAbilities: ["None"],
+  uniqueMechanics: ["Multi-resource gathering system (delicate vs power harvesting modes).", "S-Dinos can crossbreed with non-S-Dinos."],
+  spawnMaps: ["The Island", "The Center", "Ragnarok", "Valguero", "Crystal Isles", "Lost Island", "Fjordur", "Aberration (Aberrant)"],
+  spawnZones: ["Forests, jungles, areas with dense vegetation.", "Has a 10% chance to spawn in place of a standard Therizinosaurus."],
+  rarityRating: "Rare",
+  levelRange: "1-150",
+  packBehavior: "Solitary or pairs",
+  territorialBehavior: "Extremely aggressive, attacks on sight",
+  difficultyRating: "Very Hard",
   beginnerFriendly: false,
   endGameViable: true,
   bossFightCapable: true,
-  pvpMeta: 'High',
-  resourceInvestment: 'Extreme',
-  maintenanceLevel: 'High',
-
-  // Badge Categories
-  badgeCategories: ['harvesting', 'combat', 'boss']
+  pvpMeta: "High",
+  resourceInvestment: "Extreme",
+  maintenanceLevel: "High",
+  badgeCategories: ["harvesting", "combat", "boss"]
 },
 'S-Thylacoleo': {
-  // Basic Info
-  id: 'S_THYLACOLEO_088',
-  name: 'S-Thylacoleo',
-  icon: '🐨',
-  category: 'combat',
-  rarity: 'rare',
-  source: 'Base Game (S-Variant)',
-  variants: ['Standard', 'Aberrant', 'S-Variant'],
-
-  // Biology & Lore
+  id: "S_THYLACOLEO_088",
+  name: "S-Thylacoleo",
+  icon: "🐨",
+  category: "combat",
+  rarity: "rare",
+  source: "Base Game (S-Variant)",
+  variants: ["Standard", "Aberrant", "S-Variant"],
   dossierText: "Few things are as startling as a Thylacoleo ambush. This powerful marsupial predator clings to the giant redwood trees, pouncing on unsuspecting prey below. The S-Variant is an even more effective ambush hunter. It is faster, allowing it to close the distance after a pounce with greater speed, and its bite and claw attacks are more powerful. Its shimmering fur and radiation immunity are the only outward signs that this already deadly predator has become something more. The S-Thylacoleo is a master of traversal and ambush. Its ability to climb sheer vertical surfaces is unparalleled, and its powerful leap allows it to cross great distances. The S-Variant's enhanced speed and damage make it an even more lethal combatant, its bleed-inducing bite capable of taking down much larger creatures. The reduction in health is a notable trade-off, making it less suited for a direct, prolonged fight. Instead, it excels in a tactical role, using its incredible mobility to strike from unexpected angles and bleed its opponents dry before they can effectively retaliate.",
-  temperament: 'Aggressive',
-  diet: 'Carnivore',
-  habitat: 'Redwood forests, caves, cliffs, anywhere with climbing surfaces, irradiated zones',
-  realWorldBasis: 'Thylacoleo carnifex (Marsupial Lion)',
-  sizeClass: 'Large',
-
-  // Taming System
-  tamingMethod: 'Knockout',
-  tamingType: 'Violent taming with tranquilizers',
-  preferredKibble: 'Extraordinary Kibble',
-  favoriteFood: 'Extraordinary Kibble',
-  tamingSpeed: 'Slow',
+  temperament: "Aggressive",
+  diet: "Carnivore",
+  habitat: "Redwood forests, caves, cliffs, anywhere with climbing surfaces, irradiated zones",
+  realWorldBasis: "Thylacoleo carnifex (Marsupial Lion)",
+  sizeClass: "Large",
+  tamingMethod: "Knockout",
+  tamingType: "Violent taming with tranquilizers",
+  preferredKibble: "Extraordinary Kibble",
+  favoriteFood: "Extraordinary Kibble",
+  tamingSpeed: "Slow",
   torpor: {
     baseValue: 550,
-    depleteRate: 'Moderate'
+    depleteRate: "Moderate"
   },
-  specialRequirements: 'Ambush behavior, excellent climber, pounce attacks.',
-
-  // Base Statistics (Level 1 Wild)
+  specialRequirements: "Ambush behavior, excellent climber, pounce attacks.",
   baseStats: {
     health: 306,
     stamina: 300,
@@ -38709,8 +34153,6 @@ const SPECIES_DATABASE = {
     speed: 100,
     torpor: 550
   },
-
-  // Stat Scaling (Per Level)
   statScaling: {
     health: 68,
     stamina: 30,
@@ -38720,20 +34162,16 @@ const SPECIES_DATABASE = {
     melee: 1.75,
     speed: 1.8
   },
-
-  // Equipment & Combat
   saddleLevel: 51,
-  saddleType: 'Thylacoleo Saddle',
+  saddleType: "Thylacoleo Saddle",
   saddleArmor: 25,
   platformLimit: 0,
-  specialAbilities: ['Wall climbing', 'pounce attack', 'ambush tactics', 'climbing while carrying prey', 'bleed attack', 'radiation immunity', 'toggleable particle effects.'],
-  attackTypes: ['Pounce (pins targets)', 'claw swipes', 'bite', 'ambush leap'],
-  canCarry: ['Can grab and carry medium creatures while climbing'],
-
-  // Utility & Roles
-  primaryRole: 'Ambush predator and climbing assault specialist',
-  secondaryRoles: ['Cave exploration', 'cliff traversal', 'stealth operations'],
-  gatheringResources: ['Raw meat', 'hide', 'chitin'],
+  specialAbilities: ["Wall climbing", "pounce attack", "ambush tactics", "climbing while carrying prey", "bleed attack", "radiation immunity", "toggleable particle effects."],
+  attackTypes: ["Pounce (pins targets)", "claw swipes", "bite", "ambush leap"],
+  canCarry: ["Can grab and carry medium creatures while climbing"],
+  primaryRole: "Ambush predator and climbing assault specialist",
+  secondaryRoles: ["Cave exploration", "cliff traversal", "stealth operations"],
+  gatheringResources: ["Raw meat", "hide", "chitin"],
   gatheringEfficiency: {
     Meat: 7,
     Hide: 6,
@@ -38745,93 +34183,74 @@ const SPECIES_DATABASE = {
     speed: 9,
     survivability: 7
   },
-
-  // Environmental Data
   speeds: {
-    land: 32, // mph
+    land: 32,
     flying: 0,
     swimming: 20,
     climbing: 1
   },
-  environmentalResistances: ['Immune to radiation.'],
-  preferredBiome: 'Redwood forests, caves, cliffs, anywhere with climbing surfaces',
+  environmentalResistances: ["Immune to radiation."],
+  preferredBiome: "Redwood forests, caves, cliffs, anywhere with climbing surfaces",
   temperatureRange: {
     min: 10,
     max: 35
   },
-  oxygenRequirement: 'Air breathing',
-
-  // Breeding Genetics
+  oxygenRequirement: "Air breathing",
   breeding: {
-    cooldown: '18-48 hours',
-    gestationTime: '7 hours, 56 minutes',
-    babyFoodConsumption: 'High',
-    maturationTime: '2 days, 22 hours',
+    cooldown: "18-48 hours",
+    gestationTime: "7 hours, 56 minutes",
+    babyFoodConsumption: "High",
+    maturationTime: "2 days, 22 hours",
     colorRegions: 6,
-    colorRegionNames: ['Body', 'stripes', 'belly', 'mane', 'claws', 'markings'],
+    colorRegionNames: ["Body", "stripes", "belly", "mane", "claws", "markings"],
     mutationChance: 7.31,
-    breedingDifficulty: 'Hard'
+    breedingDifficulty: "Hard"
   },
-
-  // Special Functions
-  workstation: 'None',
-  resourceProduction: 'None',
-  structureFunctions: 'None',
-  buffAuras: ['None'],
-  debuffAbilities: ['Pounce attack pins and immobilizes targets'],
-  uniqueMechanics: ['S-Dinos can crossbreed with non-S-Dinos.'],
-
-  // Spawn & Location
-  spawnMaps: ['The Island', 'The Center', 'Ragnarok', 'Valguero', 'Crystal Isles', 'Lost Island', 'Fjordur', 'Aberration (Aberrant)'],
-  spawnZones: ['Redwood forests, caves, cliffs, anywhere with vertical surfaces.', 'Has a 10% chance to spawn in place of a standard Thylacoleo.'],
-  rarityRating: 'Rare',
-  levelRange: '1-150',
-  packBehavior: 'Solitary',
-  territorialBehavior: 'Ambush predator, stalks prey silently',
-
-  // Management Metadata
-  difficultyRating: 'Hard',
+  workstation: "None",
+  resourceProduction: "None",
+  structureFunctions: "None",
+  buffAuras: ["None"],
+  debuffAbilities: ["Pounce attack pins and immobilizes targets"],
+  uniqueMechanics: ["S-Dinos can crossbreed with non-S-Dinos."],
+  spawnMaps: ["The Island", "The Center", "Ragnarok", "Valguero", "Crystal Isles", "Lost Island", "Fjordur", "Aberration (Aberrant)"],
+  spawnZones: ["Redwood forests, caves, cliffs, anywhere with vertical surfaces.", "Has a 10% chance to spawn in place of a standard Thylacoleo."],
+  rarityRating: "Rare",
+  levelRange: "1-150",
+  packBehavior: "Solitary",
+  territorialBehavior: "Ambush predator, stalks prey silently",
+  difficultyRating: "Hard",
   beginnerFriendly: false,
   endGameViable: true,
   bossFightCapable: true,
-  pvpMeta: 'Very High',
-  resourceInvestment: 'High',
-  maintenanceLevel: 'Medium',
-
-  // Badge Categories
-  badgeCategories: ['combat', 'boss', 'pvp']
+  pvpMeta: "Very High",
+  resourceInvestment: "High",
+  maintenanceLevel: "Medium",
+  badgeCategories: ["combat", "boss", "pvp"]
 },
 'S-Trike': {
-  // Basic Info
-  id: 'S_TRICERATOPS_091',
-  name: 'S-Trike',
-  icon: '🦏',
-  category: 'combat',
-  rarity: 'common',
-  source: 'Base Game (S-Variant)',
-  variants: ['Standard', 'Tek', 'Aberrant', 'S-Variant'],
-
-  // Biology & Lore
-  dossierText: "The Triceratops is one of the first formidable creatures a new survivor is likely to encounter, a powerful herbivore that fiercely defends its territory. The S-Variant is a more robust version of this classic dinosaur. It is faster on its feet and its charge attack hits with greater impact. Its shimmering hide and immunity to radiation are the tell-tale signs of its anomalous nature. The S-Trike serves the same roles as its common counterpart, but with greater efficiency. It is a superior early-to-mid-game mount, its enhanced stats making it a better harvester of berries and a more capable defender against predators like Raptors and Carnotaurus. Its charge ability, amplified by its increased speed and damage, is more effective at stunning and knocking back opponents. While it is eventually outclassed by larger creatures, the S-Trike is a reliable and powerful stepping stone for any growing tribe.",
-  temperament: 'Docile, but charges when provoked',
-  diet: 'Herbivore',
-  habitat: 'Plains, forests, grasslands, areas with abundant vegetation, irradiated zones',
-  realWorldBasis: 'Triceratops horridus',
-  sizeClass: 'Large',
-
-  // Taming System
-  tamingMethod: 'Knockout',
-  tamingType: 'Violent taming with tranquilizers',
-  preferredKibble: 'Simple Kibble',
-  favoriteFood: 'Simple Kibble',
-  tamingSpeed: 'Moderate',
+  id: "S_TRICERATOPS_091",
+  name: "S-Trike",
+  icon: "🦏",
+  category: "combat",
+  rarity: "common",
+  source: "Base Game (S-Variant)",
+  variants: ["Standard", "Tek", "Aberrant", "S-Variant"],
+  dossierText: "The Triceratops is one of the first formidable creatures a new survivor is likely to encounter, a powerful herbivore that fiercely defends its territory. The S-Variant is a more robust version of this classic dinosaur. It is faster on its feet and its charge attack hits with greater impact. Its shimmering hide and immunity to radiation are the tell-tale signs of its anomalous nature. The S-Trike serves the same roles as its common counterpart, but with greater efficiency. It is a superior early-to-mid-game mount, its enhanced stats making it a better harvester of berries and a more capable defender against predators like Raptors and Carnotaurus. Its charge ability, amplified by its increased speed and damage, is more effective at stunning and knocking back opponents. While it is eventually outclassed by larger creatures, the S-Trike is a reliable and powerful stepping stone for any growing tribe. Like all S-variants from Nekatus's S-Dino mod, this creature carries full radiation immunity — a meaningful passive advantage in environments like Aberration and the Genesis simulations where unprotected tames quickly become liabilities. In the wild, it has a 10% chance of spawning as an S-variant in place of the standard creature, identifiable by its distinctive bioluminescent shimmer. Holding E while mounted toggles special particle effects. Crossbreeding with the non-S variant is fully supported, allowing survivors to introduce the radiation immunity and S-variant glow into an established breeding line without sacrificing existing stat gains.",
+  temperament: "Docile, but charges when provoked",
+  diet: "Herbivore",
+  habitat: "Plains, forests, grasslands, areas with abundant vegetation, irradiated zones",
+  realWorldBasis: "Triceratops horridus",
+  sizeClass: "Large",
+  tamingMethod: "Knockout",
+  tamingType: "Violent taming with tranquilizers",
+  preferredKibble: "Simple Kibble",
+  favoriteFood: "Simple Kibble",
+  tamingSpeed: "Moderate",
   torpor: {
     baseValue: 550,
-    depleteRate: 'Moderate'
+    depleteRate: "Moderate"
   },
-  specialRequirements: 'Charge attack when threatened, capable of ramming and dismounting.',
-
-  // Base Statistics (Level 1 Wild)
+  specialRequirements: "Charge attack when threatened, capable of ramming and dismounting.",
   baseStats: {
     health: 337.5,
     stamina: 150,
@@ -38842,8 +34261,6 @@ const SPECIES_DATABASE = {
     speed: 100,
     torpor: 550
   },
-
-  // Stat Scaling (Per Level)
   statScaling: {
     health: 75,
     stamina: 15,
@@ -38853,25 +34270,21 @@ const SPECIES_DATABASE = {
     melee: 1.6,
     speed: 1.2
   },
-
-  // Equipment & Combat
   saddleLevel: 16,
-  saddleType: 'Triceratops Saddle',
+  saddleType: "Triceratops Saddle",
   saddleArmor: 25,
   platformLimit: 0,
-  specialAbilities: ['Ramming charge attack', 'rider dismounting', 'excellent berry gathering', 'radiation immunity', 'toggleable particle effects.'],
-  attackTypes: ['Ramming charge (dismounts riders)', 'horn gore', 'headbutt'],
-  canCarry: ['Large amounts of berries and vegetation'],
-
-  // Utility & Roles
-  primaryRole: 'Berry gatherer and defensive mount',
-  secondaryRoles: ['Base defender', 'ramming specialist', 'early game tank'],
-  gatheringResources: ['Berries', 'fiber', 'thatch', 'rare flowers'],
+  specialAbilities: ["Ramming charge attack", "rider dismounting", "excellent berry gathering", "radiation immunity", "toggleable particle effects."],
+  attackTypes: ["Ramming charge (dismounts riders)", "horn gore", "headbutt"],
+  canCarry: ["Large amounts of berries and vegetation"],
+  primaryRole: "Berry gatherer and defensive mount",
+  secondaryRoles: ["Base defender", "ramming specialist", "early game tank"],
+  gatheringResources: ["Berries", "fiber", "thatch", "rare flowers"],
   gatheringEfficiency: {
     Berries: 10,
     Fiber: 7,
     Thatch: 5,
-    'Rare flowers': 6
+    "Rare flowers": 6
   },
   ratings: {
     combat: 7,
@@ -38879,93 +34292,74 @@ const SPECIES_DATABASE = {
     speed: 7,
     survivability: 7
   },
-
-  // Environmental Data
   speeds: {
-    land: 25, // mph
+    land: 25,
     flying: 0,
     swimming: 15,
     climbing: 0
   },
-  environmentalResistances: ['Natural armor from frill and hide', 'immune to radiation.'],
-  preferredBiome: 'Plains, forests, grasslands, areas with abundant vegetation',
+  environmentalResistances: ["Natural armor from frill and hide", "immune to radiation."],
+  preferredBiome: "Plains, forests, grasslands, areas with abundant vegetation",
   temperatureRange: {
     min: 15,
     max: 35
   },
-  oxygenRequirement: 'Air breathing',
-
-  // Breeding Genetics
+  oxygenRequirement: "Air breathing",
   breeding: {
-    cooldown: '18-48 hours',
-    gestationTime: '1 hour, 39 minutes',
-    babyFoodConsumption: 'High',
-    maturationTime: '1 day, 2 hours',
+    cooldown: "18-48 hours",
+    gestationTime: "1 hour, 39 minutes",
+    babyFoodConsumption: "High",
+    maturationTime: "1 day, 2 hours",
     colorRegions: 6,
-    colorRegionNames: ['Body', 'frill', 'horns', 'stripes', 'belly', 'legs'],
+    colorRegionNames: ["Body", "frill", "horns", "stripes", "belly", "legs"],
     mutationChance: 7.31,
-    breedingDifficulty: 'Easy'
+    breedingDifficulty: "Easy"
   },
-
-  // Special Functions
-  workstation: 'None',
-  resourceProduction: 'None',
-  structureFunctions: 'None',
-  buffAuras: ['None'],
-  debuffAbilities: ['Ramming charge dismounts riders'],
-  uniqueMechanics: ['Charge attack system', 'rider dismounting capability.', 'S-Dinos can crossbreed with non-S-Dinos.'],
-
-  // Spawn & Location
-  spawnMaps: ['The Island', 'The Center', 'Ragnarok', 'Valguero', 'Crystal Isles', 'Lost Island', 'Fjordur', 'Aberration (Aberrant)'],
-  spawnZones: ['Plains, forests, grasslands, beaches, areas with vegetation.', 'Has a 10% chance to spawn in place of a standard Triceratops.'],
-  rarityRating: 'Common',
-  levelRange: '1-150',
-  packBehavior: 'Small herds (3-6)',
-  territorialBehavior: 'Docile until provoked, then charges aggressively',
-
-  // Management Metadata
-  difficultyRating: 'Easy',
+  workstation: "None",
+  resourceProduction: "None",
+  structureFunctions: "None",
+  buffAuras: ["None"],
+  debuffAbilities: ["Ramming charge dismounts riders"],
+  uniqueMechanics: ["Charge attack system", "rider dismounting capability.", "S-Dinos can crossbreed with non-S-Dinos."],
+  spawnMaps: ["The Island", "The Center", "Ragnarok", "Valguero", "Crystal Isles", "Lost Island", "Fjordur", "Aberration (Aberrant)"],
+  spawnZones: ["Plains, forests, grasslands, beaches, areas with vegetation.", "Has a 10% chance to spawn in place of a standard Triceratops."],
+  rarityRating: "Common",
+  levelRange: "1-150",
+  packBehavior: "Small herds (3-6)",
+  territorialBehavior: "Docile until provoked, then charges aggressively",
+  difficultyRating: "Easy",
   beginnerFriendly: true,
   endGameViable: false,
   bossFightCapable: true,
-  pvpMeta: 'High',
-  resourceInvestment: 'Low',
-  maintenanceLevel: 'Low',
-
-  // Badge Categories
-  badgeCategories: ['combat', 'boss']
+  pvpMeta: "High",
+  resourceInvestment: "Low",
+  maintenanceLevel: "Low",
+  badgeCategories: ["combat", "boss"]
 },
 'S-Unicorn': {
-  // Basic Info
-  id: 'S_UNICORN_033',
-  name: 'S-Unicorn',
-  icon: '🦄',
-  category: 'utility',
-  rarity: 'legendary',
-  source: 'Base Game (S-Variant)',
-  variants: ['Standard', 'S-Variant'],
-
-  // Biology & Lore
+  id: "S_UNICORN_033",
+  name: "S-Unicorn",
+  icon: "🦄",
+  category: "utility",
+  rarity: "legendary",
+  source: "Base Game (S-Variant)",
+  variants: ["Standard", "S-Variant"],
   dossierText: "The Unicorn is a creature of legend, an exceedingly rare and beautiful sight. This S-Variant, while still rare, is a far more common find, with a fifty percent chance of appearing in place of a standard Equus. It possesses the same passive temperament and requires the same gentle, non-violent taming method. It is marked by the standard S-Variant shimmer and radiation immunity, a mythical beast touched by the island's strange energies. An S-Unicorn is functionally very similar to a standard Equus, serving as a mobile mortar and pestle and a swift transport mount. It benefits from the standard S-Variant stat adjustments, making it slightly faster and stronger, but also more fragile. While these enhancements make it a marginally better combatant, its primary value remains its rarity and unique aesthetic. For the collector and the survivor who appreciates the mythical and beautiful, the S-Unicorn is a prized and sought-after companion.",
-  temperament: 'Passive',
-  diet: 'Herbivore',
-  habitat: 'Plains, grasslands, open areas, irradiated zones',
-  realWorldBasis: 'Unicorn (Mythology)',
-  sizeClass: 'Large',
-
-  // Taming System
-  tamingMethod: 'Passive (requires mounting and soothing)',
-  tamingType: 'Unique mounting tame',
-  preferredKibble: 'Simple Kibble',
-  favoriteFood: 'Simple Kibble',
-  tamingSpeed: 'Moderate',
+  temperament: "Passive",
+  diet: "Herbivore",
+  habitat: "Plains, grasslands, open areas, irradiated zones",
+  realWorldBasis: "Unicorn (Mythology)",
+  sizeClass: "Large",
+  tamingMethod: "Passive (requires mounting and soothing)",
+  tamingType: "Unique mounting tame",
+  preferredKibble: "Simple Kibble",
+  favoriteFood: "Simple Kibble",
+  tamingSpeed: "Moderate",
   torpor: {
     baseValue: 350,
-    depleteRate: 'N/A'
+    depleteRate: "N/A"
   },
-  specialRequirements: 'Must mount and feed while riding, requires patience and timing.',
-
-  // Base Statistics (Level 1 Wild)
+  specialRequirements: "Must mount and feed while riding, requires patience and timing.",
   baseStats: {
     health: 144,
     stamina: 400,
@@ -38976,8 +34370,6 @@ const SPECIES_DATABASE = {
     speed: 100,
     torpor: 350
   },
-
-  // Stat Scaling (Per Level)
   statScaling: {
     health: 32,
     stamina: 40,
@@ -38987,20 +34379,16 @@ const SPECIES_DATABASE = {
     melee: 0.6,
     speed: 2.5
   },
-
-  // Equipment & Combat
   saddleLevel: 20,
-  saddleType: 'Equus Saddle',
+  saddleType: "Equus Saddle",
   saddleArmor: 25,
   platformLimit: 0,
-  specialAbilities: ['High speed', 'excellent stamina', 'mobile crafting', 'lasso capability', 'radiation immunity', 'toggleable particle effects.'],
-  attackTypes: ['Kick', 'rear attack'],
-  canCarry: ['Moderate cargo, excellent for long-distance travel'],
-
-  // Utility & Roles
-  primaryRole: 'High-speed transport and mobile crafting',
-  secondaryRoles: ['Lasso work', 'berry gathering', 'long-distance exploration'],
-  gatheringResources: ['Berries', 'fiber', 'thatch'],
+  specialAbilities: ["High speed", "excellent stamina", "mobile crafting", "lasso capability", "radiation immunity", "toggleable particle effects."],
+  attackTypes: ["Kick", "rear attack"],
+  canCarry: ["Moderate cargo, excellent for long-distance travel"],
+  primaryRole: "High-speed transport and mobile crafting",
+  secondaryRoles: ["Lasso work", "berry gathering", "long-distance exploration"],
+  gatheringResources: ["Berries", "fiber", "thatch"],
   gatheringEfficiency: {
     Berries: 6,
     Fiber: 5,
@@ -39012,93 +34400,74 @@ const SPECIES_DATABASE = {
     speed: 10,
     survivability: 4
   },
-
-  // Environmental Data
   speeds: {
-    land: 45, // mph
+    land: 45,
     flying: 0,
     swimming: 25,
     climbing: 0
   },
-  environmentalResistances: ['Immune to radiation.'],
-  preferredBiome: 'Plains, grasslands, open terrain',
+  environmentalResistances: ["Immune to radiation."],
+  preferredBiome: "Plains, grasslands, open terrain",
   temperatureRange: {
     min: 10,
     max: 40
   },
-  oxygenRequirement: 'Air breathing',
-
-  // Breeding Genetics
+  oxygenRequirement: "Air breathing",
   breeding: {
-    cooldown: '18-48 hours',
-    gestationTime: '5 hours, 37 minutes',
-    babyFoodConsumption: 'Moderate',
-    maturationTime: '2 days, 5 hours',
+    cooldown: "18-48 hours",
+    gestationTime: "5 hours, 37 minutes",
+    babyFoodConsumption: "Moderate",
+    maturationTime: "2 days, 5 hours",
     colorRegions: 6,
-    colorRegionNames: ['Body', 'mane', 'markings', 'stripes', 'tail', 'socks'],
+    colorRegionNames: ["Body", "mane", "markings", "stripes", "tail", "socks"],
     mutationChance: 7.31,
-    breedingDifficulty: 'Easy-Medium'
+    breedingDifficulty: "Easy-Medium"
   },
-
-  // Special Functions
-  workstation: 'Can craft simple items while mounted via saddle.',
-  resourceProduction: 'None',
-  structureFunctions: 'None',
-  buffAuras: ['None'],
-  debuffAbilities: ['None'],
-  uniqueMechanics: ['Lasso functionality', 'mobile crafting', 'unique taming method.', 'S-Dinos can crossbreed with non-S-Dinos.'],
-
-  // Spawn & Location
-  spawnMaps: ['The Island', 'The Center', 'Ragnarok', 'Valguero', 'Crystal Isles', 'Lost Island', 'Fjordur'],
-  spawnZones: ['Plains, grasslands, open areas.', 'Has a 50% chance to spawn in place of a standard Unicorn/Equus.'],
-  rarityRating: 'Legendary',
-  levelRange: '1-150',
-  packBehavior: 'Solitary',
-  territorialBehavior: 'Peaceful, flees when threatened',
-
-  // Management Metadata
-  difficultyRating: 'Medium',
+  workstation: "Can craft simple items while mounted via saddle.",
+  resourceProduction: "None",
+  structureFunctions: "None",
+  buffAuras: ["None"],
+  debuffAbilities: ["None"],
+  uniqueMechanics: ["Lasso functionality", "mobile crafting", "unique taming method.", "S-Dinos can crossbreed with non-S-Dinos."],
+  spawnMaps: ["The Island", "The Center", "Ragnarok", "Valguero", "Crystal Isles", "Lost Island", "Fjordur"],
+  spawnZones: ["Plains, grasslands, open areas.", "Has a 50% chance to spawn in place of a standard Unicorn/Equus."],
+  rarityRating: "Legendary",
+  levelRange: "1-150",
+  packBehavior: "Solitary",
+  territorialBehavior: "Peaceful, flees when threatened",
+  difficultyRating: "Medium",
   beginnerFriendly: true,
   endGameViable: true,
   bossFightCapable: false,
-  pvpMeta: 'High',
-  resourceInvestment: 'Low',
-  maintenanceLevel: 'Low',
-
-  // Badge Categories
-  badgeCategories: ['utility', 'transport']
+  pvpMeta: "High",
+  resourceInvestment: "Low",
+  maintenanceLevel: "Low",
+  badgeCategories: ["utility", "transport"]
 },
 'S-Velonasaur': {
-  // Basic Info
-  id: 'S_VELONASAUR_127',
-  name: 'S-Velonasaur',
-  icon: '🦎',
-  category: 'combat',
-  rarity: 'common',
-  source: 'Extinction DLC (S-Variant)',
-  variants: ['Standard', 'R-Velonasaur', 'S-Variant'],
-
-  // Biology & Lore
-  dossierText: "The Velonasaur is a unique and dangerous predator, capable of firing a barrage of sharp spines from its body like a living machine gun. The S-Variant is a more potent version of this organic turret. It is faster and its melee attacks are stronger, but the most significant improvement is to its ranged capabilities. It is, of course, immune to radiation and surrounded by the S-Variant shimmer. The S-Velonasaur is a mobile defense platform of incredible versatility. In addition to its enhanced stats, a survivor can now wield their own weapons while riding it. This allows for a devastating combination of firepower. A rider could use a longneck rifle to tranquilize a target from afar, while the Velonasaur provides covering fire with its spines. In turret mode, its enhanced damage makes it an even more effective base defender. This combination of abilities makes the S-Velonasaur one of the most versatile and deadly mid-sized combatants available.",
-  temperament: 'Territorial (Aggressive)',
-  diet: 'Carnivore',
-  habitat: 'Desert biomes, wasteland areas, rocky terrain, irradiated zones',
-  realWorldBasis: 'Frilled lizard with fantasy spine-shooting abilities',
-  sizeClass: 'Medium',
-
-  // Taming System
-  tamingMethod: 'Knockout',
-  tamingType: 'Moderate difficulty, enters turret mode when threatened.',
-  preferredKibble: 'Regular Kibble',
-  favoriteFood: 'Regular Kibble',
-  tamingSpeed: 'Fast',
+  id: "S_VELONASAUR_127",
+  name: "S-Velonasaur",
+  icon: "🦎",
+  category: "combat",
+  rarity: "common",
+  source: "Extinction DLC (S-Variant)",
+  variants: ["Standard", "R-Velonasaur", "S-Variant"],
+  dossierText: "The Velonasaur is a unique and dangerous predator, capable of firing a barrage of sharp spines from its body like a living machine gun. The S-Variant is a more potent version of this organic turret. It is faster and its melee attacks are stronger, but the most significant improvement is to its ranged capabilities. It is, of course, immune to radiation and surrounded by the S-Variant shimmer. The S-Velonasaur is a mobile defense platform of incredible versatility. In addition to its enhanced stats, a survivor can now wield their own weapons while riding it. This allows for a devastating combination of firepower. A rider could use a longneck rifle to tranquilize a target from afar, while the Velonasaur provides covering fire with its spines. In turret mode, its enhanced damage makes it an even more effective base defender. This combination of abilities makes the S-Velonasaur one of the most versatile and deadly mid-sized combatants available. Like all S-variants from Nekatus's S-Dino mod, this creature carries full radiation immunity — a meaningful passive advantage in environments like Aberration and the Genesis simulations where unprotected tames quickly become liabilities. In the wild, it has a 10% chance of spawning as an S-variant in place of the standard creature, identifiable by its distinctive bioluminescent shimmer. Holding E while mounted toggles special particle effects. Crossbreeding with the non-S variant is fully supported, allowing survivors to introduce the radiation immunity and S-variant glow into an established breeding line without sacrificing existing stat gains.",
+  temperament: "Territorial (Aggressive)",
+  diet: "Carnivore",
+  habitat: "Desert biomes, wasteland areas, rocky terrain, irradiated zones",
+  realWorldBasis: "Frilled lizard with fantasy spine-shooting abilities",
+  sizeClass: "Medium",
+  tamingMethod: "Knockout",
+  tamingType: "Moderate difficulty, enters turret mode when threatened.",
+  preferredKibble: "Regular Kibble",
+  favoriteFood: "Regular Kibble",
+  tamingSpeed: "Fast",
   torpor: {
     baseValue: 350,
-    depleteRate: 'Fast'
+    depleteRate: "Fast"
   },
-  specialRequirements: 'Avoid spines while taming, use cover or shields, trap recommended.',
-
-  // Base Statistics (Level 1 Wild)
+  specialRequirements: "Avoid spines while taming, use cover or shields, trap recommended.",
   baseStats: {
     health: 396,
     stamina: 325,
@@ -39109,8 +34478,6 @@ const SPECIES_DATABASE = {
     speed: 100,
     torpor: 350
   },
-
-  // Stat Scaling (Per Level)
   statScaling: {
     health: 88,
     stamina: 32.5,
@@ -39120,22 +34487,18 @@ const SPECIES_DATABASE = {
     melee: 8,
     speed: 2
   },
-
-  // Equipment & Combat
   saddleLevel: 27,
-  saddleType: 'Velonasaur Saddle',
+  saddleType: "Velonasaur Saddle",
   saddleArmor: 25,
   platformLimit: 0,
-  specialAbilities: ['Allows mounted weaponry', 'Turret mode (rapid-fire spines)', 'spine volley', 'armor-piercing attacks', 'mobile turret functionality', 'radiation immunity', 'toggleable particle effects.'],
-  attackTypes: ['Spine projectiles (ignore armor)', 'bite', 'tail whip', 'area spine barrage'],
-  canCarry: ['Moderate weight capacity'],
-
-  // Utility & Roles
-  primaryRole: 'Mobile automated defense turret and ranged combat',
-  secondaryRoles: ['Base defense', 'mobile artillery', 'armor-piercing specialist', 'crowd control'],
-  gatheringResources: ['Limited gathering through combat'],
+  specialAbilities: ["Allows mounted weaponry", "Turret mode (rapid-fire spines)", "spine volley", "armor-piercing attacks", "mobile turret functionality", "radiation immunity", "toggleable particle effects."],
+  attackTypes: ["Spine projectiles (ignore armor)", "bite", "tail whip", "area spine barrage"],
+  canCarry: ["Moderate weight capacity"],
+  primaryRole: "Mobile automated defense turret and ranged combat",
+  secondaryRoles: ["Base defense", "mobile artillery", "armor-piercing specialist", "crowd control"],
+  gatheringResources: ["Limited gathering through combat"],
   gatheringEfficiency: {
-    'Combat-focused': 3
+    "Combat-focused": 3
   },
   ratings: {
     combat: 9,
@@ -39143,196 +34506,51 @@ const SPECIES_DATABASE = {
     speed: 7,
     survivability: 6
   },
-
-  // Environmental Data
   speeds: {
-    land: 30, // mph
+    land: 30,
     flying: 0,
     swimming: 20,
     climbing: 0
   },
-  environmentalResistances: ['Heat resistance', 'spine armor provides protection', 'radiation immunity.'],
-  preferredBiome: 'Desert areas, wasteland, rocky terrain, defensive positions',
+  environmentalResistances: ["Heat resistance", "spine armor provides protection", "radiation immunity."],
+  preferredBiome: "Desert areas, wasteland, rocky terrain, defensive positions",
   temperatureRange: {
     min: 15,
     max: 55
   },
-  oxygenRequirement: 'Air breathing',
-
-  // Breeding Genetics
+  oxygenRequirement: "Air breathing",
   breeding: {
-    cooldown: '18-48 hours',
-    gestationTime: '1 hour, 39 minutes',
-    babyFoodConsumption: 'High',
-    maturationTime: '1 day, 2 hours',
+    cooldown: "18-48 hours",
+    gestationTime: "1 hour, 39 minutes",
+    babyFoodConsumption: "High",
+    maturationTime: "1 day, 2 hours",
     colorRegions: 6,
-    colorRegionNames: ['Body', 'frills', 'spines', 'belly', 'stripes', 'markings'],
+    colorRegionNames: ["Body", "frills", "spines", "belly", "stripes", "markings"],
     mutationChance: 7.31,
-    breedingDifficulty: 'Easy'
+    breedingDifficulty: "Easy"
   },
-
-  // Special Functions
-  workstation: 'None',
-  resourceProduction: 'None',
-  structureFunctions: 'Can function as automated turret when set to aggressive.',
-  buffAuras: ['None'],
-  debuffAbilities: ['Spine attacks ignore armor and can cause bleeding'],
-  uniqueMechanics: ['Rider can use weapons while mounted.', 'Turret mode system', 'armor-piercing projectiles', 'automated defense capability.', 'S-Dinos can crossbreed with non-S-Dinos.'],
-
-  // Spawn & Location
-  spawnMaps: ['Extinction', 'Genesis Part 2', 'Fjordur', 'Astraeos'],
-  spawnZones: ['Desert Dome (Extinction), wasteland areas, rocky terrain.', 'Has a 10% chance to spawn in place of a standard Velonasaur.'],
-  rarityRating: 'Common',
-  levelRange: '1-150',
-  packBehavior: 'Solitary or pairs',
-  territorialBehavior: 'Highly territorial, aggressive to intruders',
-
-  // Management Metadata
-  difficultyRating: 'Medium',
+  workstation: "None",
+  resourceProduction: "None",
+  structureFunctions: "Can function as automated turret when set to aggressive.",
+  buffAuras: ["None"],
+  debuffAbilities: ["Spine attacks ignore armor and can cause bleeding"],
+  uniqueMechanics: ["Rider can use weapons while mounted.", "Turret mode system", "armor-piercing projectiles", "automated defense capability.", "S-Dinos can crossbreed with non-S-Dinos."],
+  spawnMaps: ["Extinction", "Genesis Part 2", "Fjordur", "Astraeos"],
+  spawnZones: ["Desert Dome (Extinction), wasteland areas, rocky terrain.", "Has a 10% chance to spawn in place of a standard Velonasaur."],
+  rarityRating: "Common",
+  levelRange: "1-150",
+  packBehavior: "Solitary or pairs",
+  territorialBehavior: "Highly territorial, aggressive to intruders",
+  difficultyRating: "Medium",
   beginnerFriendly: true,
   endGameViable: true,
   bossFightCapable: true,
-  pvpMeta: 'High',
-  resourceInvestment: 'Low',
-  maintenanceLevel: 'Low',
-
-  // Badge Categories
-  badgeCategories: ['combat', 'boss']
+  pvpMeta: "High",
+  resourceInvestment: "Low",
+  maintenanceLevel: "Low",
+  badgeCategories: ["combat", "boss"]
 },
-'Amargasaurus': {
-    // Basic Info
-    id: 'AMARGASAURUS_301',
-    name: 'Amargasaurus',
-    icon: '🦕',
-    category: 'combat',
-    rarity: 'rare',
-    source: 'Lost Island DLC',
-    variants: ['Standard'],
-
-    // Biology & Lore
-    dossierText: "The Amargasaurus is a truly unique sauropod, distinguished by the incredible thermal spines that run along its back. These are not merely for display; the Amargasaurus can rapidly heat or cool these spines to extreme temperatures and then launch them as projectiles. What makes this creature truly exceptional is its ability to create areas of extreme heat or cold, providing a powerful tactical advantage in combat. It can create armor-piercing cold spikes or flesh-melting heat spikes, making it a versatile and deadly opponent. Taming an Amargasaurus is a dangerous and complex process, requiring a survivor to gain its trust by synchronizing with its temperature fluctuations. A tamed Amargasaurus is a walking piece of artillery, capable of controlling the battlefield with its elemental spines.",
-    temperament: 'Aggressive',
-    diet: 'Herbivore',
-    habitat: 'Snowy and desert regions, areas of extreme temperature',
-    realWorldBasis: 'Amargasaurus cazaui',
-    sizeClass: 'Massive',
-
-    // Taming System
-    tamingMethod: 'Special (Non-Violent)',
-    tamingType: 'Gain trust by staying near it, killing predators that attack it, and feeding it.',
-    preferredKibble: 'Exceptional Kibble',
-    favoriteFood: 'Exceptional Kibble',
-    tamingSpeed: 'Slow',
-    torpor: {
-      baseValue: 2000,
-      depleteRate: 'N/A'
-    },
-    specialRequirements: 'Requires a special saddle to be tamed, involves a "trust" mechanic by synchronizing with its temperature.',
-
-    // Base Statistics (Level 1 Wild)
-    baseStats: {
-      health: 1200,
-      stamina: 400,
-      oxygen: 150,
-      food: 10000,
-      weight: 800,
-      melee: 55,
-      speed: 100,
-      torpor: 2000
-    },
-
-    // Stat Scaling (Per Level)
-    statScaling: {
-      health: 240,
-      stamina: 40,
-      oxygen: 15,
-      food: 1000,
-      weight: 16,
-      melee: 2.75,
-      speed: 1
-    },
-
-    // Equipment & Combat
-    saddleLevel: 65,
-    saddleType: 'Amargasaurus Saddle',
-    saddleArmor: 25,
-    platformLimit: 0,
-    specialAbilities: ['Thermal spine projectiles (heat and cold)', 'area of effect temperature changes', 'armor-piercing spikes'],
-    attackTypes: ['Spine launch', 'stomp', 'tail whip'],
-    canCarry: ['Heavy cargo, serves as mobile artillery'],
-
-    // Utility & Roles
-    primaryRole: 'Ranged combat and area denial',
-    secondaryRoles: ['Battlefield control', 'anti-armor specialist', 'temperature manipulation'],
-    gatheringResources: ['Wood', 'thatch', 'berries'],
-    gatheringEfficiency: {
-      Wood: 8,
-      Berries: 7
-    },
-    ratings: {
-      combat: 9,
-      transport: 7,
-      speed: 4,
-      survivability: 8
-    },
-
-    // Environmental Data
-    speeds: {
-      land: 22,
-      flying: 0,
-      swimming: 15,
-      climbing: 0
-    },
-    environmentalResistances: ['Extreme temperature resistance'],
-    preferredBiome: 'Extreme temperature zones (snow and desert)',
-    temperatureRange: {
-      min: -50,
-      max: 80
-    },
-    oxygenRequirement: 'Air breathing',
-
-    // Breeding Genetics
-    breeding: {
-      cooldown: '18-48 hours',
-      gestationTime: '4 hours, 59 minutes',
-      babyFoodConsumption: 'High',
-      maturationTime: '4 days, 1 hour',
-      colorRegions: 6,
-      colorRegionNames: ['Body', 'spines', 'belly', 'patterns', 'head', 'thermal glow'],
-      mutationChance: 7.31,
-      breedingDifficulty: 'Hard'
-    },
-
-    // Special Functions
-    workstation: 'None',
-    resourceProduction: 'None',
-    structureFunctions: 'None',
-    buffAuras: ['Can create zones of heat or cold'],
-    debuffAbilities: ['Cold spikes slow and pierce armor, heat spikes burn and melt armor'],
-    uniqueMechanics: ['Thermal spine system', 'trust-based taming'],
-
-    // Spawn & Location
-    spawnMaps: ['Lost Island', 'Fjordur'],
-    spawnZones: ['Snowy areas', 'desert regions'],
-    rarityRating: 'Rare',
-    levelRange: '1-150',
-    packBehavior: 'Small herds (2-3)',
-    territorialBehavior: 'Highly aggressive and territorial',
-
-    // Management Metadata
-    difficultyRating: 'Hard',
-    beginnerFriendly: false,
-    endGameViable: true,
-    bossFightCapable: true,
-    pvpMeta: 'High',
-    resourceInvestment: 'High',
-    maintenanceLevel: 'Medium',
-
-    // Badge Categories
-    badgeCategories: ['combat', 'boss']
-  },
-
-  'Ammonite': {
+'Ammonite': {
     // Basic Info
     id: 'AMMONITE_302',
     name: 'Ammonite',
@@ -39463,539 +34681,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['utility', 'harvesting']
-  },
-
-  'Andrewsarchus': {
-    // Basic Info
-    id: 'ANDREWSARCHUS_303',
-    name: 'Andrewsarchus',
-    icon: '🐗',
-    category: 'combat',
-    rarity: 'uncommon',
-    source: 'Fjordur DLC',
-    variants: ['Standard'],
-
-    // Biology & Lore
-    dossierText: "The Andrewsarchus is a surprisingly agile and ferocious mammal that roams the varied landscapes of Fjordur. What makes this creature truly exceptional is its unique saddle, which is equipped with a mounted minigun, turning this already formidable beast into a mobile weapons platform. The Andrewsarchus possesses a powerful bite and a charging headbutt, but its true strength lies in the devastating firepower it can bring to a fight. It is also surprisingly fast and can drift around corners like a rally car, making it a highly mobile and unpredictable opponent. Taming an Andrewsarchus is a unique challenge that involves calming the creature by throwing honey, then mounting it for a wild, bucking ride until it submits.",
-    temperament: 'Aggressive',
-    diet: 'Omnivore',
-    habitat: 'Plains, forests, badlands',
-    realWorldBasis: 'Andrewsarchus mongoliensis',
-    sizeClass: 'Large',
-
-    // Taming System
-    tamingMethod: 'Special (Non-Violent)',
-    tamingType: 'Must be calmed with Giant Bee Honey, then ridden rodeo-style until tamed.',
-    preferredKibble: 'N/A',
-    favoriteFood: 'Giant Bee Honey',
-    tamingSpeed: 'Medium',
-    torpor: {
-      baseValue: 800,
-      depleteRate: 'N/A'
-    },
-    specialRequirements: 'Unique taming mechanic involving honey and riding; it will buck and try to throw you off.',
-
-    // Base Statistics (Level 1 Wild)
-    baseStats: {
-      health: 750,
-      stamina: 350,
-      oxygen: 150,
-      food: 3000,
-      weight: 400,
-      melee: 40,
-      speed: 100,
-      torpor: 800
-    },
-
-    // Stat Scaling (Per Level)
-    statScaling: {
-      health: 150,
-      stamina: 35,
-      oxygen: 15,
-      food: 300,
-      weight: 8,
-      melee: 2,
-      speed: 1.8
-    },
-
-    // Equipment & Combat
-    saddleLevel: 74,
-    saddleType: 'Andrewsarchus Saddle (with minigun)',
-    saddleArmor: 25,
-    platformLimit: 0,
-    specialAbilities: ['Mounted minigun', 'drifting', 'charging headbutt', 'high mobility'],
-    attackTypes: ['Bite', 'headbutt', 'minigun fire'],
-    canCarry: ['Moderate weight, serves as a mobile turret'],
-
-    // Utility & Roles
-    primaryRole: 'Mobile weapons platform and assault vehicle',
-    secondaryRoles: ['High-speed combat', 'PVP specialist', 'creature suppression'],
-    gatheringResources: ['Meat', 'hide', 'berries'],
-    gatheringEfficiency: {
-      Meat: 7,
-      Berries: 6
-    },
-    ratings: {
-      combat: 9,
-      transport: 6,
-      speed: 8,
-      survivability: 7
-    },
-
-    // Environmental Data
-    speeds: {
-      land: 40,
-      flying: 0,
-      swimming: 25,
-      climbing: 0
-    },
-    environmentalResistances: ['Rider is protected inside the saddle turret'],
-    preferredBiome: 'Plains, forests, badlands',
-    temperatureRange: {
-      min: 0,
-      max: 45
-    },
-    oxygenRequirement: 'Air breathing',
-
-    // Breeding Genetics
-    breeding: {
-      cooldown: '18-48 hours',
-      gestationTime: '7 hours, 56 minutes',
-      babyFoodConsumption: 'High',
-      maturationTime: '3 days, 6 hours',
-      colorRegions: 6,
-      colorRegionNames: ['Body', 'stripes', 'belly', 'head', 'fur', 'patterns'],
-      mutationChance: 7.31,
-      breedingDifficulty: 'Hard'
-    },
-
-    // Special Functions
-    workstation: 'Mounted minigun turret',
-    resourceProduction: 'None',
-    structureFunctions: 'None',
-    buffAuras: ['None'],
-    debuffAbilities: ['Minigun provides suppression fire'],
-    uniqueMechanics: ['Minigun saddle', 'drifting mechanic', 'unique taming method'],
-
-    // Spawn & Location
-    spawnMaps: ['Fjordur'],
-    spawnZones: ['Vardiland (South)', 'Vardiland (North)'],
-    rarityRating: 'Uncommon',
-    levelRange: '1-150',
-    packBehavior: 'Solitary or pairs',
-    territorialBehavior: 'Highly aggressive and territorial',
-
-    // Management Metadata
-    difficultyRating: 'Hard',
-    beginnerFriendly: false,
-    endGameViable: true,
-    bossFightCapable: true,
-    pvpMeta: 'Very High',
-    resourceInvestment: 'High',
-    maintenanceLevel: 'Medium',
-
-    // Badge Categories
-    badgeCategories: ['combat', 'boss', 'pvp']
-  },
-
-  'Archelon': {
-    // Basic Info
-    id: 'ARCHELON_304',
-    name: 'Archelon',
-    icon: '🐢',
-    category: 'utility',
-    rarity: 'uncommon',
-    source: 'Base Game',
-    variants: ['Standard'],
-
-    // Biology & Lore
-    dossierText: "Archelon ischyros represents one of the most magnificent examples of marine reptile evolution, combining the gentle nature of modern sea turtles with the colossal proportions befitting an apex aquatic creature. What makes Archelon truly remarkable is its unique ability to serve as both a peaceful transport vessel and a mobile deep-sea platform capable of supporting extended underwater operations. The creature's massive shell provides natural protection against predators while its enhanced swimming capabilities allow it to navigate even the deepest ocean trenches with ease. This gentle giant's ability to hold its breath for extended periods and provide a stable platform for underwater construction makes it invaluable for survivors seeking to establish permanent underwater bases or conduct extended deep-sea exploration operations.",
-    temperament: 'Passive',
-    diet: 'Carnivore (Cnidaria)',
-    habitat: 'Deep ocean, kelp forests',
-    realWorldBasis: 'Archelon (giant prehistoric sea turtle)',
-    sizeClass: 'Massive',
-
-    // Taming System
-    tamingMethod: 'Passive',
-    tamingType: 'Must feed it Bio Toxin while it is being attacked by a group of Cnidaria.',
-    preferredKibble: 'N/A',
-    favoriteFood: 'Bio Toxin',
-    tamingSpeed: 'Slow',
-    torpor: {
-      baseValue: 2000,
-      depleteRate: 'N/A'
-    },
-    specialRequirements: 'Unique taming method that requires luring Cnidaria to the Archelon.',
-
-    // Base Statistics (Level 1 Wild)
-    baseStats: {
-      health: 1300,
-      stamina: 400,
-      oxygen: 1500,
-      food: 4000,
-      weight: 1200,
-      melee: 40,
-      speed: 100,
-      torpor: 2000
-    },
-
-    // Stat Scaling (Per Level)
-    statScaling: {
-      health: 260,
-      stamina: 40,
-      oxygen: 150,
-      food: 400,
-      weight: 24,
-      melee: 2,
-      speed: 1
-    },
-
-    // Equipment & Combat
-    saddleLevel: 55,
-    saddleType: 'Archelon Saddle',
-    saddleArmor: 25,
-    platformLimit: 1,
-    specialAbilities: ['Mobile deep sea base', 'oxygen production for structures on back', 'resource generation (oil, pearls)'],
-    attackTypes: ['Bite (weak)', 'shell slam'],
-    canCarry: ['Massive cargo on platform saddle'],
-
-    // Utility & Roles
-    primaryRole: 'Mobile underwater base and deep sea transport',
-    secondaryRoles: ['Oxygen supply', 'resource generation', 'submarine transport'],
-    gatheringResources: ['Oil', 'Silica Pearls (passive generation)'],
-    gatheringEfficiency: {
-      Oil: 8,
-      'Silica Pearls': 8
-    },
-    ratings: {
-      combat: 3,
-      transport: 10,
-      speed: 4,
-      survivability: 10
-    },
-
-    // Environmental Data
-    speeds: {
-      land: 0,
-      flying: 0,
-      swimming: 25,
-      climbing: 0
-    },
-    environmentalResistances: ['Deep sea pressure immunity', 'Cnidaria immunity'],
-    preferredBiome: 'Deep ocean, kelp forests',
-    temperatureRange: {
-      min: 0,
-      max: 40
-    },
-    oxygenRequirement: 'Air breathing (can hold breath for extremely long periods)',
-
-    // Breeding Genetics
-    breeding: {
-      cooldown: '18-48 hours',
-      gestationTime: '8 hours',
-      babyFoodConsumption: 'High',
-      maturationTime: '4 days',
-      colorRegions: 4,
-      colorRegionNames: ['Body', 'Shell Top', 'Shell Middle', 'Shell Bottom'],
-      mutationChance: 7.31,
-      breedingDifficulty: 'Hard'
-    },
-
-    // Special Functions
-    workstation: 'Platform saddle allows for building',
-    resourceProduction: 'Passively produces Oil and Silica Pearls in inventory',
-    structureFunctions: 'Provides oxygen to enclosed structures on its back',
-    buffAuras: ['None'],
-    debuffAbilities: ['None'],
-    uniqueMechanics: ['Platform saddle', 'oxygen bubble', 'unique taming method'],
-
-    // Spawn & Location
-    spawnMaps: ['The Center', 'Valguero', 'Crystal Isles', 'Lost Island', 'Fjordur'],
-    spawnZones: ['Deep ocean', 'kelp forests'],
-    rarityRating: 'Uncommon',
-    levelRange: '1-150',
-    packBehavior: 'Solitary',
-    territorialBehavior: 'Passive',
-
-    // Management Metadata
-    difficultyRating: 'Hard',
-    beginnerFriendly: false,
-    endGameViable: true,
-    bossFightCapable: false,
-    pvpMeta: 'Medium',
-    resourceInvestment: 'High',
-    maintenanceLevel: 'Medium',
-
-    // Badge Categories
-    badgeCategories: ['transport', 'utility']
-  },
-
-  'Astrodelphis': {
-    // Basic Info
-    id: 'ASTRODELPHIS_305',
-    name: 'Astrodelphis',
-    icon: '🐬',
-    category: 'combat',
-    rarity: 'legendary',
-    source: 'Genesis Part 2 DLC',
-    variants: ['Standard'],
-
-    // Biology & Lore
-    dossierText: "Astrodelphis is a remarkable cetacean that has evolved to thrive in the zero-gravity environments of deep space. What makes this 'space dolphin' truly exceptional is its symbiotic relationship with advanced Tek technology, which grants it incredible flight capabilities and devastating energy-based weaponry. The creature's sleek, aerodynamic body is augmented with a Tek saddle that functions as both a life support system and a high-tech weapons platform. Astrodelphis can generate powerful energy blasts, create protective shields, and perform complex aerial maneuvers that rival even the most advanced starfighters. Its playful and intelligent nature makes it a loyal companion for survivors navigating the dangers of space.",
-    temperament: 'Curious (Playful)',
-    diet: 'Carnivore (feeds on Element)',
-    habitat: 'Space, zero-gravity environments',
-    realWorldBasis: 'Dolphin with advanced Tek enhancements (science fiction)',
-    sizeClass: 'Large',
-
-    // Taming System
-    tamingMethod: 'Passive',
-    tamingType: 'Must pet and feed while in zero-gravity. Becomes aggressive if you fail.',
-    preferredKibble: 'N/A',
-    favoriteFood: 'Element',
-    tamingSpeed: 'Medium',
-    torpor: {
-      baseValue: 800,
-      depleteRate: 'N/A'
-    },
-    specialRequirements: 'Must be tamed in zero-gravity, requires Element for feeding.',
-
-    // Base Statistics (Level 1 Wild)
-    baseStats: {
-      health: 600,
-      stamina: 400,
-      oxygen: 150,
-      food: 2000,
-      weight: 300,
-      melee: 25,
-      speed: 100,
-      torpor: 800
-    },
-
-    // Stat Scaling (Per Level)
-    statScaling: {
-      health: 120,
-      stamina: 40,
-      oxygen: 15,
-      food: 200,
-      weight: 6,
-      melee: 1.25,
-      speed: 2.5
-    },
-
-    // Equipment & Combat
-    saddleLevel: 120,
-    saddleType: 'Astrodelphis Tek Saddle',
-    saddleArmor: 25,
-    platformLimit: 0,
-    specialAbilities: ['Space flight', 'energy weapons (lasers, homing missiles)', 'protective shields', 'barrel roll', 'echolocation'],
-    attackTypes: ['Laser blasts', 'homing missiles', 'bite', 'ramming attack'],
-    canCarry: ['Moderate cargo, excellent for space travel'],
-
-    // Utility & Roles
-    primaryRole: 'Space combat and interstellar travel',
-    secondaryRoles: ['Reconnaissance', 'hit-and-run tactics', 'zero-gravity exploration', 'escort duty'],
-    gatheringResources: ['Limited gathering through combat'],
-    gatheringEfficiency: {
-      'Combat Harvesting': 5
-    },
-    ratings: {
-      combat: 9,
-      transport: 7,
-      speed: 9,
-      survivability: 8
-    },
-
-    // Environmental Data
-    speeds: {
-      land: 0,
-      flying: 70,
-      swimming: 0,
-      climbing: 0
-    },
-    environmentalResistances: ['Space vacuum immunity', 'radiation immunity'],
-    preferredBiome: 'Space, zero-gravity environments',
-    temperatureRange: {
-      min: -270,
-      max: 1000
-    },
-    oxygenRequirement: 'None (Tek life support)',
-
-    // Breeding Genetics
-    breeding: {
-      cooldown: '18-48 hours',
-      gestationTime: '7 hours, 56 minutes',
-      babyFoodConsumption: 'High',
-      maturationTime: '3 days, 20 hours',
-      colorRegions: 6,
-      colorRegionNames: ['Body', 'Tek plating', 'energy conduits', 'fins', 'patterns', 'lights'],
-      mutationChance: 7.31,
-      breedingDifficulty: 'Hard'
-    },
-
-    // Special Functions
-    workstation: 'Advanced Tek saddle interface',
-    resourceProduction: 'None',
-    structureFunctions: 'None',
-    buffAuras: ['None'],
-    debuffAbilities: ['None'],
-    uniqueMechanics: ['Tek saddle weaponry', 'space flight mechanics', 'echolocation ping'],
-
-    // Spawn & Location
-    spawnMaps: ['Genesis Part 2'],
-    spawnZones: ['Space biome'],
-    rarityRating: 'Uncommon',
-    levelRange: '1-150',
-    packBehavior: 'Small pods (2-4)',
-    territorialBehavior: 'Curious and playful, but will defend itself if attacked',
-
-    // Management Metadata
-    difficultyRating: 'Hard',
-    beginnerFriendly: false,
-    endGameViable: true,
-    bossFightCapable: true,
-    pvpMeta: 'Very High',
-    resourceInvestment: 'High',
-    maintenanceLevel: 'High',
-
-    // Badge Categories
-    badgeCategories: ['combat', 'transport', 'boss']
-  },
-
-  'Astrocetus': {
-    // Basic Info
-    id: 'ASTROCETUS_306',
-    name: 'Astrocetus',
-    icon: '🐳',
-    category: 'transport',
-    rarity: 'legendary',
-    source: 'Genesis Part 1 DLC',
-    variants: ['Standard'],
-
-    // Biology & Lore
-    dossierText: "Astrocetus is a colossal cetacean that has adapted to life in the vacuum of space, a living starship of immense power and grace. What makes this 'space whale' truly extraordinary is its ability to generate and manipulate cosmic energy, allowing it to travel through space at incredible speeds and unleash devastating energy-based attacks. The creature's crystalline hide provides natural protection against the hazards of space. The Astrocetus is more than just a creature; it is a mobile base, a warship, and a symbol of humanity's ability to adapt to even the most alien of environments.",
-    temperament: 'Passive',
-    diet: 'Omnivore (consumes cosmic energy, asteroids)',
-    habitat: 'Lunar biome (space)',
-    realWorldBasis: 'Space whale (science fiction)',
-    sizeClass: 'Titan',
-
-    // Taming System
-    tamingMethod: 'Special (Violent)',
-    tamingType: 'Must destroy nodes on its back with a Tek Skiff or explosives.',
-    preferredKibble: 'N/A',
-    favoriteFood: 'N/A',
-    tamingSpeed: 'Slow',
-    torpor: {
-      baseValue: 25000,
-      depleteRate: 'N/A'
-    },
-    specialRequirements: 'Requires Tek Skiff and advanced weaponry to destroy nodes on its back. Once all nodes are destroyed, it must be fed.',
-
-    // Base Statistics (Level 1 Wild)
-    baseStats: {
-      health: 25000,
-      stamina: 1200,
-      oxygen: 150,
-      food: 10000,
-      weight: 20000,
-      melee: 150,
-      speed: 100,
-      torpor: 25000
-    },
-
-    // Stat Scaling (Per Level)
-    statScaling: {
-      health: 5000,
-      stamina: 120,
-      oxygen: 15,
-      food: 1000,
-      weight: 400,
-      melee: 7.5,
-      speed: 1
-    },
-
-    // Equipment & Combat
-    saddleLevel: 100,
-    saddleType: 'Astrocetus Tek Saddle',
-    saddleArmor: 25,
-    platformLimit: 1,
-    specialAbilities: ['Hyperspace jump', 'cosmic energy bombs', 'turret emplacements', 'space flight', 'mobile base'],
-    attackTypes: ['Energy bombs', 'tail swipe', 'ramming attack', 'turret fire'],
-    canCarry: ['Unlimited cargo on platform'],
-
-    // Utility & Roles
-    primaryRole: 'Mobile space fortress and interstellar transport',
-    secondaryRoles: ['Siege warfare', 'base destruction', 'long-range travel', 'resource gathering (asteroids)'],
-    gatheringResources: ['Ambergris', 'element shards', 'rare space minerals from asteroids'],
-    gatheringEfficiency: {
-      'Asteroid Mining': 9
-    },
-    ratings: {
-      combat: 9,
-      transport: 10,
-      speed: 8,
-      survivability: 10
-    },
-
-    // Environmental Data
-    speeds: {
-      land: 0,
-      flying: 60,
-      swimming: 0,
-      climbing: 0
-    },
-    environmentalResistances: ['Space vacuum immunity', 'radiation immunity'],
-    preferredBiome: 'Lunar biome (space)',
-    temperatureRange: {
-      min: -270,
-      max: 1000
-    },
-    oxygenRequirement: 'None (space-based lifeform)',
-
-    // Breeding Genetics
-    breeding: {
-      cooldown: '18-48 hours',
-      gestationTime: '9 hours, 57 minutes',
-      babyFoodConsumption: 'Extreme',
-      maturationTime: '13 days, 18 hours',
-      colorRegions: 6,
-      colorRegionNames: ['Body', 'crystalline hide', 'energy conduits', 'bioluminescence', 'patterns', 'cosmic glow'],
-      mutationChance: 7.31,
-      breedingDifficulty: 'Extreme'
-    },
-
-    // Special Functions
-    workstation: 'Platform saddle allows for full mobile base construction in space',
-    resourceProduction: 'Gathers space-based resources',
-    structureFunctions: 'Mobile space base platform',
-    buffAuras: ['None'],
-    debuffAbilities: ['Cosmic energy bombs cause massive area damage'],
-    uniqueMechanics: ['Hyperspace jump', 'space flight mechanics', 'turret-based combat'],
-
-    // Spawn & Location
-    spawnMaps: ['Genesis Part 1'],
-    spawnZones: ['Lunar biome (space)'],
-    rarityRating: 'Rare',
-    levelRange: '1-150',
-    packBehavior: 'Solitary',
-    territorialBehavior: 'Peaceful',
-
-    // Management Metadata
-    difficultyRating: 'Extreme',
-    beginnerFriendly: false,
-    endGameViable: true,
-    bossFightCapable: false,
-    pvpMeta: 'Ultimate',
-    resourceInvestment: 'Extreme',
-    maintenanceLevel: 'High',
-
-    // Badge Categories
-    badgeCategories: ['transport', 'combat']
-  },
-
-  'Attack Drone': {
+},
+'Attack Drone': {
     // Basic Info
     id: 'ATTACK_DRONE_307',
     name: 'Attack Drone',
@@ -40125,538 +34812,116 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['combat']
+},
+'Chalk Golem': {
+  id: "CHALK_GOLEM_801",
+  name: "Chalk Golem",
+  icon: "🗿",
+  category: "combat",
+  rarity: "rare",
+  source: "Valguero DLC",
+  variants: ["Rock Elemental Variant"],
+  dossierText: "The Chalk Golem is a variant of the Rock Elemental native to the White Cliffs of Valguero — a region of towering pale limestone formations that gave this creature both its coloring and its name. Visually it is distinct from the Snow Desert Ice Golem: where that creature carries the cold blue-white of glacial ice, the Chalk Golem is the dull weathered white of ancient stone, nearly camouflaged against the cliffs it calls home. In behavior and capabilities it is a Rock Elemental in every way — the same impenetrable armor, the same head-only vulnerability, the same requirement for cannon or rocket fire to bring it down, and the same Extraordinary Kibble preference once unconscious. Tamed Chalk Golems are prized as heavy combat anchors and turret soakers; a survivor riding one is effectively immune to survivor-targeting turrets, and the creature itself shrugs off most conventional weapons. The same restrictions apply as to the Ice Golem: the Chalk Golem cannot be transferred off Valguero, and cryopodding one may prevent it from being deployed again.",
+  temperament: "Aggressive",
+  diet: "None (Elemental)",
+  habitat: "White Cliffs — Valguero",
+  realWorldBasis: "Rock Golem (mythology) / chalk cliff geology",
+  sizeClass: "Colossal",
+  tamingMethod: "Knockout (Cannon/Rockets)",
+  tamingType: "Aim cannon or rocket launcher shots at the head only. Body shots deal negligible damage. Knock unconscious then feed Extraordinary Kibble. Cannot be transferred off Valguero. Cryopodding may prevent deployment.",
+  preferredKibble: "Extraordinary Kibble",
+  favoriteFood: "Extraordinary Kibble",
+  tamingSpeed: "Slow",
+  torpor: {
+    baseValue: 8000,
+    depleteRate: "Very Slow"
   },
-
-  'Bloodstalker': {
-    // Basic Info
-    id: 'BLOODSTALKER_308',
-    name: 'Bloodstalker',
-    icon: '🕷️',
-    category: 'utility',
-    rarity: 'rare',
-    source: 'Genesis Part 1 DLC',
-    variants: ['Standard', 'R-Bloodstalker'],
-
-    // Biology & Lore
-    dossierText: "Arachnotiras amator is a remarkable arachnid that has evolved a unique and somewhat terrifying method of bonding with its companions. What makes Bloodstalker truly exceptional is its ability to create strong, flexible web lines that allow it to traverse complex three-dimensional environments with incredible speed and grace. The creature's most notable characteristic is its 'blood pact' taming method, where it drains a small amount of blood from its potential companion to form a lifelong bond. Once tamed, Bloodstalker becomes an invaluable mount for survivors who need unparalleled mobility in any environment. Its ability to swing through the air, run on water, and pull itself to surfaces makes it the ultimate exploration and reconnaissance specialist.",
-    temperament: 'Intelligent (Curious)',
-    diet: 'Sanguinivore (Blood)',
-    habitat: 'High-canopy areas, web-rich environments, vertical terrain',
-    realWorldBasis: 'Jumping spider with advanced web and blood-related abilities (fantasy)',
-    sizeClass: 'Large',
-
-    // Taming System
-    tamingMethod: 'Passive',
-    tamingType: 'Must allow the creature to grab and drain your blood, requires Blood Packs.',
-    preferredKibble: 'N/A',
-    favoriteFood: 'Blood Pack',
-    tamingSpeed: 'Variable (depends on creature health and taming effectiveness)',
-    torpor: {
-      baseValue: 500,
-      depleteRate: 'N/A'
-    },
-    specialRequirements: 'Must have Blood Packs in inventory; creature initiates taming by grabbing survivor.',
-
-    // Base Statistics (Level 1 Wild)
-    baseStats: {
-      health: 500,
-      stamina: 400,
-      oxygen: 150,
-      food: 2000,
-      weight: 250,
-      melee: 30,
-      speed: 100,
-      torpor: 500
-    },
-
-    // Stat Scaling (Per Level)
-    statScaling: {
-      health: 100,
-      stamina: 40,
-      oxygen: 15,
-      food: 200,
-      weight: 5,
-      melee: 1.5,
-      speed: 2
-    },
-
-    // Equipment & Combat
-    saddleLevel: 0,
-    saddleType: 'No saddle required',
-    saddleArmor: 0,
-    platformLimit: 0,
-    specialAbilities: ['Web swinging', 'water running', 'life detection', 'blood draining', 'creature pulling'],
-    attackTypes: ['Bite', 'web grab', 'blood drain', 'swinging attacks'],
-    canCarry: ['Can pull and carry creatures with web lines'],
-
-    // Utility & Roles
-    primaryRole: 'Ultimate mobility and exploration specialist',
-    secondaryRoles: ['Reconnaissance', 'creature transport', 'vertical access', 'aquatic traversal'],
-    gatheringResources: ['Blood packs from corpses'],
-    gatheringEfficiency: {
-      'Blood Packs': 9
-    },
-    ratings: {
-      combat: 7,
-      transport: 8,
-      speed: 10,
-      survivability: 7
-    },
-
-    // Environmental Data
-    speeds: {
-      land: 30,
-      flying: 50, // (swinging speed)
-      swimming: 35,
-      climbing: 1
-    },
-    environmentalResistances: ['Fall damage immunity', 'enhanced environmental awareness'],
-    preferredBiome: 'High-canopy areas, vertical terrain, aquatic zones',
-    temperatureRange: {
-      min: 10,
-      max: 40
-    },
-    oxygenRequirement: 'Air breathing',
-
-    // Breeding Genetics
-    breeding: {
-      cooldown: '18-48 hours',
-      gestationTime: '4 hours, 59 minutes',
-      babyFoodConsumption: 'High (eats blood packs)',
-      maturationTime: '3 days, 20 hours',
-      colorRegions: 6,
-      colorRegionNames: ['Body', 'legs', 'web spinnerets', 'patterns', 'eyes', 'bioluminescence'],
-      mutationChance: 7.31,
-      breedingDifficulty: 'Hard'
-    },
-
-    // Special Functions
-    workstation: 'None',
-    resourceProduction: 'None',
-    structureFunctions: 'None',
-    buffAuras: ['Life detection for rider'],
-    debuffAbilities: ['Blood drain weakens enemies'],
-    uniqueMechanics: ['Web swinging system', 'water running', 'blood pact taming', 'life detection'],
-
-    // Spawn & Location
-    spawnMaps: ['Genesis Part 1', 'Genesis Part 2', 'Lost Island', 'Fjordur'],
-    spawnZones: ['Bog biome (Genesis 1)', 'high-canopy areas', 'vertical terrain'],
-    rarityRating: 'Uncommon',
-    levelRange: '1-150',
-    packBehavior: 'Solitary or small groups (2-3)',
-    territorialBehavior: 'Curious, will investigate and potentially grab survivors',
-
-    // Management Metadata
-    difficultyRating: 'Hard',
-    beginnerFriendly: false,
-    endGameViable: true,
-    bossFightCapable: true,
-    pvpMeta: 'Very High',
-    resourceInvestment: 'High',
-    maintenanceLevel: 'Medium',
-
-    // Badge Categories
-    badgeCategories: ['utility', 'transport', 'combat', 'boss']
+  specialRequirements: "Cannon or rocket launcher required — head shots only. Cannot be transferred off Valguero. Cryopodding may prevent deployment.",
+  baseStats: {
+    health: 4000,
+    stamina: 800,
+    oxygen: 0,
+    food: 3000,
+    weight: 800,
+    melee: 100,
+    speed: 100,
+    torpor: 8000
   },
-
-  'Chalk Golem': {
-    // Basic Info
-    id: 'CHALK_GOLEM_309',
-    name: 'Chalk Golem',
-    icon: '🗿',
-    category: 'combat',
-    rarity: 'rare',
-    source: 'Valguero DLC',
-    variants: ['Rock Elemental Variant'],
-
-    // Biology & Lore
-    dossierText: "A variant of the Rock Elemental, the Chalk Golem is a massive living formation composed of the chalky white cliffs of Valguero. Like its rocky cousins, it is incredibly durable and resistant to conventional weapons. When motionless, it perfectly camouflages as an ordinary chalk outcrop. The creature's composition grants it immunity to most forms of damage, requiring specialized ammunition to effectively harm it. Once tamed, the Chalk Golem becomes an unstoppable siege weapon, capable of throwing massive chalk boulders over long distances and withstanding tremendous punishment. Its ability to gather stone and chalk makes it invaluable for large construction projects.",
-    temperament: 'Territorial',
-    diet: 'Carnivore (consumes stone, chalk, minerals)',
-    habitat: 'Chalk Hills (Valguero)',
-    realWorldBasis: 'Living rock formation (fantasy construct)',
-    sizeClass: 'Colossal',
-
-    // Taming System
-    tamingMethod: 'Knockout',
-    tamingType: 'Must use specialized ammunition (cannons, catapults, rockets).',
-    preferredKibble: 'Extraordinary Kibble',
-    favoriteFood: 'Stone',
-    tamingSpeed: 'Extremely Slow',
-    torpor: {
-      baseValue: 10000,
-      depleteRate: 'Very Slow'
-    },
-    specialRequirements: 'Immune to conventional weapons, requires heavy artillery, camouflages when still.',
-
-    // Base Statistics (Level 1 Wild)
-    baseStats: {
-      health: 18000,
-      stamina: 300,
-      oxygen: 150,
-      food: 200,
-      weight: 1500,
-      melee: 1000,
-      speed: 100,
-      torpor: 10000
-    },
-
-    // Stat Scaling (Per Level)
-    statScaling: {
-      health: 3600,
-      stamina: 30,
-      oxygen: 15,
-      food: 20,
-      weight: 30,
-      melee: 50,
-      speed: 0.5
-    },
-
-    // Equipment & Combat
-    saddleLevel: 0,
-    saddleType: 'Cannot be ridden (controlled via command)',
-    saddleArmor: 0,
-    platformLimit: 0,
-    specialAbilities: ['Boulder throwing', 'damage immunity', 'camouflage', 'massive gathering'],
-    attackTypes: ['Boulder throw (long range)', 'stomp', 'rock slam', 'area damage'],
-    canCarry: ['Massive amounts of stone, metal, and construction materials'],
-
-    // Utility & Roles
-    primaryRole: 'Siege weapon and mass resource gatherer',
-    secondaryRoles: ['Base assault', 'structure destruction', 'mobile fortress'],
-    gatheringResources: ['Stone', 'Chalk', 'Flint', 'Crystal', 'Obsidian'],
-    gatheringEfficiency: {
-      Stone: 10,
-      Chalk: 10,
-      Flint: 8
-    },
-    ratings: {
-      combat: 10,
-      transport: 10,
-      speed: 2,
-      survivability: 10
-    },
-
-    // Environmental Data
-    speeds: {
-      land: 8,
-      flying: 0,
-      swimming: 3,
-      climbing: 0
-    },
-    environmentalResistances: ['Immunity to most conventional weapons', 'extreme durability'],
-    preferredBiome: 'Mountains, chalk cliffs, rocky areas',
-    temperatureRange: {
-      min: -20,
-      max: 80
-    },
-    oxygenRequirement: 'Does not require oxygen',
-
-    // Breeding Genetics
-    breeding: {
-      cooldown: 'Cannot breed',
-      gestationTime: 'N/A',
-      babyFoodConsumption: 'N/A',
-      maturationTime: 'N/A',
-      colorRegions: 2,
-      colorRegionNames: ['Chalk Body', 'Moss/Stains'],
-      mutationChance: 0,
-      breedingDifficulty: 'Cannot breed'
-    },
-
-    // Special Functions
-    workstation: 'None',
-    resourceProduction: 'None',
-    structureFunctions: 'Can destroy virtually any structure',
-    buffAuras: ['None'],
-    debuffAbilities: ['Boulder throws cause massive area damage'],
-    uniqueMechanics: ['Camouflage system', 'immunity to conventional weapons', 'siege warfare'],
-
-    // Spawn & Location
-    spawnMaps: ['Valguero'],
-    spawnZones: ['The Chalk Hills'],
-    rarityRating: 'Rare',
-    levelRange: '1-150',
-    packBehavior: 'Always solitary',
-    territorialBehavior: 'Territorial, camouflages until threatened',
-
-    // Management Metadata
-    difficultyRating: 'Extreme',
-    beginnerFriendly: false,
-    endGameViable: true,
-    bossFightCapable: true,
-    pvpMeta: 'Ultimate',
-    resourceInvestment: 'Extreme',
-    maintenanceLevel: 'Low',
-
-    // Badge Categories
-    badgeCategories: ['combat', 'harvesting', 'boss']
+  statScaling: {
+    health: 800,
+    stamina: 80,
+    oxygen: 0,
+    food: 300,
+    weight: 16,
+    melee: 5,
+    speed: 0.5
   },
-
-  'Chrysaora': {
-    // Basic Info
-    id: 'CHRYSAORA_310',
-    name: 'Chrysaora',
-    icon: '🪼',
-    category: 'combat',
-    rarity: 'common',
-    source: 'Genesis Part 1 DLC',
-    variants: ['Cnidaria variant'],
-
-    // Biology & Lore
-    dossierText: "A larger, more aggressive variant of the common Cnidaria, the Chrysaora is a significant threat in the Genesis ocean. Its electrical pulse has a wider range and deals more damage, capable of stunning multiple creatures at once and dismounting riders with ease. They often travel in large, coordinated swarms, creating deadly no-go zones for unprepared survivors. Their bodies are a valuable source of biotoxin, but hunting them is a high-risk endeavor due to their potent electrical defenses.",
-    temperament: 'Aggressive',
-    diet: 'Carnivore',
-    habitat: 'Ocean Biome (Genesis 1)',
-    realWorldBasis: 'Chrysaora (Sea Nettle jellyfish)',
-    sizeClass: 'Small',
-
-    // Taming System
-    tamingMethod: 'Cannot be tamed',
-    tamingType: 'N/A',
-    preferredKibble: 'N/A',
-    favoriteFood: 'N/A',
-    tamingSpeed: 'N/A',
-    torpor: {
-      baseValue: 100,
-      depleteRate: 'N/A'
-    },
-    specialRequirements: 'Hostile environmental hazard, cannot be tamed.',
-
-    // Base Statistics (Level 1 Wild)
-    baseStats: {
-      health: 150,
-      stamina: 100,
-      oxygen: 150,
-      food: 450,
-      weight: 30,
-      melee: 20,
-      speed: 100,
-      torpor: 100
-    },
-
-    // Stat Scaling (Per Level)
-    statScaling: {
-      health: 30,
-      stamina: 10,
-      oxygen: 15,
-      food: 45,
-      weight: 0.6,
-      melee: 1,
-      speed: 1
-    },
-
-    // Equipment & Combat
-    saddleLevel: 0,
-    saddleType: 'N/A',
-    saddleArmor: 0,
-    platformLimit: 0,
-    specialAbilities: ['Wider electrical shock', 'swarm attacks', 'dismount', 'paralysis'],
-    attackTypes: ['Stinging tentacles (powerful electrical shock)'],
-    canCarry: ['N/A'],
-
-    // Utility & Roles
-    primaryRole: 'Environmental hazard',
-    secondaryRoles: ['Area denial', 'source of biotoxin'],
-    gatheringResources: ['Biotoxin'],
-    gatheringEfficiency: {
-      Biotoxin: 9
-    },
-    ratings: {
-      combat: 7,
-      transport: 0,
-      speed: 4,
-      survivability: 4
-    },
-
-    // Environmental Data
-    speeds: {
-      land: 0,
-      flying: 0,
-      swimming: 22,
-      climbing: 0
-    },
-    environmentalResistances: ['Electrical immunity'],
-    preferredBiome: 'Ocean',
-    temperatureRange: {
-      min: 0,
-      max: 30
-    },
-    oxygenRequirement: 'Water breathing only',
-
-    // Breeding Genetics
-    breeding: {
-      cooldown: 'Cannot breed',
-      gestationTime: 'N/A',
-      babyFoodConsumption: 'N/A',
-      maturationTime: 'N/A',
-      colorRegions: 4,
-      colorRegionNames: ['Bell', 'tentacles', 'glow', 'patterns'],
-      mutationChance: 0,
-      breedingDifficulty: 'Cannot breed'
-    },
-
-    // Special Functions
-    workstation: 'N/A',
-    resourceProduction: 'Biotoxin when harvested',
-    structureFunctions: 'N/A',
-    buffAuras: ['N/A'],
-    debuffAbilities: ['Electrical shock causes paralysis and dismounts riders'],
-    uniqueMechanics: ['Swarm behavior', 'wider electrical field generation'],
-
-    // Spawn & Location
-    spawnMaps: ['Genesis Part 1'],
-    spawnZones: ['Ocean Biome'],
-    rarityRating: 'Common',
-    levelRange: '1-150',
-    packBehavior: 'Large swarms',
-    territorialBehavior: 'Aggressive, swarms attack anything that gets too close',
-
-    // Management Metadata
-    difficultyRating: 'N/A',
-    beginnerFriendly: false,
-    endGameViable: false,
-    bossFightCapable: false,
-    pvpMeta: 'None',
-    resourceInvestment: 'N/A',
-    maintenanceLevel: 'N/A',
-
-    // Badge Categories
-    badgeCategories: ['combat']
+  saddleLevel: 70,
+  saddleType: "Rock Golem Saddle (compatible)",
+  saddleArmor: 30,
+  platformLimit: 0,
+  specialAbilities: ["Extreme armor (most weapons deal negligible damage)", "Boulder throw (massive knockback, long range)", "Rider immune to Cnidaria dismount while mounted", "Rider cannot be targeted by survivor-targeting turrets", "No oxygen stat (unlimited diving)", "Metal harvesting from ocean floor nodes"],
+  attackTypes: ["Claw swipe", "boulder throw (ranged)", "stomp"],
+  canCarry: ["Cannot pick up creatures"],
+  primaryRole: "Heavy combat tank, turret soaking, and raid mount",
+  secondaryRoles: ["Base defense anchor", "resource gathering (stone/obsidian/crystal)", "ocean floor metal harvesting"],
+  gatheringResources: ["Stone", "Crystal", "Flint", "Obsidian", "Sulfur", "Metal (ocean floor)"],
+  gatheringEfficiency: {
+    Stone: 8,
+    Obsidian: 7,
+    Crystal: 7
   },
-  'Cnidaria': {
-    // Basic Info
-    id: 'CNIDARIA_311',
-    name: 'Cnidaria',
-    icon: '🪼',
-    category: 'combat',
-    rarity: 'common',
-    source: 'Base Game',
-    variants: ['Standard', 'Aberrant'],
-
-    // Biology & Lore
-    dossierText: "Cnidaria is a simple yet deadly jellyfish that drifts through the island's oceans in large swarms. What makes this seemingly harmless creature so dangerous is its potent electrical discharge, capable of stunning and paralyzing even the largest of marine predators. A single sting can dismount a rider and leave them helpless in the water, while a swarm of Cnidaria can create a lethal electrical field. These creatures are a constant threat to any survivor venturing into the ocean, as their translucent bodies make them difficult to spot until it's too late. While they cannot be tamed, their venom is a key ingredient in powerful tranquilizing agents, making them a valuable, albeit dangerous, resource to hunt.",
-    temperament: 'Aggressive',
-    diet: 'Carnivore (plankton, small fish)',
-    habitat: 'Ocean, deep water, underwater caves',
-    realWorldBasis: 'Jellyfish',
-    sizeClass: 'Small',
-
-    // Taming System
-    tamingMethod: 'Cannot be tamed',
-    tamingType: 'N/A (wild creature only)',
-    preferredKibble: 'N/A',
-    favoriteFood: 'N/A',
-    tamingSpeed: 'N/A',
-    torpor: {
-      baseValue: 100,
-      depleteRate: 'N/A'
-    },
-    specialRequirements: 'Serves as an environmental hazard and source of Biotoxin.',
-
-    // Base Statistics (Level 1 Wild)
-    baseStats: {
-      health: 95,
-      stamina: 120,
-      oxygen: 150,
-      food: 450,
-      weight: 20,
-      melee: 15,
-      speed: 100,
-      torpor: 100
-    },
-
-    // Stat Scaling (Per Level)
-    statScaling: {
-      health: 19,
-      stamina: 12,
-      oxygen: 15,
-      food: 45,
-      weight: 0.4,
-      melee: 0.75,
-      speed: 1.5
-    },
-
-    // Equipment & Combat
-    saddleLevel: 0,
-    saddleType: 'N/A',
-    saddleArmor: 0,
-    platformLimit: 0,
-    specialAbilities: ['Electrical shock', 'swarm attacks', 'dismount', 'paralysis'],
-    attackTypes: ['Stinging tentacles (electrical shock)'],
-    canCarry: ['N/A'],
-
-    // Utility & Roles
-    primaryRole: 'Environmental hazard',
-    secondaryRoles: ['Area denial', 'source of biotoxin'],
-    gatheringResources: ['Biotoxin'],
-    gatheringEfficiency: {
-      'Biotoxin': 8
-    },
-    ratings: {
-      combat: 6,
-      transport: 0,
-      speed: 4,
-      survivability: 3
-    },
-
-    // Environmental Data
-    speeds: {
-      land: 0,
-      flying: 0,
-      swimming: 20,
-      climbing: 0
-    },
-    environmentalResistances: ['Electrical immunity'],
-    preferredBiome: 'Ocean, deep water, underwater caves',
-    temperatureRange: {
-      min: 0,
-      max: 30
-    },
-    oxygenRequirement: 'Water breathing only',
-
-    // Breeding Genetics
-    breeding: {
-      cooldown: 'N/A',
-      gestationTime: 'N/A',
-      babyFoodConsumption: 'N/A',
-      maturationTime: 'N/A',
-      colorRegions: 4,
-      colorRegionNames: ['Bell', 'tentacles', 'glow', 'patterns'],
-      mutationChance: 0,
-      breedingDifficulty: 'N/A'
-    },
-
-    // Special Functions
-    workstation: 'N/A',
-    resourceProduction: 'Biotoxin when harvested',
-    structureFunctions: 'N/A',
-    buffAuras: ['N/A'],
-    debuffAbilities: ['Electrical shock causes paralysis and dismounts riders'],
-    uniqueMechanics: ['Swarm behavior', 'electrical field generation'],
-
-    // Spawn & Location
-    spawnMaps: ['The Island', 'The Center', 'Ragnarok', 'Valguero', 'Crystal Isles', 'Lost Island', 'Fjordur', 'Genesis Part 1'],
-    spawnZones: ['Ocean', 'deep water areas', 'underwater caves'],
-    rarityRating: 'Common',
-    levelRange: '1-150',
-    packBehavior: 'Large swarms (10-20 individuals)',
-    territorialBehavior: 'Aggressive, swarms attack anything that gets too close',
-
-    // Management Metadata
-    difficultyRating: 'N/A',
-    beginnerFriendly: false,
-    endGameViable: false,
-    bossFightCapable: false,
-    pvpMeta: 'None',
-    resourceInvestment: 'N/A',
-    maintenanceLevel: 'N/A',
-
-    // Badge Categories
-    badgeCategories: ['combat']
+  ratings: {
+    combat: 9,
+    transport: 3,
+    speed: 2,
+    survivability: 10
   },
-
-  'Crystal Wyvern Ember': {
+  speeds: {
+    land: 8,
+    flying: 0,
+    swimming: 10,
+    climbing: 0
+  },
+  environmentalResistances: ["Extreme physical armor", "fire resistance", "no oxygen requirement"],
+  preferredBiome: "White Cliffs on Valguero",
+  temperatureRange: {
+    min: -20,
+    max: 50
+  },
+  oxygenRequirement: "None (elemental)",
+  breeding: {
+    cooldown: "18-48 hours",
+    gestationTime: "N/A (egg layer)",
+    babyFoodConsumption: "High",
+    maturationTime: "3 days",
+    colorRegions: 4,
+    colorRegionNames: ["Body chalk", "stone veins", "dark patches", "glowing cracks"],
+    mutationChance: 7.31,
+    breedingDifficulty: "Hard"
+  },
+  workstation: "None",
+  resourceProduction: "None",
+  structureFunctions: "Can damage up to metal structures.",
+  buffAuras: ["None"],
+  debuffAbilities: ["Boulder throw applies heavy knockback"],
+  uniqueMechanics: ["Head-only knockout (cannon/rockets required)", "extreme armor from Rock Elemental family", "cannot transfer off Valguero", "cryopod restriction", "rider immune to Cnidaria dismount", "unique chalk-white appearance"],
+  spawnMaps: ["Valguero"],
+  spawnZones: ["White Cliffs biome on Valguero"],
+  rarityRating: "Rare",
+  levelRange: "1-150",
+  packBehavior: "Solitary",
+  territorialBehavior: "Aggressive when approached",
+  difficultyRating: "Very Hard (cannon required)",
+  beginnerFriendly: false,
+  endGameViable: true,
+  bossFightCapable: true,
+  pvpMeta: "Very High",
+  resourceInvestment: "High",
+  maintenanceLevel: "Low",
+  badgeCategories: ["combat", "utility"]
+},
+'Crystal Wyvern Ember': {
     // Basic Info
     id: 'CRYSTAL_WYVERN_EMBER_312',
     name: 'Ember Crystal Wyvern',
@@ -40786,9 +35051,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['boss', 'combat', 'transport']
-  },
-
-  'Crystal Wyvern Tropical': {
+},
+'Crystal Wyvern Tropical': {
     // Basic Info
     id: 'CRYSTAL_WYVERN_TROPICAL_313',
     name: 'Tropical Crystal Wyvern',
@@ -40918,9 +35182,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['boss', 'combat', 'transport']
-  },
-
-  'Crystal Wyvern Blood': {
+},
+'Crystal Wyvern Blood': {
     // Basic Info
     id: 'CRYSTAL_WYVERN_BLOOD_314',
     name: 'Blood Crystal Wyvern',
@@ -41050,142 +35313,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['boss', 'combat', 'transport']
-  },
-
-  'Dakosaurus': {
-    // Basic Info
-    id: 'DAKOSAURUS_315',
-    name: 'Dakosaurus',
-    icon: '🐊',
-    category: 'combat',
-    rarity: 'uncommon',
-    source: 'ARK Additions Mod',
-    variants: ['Standard'],
-
-    // Biology & Lore
-    dossierText: "Dakosaurus is a powerful, semi-aquatic predator that dominates coastal waters and swamps. Unlike its larger crocodilian relatives, it possesses a unique combination of speed, armor-shredding attacks, and surprising maneuverability. Its bite inflicts a 'gnashed' status, causing significant bleeding damage that is particularly effective against heavily armored foes. The Dakosaurus can also perform a lunge and a tail slam, making it a versatile combatant both in and out of the water. Its thick hide provides substantial protection, making it a durable mount for a variety of dangerous situations.",
-    temperament: 'Aggressive',
-    diet: 'Carnivore',
-    habitat: 'Swamps, oceans, rivers',
-    realWorldBasis: 'Dakosaurus andiniensis',
-    sizeClass: 'Large',
-
-    // Taming System
-    tamingMethod: 'Knockout',
-    tamingType: 'Violent taming with tranquilizers',
-    preferredKibble: 'Superior Kibble',
-    favoriteFood: 'Superior Kibble',
-    tamingSpeed: 'Medium',
-    torpor: {
-      baseValue: 1200,
-      depleteRate: 'Medium'
-    },
-    specialRequirements: 'Dangerous to knock out due to its speed and powerful attacks.',
-
-    // Base Statistics (Level 1 Wild)
-    baseStats: {
-      health: 650,
-      stamina: 350,
-      oxygen: 300,
-      food: 2000,
-      weight: 400,
-      melee: 45,
-      speed: 100,
-      torpor: 1200
-    },
-
-    // Stat Scaling (Per Level)
-    statScaling: {
-      health: 130,
-      stamina: 35,
-      oxygen: 30,
-      food: 200,
-      weight: 8,
-      melee: 2.25,
-      speed: 1
-    },
-
-    // Equipment & Combat
-    saddleLevel: 62,
-    saddleType: 'Dakosaurus Saddle',
-    saddleArmor: 25,
-    platformLimit: 0,
-    specialAbilities: ['Gnashed bleed attack', 'tail slam', 'lunge', 'amphibious'],
-    attackTypes: ['Bite (inflicts gnashed)', 'Lunge', 'Tail Slam'],
-    canCarry: ['Medium creatures'],
-
-    // Utility & Roles
-    primaryRole: 'Amphibious anti-armor combat',
-    secondaryRoles: ['Ocean patrol', 'swamp exploration', 'boss fighting'],
-    gatheringResources: ['Meat', 'Fish Meat', 'Hide'],
-    gatheringEfficiency: {
-      'Meat': 8,
-      'Fish Meat': 9
-    },
-    ratings: {
-      combat: 9,
-      transport: 7,
-      speed: 7,
-      survivability: 8
-    },
-
-    // Environmental Data
-    speeds: {
-      land: 25,
-      flying: 0,
-      swimming: 45,
-      climbing: 0
-    },
-    environmentalResistances: ['Natural armor'],
-    preferredBiome: 'Oceans, swamps, rivers',
-    temperatureRange: {
-      min: 10,
-      max: 40
-    },
-    oxygenRequirement: 'Air breathing (high oxygen)',
-
-    // Breeding Genetics
-    breeding: {
-      cooldown: '18-48 hours',
-      gestationTime: '3 hours, 45 minutes',
-      babyFoodConsumption: 'High',
-      maturationTime: '2 days, 15 hours',
-      colorRegions: 6,
-      colorRegionNames: ['Body', 'Spikes', 'Back', 'Underside', 'Legs', 'Markings'],
-      mutationChance: 7.31,
-      breedingDifficulty: 'Hard'
-    },
-
-    // Special Functions
-    workstation: 'None',
-    resourceProduction: 'None',
-    structureFunctions: 'None',
-    buffAuras: ['None'],
-    debuffAbilities: ['Gnashed bleed effect'],
-    uniqueMechanics: ['Bleed attack, amphibious nature'],
-
-    // Spawn & Location
-    spawnMaps: ['The Island', 'The Center', 'Ragnarok', 'Valguero', 'Crystal Isles', 'Lost Island', 'Fjordur (with mod)'],
-    spawnZones: ['Oceans', 'Swamps', 'Rivers'],
-    rarityRating: 'Uncommon',
-    levelRange: '1-150',
-    packBehavior: 'Solitary or pairs',
-    territorialBehavior: 'Aggressive',
-
-    // Management Metadata
-    difficultyRating: 'Hard',
-    beginnerFriendly: false,
-    endGameViable: true,
-    bossFightCapable: true,
-    pvpMeta: 'High',
-    resourceInvestment: 'High',
-    maintenanceLevel: 'Medium',
-
-    // Badge Categories
-    badgeCategories: ['combat', 'boss']
-  },
-
-  'Deathworm': {
+},
+'Deathworm': {
     // Basic Info
     id: 'DEATHWORM_316',
     name: 'Deathworm',
@@ -41315,9 +35444,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['combat']
-  },
-
-  'Defense Unit': {
+},
+'Defense Unit': {
     // Basic Info
     id: 'DEFENSE_UNIT_317',
     name: 'Defense Unit',
@@ -41447,9 +35575,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['combat']
-  },
-
-  'Deinotherium': {
+},
+'Deinotherium': {
     // Basic Info
     id: 'DEINOTHERIUM_318',
     name: 'Deinotherium',
@@ -41580,407 +35707,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['harvesting', 'combat', 'boss']
-  },
-
-  'Deinosuchus': {
-    // Basic Info
-    id: 'DEINOSUCHUS_319',
-    name: 'Deinosuchus',
-    icon: '🐊',
-    category: 'combat',
-    rarity: 'rare',
-    source: 'ARK Additions Mod',
-    variants: ['Standard', 'S-Variant'],
-
-    // Biology & Lore
-    dossierText: "The Deinosuchus is the undisputed king of the island's swamps and rivers, a colossal crocodilian of immense power. It can submerge itself for extended periods, waiting for the perfect moment to lunge from the water and drag unsuspecting prey to a watery grave. Its bite is incredibly powerful, capable of inflicting a grievous 'giga bleed' that drains the life from even the most resilient of creatures. This makes it one of the most effective boss-killers on the ARK. Its size and strength allow it to dominate almost any aquatic or semi-aquatic environment.",
-    temperament: 'Aggressive',
-    diet: 'Carnivore',
-    habitat: 'Swamps, rivers',
-    realWorldBasis: 'Deinosuchus',
-    sizeClass: 'Massive',
-
-    // Taming System
-    tamingMethod: 'Knockout',
-    tamingType: 'Violent taming with tranquilizers',
-    preferredKibble: 'Superior Kibble',
-    favoriteFood: 'Superior Kibble',
-    tamingSpeed: 'Slow',
-    torpor: {
-      baseValue: 1500,
-      depleteRate: 'Slow'
-    },
-    specialRequirements: 'Extremely dangerous ambush predator, trapping is essential for a safe tame.',
-
-    // Base Statistics (Level 1 Wild)
-    baseStats: {
-      health: 1000,
-      stamina: 300,
-      oxygen: 0,
-      food: 2000,
-      weight: 500,
-      melee: 60,
-      speed: 100,
-      torpor: 1500
-    },
-
-    // Stat Scaling (Per Level)
-    statScaling: {
-      health: 200,
-      stamina: 30,
-      oxygen: 0,
-      food: 200,
-      weight: 12,
-      melee: 2,
-      speed: 1.5
-    },
-
-    // Equipment & Combat
-    saddleLevel: 72,
-    saddleType: 'Deinosuchus Saddle',
-    saddleArmor: 25,
-    platformLimit: 0,
-    specialAbilities: ['Giga Bite (bleed)', 'submerge', 'lunge attack'],
-    attackTypes: ['Bite', 'Giga Bite', 'Tail Whip', 'Swim Dash'],
-    canCarry: ['Can grab medium creatures'],
-
-    // Utility & Roles
-    primaryRole: 'Amphibious combat and boss killer',
-    secondaryRoles: ['Travel mount', 'meat harvester'],
-    gatheringResources: ['Meat', 'Hide', 'Fish Meat'],
-    gatheringEfficiency: {
-      Meat: 9,
-      Hide: 8
-    },
-    ratings: {
-      combat: 10,
-      transport: 8,
-      speed: 7,
-      survivability: 9
-    },
-
-    // Environmental Data
-    speeds: {
-      land: 30,
-      flying: 0,
-      swimming: 40,
-      climbing: 0
-    },
-    environmentalResistances: ['Natural armor'],
-    preferredBiome: 'Swamps, Rivers',
-    temperatureRange: {
-      min: 15,
-      max: 35
-    },
-    oxygenRequirement: 'None',
-
-    // Breeding Genetics
-    breeding: {
-      cooldown: '18-48 hours',
-      gestationTime: '3 hours, 45 minutes',
-      babyFoodConsumption: 'High',
-      maturationTime: '3 days, 15 hours',
-      colorRegions: 6,
-      colorRegionNames: ['Body', 'Spikes', 'Underside', 'Back', 'Legs', 'Head'],
-      mutationChance: 7.31,
-      breedingDifficulty: 'Hard'
-    },
-
-    // Special Functions
-    workstation: 'None',
-    resourceProduction: 'None',
-    structureFunctions: 'None',
-    buffAuras: ['None'],
-    debuffAbilities: ['Giga Bite inflicts a bleed that scales with the target\'s max health.'],
-    uniqueMechanics: ['Giga Bite bleed, no oxygen stat'],
-
-    // Spawn & Location
-    spawnMaps: ['The Island', 'The Center', 'Ragnarok', 'Valguero', 'Lost Island', 'Fjordur (with mod)'],
-    spawnZones: ['Swamps and rivers'],
-    rarityRating: 'Rare',
-    levelRange: '1-150',
-    packBehavior: 'Solitary',
-    territorialBehavior: 'Aggressive',
-
-    // Management Metadata
-    difficultyRating: 'Hard',
-    beginnerFriendly: false,
-    endGameViable: true,
-    bossFightCapable: true,
-    pvpMeta: 'High',
-    resourceInvestment: 'High',
-    maintenanceLevel: 'Medium',
-
-    // Badge Categories
-    badgeCategories: ['combat', 'boss']
-  },
-
-  'Desmodus': {
-    // Basic Info
-    id: 'DESMODUS_320',
-    name: 'Desmodus',
-    icon: '🦇',
-    category: 'combat',
-    rarity: 'uncommon',
-    source: 'Fjordur DLC',
-    variants: ['Standard'],
-
-    // Biology & Lore
-    dossierText: "The Desmodus is a terrifyingly large vampire bat that stalks the caves and dark corners of Fjordur. What makes this creature truly exceptional is its array of vampiric and stealth abilities. It can produce a sanguine elixir, a potent blood pack with healing properties, and its screech can disorient and reveal hidden enemies. The Desmodus is a master of the night, capable of turning invisible and clinging to ceilings to ambush its prey. Its bite drains blood, and it is the only creature capable of harvesting blood packs directly from living creatures. Taming a Desmodus requires a great deal of patience and blood, as the creature must be passively fed while it is airborne.",
-    temperament: 'Aggressive',
-    diet: 'Sanguinivore (Blood)',
-    habitat: 'Caves, dark forests, chasms',
-    realWorldBasis: 'Desmodus draculae (Giant Vampire Bat)',
-    sizeClass: 'Large',
-
-    // Taming System
-    tamingMethod: 'Passive',
-    tamingType: 'Must be fed blood packs while it carries you. Taming effectiveness is increased by having high health.',
-    preferredKibble: 'N/A',
-    favoriteFood: 'Blood Pack',
-    tamingSpeed: 'Slow',
-    torpor: {
-      baseValue: 800,
-      depleteRate: 'N/A'
-    },
-    specialRequirements: 'Unique taming mechanic involving being grabbed and fed blood packs.',
-
-    // Base Statistics (Level 1 Wild)
-    baseStats: {
-      health: 425,
-      stamina: 350,
-      oxygen: 150,
-      food: 2000,
-      weight: 250,
-      melee: 30,
-      speed: 100,
-      torpor: 800
-    },
-
-    // Stat Scaling (Per Level)
-    statScaling: {
-      health: 85,
-      stamina: 35,
-      oxygen: 15,
-      food: 200,
-      weight: 5,
-      melee: 1.5,
-      speed: 2
-    },
-
-    // Equipment & Combat
-    saddleLevel: 74,
-    saddleType: 'Desmodus Saddle',
-    saddleArmor: 25,
-    platformLimit: 0,
-    specialAbilities: ['Invisibility', 'echolocation screech', 'sanguine elixir production', 'lifesteal', 'ceiling cling'],
-    attackTypes: ['Bite (lifesteal)', 'screech', 'dive attack'],
-    canCarry: ['Can pick up and carry medium creatures'],
-
-    // Utility & Roles
-    primaryRole: 'Stealth combat and utility flyer',
-    secondaryRoles: ['Blood pack harvesting', 'cave exploration', 'PVP disruption'],
-    gatheringResources: ['Blood Pack', 'Sanguine Elixir'],
-    gatheringEfficiency: {
-      'Blood Pack': 10,
-      'Sanguine Elixir': 8
-    },
-    ratings: {
-      combat: 9,
-      transport: 7,
-      speed: 8,
-      survivability: 7
-    },
-
-    // Environmental Data
-    speeds: {
-      land: 20,
-      flying: 45,
-      swimming: 15,
-      climbing: 1
-    },
-    environmentalResistances: ['Can navigate caves easily'],
-    preferredBiome: 'Caves, dark forests, chasms',
-    temperatureRange: {
-      min: 0,
-      max: 40
-    },
-    oxygenRequirement: 'Air breathing',
-
-    // Breeding Genetics
-    breeding: {
-      cooldown: '18-48 hours',
-      gestationTime: '4 hours, 59 minutes',
-      babyFoodConsumption: 'High',
-      maturationTime: '3 days, 6 hours',
-      colorRegions: 6,
-      colorRegionNames: ['Body', 'wings', 'membranes', 'fur', 'eyes', 'patterns'],
-      mutationChance: 7.31,
-      breedingDifficulty: 'Hard'
-    },
-
-    // Special Functions
-    workstation: 'None',
-    resourceProduction: ['Sanguine Elixir'],
-    structureFunctions: 'None',
-    buffAuras: ['None'],
-    debuffAbilities: ['Screech reveals hidden enemies'],
-    uniqueMechanics: ['Invisibility', 'lifesteal', 'unique taming method'],
-
-    // Spawn & Location
-    spawnMaps: ['Fjordur'],
-    spawnZones: ['Volcanic Cave', 'Moria-style cave system'],
-    rarityRating: 'Uncommon',
-    levelRange: '1-150',
-    packBehavior: 'Small swarms (2-4)',
-    territorialBehavior: 'Highly aggressive, hunts at night',
-
-    // Management Metadata
-    difficultyRating: 'Hard',
-    beginnerFriendly: false,
-    endGameViable: true,
-    bossFightCapable: true,
-    pvpMeta: 'Very High',
-    resourceInvestment: 'High',
-    maintenanceLevel: 'Medium',
-
-    // Badge Categories
-    badgeCategories: ['combat', 'utility', 'pvp']
-  },
-  'Dinopithecus': {
-    // Basic Info
-    id: 'DINOPITHECUS_321',
-    name: 'Dinopithecus',
-    icon: '🐒',
-    category: 'combat',
-    rarity: 'uncommon',
-    source: 'Lost Island DLC',
-    variants: ['Standard', 'Alpha'],
-
-    // Biology & Lore
-    dossierText: "The Dinopithecus is a formidable primate that has evolved to become an intelligent and highly organized pack hunter. These giant baboons are led by an alpha, and their strength lies in their numbers and coordinated tactics. What makes the Dinopithecus truly exceptional is its ability to use tools and communicate complex strategies. They can throw grenades made of their own feces, which can disable Tek armor and disorient enemies. The alpha of a pack is a powerful leader, capable of inspiring its packmates with a battle cry that boosts their combat effectiveness. They are also skilled climbers, able to scale cliffs and trees to gain a tactical advantage. Taming a Dinopithecus pack requires defeating the alpha in a show of dominance, after which the entire pack will accept a new leader.",
-    temperament: 'Aggressive (Pack-based)',
-    diet: 'Omnivore',
-    habitat: 'Redwood forests, jungles, cliffs',
-    realWorldBasis: 'Dinopithecus (prehistoric baboon)',
-    sizeClass: 'Large',
-
-    // Taming System
-    tamingMethod: 'Special (Passive)',
-    tamingType: 'Kill the highest-level Alpha of the pack. The remaining pack members become passive and can be fed.',
-    preferredKibble: 'Exceptional Kibble',
-    favoriteFood: 'Exceptional Kibble',
-    tamingSpeed: 'Fast',
-    torpor: {
-      baseValue: 800,
-      depleteRate: 'N/A'
-    },
-    specialRequirements: 'Unique pack taming mechanic; only non-alphas are tameable.',
-
-    // Base Statistics (Level 1 Wild)
-    baseStats: {
-      health: 600,
-      stamina: 400,
-      oxygen: 150,
-      food: 2000,
-      weight: 300,
-      melee: 30,
-      speed: 100,
-      torpor: 800
-    },
-
-    // Stat Scaling (Per Level)
-    statScaling: {
-      health: 120,
-      stamina: 40,
-      oxygen: 15,
-      food: 200,
-      weight: 6,
-      melee: 1.5,
-      speed: 1.8
-    },
-
-    // Equipment & Combat
-    saddleLevel: 45,
-    saddleType: 'Dinopithecus Saddle',
-    saddleArmor: 25,
-    platformLimit: 0,
-    specialAbilities: ['Pack bonus', 'alpha leadership', 'feces grenades (Tek disabling)', 'climbing', 'can wear helmets'],
-    attackTypes: ['Bite', 'claw swipe', 'feces throw', 'pack attacks'],
-    canCarry: ['Rider can use weapons'],
-
-    // Utility & Roles
-    primaryRole: 'Organized pack combat and anti-Tek warfare',
-    secondaryRoles: ['Climbing mount', 'tactical support', 'PVP specialist'],
-    gatheringResources: ['Berries', 'fiber', 'meat'],
-    gatheringEfficiency: {
-      Fiber: 8,
-      Berries: 7
-    },
-    ratings: {
-      combat: 9,
-      transport: 6,
-      speed: 7,
-      survivability: 7
-    },
-
-    // Environmental Data
-    speeds: {
-      land: 32,
-      flying: 0,
-      swimming: 20,
-      climbing: 1
-    },
-    environmentalResistances: ['No fall damage'],
-    preferredBiome: 'Redwood forests, jungles, cliffs',
-    temperatureRange: {
-      min: 10,
-      max: 45
-    },
-    oxygenRequirement: 'Air breathing',
-
-    // Breeding Genetics
-    breeding: {
-      cooldown: '18-48 hours',
-      gestationTime: '7 hours, 56 minutes',
-      babyFoodConsumption: 'High',
-      maturationTime: '2 days, 22 hours',
-      colorRegions: 6,
-      colorRegionNames: ['Body', 'mane', 'face', 'patterns', 'hands', 'feet'],
-      mutationChance: 7.31,
-      breedingDifficulty: 'Hard'
-    },
-
-    // Special Functions
-    workstation: 'None',
-    resourceProduction: 'None',
-    structureFunctions: 'None',
-    buffAuras: ['Alpha roar boosts pack stats'],
-    debuffAbilities: ['Feces grenades disable Tek armor'],
-    uniqueMechanics: ['Pack taming system', 'alpha leadership', 'Tek-disabling grenades'],
-
-    // Spawn & Location
-    spawnMaps: ['Lost Island', 'Fjordur'],
-    spawnZones: ['Redwood forests', 'jungles', 'cliff areas'],
-    rarityRating: 'Uncommon',
-    levelRange: '1-150',
-    packBehavior: 'Organized packs with a clear alpha',
-    territorialBehavior: 'Highly aggressive and territorial',
-
-    // Management Metadata
-    difficultyRating: 'Hard',
-    beginnerFriendly: false,
-    endGameViable: true,
-    bossFightCapable: true,
-    pvpMeta: 'Very High',
-    resourceInvestment: 'High',
-    maintenanceLevel: 'Medium',
-
-    // Badge Categories
-    badgeCategories: ['combat', 'boss', 'pvp']
-  },
-
-  'Polar Bear': {
+},
+'Polar Bear': {
     // Basic Info
     id: 'POLAR_BEAR_322',
     name: 'Polar Bear',
@@ -42112,9 +35840,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['combat', 'transport', 'harvesting', 'boss']
-  },
-
-  'Spirit Direwolf': {
+},
+'Spirit Direwolf': {
     // Basic Info
     id: 'SPIRIT_DIREWOLF_323',
     name: 'Spirit Direwolf',
@@ -42246,9 +35973,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['combat']
-  },
-
-  'DodoRex': {
+},
+'DodoRex': {
     // Basic Info
     id: 'DODOREX_324',
     name: 'DodoRex',
@@ -42378,9 +36104,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['boss', 'combat']
-  },
-
-  'Drakeling': {
+},
+'Drakeling': {
     // Basic Info
     id: 'DRAKELING_325',
     name: 'Drakeling',
@@ -42508,142 +36233,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['combat', 'boss']
-  },
-
-  'Dreadmare': {
-    // Basic Info
-    id: 'DREADMARE_326',
-    name: 'Dreadmare',
-    icon: '🐴',
-    category: 'combat',
-    rarity: 'legendary',
-    source: 'S-Dino Variants Mod',
-    variants: ['Dreadmare (Female)', 'Dreadstallion (Male)'],
-
-    // Biology & Lore
-    dossierText: "Equus terror represents the ultimate evolution of equine predation, transforming from peaceful herbivore to nightmare incarnate. What makes the Dreadmare particularly terrifying is its otherworldly appearance combined with supernatural speed and the ability to phase through certain obstacles during its galloping charges. The creature's dark energy emanations create an aura of dread that affects both wild creatures and survivors, while its enhanced stamina allows for sustained pursuit across vast distances. Most remarkably, the Dreadmare's hoofbeats leave trails of dark energy that can debuff enemies, and its supernatural screech can cause fear effects that disable opponent movement.",
-    temperament: 'Aggressive',
-    diet: 'Carnivore',
-    habitat: 'Dark forests, nightmare realms, shadowy areas',
-    realWorldBasis: 'Nightmare (mythological horse)',
-    sizeClass: 'Large',
-
-    // Taming System
-    tamingMethod: 'Knockout',
-    tamingType: 'Violent taming with tranquilizers',
-    preferredKibble: 'Extraordinary Kibble',
-    favoriteFood: 'Extraordinary Kibble',
-    tamingSpeed: 'Slow',
-    torpor: {
-      baseValue: 500,
-      depleteRate: 'Fast'
-    },
-    specialRequirements: 'Fear effects and phasing abilities make it a difficult and dangerous tame.',
-
-    // Base Statistics (Level 1 Wild)
-    baseStats: {
-      health: 600,
-      stamina: 500,
-      oxygen: 150,
-      food: 2200,
-      weight: 300,
-      melee: 40,
-      speed: 100,
-      torpor: 500
-    },
-
-    // Stat Scaling (Per Level)
-    statScaling: {
-      health: 120,
-      stamina: 50,
-      oxygen: 15,
-      food: 220,
-      weight: 6,
-      melee: 2,
-      speed: 3
-    },
-
-    // Equipment & Combat
-    saddleLevel: 75,
-    saddleType: 'Dreadmare Saddle',
-    saddleArmor: 25,
-    platformLimit: 0,
-    specialAbilities: ['Phasing charge', 'fear screech', 'dark energy trails', 'supernatural speed', 'dread aura'],
-    attackTypes: ['Bite', 'Stomp', 'Rear Kick', 'Fear Screech'],
-    canCarry: ['Moderate cargo capacity'],
-
-    // Utility & Roles
-    primaryRole: 'High-speed assault and psychological warfare',
-    secondaryRoles: ['Hit-and-run tactics', 'fear-based crowd control', 'rapid transport'],
-    gatheringResources: ['Hide', 'meat'],
-    gatheringEfficiency: {
-      Hide: 7,
-      Meat: 6
-    },
-    ratings: {
-      combat: 8,
-      transport: 8,
-      speed: 10,
-      survivability: 8
-    },
-
-    // Environmental Data
-    speeds: {
-      land: 65,
-      flying: 0,
-      swimming: 30,
-      climbing: 0
-    },
-    environmentalResistances: ['Immunity to fear effects'],
-    preferredBiome: 'Dark forests, shadowy areas',
-    temperatureRange: {
-      min: 0,
-      max: 40
-    },
-    oxygenRequirement: 'Air breathing',
-
-    // Breeding Genetics
-    breeding: {
-      cooldown: '18-48 hours',
-      gestationTime: '7 hours, 45 minutes',
-      babyFoodConsumption: 'High',
-      maturationTime: '5 days, 15 hours',
-      colorRegions: 6,
-      colorRegionNames: ['Body', 'Mane', 'Markings', 'Eyes', 'Energy', 'Hooves'],
-      mutationChance: 7.31,
-      breedingDifficulty: 'Hard'
-    },
-
-    // Special Functions
-    workstation: 'None',
-    resourceProduction: 'None',
-    structureFunctions: 'None',
-    buffAuras: ['Dread aura weakens nearby enemies'],
-    debuffAbilities: ['Fear screech', 'dark energy trails slow and damage enemies'],
-    uniqueMechanics: ['Phasing charge', 'supernatural speed', 'fear-based abilities'],
-
-    // Spawn & Location
-    spawnMaps: ['The Island', 'Ragnarok', 'Valguero', 'Fjordur (with mod)'],
-    spawnZones: ['Dark forests', 'haunted areas'],
-    rarityRating: 'Rare',
-    levelRange: '1-150',
-    packBehavior: 'Solitary or pairs',
-    territorialBehavior: 'Highly territorial',
-
-    // Management Metadata
-    difficultyRating: 'Hard',
-    beginnerFriendly: false,
-    endGameViable: true,
-    bossFightCapable: true,
-    pvpMeta: 'Very High',
-    resourceInvestment: 'High',
-    maintenanceLevel: 'Medium',
-
-    // Badge Categories
-    badgeCategories: ['combat', 'boss']
-  },
-
-  'Eel Minion': {
+},
+'Eel Minion': {
     // Basic Info
     id: 'EEL_MINION_327',
     name: 'Eel Minion',
@@ -42771,9 +36362,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['combat', 'boss']
-  },
-
-  'Eurypterid': {
+},
+'Eurypterid': {
     // Basic Info
     id: 'EURYPTERID_328',
     name: 'Eurypterid',
@@ -42905,9 +36495,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['utility', 'harvesting']
-  },
-
-  'Exo-mek': {
+},
+'Exo-mek': {
     // Basic Info
     id: 'EXO_MEK_329',
     name: 'Exo-mek',
@@ -43170,403 +36759,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['boss', 'combat']
-  },
-
-  'Ferox': {
-    // Basic Info
-    id: 'FEROX_322',
-    name: 'Ferox',
-    icon: '🐻',
-    category: 'combat',
-    rarity: 'rare',
-    source: 'Genesis Part 1 DLC',
-    variants: ['Standard', 'R-Ferox'],
-
-    // Biology & Lore
-    dossierText: "Microfelis audax is a fascinating creature that embodies a bizarre duality, shifting between a small, docile form and a large, monstrously powerful one. What makes Ferox truly unique is its addiction to Element, which triggers a dramatic transformation into a hulking beast of incredible strength and aggression. In its small form, Ferox is a curious and friendly shoulder companion, but when exposed to Element, it becomes an uncontrollable engine of destruction. Taming a Ferox requires a delicate balance of providing Element to satisfy its addiction without triggering its rage state. Once tamed, a survivor can control the creature's transformations, using its small form for stealth and companionship and its large form for devastating combat.",
-    temperament: 'Bipolar (Element-addicted)',
-    diet: 'Omnivore (berries, meat, Element)',
-    habitat: 'Snow biomes, Element-rich areas, tundra regions',
-    realWorldBasis: 'Fantasy creature with Jekyll-and-Hyde transformation',
-    sizeClass: 'Small (docile) / Large (enraged)',
-
-    // Taming System
-    tamingMethod: 'Passive',
-    tamingType: 'Must feed Element, but avoid rage state. Taming progress resets if it transforms.',
-    preferredKibble: 'N/A',
-    favoriteFood: 'Element',
-    tamingSpeed: 'Variable',
-    torpor: {
-      baseValue: 200,
-      depleteRate: 'N/A'
-    },
-    specialRequirements: 'Must carefully manage Element feeding to avoid triggering rage transformation.',
-
-    // Base Statistics (Level 1 Wild)
-    baseStats: {
-      health: 200, // Small form
-      stamina: 200, // Small form
-      oxygen: 150,
-      food: 1200,
-      weight: 100, // Small form
-      melee: 25, // Small form
-      speed: 100,
-      torpor: 200
-    },
-
-    // Stat Scaling (Per Level)
-    statScaling: {
-      health: 40,
-      stamina: 20,
-      oxygen: 15,
-      food: 120,
-      weight: 2,
-      melee: 1.25,
-      speed: 2
-    },
-
-    // Equipment & Combat
-    saddleLevel: 0,
-    saddleType: 'Cannot be saddled',
-    saddleArmor: 0,
-    platformLimit: 0,
-    specialAbilities: ['Transformation (small/large)', 'Element addiction', 'shoulder pet mode', 'insulation', 'boulder throw'],
-    attackTypes: ['Bite (small form)', 'claw swipe (large form)', 'boulder throw (large form)', 'ground slam (large form)'],
-    canCarry: ['Can be carried (small form) / Can carry survivor (large form)'],
-
-    // Utility & Roles
-    primaryRole: 'Versatile combat and companionship',
-    secondaryRoles: ['Stealth operations (small form)', 'heavy combat (large form)', 'insulation', 'Element management'],
-    gatheringResources: ['Fiber', 'Thatch', 'Wood'],
-    gatheringEfficiency: {
-      'Fiber': 8
-    },
-    ratings: {
-      combat: 9,
-      transport: 4,
-      speed: 7,
-      survivability: 8
-    },
-
-    // Environmental Data
-    speeds: {
-      land: 30,
-      flying: 0,
-      swimming: 20,
-      climbing: 1
-    },
-    environmentalResistances: ['Cold immunity', 'Element resistance'],
-    preferredBiome: 'Snow biomes, Element-rich areas, tundra regions',
-    temperatureRange: {
-      min: -50,
-      max: 20
-    },
-    oxygenRequirement: 'Air breathing',
-
-    // Breeding Genetics
-    breeding: {
-      cooldown: '18-48 hours',
-      gestationTime: '7 hours, 56 minutes',
-      babyFoodConsumption: 'High',
-      maturationTime: '2 days, 22 hours',
-      colorRegions: 6,
-      colorRegionNames: ['Body', 'fur', 'claws', 'patterns', 'eyes', 'transformation glow'],
-      mutationChance: 7.31,
-      breedingDifficulty: 'Hard'
-    },
-
-    // Special Functions
-    workstation: 'None',
-    resourceProduction: 'None',
-    structureFunctions: 'None',
-    buffAuras: ['Insulation bonus as shoulder pet'],
-    debuffAbilities: ['None'],
-    uniqueMechanics: ['Element-based transformation system', 'dual-form gameplay', 'addiction mechanics'],
-
-    // Spawn & Location
-    spawnMaps: ['Genesis Part 1', 'Genesis Part 2', 'Lost Island', 'Fjordur'],
-    spawnZones: ['Arctic Biome (Genesis 1)', 'Element-rich areas'],
-    rarityRating: 'Rare',
-    levelRange: '1-150',
-    packBehavior: 'Solitary',
-    territorialBehavior: 'Docile in small form, extremely aggressive in large form',
-
-    // Management Metadata
-    difficultyRating: 'Hard',
-    beginnerFriendly: false,
-    endGameViable: true,
-    bossFightCapable: true,
-    pvpMeta: 'Very High',
-    resourceInvestment: 'High',
-    maintenanceLevel: 'High',
-
-    // Badge Categories
-    badgeCategories: ['combat', 'boss']
-  },
-
-  'Fjordhawk': {
-    // Basic Info
-    id: 'FJORDHAWK_323',
-    name: 'Fjordhawk',
-    icon: '🦅',
-    category: 'utility',
-    rarity: 'uncommon',
-    source: 'Fjordur DLC',
-    variants: ['Standard'],
-
-    // Biology & Lore
-    dossierText: "The Fjordhawk is a clever and resourceful avian scavenger that has a supernatural connection to the fallen. What makes this creature truly remarkable is its ability to retrieve a survivor's inventory upon death. If a Fjordhawk is perched on your shoulder when you die, it will fly to your corpse, gather all your belongings into a bag, and return them to you at your respawn point. This mystical ability makes it an indispensable companion for exploring dangerous territories. Beyond this, it is an intelligent bird capable of tracking wounded prey and pointing out nearby explorer notes. Taming a Fjordhawk involves earning its trust by allowing it to feast on the remains of creatures you have hunted.",
-    temperament: 'Intelligent (Scavenger)',
-    diet: 'Carnivore (feeds on corpses)',
-    habitat: 'Mountains, highlands, coastal areas',
-    realWorldBasis: 'Combination of a hawk and Scandinavian folklore',
-    sizeClass: 'Small',
-
-    // Taming System
-    tamingMethod: 'Passive',
-    tamingType: 'Must kill creatures and allow the Fjordhawk to feed on the corpse.',
-    preferredKibble: 'N/A',
-    favoriteFood: 'N/A',
-    tamingSpeed: 'Variable (depends on the drag weight of the corpse)',
-    torpor: {
-      baseValue: 150,
-      depleteRate: 'N/A'
-    },
-    specialRequirements: 'Unique corpse-feeding taming mechanic.',
-
-    // Base Statistics (Level 1 Wild)
-    baseStats: {
-      health: 145,
-      stamina: 200,
-      oxygen: 150,
-      food: 1000,
-      weight: 40,
-      melee: 10,
-      speed: 100,
-      torpor: 150
-    },
-
-    // Stat Scaling (Per Level)
-    statScaling: {
-      health: 29,
-      stamina: 20,
-      oxygen: 15,
-      food: 100,
-      weight: 0.8,
-      melee: 0.5,
-      speed: 2
-    },
-
-    // Equipment & Combat
-    saddleLevel: 0,
-    saddleType: 'Shoulder pet',
-    saddleArmor: 0,
-    platformLimit: 0,
-    specialAbilities: ['Death inventory retrieval', 'corpse detection', 'wounded prey tracking'],
-    attackTypes: ['Bite (weak)'],
-    canCarry: ['Survivor\'s inventory upon death'],
-
-    // Utility & Roles
-    primaryRole: 'Inventory retrieval and utility companion',
-    secondaryRoles: ['Scout', 'corpse locator', 'wounded target finder'],
-    gatheringResources: ['Can retrieve items from corpses'],
-    gatheringEfficiency: {
-      'Inventory Retrieval': 10
-    },
-    ratings: {
-      combat: 2,
-      transport: 4,
-      speed: 7,
-      survivability: 5
-    },
-
-    // Environmental Data
-    speeds: {
-      land: 15,
-      flying: 40,
-      swimming: 10,
-      climbing: 0
-    },
-    environmentalResistances: ['None'],
-    preferredBiome: 'Mountains, highlands, coastal areas',
-    temperatureRange: {
-      min: -10,
-      max: 35
-    },
-    oxygenRequirement: 'Air breathing',
-
-    // Breeding Genetics
-    breeding: {
-      cooldown: '18-48 hours',
-      gestationTime: '1 hour, 39 minutes',
-      babyFoodConsumption: 'Low',
-      maturationTime: '1 day, 20 hours',
-      colorRegions: 6,
-      colorRegionNames: ['Body', 'wings', 'head', 'feathers', 'beak', 'talons'],
-      mutationChance: 7.31,
-      breedingDifficulty: 'Easy'
-    },
-
-    // Special Functions
-    workstation: 'None',
-    resourceProduction: 'None',
-    structureFunctions: 'None',
-    buffAuras: ['Indicates nearby explorer notes'],
-    debuffAbilities: ['None'],
-    uniqueMechanics: ['Death inventory retrieval', 'corpse-feeding taming'],
-
-    // Spawn & Location
-    spawnMaps: ['Fjordur'],
-    spawnZones: ['Hay un nest', 'Vardiland North', 'Vardiland South'],
-    rarityRating: 'Uncommon',
-    levelRange: '1-150',
-    packBehavior: 'Small flocks (2-4)',
-    territorialBehavior: 'Follows players who are hunting',
-
-    // Management Metadata
-    difficultyRating: 'Easy',
-    beginnerFriendly: true,
-    endGameViable: true,
-    bossFightCapable: false,
-    pvpMeta: 'High',
-    resourceInvestment: 'Low',
-    maintenanceLevel: 'Very Low',
-
-    // Badge Categories
-    badgeCategories: ['utility']
-  },
-
-  'Forest Wyvern': {
-    // Basic Info
-    id: 'FOREST_WYVERN_324',
-    name: 'Forest Wyvern',
-    icon: '🌳',
-    category: 'boss',
-    rarity: 'mythical',
-    source: 'Fjordur DLC',
-    variants: ['Boss Minion'],
-
-    // Biology & Lore
-    dossierText: "A minion of the Forest Titan, this creature is not a true wyvern but a magical construct of wood and foliage. It mimics the form of a wyvern, but its attacks are rooted in the power of the forest. It can shoot sharp splinters and entangle foes with grasping vines. They are summoned in swarms to defend their master, overwhelming challengers with a combination of ranged attacks and crowd control. They are a testament to the Forest Titan's absolute mastery over its domain.",
-    temperament: 'Aggressive (Minion)',
-    diet: 'None (Magical Construct)',
-    habitat: 'Forest Titan Arena',
-    realWorldBasis: 'Forest elemental / Ent',
-    sizeClass: 'Large',
-
-    // Taming System
-    tamingMethod: 'Cannot be tamed',
-    tamingType: 'N/A',
-    preferredKibble: 'N/A',
-    favoriteFood: 'N/A',
-    tamingSpeed: 'N/A',
-    torpor: {
-      baseValue: 1000,
-      depleteRate: 'N/A'
-    },
-    specialRequirements: 'Boss minion, cannot be tamed.',
-
-    // Base Statistics (Level 1 Wild)
-    baseStats: {
-      health: 10000,
-      stamina: 1000,
-      oxygen: 150,
-      food: 1000,
-      weight: 400,
-      melee: 100,
-      speed: 100,
-      torpor: 1000
-    },
-
-    // Stat Scaling (Per Level)
-    statScaling: {
-      health: 2000,
-      stamina: 100,
-      oxygen: 15,
-      food: 100,
-      weight: 8,
-      melee: 5,
-      speed: 1
-    },
-
-    // Equipment & Combat
-    saddleLevel: 0,
-    saddleType: 'N/A',
-    saddleArmor: 0,
-    platformLimit: 0,
-    specialAbilities: ['Vine trap', 'splinter shot', 'flight'],
-    attackTypes: ['Vine grab', 'splinter projectile'],
-    canCarry: ['N/A'],
-
-    // Utility & Roles
-    primaryRole: 'Boss Minion',
-    secondaryRoles: ['Area denial', 'player harassment'],
-    gatheringResources: ['None'],
-    gatheringEfficiency: {},
-    ratings: {
-      combat: 7,
-      transport: 0,
-      speed: 7,
-      survivability: 6
-    },
-
-    // Environmental Data
-    speeds: {
-      land: 10,
-      flying: 40,
-      swimming: 20,
-      climbing: 0
-    },
-    environmentalResistances: ['Natural armor'],
-    preferredBiome: 'Forest Titan Arena',
-    temperatureRange: {
-      min: 0,
-      max: 50
-    },
-    oxygenRequirement: 'None',
-
-    // Breeding Genetics
-    breeding: {
-      cooldown: 'Cannot breed',
-      gestationTime: 'N/A',
-      babyFoodConsumption: 'N/A',
-      maturationTime: 'N/A',
-      colorRegions: 4,
-      colorRegionNames: ['Body', 'Wings', 'Vines', 'Leaves'],
-      mutationChance: 0,
-      breedingDifficulty: 'Cannot breed'
-    },
-
-    // Special Functions
-    workstation: 'None',
-    resourceProduction: 'None',
-    structureFunctions: 'None',
-    buffAuras: ['None'],
-    debuffAbilities: ['Vine grab immobilizes targets'],
-    uniqueMechanics: ['Boss minion AI'],
-
-    // Spawn & Location
-    spawnMaps: ['Extinction'],
-    spawnZones: ['Forest Titan Arena (Summoned)'],
-    rarityRating: 'Mythical',
-    levelRange: 'Boss-dependent',
-    packBehavior: 'Swarms',
-    territorialBehavior: 'Aggressive',
-
-    // Management Metadata
-    difficultyRating: 'N/A',
-    beginnerFriendly: false,
-    endGameViable: false,
-    bossFightCapable: false,
-    pvpMeta: 'None',
-    resourceInvestment: 'N/A',
-    maintenanceLevel: 'N/A',
-
-    // Badge Categories
-    badgeCategories: ['combat', 'boss']
-  },
-
-  'GachaClaus': {
+},
+'GachaClaus': {
     // Basic Info
     id: 'GACHACLAUS_325',
     name: 'GachaClaus',
@@ -43696,9 +36890,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['utility']
-  },
-
-  'Gigantoraptor': {
+},
+'Gigantoraptor': {
     // Basic Info
     id: 'GIGANTORAPTOR_326',
     name: 'Gigantoraptor',
@@ -43829,9 +37022,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['utility', 'combat', 'boss']
-  },
-
-  'Glowbug': {
+},
+'Glowbug': {
     // Basic Info
     id: 'GLOWBUG_327',
     name: 'Glowbug',
@@ -43961,9 +37153,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['utility']
-  },
-
-  'Hati and Sköll': {
+},
+'Hati and Sköll': {
     // Basic Info
     id: 'HATI_SKOLL_328',
     name: 'Hati and Sköll',
@@ -44093,9 +37284,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['boss', 'combat']
-  },
-
-  'Helicoprion': {
+},
+'Helicoprion': {
     // Basic Info
     id: 'HELICOPRION_329',
     name: 'Helicoprion',
@@ -44227,272 +37417,114 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['utility', 'harvesting']
+},
+'Ice Golem': {
+  id: "ICE_GOLEM_341",
+  name: "Ice Golem",
+  icon: "🗿",
+  category: "combat",
+  rarity: "rare",
+  source: "Valguero DLC",
+  variants: ["Rock Elemental Variant"],
+  dossierText: "The Ice Golem is a variant of the Rock Elemental exclusive to the Snow Desert of Valguero, its body composed of compacted glacial ice and permafrost rather than stone. In behavior and capabilities it is identical to the standard Rock Elemental — extraordinary physical armor that renders most conventional weapons useless, boulder throws with massive knockback, and a melee presence that casually destroys lower-tier structures. To knock one out, cannon or rocket fire aimed specifically at the head is required; body shots accomplish almost nothing against the natural armor. Once down, Extraordinary Kibble tames it efficiently. Tamed Ice Golems are valued for extreme damage resistance, making them excellent turret soakers and raid mounts. Important: the Ice Golem cannot be transferred off Valguero, and cryopodding one may prevent it from being deployed again.",
+  temperament: "Aggressive (Boss)",
+  diet: "None (Elemental)",
+  habitat: "Snow Desert — Valguero",
+  realWorldBasis: "Ice Golem (Mythology)",
+  sizeClass: "Colossal",
+  tamingMethod: "Knockout (Cannon/Rockets)",
+  tamingType: "Aim cannon or rocket launcher shots at the head only. Body shots deal negligible damage due to extreme natural armor. Knock unconscious then feed Extraordinary Kibble. Cannot be transferred off Valguero. Cryopodding may prevent deployment — use carefully.",
+  preferredKibble: "Extraordinary Kibble",
+  favoriteFood: "Extraordinary Kibble",
+  tamingSpeed: "Slow",
+  torpor: {
+    baseValue: 10000,
+    depleteRate: "N/A"
   },
-
-  'Human': {
-    // Basic Info
-    id: 'HUMAN_330',
-    name: 'Human',
-    icon: '🧑',
-    category: 'utility',
-    rarity: 'common',
-    source: 'Base Game',
-    variants: ['Survivor'],
-
-    // Biology & Lore
-    dossierText: "Homo deus, the 'God-man'. A strange new species of human, seemingly from across time and space, brought together on these ARKs. They are the ultimate survivors, capable of taming prehistoric beasts, mastering advanced technology, and conquering the gods themselves. Their adaptability is their greatest strength. They can learn to craft anything from a simple stone hatchet to a complex Tek rifle. They can form tribes, build civilizations, and wage war. They are the ultimate variable, the true masters of their own destiny on this strange new world.",
-    temperament: 'Varies',
-    diet: 'Omnivore',
-    habitat: 'All biomes',
-    realWorldBasis: 'Homo sapiens',
-    sizeClass: 'Medium',
-
-    // Taming System
-    tamingMethod: 'N/A',
-    tamingType: 'Player character, cannot be tamed.',
-    preferredKibble: 'N/A',
-    favoriteFood: 'N/A',
-    tamingSpeed: 'N/A',
-    torpor: {
-      baseValue: 200,
-      depleteRate: 'Moderate'
-    },
-    specialRequirements: 'The primary controllable entity in the game.',
-
-    // Base Statistics (Level 1 Wild)
-    baseStats: {
-      health: 100,
-      stamina: 100,
-      oxygen: 100,
-      food: 100,
-      weight: 100,
-      melee: 100,
-      speed: 100,
-      torpor: 200
-    },
-
-    // Stat Scaling (Per Level)
-    statScaling: {
-      health: 10,
-      stamina: 10,
-      oxygen: 20,
-      food: 10,
-      weight: 10,
-      melee: 5,
-      speed: 2 // (Crafting Skill also an option)
-    },
-
-    // Equipment & Combat
-    saddleLevel: 0,
-    saddleType: 'N/A',
-    saddleArmor: 0,
-    platformLimit: 0,
-    specialAbilities: ['Crafting', 'building', 'taming', 'tool/weapon use'],
-    attackTypes: ['Varies by weapon'],
-    canCarry: ['Can carry various items and equipment'],
-
-    // Utility & Roles
-    primaryRole: 'Player Character',
-    secondaryRoles: ['Crafter', 'Builder', 'Tamer', 'Warrior'],
-    gatheringResources: ['All'],
-    gatheringEfficiency: {
-      'Varies by tool': 10
-    },
-    ratings: {
-      combat: 10, // (potential)
-      transport: 10, // (with tames)
-      speed: 10, // (with tames)
-      survivability: 10 // (with gear and tames)
-    },
-
-    // Environmental Data
-    speeds: {
-      land: 15,
-      flying: 0,
-      swimming: 10,
-      climbing: 0
-    },
-    environmentalResistances: ['Varies by armor and location'],
-    preferredBiome: 'All',
-    temperatureRange: {
-      min: 0,
-      max: 50 // (unarmored)
-    },
-    oxygenRequirement: 'Air breathing',
-
-    // Breeding Genetics
-    breeding: {
-      cooldown: 'N/A',
-      gestationTime: 'N/A',
-      babyFoodConsumption: 'N/A',
-      maturationTime: 'N/A',
-      colorRegions: 0,
-      colorRegionNames: [],
-      mutationChance: 0,
-      breedingDifficulty: 'N/A'
-    },
-
-    // Special Functions
-    workstation: 'Can use all workstations',
-    resourceProduction: 'Can craft all items',
-    structureFunctions: 'Can build all structures',
-    buffAuras: ['Can receive various buffs'],
-    debuffAbilities: ['Can inflict various debuffs with tools/weapons'],
-    uniqueMechanics: ['Leveling system, engrams, crafting, taming'],
-
-    // Spawn & Location
-    spawnMaps: ['All'],
-    spawnZones: ['Designated spawn zones'],
-    rarityRating: 'N/A',
-    levelRange: '1-205 (max level with ascension)',
-    packBehavior: 'Tribal',
-    territorialBehavior: 'Varies by player',
-
-    // Management Metadata
-    difficultyRating: 'N/A',
-    beginnerFriendly: true,
-    endGameViable: true,
-    bossFightCapable: true,
-    pvpMeta: 'Ultimate',
-    resourceInvestment: 'Variable',
-    maintenanceLevel: 'Variable',
-
-    // Badge Categories
-    badgeCategories: ['utility', 'combat', 'harvesting', 'transport', 'boss']
+  specialRequirements: "Cannon or rocket launcher required — head shots only. Cannot be transferred off Valguero. Cryopodding may prevent deployment.",
+  baseStats: {
+    health: 30000,
+    stamina: 500,
+    oxygen: 150,
+    food: 2000,
+    weight: 1500,
+    melee: 100,
+    speed: 100,
+    torpor: 10000
   },
-  'Ice Golem': {
-    // Basic Info
-    id: 'ICE_GOLEM_341',
-    name: 'Ice Golem',
-    icon: '🗿',
-    category: 'boss',
-    rarity: 'rare',
-    source: 'Ragnarok DLC',
-    variants: ['Rock Elemental Variant'],
-
-    // Biology & Lore
-    dossierText: "A variant of the Rock Elemental found in the coldest regions, the Ice Golem is a massive being of living ice and snow. It is a formidable guardian, camouflaging itself amongst the frozen landscape until an intruder approaches. Like its rock-based cousin, it is impervious to most conventional forms of attack and can hurl massive projectiles—in this case, giant snowballs or ice chunks—with deadly accuracy. Its icy breath can freeze opponents solid, leaving them vulnerable. The Ice Golem is not a creature to be tamed, but a world boss that must be overcome by those seeking to prove their mastery over the ARK's harshest environments.",
-    temperament: 'Aggressive (Boss)',
-    diet: 'None (Elemental)',
-    habitat: 'Frozen areas, ice caves',
-    realWorldBasis: 'Ice Golem (Mythology)',
-    sizeClass: 'Colossal',
-
-    // Taming System
-    tamingMethod: 'Cannot be tamed',
-    tamingType: 'N/A',
-    preferredKibble: 'N/A',
-    favoriteFood: 'N/A',
-    tamingSpeed: 'N/A',
-    torpor: {
-      baseValue: 10000,
-      depleteRate: 'N/A'
-    },
-    specialRequirements: 'World boss. Can only be damaged by explosives, Tek weapons, and Wyvern breath.',
-
-    // Base Statistics (Level 1 Wild)
-    baseStats: {
-      health: 30000,
-      stamina: 500,
-      oxygen: 150,
-      food: 2000,
-      weight: 1500,
-      melee: 100,
-      speed: 100,
-      torpor: 10000
-    },
-
-    // Stat Scaling (Per Level)
-    statScaling: {
-      health: 6000,
-      stamina: 50,
-      oxygen: 15,
-      food: 200,
-      weight: 30,
-      melee: 5,
-      speed: 0
-    },
-
-    // Equipment & Combat
-    saddleLevel: 0,
-    saddleType: 'N/A',
-    saddleArmor: 0,
-    platformLimit: 0,
-    specialAbilities: ['Ice projectile throw', 'ice breath (freeze)', 'camouflage', 'high damage resistance'],
-    attackTypes: ['Stomp', 'Ice Boulder Throw', 'Ice Breath'],
-    canCarry: ['N/A'],
-
-    // Utility & Roles
-    primaryRole: 'World Boss',
-    secondaryRoles: ['Area guardian'],
-    gatheringResources: ['Element', 'Black Pearls', 'Crystal', 'Pelt', 'Raw Meat'],
-    gatheringEfficiency: {
-      'Element': 10
-    },
-    ratings: {
-      combat: 9,
-      transport: 0,
-      speed: 2,
-      survivability: 10
-    },
-
-    // Environmental Data
-    speeds: {
-      land: 8,
-      flying: 0,
-      swimming: 3,
-      climbing: 0
-    },
-    environmentalResistances: ['Immunity to most weapons', 'cold immunity'],
-    preferredBiome: 'Ice caves, snowy mountains',
-    temperatureRange: {
-      min: -100,
-      max: 0
-    },
-    oxygenRequirement: 'None',
-
-    // Breeding Genetics
-    breeding: {
-      cooldown: 'Cannot breed',
-      gestationTime: 'N/A',
-      babyFoodConsumption: 'N/A',
-      maturationTime: 'N/A',
-      colorRegions: 1,
-      colorRegionNames: ['Body'],
-      mutationChance: 0,
-      breedingDifficulty: 'Cannot breed'
-    },
-
-    // Special Functions
-    workstation: 'None',
-    resourceProduction: 'None',
-    structureFunctions: 'None',
-    buffAuras: ['None'],
-    debuffAbilities: ['Ice breath and projectiles can freeze targets'],
-    uniqueMechanics: ['Camouflage', 'unique damage resistances'],
-
-    // Spawn & Location
-    spawnMaps: ['Ragnarok', 'Valguero', 'Fjordur'],
-    spawnZones: ['Ice Queen Cave (Ragnarok)', 'The Maelstrom (Valguero)'],
-    rarityRating: 'Boss',
-    levelRange: '1 (fixed)',
-    packBehavior: 'Solitary',
-    territorialBehavior: 'Territorial',
-
-    // Management Metadata
-    difficultyRating: 'N/A',
-    beginnerFriendly: false,
-    endGameViable: true,
-    bossFightCapable: true,
-    pvpMeta: 'None',
-    resourceInvestment: 'N/A',
-    maintenanceLevel: 'N/A',
-
-    // Badge Categories
-    badgeCategories: ['boss', 'combat']
+  statScaling: {
+    health: 6000,
+    stamina: 50,
+    oxygen: 15,
+    food: 200,
+    weight: 30,
+    melee: 5,
+    speed: 0
   },
-
-  'Iceworm Male': {
+  saddleLevel: 70,
+  saddleType: "Rock Golem Saddle (compatible)",
+  saddleArmor: 0,
+  platformLimit: 0,
+  specialAbilities: ["Ice projectile throw", "ice breath (freeze)", "camouflage", "high damage resistance"],
+  attackTypes: ["Stomp", "Ice Boulder Throw", "Ice Breath"],
+  canCarry: ["N/A"],
+  primaryRole: "World Boss",
+  secondaryRoles: ["Area guardian"],
+  gatheringResources: ["Element", "Black Pearls", "Crystal", "Pelt", "Raw Meat"],
+  gatheringEfficiency: {
+    Element: 10
+  },
+  ratings: {
+    combat: 9,
+    transport: 0,
+    speed: 2,
+    survivability: 10
+  },
+  speeds: {
+    land: 8,
+    flying: 0,
+    swimming: 3,
+    climbing: 0
+  },
+  environmentalResistances: ["Immunity to most weapons", "cold immunity"],
+  preferredBiome: "Ice caves, snowy mountains",
+  temperatureRange: {
+    min: -100,
+    max: 0
+  },
+  oxygenRequirement: "None",
+  breeding: {
+    cooldown: "Cannot breed",
+    gestationTime: "N/A",
+    babyFoodConsumption: "N/A",
+    maturationTime: "N/A",
+    colorRegions: 1,
+    colorRegionNames: ["Body"],
+    mutationChance: 0,
+    breedingDifficulty: "Cannot breed"
+  },
+  workstation: "None",
+  resourceProduction: "None",
+  structureFunctions: "None",
+  buffAuras: ["None"],
+  debuffAbilities: ["Ice breath and projectiles can freeze targets"],
+  uniqueMechanics: ["Camouflage", "unique damage resistances"],
+  spawnMaps: ["Valguero"],
+  spawnZones: ["Snow Desert biome on Valguero"],
+  rarityRating: "Boss",
+  levelRange: "1 (fixed)",
+  packBehavior: "Solitary",
+  territorialBehavior: "Territorial",
+  difficultyRating: "N/A",
+  beginnerFriendly: false,
+  endGameViable: true,
+  bossFightCapable: true,
+  pvpMeta: "None",
+  resourceInvestment: "N/A",
+  maintenanceLevel: "N/A",
+  badgeCategories: ["boss", "combat"]
+},
+'Iceworm Male': {
     // Basic Info
     id: 'ICEWORM_MALE_342',
     name: 'Iceworm Male',
@@ -44622,9 +37654,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['combat', 'boss']
-  },
-
-  'Iguanodon': {
+},
+'Iguanodon': {
     // Basic Info
     id: 'IGUANODON_343',
     name: 'Iguanodon',
@@ -44755,9 +37786,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['utility', 'transport', 'harvesting']
-  },
-
-  'Insect Swarm': {
+},
+'Insect Swarm': {
     // Basic Info
     id: 'INSECT_SWARM_344',
     name: 'Insect Swarm',
@@ -44885,274 +37915,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['combat']
-  },
-
-  'Istiophorus': {
-    // Basic Info
-    id: 'ISTIOPHORUS_345',
-    name: 'Istiophorus',
-    icon: '🐟',
-    category: 'combat',
-    rarity: 'uncommon',
-    source: 'ARK Additions Mod',
-    variants: ['Standard'],
-
-    // Biology & Lore
-    dossierText: "The Istiophorus, or Sailfish, is one of the fastest creatures in the ocean. It uses its incredible speed to hunt and to evade larger predators. Its most prominent feature is its large dorsal fin, which it can raise to intimidate rivals or cut through the water with greater stability. The long, spear-like bill is its primary weapon, used to impale prey and inflict deep, bleeding wounds. While not the most durable of marine creatures, its sheer speed and agility make it a difficult target and an excellent mount for rapid aquatic exploration and hit-and-run combat tactics.",
-    temperament: 'Skittish',
-    diet: 'Carnivore',
-    habitat: 'Open ocean',
-    realWorldBasis: 'Sailfish (Istiophorus)',
-    sizeClass: 'Medium',
-
-    // Taming System
-    tamingMethod: 'Passive',
-    tamingType: 'Must be fed fish meat without startling it.',
-    preferredKibble: 'N/A',
-    favoriteFood: 'Raw Prime Fish Meat',
-    tamingSpeed: 'Fast',
-    torpor: {
-      baseValue: 300,
-      depleteRate: 'N/A'
-    },
-    specialRequirements: 'Extremely fast and skittish, making it difficult to approach.',
-
-    // Base Statistics (Level 1 Wild)
-    baseStats: {
-      health: 300,
-      stamina: 300,
-      oxygen: 150,
-      food: 1500,
-      weight: 200,
-      melee: 25,
-      speed: 100,
-      torpor: 300
-    },
-
-    // Stat Scaling (Per Level)
-    statScaling: {
-      health: 60,
-      stamina: 30,
-      oxygen: 15,
-      food: 150,
-      weight: 4,
-      melee: 1.25,
-      speed: 5
-    },
-
-    // Equipment & Combat
-    saddleLevel: 32,
-    saddleType: 'Istiophorus Saddle',
-    saddleArmor: 25,
-    platformLimit: 0,
-    specialAbilities: ['Extreme speed', 'bleeding attack', 'pack bonus'],
-    attackTypes: ['Bill Stab (inflicts bleed)'],
-    canCarry: ['Light cargo'],
-
-    // Utility & Roles
-    primaryRole: 'High-speed aquatic scout',
-    secondaryRoles: ['Naval skirmisher', 'fish hunter'],
-    gatheringResources: ['Raw Fish Meat', 'Raw Prime Fish Meat'],
-    gatheringEfficiency: {
-      'Raw Prime Fish Meat': 9
-    },
-    ratings: {
-      combat: 6,
-      transport: 5,
-      speed: 10,
-      survivability: 5
-    },
-
-    // Environmental Data
-    speeds: {
-      land: 0,
-      flying: 0,
-      swimming: 80,
-      climbing: 0
-    },
-    environmentalResistances: ['None'],
-    preferredBiome: 'Open ocean',
-    temperatureRange: {
-      min: 10,
-      max: 35
-    },
-    oxygenRequirement: 'Water breathing only',
-
-    // Breeding Genetics
-    breeding: {
-      cooldown: '18-48 hours',
-      gestationTime: '3 hours',
-      babyFoodConsumption: 'Medium',
-      maturationTime: '1 day, 12 hours',
-      colorRegions: 4,
-      colorRegionNames: ['Body', 'Sail', 'Stripes', 'Bill'],
-      mutationChance: 7.31,
-      breedingDifficulty: 'Medium'
-    },
-
-    // Special Functions
-    workstation: 'None',
-    resourceProduction: 'None',
-    structureFunctions: 'None',
-    buffAuras: ['Pack bonus with other Istiophorus'],
-    debuffAbilities: ['Bill attack causes a bleeding effect.'],
-    uniqueMechanics: ['Extreme speed, bleeding attack'],
-
-    // Spawn & Location
-    spawnMaps: ['The Island', 'The Center', 'Ragnarok (with mod)'],
-    spawnZones: ['Ocean'],
-    rarityRating: 'Uncommon',
-    levelRange: '1-150',
-    packBehavior: 'Schools (3-5)',
-    territorialBehavior: 'Skittish',
-
-    // Management Metadata
-    difficultyRating: 'Medium',
-    beginnerFriendly: false,
-    endGameViable: true,
-    bossFightCapable: false,
-    pvpMeta: 'Medium',
-    resourceInvestment: 'Low',
-    maintenanceLevel: 'Low',
-
-    // Badge Categories
-    badgeCategories: ['transport', 'combat']
-  },
-
-  'Jug Bug': {
-    // Basic Info
-    id: 'JUG_BUG_346',
-    name: 'Jug Bug',
-    icon: '🐞',
-    category: 'utility',
-    rarity: 'common',
-    source: 'Scorched Earth DLC',
-    variants: ['Water', 'Oil'],
-
-    // Biology & Lore
-    dossierText: "The Jug Bug is a fascinating insect that has evolved a unique method of resource storage and survival in the harsh desert environment. What makes this small, beetle-like creature truly remarkable is its ability to collect and store either water or oil in a large, translucent sac on its back. These living canteens wander the desert, providing a vital source of hydration or fuel for any survivor fortunate enough to find them. The two variants, Water and Oil, are easily distinguishable by the color of the liquid in their sacs. While they cannot be tamed in the traditional sense, they are a crucial part of the desert ecosystem, offering a lifeline in a world where resources are scarce.",
-    temperament: 'Passive',
-    diet: 'Herbivore (consumes trace nutrients from the ground)',
-    habitat: 'Desert, arid regions, badlands',
-    realWorldBasis: 'Honeypot ant (concept of storing liquid)',
-    sizeClass: 'Small',
-
-    // Taming System
-    tamingMethod: 'Cannot be tamed',
-    tamingType: 'N/A (resource node)',
-    preferredKibble: 'N/A',
-    favoriteFood: 'N/A',
-    tamingSpeed: 'N/A',
-    torpor: {
-      baseValue: 50,
-      depleteRate: 'N/A'
-    },
-    specialRequirements: 'Can be harvested for either Water or Oil, depending on the variant.',
-
-    // Base Statistics (Level 1 Wild)
-    baseStats: {
-      health: 50,
-      stamina: 100,
-      oxygen: 150,
-      food: 500,
-      weight: 20,
-      melee: 5,
-      speed: 100,
-      torpor: 50
-    },
-
-    // Stat Scaling (Per Level)
-    statScaling: {
-      health: 10,
-      stamina: 10,
-      oxygen: 15,
-      food: 50,
-      weight: 0.4,
-      melee: 0.25,
-      speed: 1
-    },
-
-    // Equipment & Combat
-    saddleLevel: 0,
-    saddleType: 'N/A',
-    saddleArmor: 0,
-    platformLimit: 0,
-    specialAbilities: ['Resource storage (Water or Oil)'],
-    attackTypes: ['None (completely passive)'],
-    canCarry: ['N/A'],
-
-    // Utility & Roles
-    primaryRole: 'Mobile resource node',
-    secondaryRoles: ['Source of water', 'source of oil'],
-    gatheringResources: ['Water', 'Oil'],
-    gatheringEfficiency: {
-      Water: 8,
-      Oil: 8
-    },
-    ratings: {
-      combat: 0,
-      transport: 0,
-      speed: 3,
-      survivability: 2
-    },
-
-    // Environmental Data
-    speeds: {
-      land: 10,
-      flying: 0,
-      swimming: 5,
-      climbing: 0
-    },
-    environmentalResistances: ['Heat tolerance'],
-    preferredBiome: 'Desert, arid regions, badlands',
-    temperatureRange: {
-      min: 10,
-      max: 60
-    },
-    oxygenRequirement: 'Air breathing',
-
-    // Breeding Genetics
-    breeding: {
-      cooldown: 'Cannot breed',
-      gestationTime: 'N/A',
-      babyFoodConsumption: 'N/A',
-      maturationTime: 'N/A',
-      colorRegions: 4,
-      colorRegionNames: ['Body', 'legs', 'sac', 'patterns'],
-      mutationChance: 0,
-      breedingDifficulty: 'Cannot breed'
-    },
-
-    // Special Functions
-    workstation: 'N/A',
-    resourceProduction: 'Can be harvested for Water or Oil',
-    structureFunctions: 'N/A',
-    buffAuras: ['N/A'],
-    debuffAbilities: ['None'],
-    uniqueMechanics: ['Two distinct resource variants'],
-
-    // Spawn & Location
-    spawnMaps: ['Scorched Earth', 'Ragnarok', 'Valguero', 'Crystal Isles', 'Lost Island', 'Fjordur'],
-    spawnZones: ['Desert biomes', 'arid areas', 'badlands'],
-    rarityRating: 'Common',
-    levelRange: '1-150',
-    packBehavior: 'Solitary or small groups (2-4)',
-    territorialBehavior: 'Completely passive',
-
-    // Management Metadata
-    difficultyRating: 'N/A',
-    beginnerFriendly: true,
-    endGameViable: true,
-    bossFightCapable: false,
-    pvpMeta: 'None',
-    resourceInvestment: 'N/A',
-    maintenanceLevel: 'N/A',
-
-    // Badge Categories
-    badgeCategories: ['utility', 'harvesting']
-  },
-
-  'Kairuku': {
+},
+'Kairuku': {
     // Basic Info
     id: 'KAIRUKU_347',
     name: 'Kairuku',
@@ -45282,9 +38046,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['utility', 'harvesting']
-  },
-
-  'Kaprosuchus': {
+},
+'Kaprosuchus': {
     // Basic Info
     id: 'KAPROSUCHUS_348',
     name: 'Kaprosuchus',
@@ -45415,9 +38178,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['combat', 'pvp']
-  },
-
-  'Kentrosaurus': {
+},
+'Kentrosaurus': {
     // Basic Info
     id: 'KENTROSAURUS_349',
     name: 'Kentrosaurus',
@@ -45547,9 +38309,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['combat', 'boss']
-  },
-
-  'Lamprey': {
+},
+'Lamprey': {
     // Basic Info
     id: 'LAMPREY_350',
     name: 'Lamprey',
@@ -45677,8 +38438,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['utility']
-  },
-  'Lava Elemental': {
+},
+'Lava Elemental': {
     // Basic Info
     id: 'LAVA_ELEMENTAL_351',
     name: 'Lava Elemental',
@@ -45806,9 +38567,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['boss', 'combat']
-  },
-
-  'Leech': {
+},
+'Leech': {
     // Basic Info
     id: 'LEECH_352',
     name: 'Leech',
@@ -45938,9 +38698,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['utility']
-  },
-
-  'Leedsichthys': {
+},
+'Leedsichthys': {
     // Basic Info
     id: 'LEEDSICHTHYS_353',
     name: 'Leedsichthys',
@@ -46070,9 +38829,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['utility', 'harvesting']
-  },
-
-  'Liopleurodon': {
+},
+'Liopleurodon': {
     // Basic Info
     id: 'LIOPLEURODON_354',
     name: 'Liopleurodon',
@@ -46200,9 +38958,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['utility']
-  },
-
-  'Love Bug': {
+},
+'Love Bug': {
     // Basic Info
     id: 'LOVE_BUG_355',
     name: 'Love Bug',
@@ -46332,9 +39089,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['utility']
-  },
-
-  'Lystrosaurus': {
+},
+'Lystrosaurus': {
     // Basic Info
     id: 'LYSTROSAURUS_356',
     name: 'Lystrosaurus',
@@ -46464,9 +39220,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['utility']
-  },
-
-  'Macrophage': {
+},
+'Macrophage': {
     // Basic Info
     id: 'MACROPHAGE_357',
     name: 'Macrophage',
@@ -46594,275 +39349,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['combat', 'boss']
-  },
-
-  'Maewing': {
-    // Basic Info
-    id: 'MAEWING_358',
-    name: 'Maewing',
-    icon: ' Platypus face',
-    category: 'utility',
-    rarity: 'uncommon',
-    source: 'Genesis Part 2 DLC',
-    variants: ['Standard', 'S-Maewing'],
-
-    // Biology & Lore
-    dossierText: "The Maewing is a bizarre and wonderful hybrid creature that combines the features of a platypus, a sugar glider, and a nurturing parent. What makes this creature truly exceptional is its role as the ultimate mobile nursery. The Maewing's specialized saddle has built-in pouches that can safely carry and nurture multiple babies at once, regardless of their species. It can automatically feed and care for infants, making it an indispensable tool for any tribe serious about breeding. But the Maewing is more than just a babysitter; it's also an incredibly fast and agile glider, capable of traversing vast distances with ease. Its ability to perform a massive leap into the air, followed by a long, controlled glide, makes it one of the best mounts for rapid transportation.",
-    temperament: 'Skittish',
-    diet: 'Omnivore (berries, meat)',
-    habitat: 'Riverbanks, lush areas, gentle slopes',
-    realWorldBasis: 'Hybrid of platypus and sugar glider',
-    sizeClass: 'Large',
-
-    // Taming System
-    tamingMethod: 'Knockout',
-    tamingType: 'Standard knockout taming',
-    preferredKibble: 'Basic Kibble',
-    favoriteFood: 'Basic Kibble',
-    tamingSpeed: 'Fast',
-    torpor: {
-      baseValue: 600,
-      depleteRate: 'Fast'
-    },
-    specialRequirements: 'Trap is highly recommended due to its speed and skittish nature.',
-
-    // Base Statistics (Level 1 Wild)
-    baseStats: {
-      health: 500,
-      stamina: 500,
-      oxygen: 150,
-      food: 3000,
-      weight: 400,
-      melee: 25,
-      speed: 100,
-      torpor: 600
-    },
-
-    // Stat Scaling (Per Level)
-    statScaling: {
-      health: 100,
-      stamina: 50,
-      oxygen: 15,
-      food: 300,
-      weight: 8,
-      melee: 1.25,
-      speed: 2
-    },
-
-    // Equipment & Combat
-    saddleLevel: 19,
-    saddleType: 'Maewing Saddle',
-    saddleArmor: 25,
-    platformLimit: 0,
-    specialAbilities: ['Nurturing (carries and feeds babies)', 'gliding', 'high-speed travel', 'belly flop attack'],
-    attackTypes: ['Bite', 'belly flop (area of effect)'],
-    canCarry: ['Multiple babies in saddle pouches'],
-
-    // Utility & Roles
-    primaryRole: 'Mobile nursery and high-speed transport',
-    secondaryRoles: ['Breeding assistant', 'glider', 'berry harvester'],
-    gatheringResources: ['Berries', 'fiber', 'Raw Meat', 'Raw Prime Meat'],
-    gatheringEfficiency: {
-      Berries: 8,
-      Fiber: 6
-    },
-    ratings: {
-      combat: 3,
-      transport: 9,
-      speed: 9,
-      survivability: 6
-    },
-
-    // Environmental Data
-    speeds: {
-      land: 30,
-      flying: 55, // Gliding
-      swimming: 30,
-      climbing: 0
-    },
-    environmentalResistances: ['None'],
-    preferredBiome: 'Riverbanks, lush areas, gentle slopes',
-    temperatureRange: {
-      min: 10,
-      max: 40
-    },
-    oxygenRequirement: 'Air breathing',
-
-    // Breeding Genetics
-    breeding: {
-      cooldown: '18-48 hours',
-      gestationTime: '4 hours, 59 minutes',
-      babyFoodConsumption: 'Low (when using saddle)',
-      maturationTime: '2 days, 20 hours',
-      colorRegions: 6,
-      colorRegionNames: ['Body', 'back', 'belly', 'webbing', 'head', 'patterns'],
-      mutationChance: 7.31,
-      breedingDifficulty: 'Easy'
-    },
-
-    // Special Functions
-    workstation: 'Mobile nursery (saddle acts as trough and incubator)',
-    resourceProduction: 'None',
-    structureFunctions: 'None',
-    buffAuras: ['Nurturing buff to babies in pouches'],
-    debuffAbilities: ['None'],
-    uniqueMechanics: ['Baby carrying and feeding system', 'gliding mechanics'],
-
-    // Spawn & Location
-    spawnMaps: ['Genesis Part 2', 'Lost Island', 'Fjordur'],
-    spawnZones: ['Eden Zone (Genesis 2)', 'river areas', 'plains'],
-    rarityRating: 'Uncommon',
-    levelRange: '1-150',
-    packBehavior: 'Small groups (2-4)',
-    territorialBehavior: 'Skittish, flees from threats',
-
-    // Management Metadata
-    difficultyRating: 'Easy',
-    beginnerFriendly: true,
-    endGameViable: true,
-    bossFightCapable: false,
-    pvpMeta: 'High',
-    resourceInvestment: 'Low',
-    maintenanceLevel: 'Low',
-
-  // Badge Categories
-  badgeCategories: ['utility', 'transport'],
-  },
-
-  'Magmasaur': {
-    // Basic Info
-    id: 'MAGMASAUR_359',
-    name: 'Magmasaur',
-    icon: '🔥',
-    category: 'combat',
-    rarity: 'legendary',
-    source: 'Genesis Part 1 DLC',
-    variants: ['Standard', 'R-Magmasaur'],
-
-    // Biology & Lore
-    dossierText: "Cherufe is a living embodiment of volcanic fury, a creature born from the molten heart of the earth. What makes Magmasaur truly exceptional is its mastery over fire and magma, allowing it to smelt metal ore within its own body and unleash devastating incendiary attacks. This massive, fire-breathing reptile is immune to fire and can swim in lava as if it were water. Its most terrifying ability is its capacity to launch superheated magma projectiles that can destroy even the most fortified structures. Taming a Magmasaur requires stealing and raising its eggs from the depths of volcanic caverns, a perilous task that only the most prepared survivors can attempt.",
-    temperament: 'Extremely Aggressive',
-    diet: 'Sanguinivore (Ambergris)',
-    habitat: 'Volcanic regions, magma caves, lava flows',
-    realWorldBasis: 'Mythological fire lizard/salamander',
-    sizeClass: 'Massive',
-
-    // Taming System
-    tamingMethod: 'Special (Egg Stealing)',
-    tamingType: 'Must steal eggs and raise babies with Ambergris or Sulfur.',
-    preferredKibble: 'N/A',
-    favoriteFood: 'Ambergris',
-    tamingSpeed: 'N/A',
-    torpor: {
-      baseValue: 1500,
-      depleteRate: 'N/A'
-    },
-    specialRequirements: 'Must steal eggs from extremely hot and dangerous volcanic nests.',
-
-    // Base Statistics (Level 1 Wild)
-    baseStats: {
-      health: 1200,
-      stamina: 400,
-      oxygen: 150,
-      food: 3000,
-      weight: 600,
-      melee: 50,
-      speed: 100,
-      torpor: 1500
-    },
-
-    // Stat Scaling (Per Level)
-    statScaling: {
-      health: 240,
-      stamina: 40,
-      oxygen: 15,
-      food: 300,
-      weight: 12,
-      melee: 2.5,
-      speed: 1
-    },
-
-    // Equipment & Combat
-    saddleLevel: 95,
-    saddleType: 'Magmasaur Saddle',
-    saddleArmor: 50,
-    platformLimit: 0,
-    specialAbilities: ['Magma projectiles', 'mobile forge', 'lava swimming', 'fire immunity', 'taunt'],
-    attackTypes: ['Magma spit', 'bite', 'tail swipe', 'area of effect heat wave'],
-    canCarry: ['Massive amounts of metal and smelted ingots'],
-
-    // Utility & Roles
-    primaryRole: 'Mobile siege weapon and industrial forge',
-    secondaryRoles: ['Base destruction', 'metal smelting', 'lava exploration', 'area denial'],
-    gatheringResources: ['Metal', 'obsidian', 'crystal (smelts automatically)'],
-    gatheringEfficiency: {
-      'Metal Smelting': 10,
-      'Resource Gathering': 8
-    },
-    ratings: {
-      combat: 10,
-      transport: 8,
-      speed: 4,
-      survivability: 9
-    },
-
-    // Environmental Data
-    speeds: {
-      land: 20,
-      flying: 0,
-      swimming: 30, // in lava
-      climbing: 0
-    },
-    environmentalResistances: ['Fire immunity', 'lava immunity', 'extreme heat immunity'],
-    preferredBiome: 'Volcanic regions, magma caves, lava flows',
-    temperatureRange: {
-      min: 20,
-      max: 200
-    },
-    oxygenRequirement: 'Air breathing',
-
-    // Breeding Genetics
-    breeding: {
-      cooldown: '18-48 hours',
-      gestationTime: '4 hours, 59 minutes',
-      babyFoodConsumption: 'Extreme',
-      maturationTime: '3 days, 20 hours',
-      colorRegions: 6,
-      colorRegionNames: ['Body', 'plates', 'magma glow', 'belly', 'spines', 'patterns'],
-      mutationChance: 7.31,
-      breedingDifficulty: 'Extreme'
-    },
-
-    // Special Functions
-    workstation: 'Acts as a mobile forge for smelting metal',
-    resourceProduction: 'Smelts metal ore into ingots',
-    structureFunctions: 'Can destroy structures with magma attacks',
-    buffAuras: ['None'],
-    debuffAbilities: ['Magma projectiles cause burning damage over time'],
-    uniqueMechanics: ['Mobile forge system', 'magma projectile weapon', 'egg stealing taming'],
-
-    // Spawn & Location
-    spawnMaps: ['Genesis Part 1', 'Genesis Part 2', 'Lost Island', 'Fjordur'],
-    spawnZones: ['Volcanic biome (Genesis 1)', 'magma caves', 'lava regions'],
-    rarityRating: 'Legendary',
-    levelRange: '1-150 (eggs)',
-    packBehavior: 'Solitary or mated pairs',
-    territorialBehavior: 'Extremely aggressive, defends nests fiercely',
-
-    // Management Metadata
-    difficultyRating: 'Extreme',
-    beginnerFriendly: false,
-    endGameViable: true,
-    bossFightCapable: true,
-    pvpMeta: 'Ultimate',
-    resourceInvestment: 'Extreme',
-    maintenanceLevel: 'High',
-
-    // Badge Categories
-    badgeCategories: ['boss', 'combat', 'harvesting']
-  },
-
-  'Mammoth': {
+},
+'Mammoth': {
     // Basic Info
     id: 'MAMMOTH_360',
     name: 'Mammoth',
@@ -46993,8 +39481,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['harvesting', 'combat', 'boss']
-  },
-  'Manta': {
+},
+'Manta': {
   // Basic Info
   id: 'MANTA_361',
   name: 'Manta',
@@ -47122,8 +39610,7 @@ const SPECIES_DATABASE = {
 
   // Badge Categories
   badgeCategories: ['transport', 'combat']
-  },
-  
+},
 'Mantis Shrimp': {
   // Basic Info
   id: 'MANTIS_SHRIMP_352',
@@ -47255,8 +39742,7 @@ const SPECIES_DATABASE = {
 
   // Badge Categories
   badgeCategories: ['combat', 'boss']
-  },
-
+},
 'Megalania': {
   // Basic Info
   id: 'MEGALANIA_353',
@@ -47388,8 +39874,7 @@ const SPECIES_DATABASE = {
 
   // Badge Categories
   badgeCategories: ['combat', 'pvp']
-  },
-
+},
 'Meganeura': {
   // Basic Info
   id: 'MEGANEURA_354',
@@ -47521,8 +40006,7 @@ const SPECIES_DATABASE = {
 
   // Badge Categories
   badgeCategories: ['utility', 'harvesting']
-  },
-
+},
 'Nameless': {
   // Basic Info
   id: 'NAMELESS_355',
@@ -47653,402 +40137,7 @@ const SPECIES_DATABASE = {
 
   // Badge Categories
   badgeCategories: ['combat']
-  },
-
-'Noglin': {
-  // Basic Info
-  id: 'NOGLIN_356',
-  name: 'Noglin',
-  icon: '🧠',
-  category: 'utility',
-  rarity: 'rare',
-  source: 'Genesis Part 2 DLC',
-  variants: ['Standard'],
-
-  // Biology & Lore
-  dossierText: "The Noglin is a small, seemingly harmless creature with a sinister secret. This diminutive beast possesses powerful psionic abilities, allowing it to latch onto other creatures and temporarily take control of their minds. What makes the Noglin truly terrifying is its ability to turn even the most powerful of tames against their masters. It can leap great distances, and its unassuming appearance allows it to get close to unsuspecting targets. Taming a Noglin is a perilous task, as it requires allowing the creature to mind-control your own tames to build a bond.",
-  temperament: 'Cunning (Psionic)',
-  diet: 'Carnivore (feeds on psionic energy)',
-  habitat: 'Rockwell\'s Garden (Genesis 2), corrupted areas',
-  realWorldBasis: 'Mind-controlling parasite (science fiction)',
-  sizeClass: 'Tiny',
-
-  // Taming System
-  tamingMethod: 'Passive',
-  tamingType: 'Must allow it to mind-control your own tames.',
-  preferredKibble: 'N/A',
-  favoriteFood: 'N/A',
-  tamingSpeed: 'Variable (depends on the health of the tames it controls)',
-  torpor: {
-    baseValue: 100,
-    depleteRate: 'N/A'
-  },
-  specialRequirements: 'Requires a group of tamed creatures for it to mind-control. Taming progress is gained as it successfully controls your creatures.',
-
-  // Base Statistics (Level 1 Wild)
-  baseStats: {
-    health: 150,
-    stamina: 100,
-    oxygen: 150,
-    food: 500,
-    weight: 20,
-    melee: 10,
-    speed: 100,
-    torpor: 100
-  },
-
-  // Stat Scaling (Per Level)
-  statScaling: {
-    health: 30,
-    stamina: 10,
-    oxygen: 15,
-    food: 50,
-    weight: 0.4,
-    melee: 0.5,
-    speed: 1
-  },
-
-  // Equipment & Combat
-  saddleLevel: 0,
-  saddleType: 'Shoulder pet',
-  saddleArmor: 0,
-  platformLimit: 0,
-  specialAbilities: ['Mind control', 'psionic leash', 'high jump'],
-  attackTypes: ['Latch and mind control'],
-  canCarry: ['Cannot be ridden'],
-
-  // Utility & Roles
-  primaryRole: 'Creature control and sabotage',
-  secondaryRoles: ['Taming assistant', 'PVP disruption', 'espionage'],
-  gatheringResources: ['None'],
-  gatheringEfficiency: {},
-  ratings: {
-    combat: 9,
-    transport: 0,
-    speed: 5,
-    survivability: 3
-  },
-
-  // Environmental Data
-  speeds: {
-    land: 20,
-    flying: 0,
-    swimming: 10,
-    climbing: 1
-  },
-  environmentalResistances: ['Psionic resistance'],
-  preferredBiome: 'Corrupted areas, alien environments',
-  temperatureRange: {
-    min: 0,
-    max: 50
-  },
-  oxygenRequirement: 'Air breathing',
-
-  // Breeding Genetics
-  breeding: {
-    cooldown: 'Cannot breed',
-    gestationTime: 'N/A',
-    babyFoodConsumption: 'N/A',
-    maturationTime: 'N/A',
-    colorRegions: 4,
-    colorRegionNames: ['Body', 'brain', 'tendrils', 'glow'],
-    mutationChance: 0,
-    breedingDifficulty: 'Cannot breed'
-  },
-
-  // Special Functions
-  workstation: 'None',
-  resourceProduction: 'None',
-  structureFunctions: 'None',
-  buffAuras: ['None'],
-  debuffAbilities: ['Mind control'],
-  uniqueMechanics: ['Mind control system', 'unique taming method'],
-
-  // Spawn & Location
-  spawnMaps: ['Genesis Part 2'],
-  spawnZones: ['Rockwell\'s Garden'],
-  rarityRating: 'Rare',
-  levelRange: '1-150',
-  packBehavior: 'Solitary',
-  territorialBehavior: 'Cunning, seeks out hosts to control',
-
-  // Management Metadata
-  difficultyRating: 'Extreme',
-  beginnerFriendly: false,
-  endGameViable: true,
-  bossFightCapable: true,
-  pvpMeta: 'Ultimate',
-  resourceInvestment: 'High',
-  maintenanceLevel: 'Low',
-
-  // Badge Categories
-  badgeCategories: ['utility', 'combat', 'pvp']
-  },
-
-'Ocepechelon': {
-  // Basic Info
-  id: 'OCEPECHELON_357',
-  name: 'Ocepechelon',
-  icon: '🐢',
-  category: 'utility',
-  rarity: 'rare',
-  source: 'ARK Additions Mod',
-  variants: ['Standard'],
-
-  // Biology & Lore
-  dossierText: "Ocepechelon is a bizarre, yet fascinating marine reptile. This giant turtle is a peaceful filter-feeder, spending its days peacefully floating near the ocean's surface. Its most incredible adaptation is its ability to create a powerful vacuum with its mouth, sucking in huge volumes of water. This can be used to pull in schools of small fish for feeding, or defensively to pull in and disorient attackers. Most remarkably, this suction can even affect aerial targets, allowing the Ocepechelon to pluck unsuspecting flyers right out of the sky. Its shell can also be used as a small, mobile platform for building.",
-  temperament: 'Passive',
-  diet: 'Carnivore (filter-feeder)',
-  habitat: 'Ocean',
-  realWorldBasis: 'Ocepechelon bouyai',
-  sizeClass: 'Large',
-
-  // Taming System
-  tamingMethod: 'Passive',
-  tamingType: 'Non-violent taming with fish meat.',
-  preferredKibble: 'N/A',
-  favoriteFood: 'Raw Prime Fish Meat',
-  tamingSpeed: 'Slow',
-  torpor: {
-    baseValue: 1200,
-    depleteRate: 'N/A'
-  },
-  specialRequirements: 'Peaceful, but its suction can be dangerous if accidentally triggered.',
-
-  // Base Statistics (Level 1 Wild)
-  baseStats: {
-    health: 900,
-    stamina: 300,
-    oxygen: 1500,
-    food: 3000,
-    weight: 600,
-    melee: 35,
-    speed: 100,
-    torpor: 1200
-  },
-
-  // Stat Scaling (Per Level)
-  statScaling: {
-    health: 180,
-    stamina: 30,
-    oxygen: 150,
-    food: 300,
-    weight: 12,
-    melee: 1.75,
-    speed: 1
-  },
-
-  // Equipment & Combat
-  saddleLevel: 64,
-  saddleType: 'Ocepechelon Platform Saddle',
-  saddleArmor: 25,
-  platformLimit: 1,
-  specialAbilities: ['Vacuum suction', 'air bubble creation', 'platform saddle'],
-  attackTypes: ['Suction (pulls creatures in)', 'Bite'],
-  canCarry: ['Can build on platform saddle'],
-
-  // Utility & Roles
-  primaryRole: 'Mobile aquatic platform and crowd control',
-  secondaryRoles: ['Fish harvesting', 'anti-air defense', 'underwater base'],
-  gatheringResources: ['Fish Meat'],
-  gatheringEfficiency: {
-    'Fish Meat': 9
-  },
-  ratings: {
-    combat: 6,
-    transport: 9,
-    speed: 4,
-    survivability: 8
-  },
-
-  // Environmental Data
-  speeds: {
-    land: 0,
-    flying: 0,
-    swimming: 20,
-    climbing: 0
-  },
-  environmentalResistances: ['Pressure immunity'],
-  preferredBiome: 'Ocean',
-  temperatureRange: {
-    min: 5,
-    max: 35
-  },
-  oxygenRequirement: 'Air breathing',
-
-  // Breeding Genetics
-  breeding: {
-    cooldown: '18-48 hours',
-    gestationTime: '8 hours',
-    babyFoodConsumption: 'High',
-    maturationTime: '3 days',
-    colorRegions: 4,
-    colorRegionNames: ['Body', 'Shell', 'Head', 'Flippers'],
-    mutationChance: 7.31,
-    breedingDifficulty: 'Hard'
-  },
-
-  // Special Functions
-  workstation: 'Platform saddle allows for building',
-  resourceProduction: 'Can produce an air bubble for breathing underwater',
-  structureFunctions: 'Mobile aquatic base',
-  buffAuras: ['None'],
-  debuffAbilities: ['Suction pulls in and disorients enemies, including flyers'],
-  uniqueMechanics: ['Vacuum suction ability'],
-
-  // Spawn & Location
-  spawnMaps: ['The Island', 'The Center', 'Ragnarok (with mod)'],
-  spawnZones: ['Ocean'],
-  rarityRating: 'Rare',
-  levelRange: '1-150',
-  packBehavior: 'Solitary',
-  territorialBehavior: 'Passive',
-
-  // Management Metadata
-  difficultyRating: 'Medium',
-  beginnerFriendly: false,
-  endGameViable: true,
-  bossFightCapable: false,
-  pvpMeta: 'Medium',
-  resourceInvestment: 'Medium',
-  maintenanceLevel: 'Low',
-
-  // Badge Categories
-  badgeCategories: ['utility', 'transport']
-  },
-
-'Onchopristis': {
-  // Basic Info
-  id: 'ONCHOPRISTIS_358',
-  name: 'Onchopristis',
-  icon: '🦈',
-  category: 'combat',
-  rarity: 'uncommon',
-  source: 'ARK Additions Mod',
-  variants: ['Standard'],
-
-  // Biology & Lore
-  dossierText: "The Onchopristis, or 'Chainsaw Shark,' is a fearsome predator of the deep. Its most defining feature is its long, flat rostrum lined with sharp, tooth-like denticles, which it uses like a chainsaw to slash and tear at its prey. This attack inflicts a severe bleeding wound, draining the life from its victims over time. It is an aggressive hunter, constantly patrolling the ocean floor in search of its next meal. While its turning radius is poor, its straight-line speed is impressive, allowing it to close distances quickly. A tamed Onchopristis is a powerful aquatic combat mount, excelling at taking down large, high-health targets with its bleed-inducing saw.",
-  temperament: 'Aggressive',
-  diet: 'Carnivore',
-  habitat: 'Ocean floor',
-  realWorldBasis: 'Onchopristis (prehistoric sawfish)',
-  sizeClass: 'Large',
-
-  // Taming System
-  tamingMethod: 'Knockout',
-  tamingType: 'Violent taming with tranquilizers',
-  preferredKibble: 'Superior Kibble',
-  favoriteFood: 'Superior Kibble',
-  tamingSpeed: 'Medium',
-  torpor: {
-    baseValue: 1000,
-    depleteRate: 'Medium'
-  },
-  specialRequirements: 'Bleeding attack is dangerous during taming.',
-
-  // Base Statistics (Level 1 Wild)
-  baseStats: {
-    health: 600,
-    stamina: 350,
-    oxygen: 150,
-    food: 2000,
-    weight: 400,
-    melee: 35,
-    speed: 100,
-    torpor: 1000
-  },
-
-  // Stat Scaling (Per Level)
-  statScaling: {
-    health: 120,
-    stamina: 35,
-    oxygen: 15,
-    food: 200,
-    weight: 8,
-    melee: 1.75,
-    speed: 1
-  },
-
-  // Equipment & Combat
-  saddleLevel: 52,
-  saddleType: 'Onchopristis Saddle',
-  saddleArmor: 25,
-  platformLimit: 0,
-  specialAbilities: ['Saw slash (bleed)', 'fast forward movement'],
-  attackTypes: ['Bite', 'Saw Slash'],
-  canCarry: ['None'],
-
-  // Utility & Roles
-  primaryRole: 'Aquatic damage dealer (bleed)',
-  secondaryRoles: ['Large creature hunter', 'ocean patrol'],
-  gatheringResources: ['Meat', 'Fish Meat', 'Hide'],
-  gatheringEfficiency: {
-    Meat: 8
-  },
-  ratings: {
-    combat: 8,
-    transport: 5,
-    speed: 7,
-    survivability: 7
-  },
-
-  // Environmental Data
-  speeds: {
-    land: 0,
-    flying: 0,
-    swimming: 35,
-    climbing: 0
-  },
-  environmentalResistances: ['Pressure immunity'],
-  preferredBiome: 'Ocean floor',
-  temperatureRange: {
-    min: 0,
-    max: 30
-  },
-  oxygenRequirement: 'Water breathing only',
-
-  // Breeding Genetics
-  breeding: {
-    cooldown: '18-48 hours',
-    gestationTime: '4 hours',
-    babyFoodConsumption: 'High',
-    maturationTime: '2 days',
-    colorRegions: 4,
-    colorRegionNames: ['Body', 'Fins', 'Saw', 'Stripes'],
-    mutationChance: 7.31,
-    breedingDifficulty: 'Hard'
-  },
-
-  // Special Functions
-  workstation: 'None',
-  resourceProduction: 'None',
-  structureFunctions: 'None',
-  buffAuras: ['None'],
-  debuffAbilities: ['Saw slash inflicts a bleed effect.'],
-  uniqueMechanics: ['Bleeding attack'],
-
-  // Spawn & Location
-  spawnMaps: ['The Island', 'The Center', 'Ragnarok (with mod)'],
-  spawnZones: ['Ocean floor'],
-  rarityRating: 'Uncommon',
-  levelRange: '1-150',
-  packBehavior: 'Solitary',
-  territorialBehavior: 'Aggressive',
-
-  // Management Metadata
-  difficultyRating: 'Medium',
-  beginnerFriendly: false,
-  endGameViable: true,
-  bossFightCapable: true,
-  pvpMeta: 'Medium',
-  resourceInvestment: 'Medium',
-  maintenanceLevel: 'Medium',
-
-  // Badge Categories
-  badgeCategories: ['combat', 'boss']
-  },
-
+},
 'Otter': {
   // Basic Info
   id: 'OTTER_359',
@@ -48180,8 +40269,7 @@ const SPECIES_DATABASE = {
 
   // Badge Categories
   badgeCategories: ['utility']
-  },
-  
+},
 'Oviraptor': {
   // Basic Info
   id: 'OVIRAPTOR_360',
@@ -48312,8 +40400,8 @@ const SPECIES_DATABASE = {
 
   // Badge Categories
   badgeCategories: ['utility']
-  },
-  'Ovis': {
+},
+'Ovis': {
     // Basic Info
     id: 'OVIS_361',
     name: 'Ovis',
@@ -48444,9 +40532,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['utility', 'harvesting']
-  },
-
-  'Pachycephalosaurus': {
+},
+'Pachycephalosaurus': {
     // Basic Info
     id: 'PACHYCEPHALOSAURUS_362',
     name: 'Pachycephalosaurus',
@@ -48576,9 +40663,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['combat', 'utility']
-  },
-
-  'Pachyrhinosaurus': {
+},
+'Pachyrhinosaurus': {
     // Basic Info
     id: 'PACHYRHINOSAURUS_363',
     name: 'Pachyrhinosaurus',
@@ -48708,9 +40794,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['utility']
-  },
-
-  'Paraceratherium': {
+},
+'Paraceratherium': {
     // Basic Info
     id: 'PARACERATHERIUM_364',
     name: 'Paraceratherium',
@@ -48841,9 +40926,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['transport', 'combat', 'boss']
-  },
-
-  'Parasaur': {
+},
+'Parasaur': {
     // Basic Info
     id: 'PARASAUR_365',
     name: 'Parasaurolophus',
@@ -48973,142 +41057,8 @@ const SPECIES_DATABASE = {
 
   // Badge Categories
   badgeCategories: ['utility', 'transport'],
-  },
-
-  'Parakeet Fish School': {
-    // Basic Info
-    id: 'PARAKEET_FISH_SCHOOL_366',
-    name: 'Parakeet Fish School',
-    icon: '🐠',
-    category: 'utility',
-    rarity: 'common',
-    source: 'Genesis Part 1 DLC',
-    variants: ['Standard'],
-
-    // Biology & Lore
-    dossierText: "The Parakeet Fish School is a fascinating example of collective intelligence and symbiotic behavior within the Genesis Simulation's diverse aquatic ecosystems. What makes this school of fish truly remarkable is not the individual creatures themselves, but their ability to function as a single, coordinated entity. This superorganism can be 'tamed' as a whole, providing survivors with a unique and surprisingly effective companion. The school's primary function is to gather resources, using their collective mass to harvest aquatic plants and small organisms with incredible efficiency. When threatened, the school can disperse and reform, making it difficult for predators to target. Taming the school requires a deep understanding of their collective behavior and a gentle approach that wins the trust of the entire group.",
-    temperament: 'Passive (Collective Intelligence)',
-    diet: 'Herbivore (aquatic plants, algae)',
-    habitat: 'Shallow waters, coral reefs, aquatic gardens',
-    realWorldBasis: 'School of parrotfish',
-    sizeClass: 'Swarm',
-
-    // Taming System
-    tamingMethod: 'Passive',
-    tamingType: 'Must feed the entire school simultaneously within a short time frame.',
-    preferredKibble: 'N/A',
-    favoriteFood: 'Plant Species Y Trap',
-    tamingSpeed: 'Medium',
-    torpor: {
-      baseValue: 100,
-      depleteRate: 'N/A'
-    },
-    specialRequirements: 'Tamed as a single entity. The school follows the player and autonomously harvests resources.',
-
-    // Base Statistics (Level 1 Wild)
-    baseStats: {
-      health: 100, // (per school)
-      stamina: 200,
-      oxygen: 150,
-      food: 1000,
-      weight: 50,
-      melee: 5,
-      speed: 100,
-      torpor: 100
-    },
-
-    // Stat Scaling (Per Level)
-    statScaling: {
-      health: 20,
-      stamina: 20,
-      oxygen: 15,
-      food: 100,
-      weight: 1,
-      melee: 0.25,
-      speed: 2
-    },
-
-    // Equipment & Combat
-    saddleLevel: 0,
-    saddleType: 'Cannot be ridden',
-    saddleArmor: 0,
-    platformLimit: 0,
-    specialAbilities: ['Collective harvesting', 'swarm intelligence', 'resource gathering', 'aquatic camouflage'],
-    attackTypes: ['None (completely passive)'],
-    canCarry: ['Small items gathered by the school'],
-
-    // Utility & Roles
-    primaryRole: 'Autonomous aquatic resource gathering',
-    secondaryRoles: ['Underwater farming', 'algae collection', 'aquatic ecosystem support'],
-    gatheringResources: ['Aquatic plants', 'algae', 'small aquatic organisms'],
-    gatheringEfficiency: {
-      'Aquatic Plants': 9,
-      Algae: 8
-    },
-    ratings: {
-      combat: 0,
-      transport: 2,
-      speed: 6,
-      survivability: 5
-    },
-
-    // Environmental Data
-    speeds: {
-      land: 0,
-      flying: 0,
-      swimming: 30,
-      climbing: 0
-    },
-    environmentalResistances: ['Schooling provides protection from small predators'],
-    preferredBiome: 'Shallow waters, coral reefs, aquatic gardens',
-    temperatureRange: {
-      min: 15,
-      max: 35
-    },
-    oxygenRequirement: 'Water breathing only',
-
-    // Breeding Genetics
-    breeding: {
-      cooldown: 'Cannot breed',
-      gestationTime: 'N/A',
-      babyFoodConsumption: 'N/A',
-      maturationTime: 'N/A',
-      colorRegions: 6,
-      colorRegionNames: ['Body', 'fins', 'stripes', 'patterns', 'eyes', 'bioluminescence'],
-      mutationChance: 0,
-      breedingDifficulty: 'Cannot breed'
-    },
-
-    // Special Functions
-    workstation: 'None',
-    resourceProduction: 'Gathers aquatic resources autonomously',
-    structureFunctions: 'None',
-    buffAuras: ['None'],
-    debuffAbilities: ['None'],
-    uniqueMechanics: ['Collective intelligence system', 'school-based taming', 'autonomous harvesting'],
-
-    // Spawn & Location
-    spawnMaps: ['Genesis Part 1'],
-    spawnZones: ['Ocean biome (Genesis 1)', 'shallow water areas'],
-    rarityRating: 'Common',
-    levelRange: '1-150',
-    packBehavior: 'Large schools (50-100 individuals)',
-    territorialBehavior: 'Completely passive',
-
-    // Management Metadata
-    difficultyRating: 'Easy',
-    beginnerFriendly: true,
-    endGameViable: true,
-    bossFightCapable: false,
-    pvpMeta: 'None',
-    resourceInvestment: 'Low',
-    maintenanceLevel: 'Very Low',
-
-    // Badge Categories
-    badgeCategories: ['utility', 'harvesting']
-  },
-
-  'Party Dodo': {
+},
+'Party Dodo': {
     // Basic Info
     id: 'PARTY_DODO_367',
     name: 'Party Dodo',
@@ -49238,9 +41188,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['utility']
-  },
-
-  'Pegomastax': {
+},
+'Pegomastax': {
     // Basic Info
     id: 'PEGOMASTAX_368',
     name: 'Pegomastax',
@@ -49371,9 +41320,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['utility', 'pvp']
-  },
-
-  'Pelagornis': {
+},
+'Pelagornis': {
     // Basic Info
     id: 'PELAGORNIS_369',
     name: 'Pelagornis',
@@ -49504,9 +41452,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['utility', 'transport', 'harvesting']
-  },
-
-  'Phiomia': {
+},
+'Phiomia': {
     // Basic Info
     id: 'PHIOMIA_370',
     name: 'Phiomia',
@@ -49636,8 +41583,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['utility', 'harvesting']
-  },
-  'Piranha': {
+},
+'Piranha': {
     // Basic Info
     id: 'PIRANHA_371',
     name: 'Piranha',
@@ -49767,9 +41714,8 @@ const SPECIES_DATABASE = {
   
     // Badge Categories
     badgeCategories: ['combat']
-  },
-
-  'Plesiosaur': {
+},
+'Plesiosaur': {
     // Basic Info
     id: 'PLESIOSAUR_372',
     name: 'Plesiosaur',
@@ -49899,9 +41845,8 @@ const SPECIES_DATABASE = {
   
     // Badge Categories
     badgeCategories: ['combat', 'transport']
-  },
-
-  'Procoptodon': {
+},
+'Procoptodon': {
     // Basic Info
     id: 'PROCOPTODON_373',
     name: 'Procoptodon',
@@ -50032,9 +41977,8 @@ const SPECIES_DATABASE = {
   
     // Badge Categories
     badgeCategories: ['transport', 'utility']
-  },
-
-  'Pteranodon': {
+},
+'Pteranodon': {
     // Basic Info
     id: 'PTERANODON_374',
     name: 'Pteranodon',
@@ -50162,9 +42106,8 @@ const SPECIES_DATABASE = {
   
     // Badge Categories
     badgeCategories: ['transport']
-  },
-
-  'Pulmonoscorpius': {
+},
+'Pulmonoscorpius': {
     // Basic Info
     id: 'PULMONOSCORPIUS_375',
     name: 'Pulmonoscorpius',
@@ -50294,9 +42237,8 @@ const SPECIES_DATABASE = {
   
     // Badge Categories
     badgeCategories: ['combat', 'utility']
-  },
-
-  'Purlovia': {
+},
+'Purlovia': {
     // Basic Info
     id: 'PURLOVIA_376',
     name: 'Purlovia',
@@ -50427,9 +42369,8 @@ const SPECIES_DATABASE = {
   
     // Badge Categories
     badgeCategories: ['utility', 'combat', 'pvp']
-  },
-
-  'Quetzal': {
+},
+'Quetzal': {
     // Basic Info
     id: 'QUETZAL_377',
     name: 'Quetzalcoatlus',
@@ -50557,9 +42498,8 @@ const SPECIES_DATABASE = {
   
     // Badge Categories
     badgeCategories: ['transport', 'boss']
-  },
-
-  'R-Allosaurus': {
+},
+'R-Allosaurus': {
     // Basic Info
     id: 'R_ALLOSAURUS_378',
     name: 'R-Allosaurus',
@@ -50690,9 +42630,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['combat', 'boss']
-  },
-
-  'Raptor': {
+},
+'Raptor': {
     // Basic Info
     id: 'RAPTOR_379',
     name: 'Raptor',
@@ -50823,9 +42762,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['combat']
-  },
-
-  'Reindeer': {
+},
+'Reindeer': {
     // Basic Info
     id: 'REINDEER_380',
     name: 'Reindeer',
@@ -50955,8 +42893,8 @@ const SPECIES_DATABASE = {
   
     // Badge Categories
     badgeCategories: ['utility']
-  },
-  'Rex': {
+},
+'Rex': {
     // Basic Info
     id: 'REX_371',
     name: 'Rex',
@@ -51087,9 +43025,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['combat', 'boss']
-  },
-
-  'Rex Ghost': {
+},
+'Rex Ghost': {
     // Basic Info
     id: 'REX_GHOST_372',
     name: 'Rex Ghost',
@@ -51219,9 +43156,8 @@ const SPECIES_DATABASE = {
   
     // Badge Categories
     badgeCategories: ['combat']
-  },
-
-  'Rubble Golem': {
+},
+'Rubble Golem': {
     // Basic Info
     id: 'RUBBLE_GOLEM_373',
     name: 'Rubble Golem',
@@ -51351,9 +43287,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['boss', 'combat']
-  },
-
-  'Skeletal Bronto': {
+},
+'Skeletal Bronto': {
     // Basic Info
     id: 'SKELETAL_BRONTO_374',
     name: 'Skeletal Bronto',
@@ -51483,275 +43418,8 @@ const SPECIES_DATABASE = {
   
     // Badge Categories
     badgeCategories: ['combat']
-  },
-
-  'S-Lightning Wyvern': {
-    // Basic Info
-    id: 'S_LIGHTNING_WYVERN_375',
-    name: 'S-Lightning Wyvern',
-    icon: '⚡',
-    category: 'combat',
-    rarity: 'legendary',
-    source: 'S-Dino Variants Mod',
-    variants: ['Standard', 'S-Variant'],
-  
-    // Biology & Lore
-    dossierText: "As if a normal Wyvern wasn't terrifying enough, these anomalous variants now patrol the skies. Each S-Variant possesses the same elemental fury as its common counterpart, but with enhanced speed and physical strength. They are immune to radiation and surrounded by a faint shimmer. The S-Lightning Wyvern is a glass cannon on a colossal scale, its breath a focused beam of pure energy that melts armor and flesh alike. Its enhanced speed makes it an even more devastating aerial dogfighter, though its reduced health makes it vulnerable to focused fire.",
-    temperament: 'Extremely Aggressive',
-    diet: 'Carnivore (Wyvern Milk as baby)',
-    habitat: 'Wyvern trenches, storm-prone areas, irradiated zones',
-    realWorldBasis: 'Draco (Dragon mythology)',
-    sizeClass: 'Colossal',
-  
-    // Taming System
-    tamingMethod: 'Special (Egg Stealing)',
-    tamingType: 'Must steal and incubate Wyvern eggs, then imprint on babies.',
-    preferredKibble: 'N/A',
-    favoriteFood: 'Wyvern Milk',
-    tamingSpeed: 'N/A',
-    torpor: {
-      baseValue: 1550,
-      depleteRate: 'N/A'
-    },
-    specialRequirements: 'Must steal eggs from Wyvern nests, requires Wyvern Milk for babies, extreme heat for incubation.',
-  
-    // Base Statistics (Level 1 Wild)
-    baseStats: {
-      health: 1552.5,
-      stamina: 400,
-      oxygen: 150,
-      food: 2000,
-      weight: 400,
-      melee: 88,
-      speed: 100,
-      torpor: 1550
-    },
-  
-    // Stat Scaling (Per Level)
-    statScaling: {
-      health: 345,
-      stamina: 40,
-      oxygen: 15,
-      food: 200,
-      weight: 8,
-      melee: 4,
-      speed: 1.5
-    },
-  
-    // Equipment & Combat
-    saddleLevel: 0,
-    saddleType: 'No saddle required',
-    saddleArmor: 0,
-    platformLimit: 0,
-    specialAbilities: ['Lightning beam', 'aerial dominance', 'radiation immunity'],
-    attackTypes: ['Lightning beam (precision long-range)', 'bite', 'claw strikes'],
-    canCarry: ['Large amounts of cargo'],
-  
-    // Utility & Roles
-    primaryRole: 'Precision aerial striker and anti-armor specialist',
-    secondaryRoles: ['Single-target elimination', 'electrical warfare', 'aerial supremacy'],
-    gatheringResources: ['Raw meat', 'hide'],
-    gatheringEfficiency: {
-      Meat: 7,
-      Hide: 6
-    },
-    ratings: {
-      combat: 10,
-      transport: 8,
-      speed: 10,
-      survivability: 8
-    },
-  
-    // Environmental Data
-    speeds: {
-      land: 10,
-      flying: 50,
-      swimming: 20,
-      climbing: 0
-    },
-    environmentalResistances: ['Electrical immunity', 'shock resistance', 'radiation immunity.'],
-    preferredBiome: 'Wyvern trenches, storm-prone areas',
-    temperatureRange: {
-      min: 10,
-      max: 60
-    },
-    oxygenRequirement: 'Air breathing',
-  
-    // Breeding Genetics
-    breeding: {
-      cooldown: '18-48 hours',
-      gestationTime: '4 hours, 59 minutes',
-      babyFoodConsumption: 'Extreme (Wyvern Milk only)',
-      maturationTime: '3 days, 20 hours',
-      colorRegions: 6,
-      colorRegionNames: ['Body', 'Wings', 'Electrical Elements', 'Belly', 'Spines', 'Glow'],
-      mutationChance: 7.31,
-      breedingDifficulty: 'Extreme'
-    },
-  
-    // Special Functions
-    workstation: 'None',
-    resourceProduction: 'None',
-    structureFunctions: 'Can destroy electronics and shock systems.',
-    buffAuras: ['None'],
-    debuffAbilities: ['Lightning attacks cause electrical damage and stunning.'],
-    uniqueMechanics: ['S-Dinos can crossbreed with non-S-Dinos.'],
-  
-    // Spawn & Location
-    spawnMaps: ['Scorched Earth', 'Ragnarok', 'Valguero', 'Crystal Isles', 'Lost Island', 'Fjordur'],
-    spawnZones: ['Wyvern trenches. Has a 10% chance to spawn in place of a standard Lightning Wyvern.'],
-    rarityRating: 'Legendary',
-    levelRange: '1-190 (eggs)',
-    packBehavior: 'Small flights (2-4)',
-    territorialBehavior: 'Extremely aggressive',
-  
-    // Management Metadata
-    difficultyRating: 'Extreme',
-    beginnerFriendly: false,
-    endGameViable: true,
-    bossFightCapable: true,
-    pvpMeta: 'Ultimate',
-    resourceInvestment: 'Extreme',
-    maintenanceLevel: 'High',
-  
-    // Badge Categories
-    badgeCategories: ['boss', 'combat']
-  },
-
-  'S-Otter': {
-    // Basic Info
-    id: 'S_OTTER_376',
-    name: 'S-Otter',
-    icon: '🦦',
-    category: 'utility',
-    rarity: 'common',
-    source: 'S-Dino Variants Mod',
-    variants: ['Standard', 'Aberrant', 'X-Otter', 'S-Otter'],
-  
-    // Biology & Lore
-    dossierText: "The common Otter is a delightful and useful companion, a friendly creature that provides insulation and can gather pearls. This S-Variant is a direct upgrade. It is slightly faster and stronger, immune to radiation, and surrounded by a faint shimmer. Its friendly disposition is unchanged, and it will still eagerly accept fish from any survivor who offers them. The S-Otter's most notable change is its diet; it is a true omnivore, readily accepting meat and berries in addition to fish. This makes it far easier to raise and maintain, a small but significant quality-of-life improvement for this beloved companion.",
-    temperament: 'Friendly',
-    diet: 'Omnivore',
-    habitat: 'Rivers, coastal areas, irradiated zones',
-    realWorldBasis: 'Lutra lutra (Eurasian Otter)',
-    sizeClass: 'Small',
-  
-    // Taming System
-    tamingMethod: 'Passive',
-    tamingType: 'Must kill a fish and drag its corpse to the Otter to feed.',
-    preferredKibble: 'N/A',
-    favoriteFood: 'Fish (size matters)',
-    tamingSpeed: 'Fast',
-    torpor: {
-      baseValue: 60,
-      depleteRate: 'N/A'
-    },
-    specialRequirements: 'Unique taming mechanic requires feeding it fish corpses.',
-  
-    // Base Statistics (Level 1 Wild)
-    baseStats: {
-      health: 72,
-      stamina: 200,
-      oxygen: 150,
-      food: 450,
-      weight: 25,
-      melee: 8.8,
-      speed: 100,
-      torpor: 60
-    },
-  
-    // Stat Scaling (Per Level)
-    statScaling: {
-      health: 16,
-      stamina: 20,
-      oxygen: 15,
-      food: 45,
-      weight: 0.5,
-      melee: 0.4,
-      speed: 2
-    },
-  
-    // Equipment & Combat
-    saddleLevel: 0,
-    saddleType: 'Shoulder pet (can wear hats)',
-    saddleArmor: 0,
-    platformLimit: 0,
-    specialAbilities: ['Temperature regulation', 'pearl diving', 'artifact carrying', 'radiation immunity'],
-    attackTypes: ['Weak bite'],
-    canCarry: ['Multiple artifacts'],
-  
-    // Utility & Roles
-    primaryRole: 'Insulation provider and artifact carrier',
-    secondaryRoles: ['Pearl harvester', 'fish hunter', 'companion'],
-    gatheringResources: ['Silica Pearls', 'Black Pearls', 'Raw Fish Meat'],
-    gatheringEfficiency: {
-      'Silica Pearls': 10,
-      'Black Pearls': 8
-    },
-    ratings: {
-      combat: 2,
-      transport: 3,
-      speed: 7,
-      survivability: 5
-    },
-  
-    // Environmental Data
-    speeds: {
-      land: 25,
-      flying: 0,
-      swimming: 40,
-      climbing: 0
-    },
-    environmentalResistances: ['Thermal regulation (heating and cooling)', 'radiation immunity.'],
-    preferredBiome: 'Rivers, coastal areas, freshwater and saltwater environments',
-    temperatureRange: {
-      min: -20,
-      max: 50
-    },
-    oxygenRequirement: 'Air breathing',
-  
-    // Breeding Genetics
-    breeding: {
-      cooldown: '18-48 hours',
-      gestationTime: '1 hour, 25 minutes',
-      babyFoodConsumption: 'Low',
-      maturationTime: '1 day, 20 hours',
-      colorRegions: 5,
-      colorRegionNames: ['Body', 'Stripes', 'Belly', 'Paws', 'Tail'],
-      mutationChance: 7.31,
-      breedingDifficulty: 'Easy'
-    },
-  
-    // Special Functions
-    workstation: 'None',
-    resourceProduction: 'None',
-    structureFunctions: 'None',
-    buffAuras: ['Temperature regulation for rider'],
-    debuffAbilities: ['None'],
-    uniqueMechanics: ['Omnivorous diet. S-Dinos can crossbreed with non-S-Dinos.'],
-  
-    // Spawn & Location
-    spawnMaps: ['The Island', 'The Center', 'Ragnarok', 'Valguero', 'Crystal Isles', 'Lost Island', 'Fjordur', 'Aberration (Aberrant)'],
-    spawnZones: ['Rivers, coastal areas. Has a 10% chance to spawn in place of a standard Otter.'],
-    rarityRating: 'Common',
-    levelRange: '1-150',
-    packBehavior: 'Pairs or small groups (2-4)',
-    territorialBehavior: 'Friendly, social, approaches humans',
-  
-    // Management Metadata
-    difficultyRating: 'Easy',
-    beginnerFriendly: true,
-    endGameViable: true,
-    bossFightCapable: false,
-    pvpMeta: 'Medium',
-    resourceInvestment: 'Very Low',
-    maintenanceLevel: 'Very Low',
-  
-    // Badge Categories
-    badgeCategories: ['utility']
-  },
-
-  'Sabertooth Salmon': {
+},
+'Sabertooth Salmon': {
     // Basic Info
     id: 'SABERTOOTH_SALMON_377',
     name: 'Sabertooth Salmon',
@@ -51881,9 +43549,8 @@ const SPECIES_DATABASE = {
   
     // Badge Categories
     badgeCategories: ['utility']
-  },
-
-  'Seeker': {
+},
+'Seeker': {
     // Basic Info
     id: 'SEEKER_378',
     name: 'Seeker',
@@ -52013,270 +43680,8 @@ const SPECIES_DATABASE = {
   
     // Badge Categories
     badgeCategories: ['combat']
-  },
-
-  'Shadowmane': {
-    // Basic Info
-    id: 'SHADOWMANE_379',
-    name: 'Shadowmane',
-    icon: '🦁',
-    category: 'combat',
-    rarity: 'rare',
-    source: 'Genesis Part 2 DLC',
-    variants: ['Standard'],
-  
-    // Biology & Lore
-    dossierText: "The Shadowmane is a magnificent and deadly predator that perfectly blends the features of a lion and a fish. This chimeric creature is a master of stealth, capable of turning invisible at will, making it a terrifying ambush predator. What makes the Shadowmane truly exceptional is its array of powerful abilities. It can perform a teleporting dash attack, stun groups of enemies with a powerful roar, and provide a natural armor buff to its rider. It is equally at home on land and in water, a true amphibious hunter. Taming a Shadowmane is a unique challenge, requiring survivors to approach the creature while it sleeps and feed it in a display of trust.",
-    temperament: 'Aggressive',
-    diet: 'Piscivore',
-    habitat: 'Rockwell\'s Garden (Genesis 2), twilight areas',
-    realWorldBasis: 'Chimera (lion/fish hybrid)',
-    sizeClass: 'Large',
-  
-    // Taming System
-    tamingMethod: 'Passive',
-    tamingType: 'Must sneak up with Ghillie Armor and feed it while it sleeps.',
-    preferredKibble: 'N/A',
-    favoriteFood: 'Fish Baskets (filled with fish)',
-    tamingSpeed: 'Slow',
-    torpor: {
-      baseValue: 800,
-      depleteRate: 'N/A'
-    },
-    specialRequirements: 'Only tameable while sleeping during the day. It will wake up and become aggressive if you get too close or make too much noise.',
-  
-    // Base Statistics (Level 1 Wild)
-    baseStats: {
-      health: 700,
-      stamina: 400,
-      oxygen: 150,
-      food: 2000,
-      weight: 350,
-      melee: 35,
-      speed: 100,
-      torpor: 800
-    },
-  
-    // Stat Scaling (Per Level)
-    statScaling: {
-      health: 140,
-      stamina: 40,
-      oxygen: 15,
-      food: 200,
-      weight: 7,
-      melee: 1.75,
-      speed: 1.5
-    },
-  
-    // Equipment & Combat
-    saddleLevel: 0,
-    saddleType: 'No saddle required',
-    saddleArmor: 0,
-    platformLimit: 0,
-    specialAbilities: ['Invisibility (camo)', 'teleport dash', 'stun roar', 'natural armor', 'pack bonus', 'amphibious'],
-    attackTypes: ['Bite', 'claw swipe', 'teleport attack', 'stun roar'],
-    canCarry: ['Rider gets natural armor buff'],
-  
-    // Utility & Roles
-    primaryRole: 'Stealth combat and all-terrain mount',
-    secondaryRoles: ['Ambusher', 'PVP specialist', 'amphibious exploration'],
-    gatheringResources: ['Fish, meat, hide'],
-    gatheringEfficiency: {
-      Fish: 9,
-      Meat: 7
-    },
-    ratings: {
-      combat: 10,
-      transport: 7,
-      speed: 8,
-      survivability: 9
-    },
-  
-    // Environmental Data
-    speeds: {
-      land: 35,
-      flying: 0,
-      swimming: 40,
-      climbing: 0
-    },
-    environmentalResistances: ['Natural armor provides damage resistance'],
-    preferredBiome: 'Twilight zones, corrupted gardens, amphibious areas',
-    temperatureRange: {
-      min: 0,
-      max: 50
-    },
-    oxygenRequirement: 'Air and water breathing',
-  
-    // Breeding Genetics
-    breeding: {
-      cooldown: '18-48 hours',
-      gestationTime: '7 hours, 56 minutes',
-      babyFoodConsumption: 'High',
-      maturationTime: '3 days, 20 hours',
-      colorRegions: 6,
-      colorRegionNames: ['Body', 'mane', 'fins', 'stripes', 'glow', 'patterns'],
-      mutationChance: 7.31,
-      breedingDifficulty: 'Hard'
-    },
-  
-    // Special Functions
-    workstation: 'None',
-    resourceProduction: 'None',
-    structureFunctions: 'None',
-    buffAuras: ['Pack leader provides damage and resistance buff to mate.'],
-    debuffAbilities: ['Stun roar incapacitates enemies.'],
-    uniqueMechanics: ['Invisibility', 'teleport dash', 'unique passive taming method'],
-  
-    // Spawn & Location
-    spawnMaps: ['Genesis Part 2', 'Fjordur'],
-    spawnZones: ['Rockwell\'s Garden', 'Asgard (Fjordur)'],
-    rarityRating: 'Rare',
-    levelRange: '1-150',
-    packBehavior: 'Small prides (2-4)',
-    territorialBehavior: 'Aggressive, uses stealth to hunt',
-  
-    // Management Metadata
-    difficultyRating: 'Extreme',
-    beginnerFriendly: false,
-    endGameViable: true,
-    bossFightCapable: true,
-    pvpMeta: 'Ultimate',
-    resourceInvestment: 'Very High',
-    maintenanceLevel: 'Medium',
-  
-    // Badge Categories
-    badgeCategories: ['combat', 'boss', 'pvp']
-  },
-  
-  'Sinomacrops': {
-    // Basic Info
-    id: 'SINOMACROPS_380',
-    name: 'Sinomacrops',
-    icon: '🦋',
-    category: 'utility',
-    rarity: 'common',
-    source: 'Lost Island DLC',
-    variants: ['Standard'],
-  
-    // Biology & Lore
-    dossierText: "The Sinomacrops is a small, feathered pterosaur with an incredibly lightweight skeleton and a friendly, curious nature. What makes this little creature truly exceptional is its ability to act as a living glider pack. When perched on a survivor's back, it can unfurl its wings and allow for a long, controlled glide, effectively a reusable parachute. It's also fiercely protective of its chosen companion, capable of screeching to scare away smaller predators. The Sinomacrops has a particular fondness for Chitin, which it will eagerly accept from survivors. Its combination of flight, protection, and companionship makes it one of the most useful and beloved shoulder pets on the island.",
-    temperament: 'Friendly (Curious)',
-    diet: 'Insectivore (Chitin)',
-    habitat: 'Jungles, bamboo forests, riverbanks',
-    realWorldBasis: 'Sinomacrops bondei',
-    sizeClass: 'Tiny',
-  
-    // Taming System
-    tamingMethod: 'Passive',
-    tamingType: 'Must be fed Chitin without startling it.',
-    preferredKibble: 'N/A',
-    favoriteFood: 'Chitin',
-    tamingSpeed: 'Fast',
-    torpor: {
-      baseValue: 50,
-      depleteRate: 'N/A'
-    },
-    specialRequirements: 'Must approach slowly with Chitin in the last hotbar slot. Will flee if startled.',
-  
-    // Base Statistics (Level 1 Wild)
-    baseStats: {
-      health: 80,
-      stamina: 150,
-      oxygen: 150,
-      food: 500,
-      weight: 30,
-      melee: 8,
-      speed: 100,
-      torpor: 50
-    },
-  
-    // Stat Scaling (Per Level)
-    statScaling: {
-      health: 16,
-      stamina: 15,
-      oxygen: 15,
-      food: 50,
-      weight: 0.6,
-      melee: 0.4,
-      speed: 2
-    },
-  
-    // Equipment & Combat
-    saddleLevel: 0,
-    saddleType: 'Shoulder pet (acts as glider pack/jetpack)',
-    saddleArmor: 0,
-    platformLimit: 0,
-    specialAbilities: ['Gliding', 'parachute mode', 'scare small creatures', 'weight reduction for items in its inventory'],
-    attackTypes: ['Bite (weak)', 'screech (scares small creatures)'],
-    canCarry: ['Cannot carry survivor, is carried'],
-  
-    // Utility & Roles
-    primaryRole: 'Personal glider and utility companion',
-    secondaryRoles: ['Reusable parachute', 'early warning system', 'lightweight transport'],
-    gatheringResources: ['None'],
-    gatheringEfficiency: {},
-    ratings: {
-      combat: 2,
-      transport: 5,
-      speed: 7,
-      survivability: 4
-    },
-  
-    // Environmental Data
-    speeds: {
-      land: 15,
-      flying: 30,
-      swimming: 10,
-      climbing: 0
-    },
-    environmentalResistances: ['None'],
-    preferredBiome: 'Jungles, bamboo forests, riverbanks',
-    temperatureRange: {
-      min: 15,
-      max: 40
-    },
-    oxygenRequirement: 'Air breathing',
-  
-    // Breeding Genetics
-    breeding: {
-      cooldown: '18-48 hours',
-      gestationTime: '1 hour, 25 minutes',
-      babyFoodConsumption: 'Low',
-      maturationTime: '1 day, 20 hours',
-      colorRegions: 6,
-      colorRegionNames: ['Body', 'wings', 'feathers', 'patterns', 'head', 'eyes'],
-      mutationChance: 7.31,
-      breedingDifficulty: 'Easy'
-    },
-  
-    // Special Functions
-    workstation: 'None',
-    resourceProduction: 'None',
-    structureFunctions: 'None',
-    buffAuras: ['None'],
-    debuffAbilities: ['Screech scares away small creatures'],
-    uniqueMechanics: ['Glider pack/jetpack functionality', '50% weight reduction for items in its inventory'],
-  
-    // Spawn & Location
-    spawnMaps: ['Lost Island', 'Fjordur'],
-    spawnZones: ['Jungles', 'bamboo forests', 'river areas'],
-    rarityRating: 'Common',
-    levelRange: '1-150',
-    packBehavior: 'Small flocks (3-5)',
-    territorialBehavior: 'Friendly and curious, but easily startled',
-  
-    // Management Metadata
-    difficultyRating: 'Easy',
-    beginnerFriendly: true,
-    endGameViable: true,
-    bossFightCapable: false,
-    pvpMeta: 'Medium',
-    resourceInvestment: 'Very Low',
-    maintenanceLevel: 'Very Low',
-  
-  // Badge Categories
-  badgeCategories: ['utility', 'transport'],
-  'Skeletal Carnotaurus': {
+},
+'Skeletal Carnotaurus': {
     // Basic Info
     id: 'SKELETAL_CARNOTAURUS_381',
     name: 'Skeletal Carnotaurus',
@@ -52406,9 +43811,8 @@ const SPECIES_DATABASE = {
   
     // Badge Categories
     badgeCategories: ['combat']
-  },
-
-  'Skeletal Giganotosaurus': {
+},
+'Skeletal Giganotosaurus': {
     // Basic Info
     id: 'SKELETAL_GIGANOTOSAURUS_382',
     name: 'Skeletal Giganotosaurus',
@@ -52538,9 +43942,8 @@ const SPECIES_DATABASE = {
   
     // Badge Categories
     badgeCategories: ['combat']
-  },
-
-  'Skeletal Jerboa': {
+},
+'Skeletal Jerboa': {
     // Basic Info
     id: 'SKELETAL_JERBOA_383',
     name: 'Skeletal Jerboa',
@@ -52670,9 +44073,8 @@ const SPECIES_DATABASE = {
   
     // Badge Categories
     badgeCategories: ['combat']
-  },
-
-  'Skeletal Quetzal': {
+},
+'Skeletal Quetzal': {
     // Basic Info
     id: 'SKELETAL_QUETZAL_384',
     name: 'Skeletal Quetzal',
@@ -52802,9 +44204,8 @@ const SPECIES_DATABASE = {
   
     // Badge Categories
     badgeCategories: ['combat']
-  },
-
-  'Skeletal Raptor': {
+},
+'Skeletal Raptor': {
     // Basic Info
     id: 'SKELETAL_RAPTOR_385',
     name: 'Skeletal Raptor',
@@ -52934,9 +44335,8 @@ const SPECIES_DATABASE = {
   
     // Badge Categories
     badgeCategories: ['combat']
-  },
-
-  'Skeletal Rex': {
+},
+'Skeletal Rex': {
     // Basic Info
     id: 'SKELETAL_REX_386',
     name: 'Skeletal Rex',
@@ -53066,9 +44466,8 @@ const SPECIES_DATABASE = {
   
     // Badge Categories
     badgeCategories: ['combat']
-  },
-
-  'Skeletal Stego': {
+},
+'Skeletal Stego': {
     // Basic Info
     id: 'SKELETAL_STEGO_387',
     name: 'Skeletal Stego',
@@ -53198,9 +44597,8 @@ const SPECIES_DATABASE = {
   
     // Badge Categories
     badgeCategories: ['combat']
-  },
-
-  'Skeletal Trike': {
+},
+'Skeletal Trike': {
     // Basic Info
     id: 'SKELETAL_TRIKE_388',
     name: 'Skeletal Trike',
@@ -53330,9 +44728,8 @@ const SPECIES_DATABASE = {
   
     // Badge Categories
     badgeCategories: ['combat']
-  },
-
-  'Snow Owl Ghost': {
+},
+'Snow Owl Ghost': {
     // Basic Info
     id: 'SNOW_OWL_GHOST_389',
     name: 'Snow Owl Ghost',
@@ -53462,9 +44859,8 @@ const SPECIES_DATABASE = {
   
     // Badge Categories
     badgeCategories: ['combat']
-  },
-
-  'Spino': {
+},
+'Spino': {
     // Basic Info
     id: 'SPINOSAURUS_083', // Matched ID to existing S-Variant
     name: 'Spinosaurus',
@@ -53595,9 +44991,8 @@ const SPECIES_DATABASE = {
   
     // Badge Categories
     badgeCategories: ['combat', 'boss']
-  },
-  },
-  'Spirit Dire Bear': {
+},
+'Spirit Dire Bear': {
     // Basic Info
     id: 'SPIRIT_DIRE_BEAR_391',
     name: 'Spirit Dire Bear',
@@ -53727,9 +45122,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['combat']
-  },
-
-  'Steinbjörn': {
+},
+'Steinbjörn': {
     // Basic Info
     id: 'STEINBJORN_392',
     name: 'Steinbjörn',
@@ -53859,9 +45253,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['boss', 'combat']
-  },
-
-  'Super Turkey': {
+},
+'Super Turkey': {
     // Basic Info
     id: 'SUPER_TURKEY_393',
     name: 'Super Turkey',
@@ -53991,9 +45384,8 @@ const SPECIES_DATABASE = {
   
     // Badge Categories
     badgeCategories: ['combat']
-  },
-
-  'Surface Reaper King Ghost': {
+},
+'Surface Reaper King Ghost': {
     // Basic Info
     id: 'SURFACE_REAPER_KING_GHOST_394',
     name: 'Surface Reaper King Ghost',
@@ -54123,9 +45515,8 @@ const SPECIES_DATABASE = {
   
     // Badge Categories
     badgeCategories: ['combat']
-  },
-
-  'Tek Stryder': {
+},
+'Tek Stryder': {
     // Basic Info
     id: 'TEK_STRYDER_395',
     name: 'Tek Stryder',
@@ -54255,9 +45646,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['utility', 'harvesting', 'transport', 'combat', 'boss']
-  },
-
-  'Titanomyrma': {
+},
+'Titanomyrma': {
     // Basic Info
     id: 'TITANOMYRMA_396',
     name: 'Titanomyrma',
@@ -54388,9 +45778,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['utility']
-  },
-
-  'Trilobite': {
+},
+'Trilobite': {
     // Basic Info
     id: 'TRILOBITE_397',
     name: 'Trilobite',
@@ -54522,9 +45911,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['utility', 'harvesting']
-  },
-
-  'Tropeognathus': {
+},
+'Tropeognathus': {
     // Basic Info
     id: 'TROPEOGNATHUS_398',
     name: 'Tropeognathus',
@@ -54654,9 +46042,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['combat', 'transport', 'pvp']
-  },
-
-  'Unicorn': {
+},
+'Unicorn': {
     // Basic Info
     id: 'UNICORN_399',
     name: 'Unicorn',
@@ -54786,141 +46173,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['utility', 'transport']
-  },
-
-  'Water Wyvern': {
-    // Basic Info
-    id: 'WATER_WYVERN_400',
-    name: 'Water Wyvern',
-    icon: '💧',
-    category: 'combat',
-    rarity: 'legendary',
-    source: 'ARK Additions Mod',
-    variants: ['Wyvern Variant'],
-
-    // Biology & Lore
-    dossierText: "A majestic and powerful variant of the Wyvern that has mastered the element of water. The Water Wyvern is a creature of the coasts and oceans, capable of seamlessly transitioning between the sky and the sea. Its breath weapon is not fire or lightning, but a high-pressure jet of water that can strip flesh from bone and knock back the heaviest of foes. It is also an incredibly strong swimmer, rivaling many native aquatic creatures. Taming a Water Wyvern requires the same daring feat as any other: stealing an egg from its heavily guarded nest and raising the hatchling as your own. A tamed Water Wyvern is the ultimate amphibious assault mount, a master of both air and sea.",
-    temperament: 'Extremely Aggressive',
-    diet: 'Carnivore (Wyvern Milk as baby)',
-    habitat: 'Coastal cliffs, underwater trenches, wyvern nests near water',
-    realWorldBasis: 'Sea serpent / Dragon',
-    sizeClass: 'Colossal',
-
-    // Taming System
-    tamingMethod: 'Special (Egg Stealing)',
-    tamingType: 'Must steal and incubate Wyvern eggs, then imprint on babies.',
-    preferredKibble: 'N/A',
-    favoriteFood: 'Wyvern Milk',
-    tamingSpeed: 'N/A',
-    torpor: {
-      baseValue: 1550,
-      depleteRate: 'N/A'
-    },
-    specialRequirements: 'Must steal eggs from Wyvern nests, requires Wyvern Milk for babies.',
-
-    // Base Statistics (Level 1 Wild)
-    baseStats: {
-      health: 1725,
-      stamina: 400,
-      oxygen: 300,
-      food: 2000,
-      weight: 400,
-      melee: 80,
-      speed: 100,
-      torpor: 1550
-    },
-
-    // Stat Scaling (Per Level)
-    statScaling: {
-      health: 345,
-      stamina: 40,
-      oxygen: 30,
-      food: 200,
-      weight: 8,
-      melee: 4,
-      speed: 1.5
-    },
-
-    // Equipment & Combat
-    saddleLevel: 0,
-    saddleType: 'No saddle required',
-    saddleArmor: 0,
-    platformLimit: 0,
-    specialAbilities: ['Water breath (high knockback)', 'amphibious', 'riptide spin attack'],
-    attackTypes: ['Water Jet', 'Bite', 'Claw Swipe', 'Riptide Spin'],
-    canCarry: ['Large amounts of cargo'],
-
-    // Utility & Roles
-    primaryRole: 'Amphibious assault and aerial/aquatic combat',
-    secondaryRoles: ['Naval warfare', 'coastal patrol', 'aquatic exploration'],
-    gatheringResources: ['Meat', 'Hide', 'Fish Meat'],
-    gatheringEfficiency: {
-      'Fish Meat': 9,
-      Meat: 7
-    },
-    ratings: {
-      combat: 9,
-      transport: 8,
-      speed: 9,
-      survivability: 9
-    },
-
-    // Environmental Data
-    speeds: {
-      land: 10,
-      flying: 50,
-      swimming: 50,
-      climbing: 0
-    },
-    environmentalResistances: ['Water provides a buff'],
-    preferredBiome: 'Oceans, coasts',
-    temperatureRange: {
-      min: 0,
-      max: 50
-    },
-    oxygenRequirement: 'Air and water breathing',
-
-    // Breeding Genetics
-    breeding: {
-      cooldown: '18-48 hours',
-      gestationTime: '5 hours',
-      babyFoodConsumption: 'Extreme (Wyvern Milk only)',
-      maturationTime: '3 days, 20 hours',
-      colorRegions: 6,
-      colorRegionNames: ['Body', 'Wings', 'Spines', 'Belly', 'Accents', 'Glow'],
-      mutationChance: 7.31,
-      breedingDifficulty: 'Extreme'
-    },
-
-    // Special Functions
-    workstation: 'None',
-    resourceProduction: 'None',
-    structureFunctions: 'None',
-    buffAuras: ['None'],
-    debuffAbilities: ['Water jet has immense knockback.'],
-    uniqueMechanics: ['Egg stealing acquisition', 'amphibious nature', 'water jet breath'],
-
-    // Spawn & Location
-    spawnMaps: ['The Center', 'Ragnarok', 'Valguero (with mod)'],
-    spawnZones: ['Wyvern trenches near water', 'coastal cliffs'],
-    rarityRating: 'Legendary',
-    levelRange: '1-190 (eggs)',
-    packBehavior: 'Small flights (2-4)',
-    territorialBehavior: 'Extremely aggressive, defends nesting areas',
-
-    // Management Metadata
-    difficultyRating: 'Extreme',
-    beginnerFriendly: false,
-    endGameViable: true,
-    bossFightCapable: true,
-    pvpMeta: 'Very High',
-    resourceInvestment: 'Extreme',
-    maintenanceLevel: 'High',
-
-    // Badge Categories
-    badgeCategories: ['boss', 'combat']
-  },
-  'X-Allosaurus': {
+},
+'X-Allosaurus': {
     // Basic Info
     id: 'X_ALLOSAURUS_401',
     name: 'X-Allosaurus',
@@ -55051,9 +46305,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['combat', 'boss']
-  },
-
-  'X-Ankylosaurus': {
+},
+'X-Ankylosaurus': {
     // Basic Info
     id: 'X_ANKYLOSAURUS_402',
     name: 'X-Ankylosaurus',
@@ -55186,9 +46439,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['harvesting', 'combat']
-  },
-
-  'X-Argentavis': {
+},
+'X-Argentavis': {
     // Basic Info
     id: 'X_ARGENTAVIS_403',
     name: 'X-Argentavis',
@@ -55319,9 +46571,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['transport', 'combat', 'utility']
-  },
-
-  'X-Basilosaurus': {
+},
+'X-Basilosaurus': {
     // Basic Info
     id: 'X_BASILOSAURUS_404',
     name: 'X-Basilosaurus',
@@ -55452,9 +46703,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['utility', 'transport']
-  },
-
-  'X-Dunkleosteus': {
+},
+'X-Dunkleosteus': {
     // Basic Info
     id: 'X_DUNKLEOSTEUS_405',
     name: 'X-Dunkleosteus',
@@ -55586,9 +46836,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['harvesting', 'combat', 'utility']
-  },
-
-  'X-Ichthyosaurus': {
+},
+'X-Ichthyosaurus': {
     // Basic Info
     id: 'X_ICHTHYOSAURUS_406',
     name: 'X-Ichthyosaurus',
@@ -55716,9 +46965,8 @@ const SPECIES_DATABASE = {
   
     // Badge Categories
     badgeCategories: ['transport']
-  },
-
-  'X-Megalodon': {
+},
+'X-Megalodon': {
     // Basic Info
     id: 'X_MEGALODON_407',
     name: 'X-Megalodon',
@@ -55849,9 +47097,8 @@ const SPECIES_DATABASE = {
   
     // Badge Categories
     badgeCategories: ['combat']
-  },
-
-  'X-Mosasaurus': {
+},
+'X-Mosasaurus': {
     // Basic Info
     id: 'X_MOSASAURUS_408',
     name: 'X-Mosasaurus',
@@ -55981,9 +47228,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['combat', 'transport']
-  },
-
-  'X-Otter': {
+},
+'X-Otter': {
     // Basic Info
     id: 'X_OTTER_409',
     name: 'X-Otter',
@@ -56114,9 +47360,8 @@ const SPECIES_DATABASE = {
   
     // Badge Categories
     badgeCategories: ['utility']
-  },
-
-  'X-Paraceratherium': {
+},
+'X-Paraceratherium': {
     // Basic Info
     id: 'X_PARACERATHERIUM_410',
     name: 'X-Paraceratherium',
@@ -56246,8 +47491,8 @@ const SPECIES_DATABASE = {
   
     // Badge Categories
     badgeCategories: ['transport', 'combat', 'boss']
-  },
-  'X-Parasaur': {
+},
+'X-Parasaur': {
     // Basic Info
     id: 'X_PARASAUR_411',
     name: 'X-Parasaur',
@@ -56377,9 +47622,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['utility', 'transport']
-  },
-
-  'X-Raptor': {
+},
+'X-Raptor': {
     // Basic Info
     id: 'X_RAPTOR_412',
     name: 'X-Raptor',
@@ -56510,9 +47754,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['combat']
-  },
-
-  'X-Rex': {
+},
+'X-Rex': {
     // Basic Info
     id: 'X_REX_413',
     name: 'X-Rex',
@@ -56642,9 +47885,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['combat', 'boss']
-  },
-
-  'X-Rock Elemental': {
+},
+'X-Rock Elemental': {
     // Basic Info
     id: 'X_ROCK_ELEMENTAL_414',
     name: 'X-Rock Elemental',
@@ -56776,9 +48018,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['combat', 'harvesting', 'boss']
-  },
-
-  'X-Sabertooth': {
+},
+'X-Sabertooth': {
     // Basic Info
     id: 'X_SABERTOOTH_415',
     name: 'X-Sabertooth',
@@ -56909,9 +48150,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['combat', 'boss']
-  },
-
-  'X-Sabertooth Salmon': {
+},
+'X-Sabertooth Salmon': {
     // Basic Info
     id: 'X_SABERTOOTH_SALMON_416',
     name: 'X-Sabertooth Salmon',
@@ -57041,9 +48281,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['utility']
-  },
-
-  'X-Spino': {
+},
+'X-Spino': {
     // Basic Info
     id: 'X_SPINO_417',
     name: 'X-Spino',
@@ -57173,9 +48412,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['combat', 'boss']
-  },
-
-  'X-Tapejara': {
+},
+'X-Tapejara': {
     // Basic Info
     id: 'X_TAPEJARA_418',
     name: 'X-Tapejara',
@@ -57305,9 +48543,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['transport', 'combat']
-  },
-
-  'X-Triceratops': {
+},
+'X-Triceratops': {
     // Basic Info
     id: 'X_TRICERATOPS_419',
     name: 'X-Triceratops',
@@ -57437,9 +48674,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['harvesting', 'combat', 'boss']
-  },
-
-  'X-Woolly Rhino': {
+},
+'X-Woolly Rhino': {
     // Basic Info
     id: 'X_WOOLLY_RHINO_420',
     name: 'X-Woolly Rhino',
@@ -57700,141 +48936,12 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['combat', 'boss']
-  },
-
-  'Yeti': {
-    // Basic Info
-    id: 'YETI_422',
-    name: 'Yeti',
-    icon: '🦍',
-    category: 'combat',
-    rarity: 'rare',
-    source: 'Base Game',
-    variants: ['Gigantopithecus Variant'],
-
-    // Biology & Lore
-    dossierText: "The Yeti is a monstrous, white-furred variant of the Gigantopithecus that dwells in the island's most frigid and dangerous ice caves. It is far larger and more powerful than its jungle-dwelling cousin, acting as a fierce guardian of the artifacts hidden within its domain. The Yeti is untamable and incredibly aggressive, attacking any intruder on sight with immense strength. Its powerful blows can send survivors flying, and it can throw massive snowballs to attack from a distance. It is a formidable mini-boss that must be overcome to progress.",
-    temperament: 'Aggressive',
-    diet: 'N/A',
-    habitat: 'Ice Caves',
-    realWorldBasis: 'Yeti (Mythology)',
-    sizeClass: 'Massive',
-
-    // Taming System
-    tamingMethod: 'Cannot be tamed',
-    tamingType: 'N/A',
-    preferredKibble: 'N/A',
-    favoriteFood: 'N/A',
-    tamingSpeed: 'N/A',
-    torpor: {
-      baseValue: 5000,
-      depleteRate: 'N/A'
-    },
-    specialRequirements: 'Untamable mini-boss found in specific caves.',
-
-    // Base Statistics (Level 1 Wild)
-    baseStats: {
-      health: 20000,
-      stamina: 600,
-      oxygen: 150,
-      food: 3000,
-      weight: 800,
-      melee: 300,
-      speed: 100,
-      torpor: 5000
-    },
-
-    // Stat Scaling (Per Level)
-    statScaling: {
-      health: 4000,
-      stamina: 60,
-      oxygen: 15,
-      food: 300,
-      weight: 16,
-      melee: 15,
-      speed: 0
-    },
-
-    // Equipment & Combat
-    saddleLevel: 0,
-    saddleType: 'N/A',
-    saddleArmor: 0,
-    platformLimit: 0,
-    specialAbilities: ['Snowball throw', 'ground pound'],
-    attackTypes: ['Punch', 'Ground Pound', 'Snowball Throw'],
-    canCarry: ['N/A'],
-
-    // Utility & Roles
-    primaryRole: 'Cave Mini-Boss',
-    secondaryRoles: ['Artifact guardian'],
-    gatheringResources: ['Pelt', 'Raw Prime Meat'],
-    gatheringEfficiency: {
-      'Pelt': 9
-    },
-    ratings: {
-      combat: 8,
-      transport: 0,
-      speed: 5,
-      survivability: 9
-    },
-
-    // Environmental Data
-    speeds: {
-      land: 22,
-      flying: 0,
-      swimming: 15,
-      climbing: 0
-    },
-    environmentalResistances: ['Cold immunity'],
-    preferredBiome: 'Ice caves',
-    temperatureRange: {
-      min: -100,
-      max: 0
-    },
-    oxygenRequirement: 'Air breathing',
-
-    // Breeding Genetics
-    breeding: {
-      cooldown: 'Cannot breed',
-      gestationTime: 'N/A',
-      babyFoodConsumption: 'N/A',
-      maturationTime: 'N/A',
-      colorRegions: 1,
-      colorRegionNames: ['Body'],
-      mutationChance: 0,
-      breedingDifficulty: 'Cannot breed'
-    },
-
-    // Special Functions
-    workstation: 'None',
-    resourceProduction: 'None',
-    structureFunctions: 'None',
-    buffAuras: ['None'],
-    debuffAbilities: ['Ground pound has knockback'],
-    uniqueMechanics: ['Mini-boss AI'],
-
-    // Spawn & Location
-    spawnMaps: ['The Island', 'The Center', 'Ragnarok', 'Valguero', 'Fjordur'],
-    spawnZones: ['Snow caves'],
-    rarityRating: 'Rare',
-    levelRange: '1-150',
-    packBehavior: 'Solitary',
-    territorialBehavior: 'Aggressive',
-
-    // Management Metadata
-    difficultyRating: 'N/A',
-    beginnerFriendly: false,
-    endGameViable: true,
-    bossFightCapable: false,
-    pvpMeta: 'None',
-    resourceInvestment: 'N/A',
-    maintenanceLevel: 'N/A',
-
-    // Badge Categories
-    badgeCategories: ['combat']
-  },
-
-  'Zombie Fire Wyvern': {
+},
+'X-Yutyrannus': {
+  category: "combat",
+  source: "Genesis Part 1 DLC"
+},
+'Zombie Fire Wyvern': {
     // Basic Info
     id: 'ZOMBIE_FIRE_WYVERN_423',
     name: 'Zombie Fire Wyvern',
@@ -57962,9 +49069,8 @@ const SPECIES_DATABASE = {
   
     // Badge Categories
     badgeCategories: ['combat', 'boss']
-  },
-
-  'Zombie Lightning Wyvern': {
+},
+'Zombie Lightning Wyvern': {
     // Basic Info
     id: 'ZOMBIE_LIGHTNING_WYVERN_424',
     name: 'Zombie Lightning Wyvern',
@@ -58092,9 +49198,8 @@ const SPECIES_DATABASE = {
   
     // Badge Categories
     badgeCategories: ['combat', 'boss']
-  },
-
-  'Zombie Poison Wyvern': {
+},
+'Zombie Poison Wyvern': {
     // Basic Info
     id: 'ZOMBIE_POISON_WYVERN_425',
     name: 'Zombie Poison Wyvern',
@@ -58222,9 +49327,8 @@ const SPECIES_DATABASE = {
   
     // Badge Categories
     badgeCategories: ['combat', 'boss']
-  },
-
-  'Zomdodo': {
+},
+'Zomdodo': {
     // Basic Info
     id: 'ZOMDODO_426',
     name: 'Zomdodo',
@@ -58352,141 +49456,8 @@ const SPECIES_DATABASE = {
   
     // Badge Categories
     badgeCategories: ['combat']
-  },
-
-  'Wyvern Forest': {
-    // Basic Info
-    id: 'WYVERN_FOREST_427',
-    name: 'Forest Wyvern',
-    icon: '🌳',
-    category: 'boss',
-    rarity: 'mythical',
-    source: 'Fjordur DLC',
-    variants: ['World Boss'],
-  
-    // Biology & Lore
-    dossierText: "A guardian of the verdant realms of Fjordur, the Forest Wyvern is a creature of immense natural power. It is not a true wyvern of fire or lightning, but an elemental being of wood and leaf, summoned to test the worth of survivors. Its breath is not flame, but a torrent of sharp splinters, and it can entangle foes in grasping roots that erupt from the ground. It is a protector of its domain, and defeating it is a key step for those who wish to challenge the final master of the ARK.",
-    temperament: 'Aggressive (Boss)',
-    diet: 'N/A (Elemental)',
-    habitat: 'Boss Arena (Vanaheim)',
-    realWorldBasis: 'Forest Dragon (Mythology)',
-    sizeClass: 'Colossal',
-  
-    // Taming System
-    tamingMethod: 'Cannot be tamed',
-    tamingType: 'N/A',
-    preferredKibble: 'N/A',
-    favoriteFood: 'N/A',
-    tamingSpeed: 'N/A',
-    torpor: {
-      baseValue: 200000,
-      depleteRate: 'N/A'
-    },
-    specialRequirements: 'World boss that must be summoned.',
-  
-    // Base Statistics (Level 1 Wild)
-    baseStats: {
-      health: 325000,
-      stamina: 1500,
-      oxygen: 150,
-      food: 5000,
-      weight: 1000,
-      melee: 450,
-      speed: 100,
-      torpor: 200000
-    },
-  
-    // Stat Scaling (Per Level)
-    statScaling: {
-      health: 0,
-      stamina: 0,
-      oxygen: 0,
-      food: 0,
-      weight: 0,
-      melee: 0,
-      speed: 0
-    },
-  
-    // Equipment & Combat
-    saddleLevel: 0,
-    saddleType: 'N/A',
-    saddleArmor: 0,
-    platformLimit: 0,
-    specialAbilities: ['Splinter breath', 'root trap'],
-    attackTypes: ['Bite', 'Splinter Breath', 'Root Grab'],
-    canCarry: ['N/A'],
-  
-    // Utility & Roles
-    primaryRole: 'World Boss',
-    secondaryRoles: ['Progression gate for final boss'],
-    gatheringResources: ['Element', 'Forest Wyvern Trophy'],
-    gatheringEfficiency: {
-      'Boss rewards': 10
-    },
-    ratings: {
-      combat: 10,
-      transport: 0,
-      speed: 8,
-      survivability: 9
-    },
-  
-    // Environmental Data
-    speeds: {
-      land: 15,
-      flying: 45,
-      swimming: 20,
-      climbing: 0
-    },
-    environmentalResistances: ['High damage resistance'],
-    preferredBiome: 'Vanaheim',
-    temperatureRange: {
-      min: 0,
-      max: 50
-    },
-    oxygenRequirement: 'None (Elemental)',
-  
-    // Breeding Genetics
-    breeding: {
-      cooldown: 'Cannot breed',
-      gestationTime: 'N/A',
-      babyFoodConsumption: 'N/A',
-      maturationTime: 'N/A',
-      colorRegions: 4,
-      colorRegionNames: ['Body', 'Wings', 'Leaves', 'Vines'],
-      mutationChance: 0,
-      breedingDifficulty: 'Cannot breed'
-    },
-  
-    // Special Functions
-    workstation: 'N/A',
-    resourceProduction: 'Drops trophy needed for final boss.',
-    structureFunctions: 'N/A',
-    buffAuras: ['None'],
-    debuffAbilities: ['Root grab immobilizes players and tames.'],
-    uniqueMechanics: ['Boss AI', 'summons minions (Forest Wyverns)'],
-  
-    // Spawn & Location
-    spawnMaps: ['Fjordur'],
-    spawnZones: ['Vanaheim (summoned)'],
-    rarityRating: 'Mythical',
-    levelRange: '1 (fixed)',
-    packBehavior: 'Solitary',
-    territorialBehavior: 'Aggressive',
-  
-    // Management Metadata
-    difficultyRating: 'N/A',
-    beginnerFriendly: false,
-    endGameViable: true,
-    bossFightCapable: true,
-    pvpMeta: 'N/A',
-    resourceInvestment: 'Mythical',
-    maintenanceLevel: 'N/A',
-  
-    // Badge Categories
-    badgeCategories: ['boss', 'combat']
-  },
-
-  'Yutyrannus': {
+},
+'Yutyrannus': {
     // Basic Info
     id: 'YUTYRANNUS_428',
     name: 'Yutyrannus',
@@ -58616,8 +49587,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['combat', 'boss']
-  },
-  'R-Brontosaurus': {
+},
+'R-Brontosaurus': {
     // Basic Info
     id: 'R_BRONTOSAURUS_429',
     name: 'R-Brontosaurus',
@@ -58750,9 +49721,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['transport', 'harvesting']
-  },
-
-  'R-Carbonemys': {
+},
+'R-Carbonemys': {
     // Basic Info
     id: 'R_CARBONEMYS_430',
     name: 'R-Carbonemys',
@@ -58882,9 +49852,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['transport', 'combat']
-  },
-
-  'R-Carnotaurus': {
+},
+'R-Carnotaurus': {
     // Basic Info
     id: 'R_CARNOTAURUS_431',
     name: 'R-Carnotaurus',
@@ -59016,9 +49985,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['combat', 'boss']
-  },
-
-  'R-Daeodon': {
+},
+'R-Daeodon': {
     // Basic Info
     id: 'R_DAEODON_432',
     name: 'R-Daeodon',
@@ -59150,9 +50118,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['utility', 'boss', 'combat']
-  },
-
-  'R-Dilophosaur': {
+},
+'R-Dilophosaur': {
     // Basic Info
     id: 'R_DILOPHOSAUR_433',
     name: 'R-Dilophosaur',
@@ -59283,9 +50250,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['combat', 'utility']
-  },
-
-  'R-Dire Bear': {
+},
+'R-Dire Bear': {
     // Basic Info
     id: 'R_DIRE_BEAR_434',
     name: 'R-Dire Bear',
@@ -59416,9 +50382,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['combat', 'transport', 'harvesting', 'boss']
-  },
-
-  'R-Direwolf': {
+},
+'R-Direwolf': {
     // Basic Info
     id: 'R_DIREWOLF_435',
     name: 'R-Direwolf',
@@ -59550,9 +50515,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['combat', 'boss']
-  },
-
-  'R-Equus': {
+},
+'R-Equus': {
     // Basic Info
     id: 'R_EQUUS_436',
     name: 'R-Equus',
@@ -59682,9 +50646,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['transport', 'utility']
-  },
-
-  'R-Gasbags': {
+},
+'R-Gasbags': {
     // Basic Info
     id: 'R_GASBAGS_437',
     name: 'R-Gasbags',
@@ -59814,9 +50777,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['transport', 'utility']
-  },
-
-  'R-Giganotosaurus': {
+},
+'R-Giganotosaurus': {
     // Basic Info
     id: 'R_GIGANOTOSAURUS_438',
     name: 'R-Giganotosaurus',
@@ -59946,8 +50908,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['boss', 'combat']
-  },
-  'R-Megatherium': {
+},
+'R-Megatherium': {
     // Basic Info
     id: 'R_MEGATHERIUM_439',
     name: 'R-Megatherium',
@@ -60079,9 +51041,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['combat', 'harvesting', 'boss']
-  },
-
-  'R-Parasaur': {
+},
+'R-Parasaur': {
     // Basic Info
     id: 'R_PARASAUR_440',
     name: 'R-Parasaur',
@@ -60211,9 +51172,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['utility', 'transport']
-  },
-
-  'R-Procoptodon': {
+},
+'R-Procoptodon': {
     // Basic Info
     id: 'R_PROCOPTODON_441',
     name: 'R-Procoptodon',
@@ -60343,9 +51303,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['transport', 'utility']
-  },
-
-  'R-Quetzal': {
+},
+'R-Quetzal': {
     // Basic Info
     id: 'R_QUETZAL_442',
     name: 'R-Quetzal',
@@ -60473,9 +51432,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['transport', 'boss']
-  },
-
-  'R-Reaper King': {
+},
+'R-Reaper King': {
     // Basic Info
     id: 'R_REAPER_KING_443',
     name: 'R-Reaper King',
@@ -60605,9 +51563,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['combat', 'boss']
-  },
-
-  'R-Reaper Queen': {
+},
+'R-Reaper Queen': {
     // Basic Info
     id: 'R_REAPER_QUEEN_444',
     name: 'R-Reaper Queen',
@@ -60735,9 +51692,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['combat']
-  },
-
-  'R-Snow Owl': {
+},
+'R-Snow Owl': {
     // Basic Info
     id: 'R_SNOW_OWL_445',
     name: 'R-Snow Owl',
@@ -60867,9 +51823,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['utility', 'combat', 'boss']
-  },
-
-  'R-Thylacoleo': {
+},
+'R-Thylacoleo': {
     // Basic Info
     id: 'R_THYLACOLEO_446',
     name: 'R-Thylacoleo',
@@ -60999,9 +51954,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['combat', 'boss', 'pvp']
-  },
-
-  'R-Velonasaur': {
+},
+'R-Velonasaur': {
     // Basic Info
     id: 'R_VELONASAUR_447',
     name: 'R-Velonasaur',
@@ -61131,9 +52085,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['combat', 'boss']
-  },
-
-  'Beyla': {
+},
+'Beyla': {
     // Basic Info
     id: 'BEYLA_448',
     name: 'Beyla',
@@ -61263,272 +52216,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['boss', 'combat']
-  },
-  'Crystal Wyvern Queen': {
-    // Basic Info
-    id: 'CRYSTAL_WYVERN_QUEEN_449',
-    name: 'Crystal Wyvern Queen',
-    icon: '👑',
-    category: 'boss',
-    rarity: 'mythical',
-    source: 'Crystal Isles DLC',
-    variants: ['Gamma', 'Beta', 'Alpha'],
-
-    // Biology & Lore
-    dossierText: "The Crystal Wyvern Queen is the matriarch of all Crystal Wyverns, a being of immense power whose body is infused with the raw energy of the Crystal Isles. What makes this magnificent creature truly terrifying is her command over all forms of crystalline energy. She can switch between the elemental attacks of her Tropical, Blood, and Ember offspring, making her an unpredictable and versatile opponent. Her armored crystal hide is nearly impenetrable, and she can summon swarms of Crystal Wyvern heirs to defend her. The battle against the Queen is a chaotic and beautiful spectacle of light and destruction, a true test of a survivor's aerial combat skills.",
-    temperament: 'Aggressive (Boss)',
-    diet: 'Crystal Energy',
-    habitat: 'Crystal Wyvern Queen Arena',
-    realWorldBasis: 'Queen dragon/wyvern (fantasy)',
-    sizeClass: 'Titan',
-
-    // Taming System
-    tamingMethod: 'Cannot be tamed',
-    tamingType: 'N/A (Final Boss)',
-    preferredKibble: 'N/A',
-    favoriteFood: 'N/A',
-    tamingSpeed: 'N/A',
-    torpor: {
-      baseValue: 2000000,
-      depleteRate: 'N/A'
-    },
-    specialRequirements: 'Must be summoned with Primal Crystal at her specific arena.',
-
-    // Base Statistics (Level 1 Wild)
-    baseStats: {
-      health: 900000, // Alpha
-      stamina: 12000,
-      oxygen: 150,
-      food: 12000,
-      weight: 12000,
-      melee: 2200,
-      speed: 100,
-      torpor: 2000000
-    },
-
-    // Stat Scaling (Per Level)
-    statScaling: {
-      health: 180000,
-      stamina: 1200,
-      oxygen: 15,
-      food: 1200,
-      weight: 240,
-      melee: 110,
-      speed: 1
-    },
-
-    // Equipment & Combat
-    saddleLevel: 0,
-    saddleType: 'N/A',
-    saddleArmor: 0,
-    platformLimit: 0,
-    specialAbilities: ['Elemental breath switching', 'minion summoning (Crystal Wyverns)', 'crystal armor', 'area of effect crystal attacks'],
-    attackTypes: ['Varies (Tropical, Blood, Ember breath)', 'bite', 'claw swipe', 'summon minions'],
-    canCarry: ['N/A'],
-
-    // Utility & Roles
-    primaryRole: 'Crystal Isles\' final boss challenge',
-    secondaryRoles: ['Unlocking Ascension', 'end of storyline'],
-    gatheringResources: ['Element', 'Crystal Wyvern Queen Trophy', 'unlocks Tekgrams'],
-    gatheringEfficiency: {
-      'Boss rewards': 10
-    },
-    ratings: {
-      combat: 10,
-      transport: 0,
-      speed: 9,
-      survivability: 10
-    },
-
-    // Environmental Data
-    speeds: {
-      land: 20,
-      flying: 65,
-      swimming: 20,
-      climbing: 0
-    },
-    environmentalResistances: ['Massive damage resistance', 'elemental resistance'],
-    preferredBiome: 'Crystal Wyvern Queen Arena',
-    temperatureRange: {
-      min: -50,
-      max: 100
-    },
-    oxygenRequirement: 'Air breathing',
-
-    // Breeding Genetics
-    breeding: {
-      cooldown: 'Cannot breed',
-      gestationTime: 'N/A',
-      babyFoodConsumption: 'N/A',
-      maturationTime: 'N/A',
-      colorRegions: 6,
-      colorRegionNames: ['Body', 'wings', 'crystals', 'belly', 'patterns', 'glow'],
-      mutationChance: 0,
-      breedingDifficulty: 'Cannot breed'
-    },
-
-    // Special Functions
-    workstation: 'N/A',
-    resourceProduction: 'Unlocks Tekgrams upon defeat',
-    structureFunctions: 'N/A',
-    buffAuras: ['None'],
-    debuffAbilities: ['Various elemental breath effects'],
-    uniqueMechanics: ['Elemental stance switching', 'minion summoning', 'arena-based combat'],
-
-    // Spawn & Location
-    spawnMaps: ['Crystal Isles'],
-    spawnZones: ['Crystal Wyvern Queen Arena (summoned only)'],
-    rarityRating: 'Mythical',
-    levelRange: '1 (scales with difficulty)',
-    packBehavior: 'Commands swarms of Crystal Wyverns',
-    territorialBehavior: 'Ultimate territorial aggression',
-
-    // Management Metadata
-    difficultyRating: 'Mythical',
-    beginnerFriendly: false,
-    endGameViable: true,
-    bossFightCapable: true,
-    pvpMeta: 'N/A',
-    resourceInvestment: 'Mythical',
-    maintenanceLevel: 'N/A',
-
-    // Badge Categories
-    badgeCategories: ['boss', 'combat']
-  },
-
-  'Dinopithecus King': {
-    // Basic Info
-    id: 'DINOPITHECUS_KING_450',
-    name: 'Dinopithecus King',
-    icon: '👑',
-    category: 'boss',
-    rarity: 'mythical',
-    source: 'Lost Island DLC',
-    variants: ['Gamma', 'Beta', 'Alpha'],
-
-    // Biology & Lore
-    dossierText: "The Dinopithecus King is the undisputed alpha of the great apes, a colossal primate of terrifying strength and cunning intelligence. What makes this monarch truly formidable is his mastery of troop warfare and his ability to command his vast Dinopithecus army with tactical precision. He sits upon a throne of jungle ruins, wielding a massive Tek-infused spear and shield. The King can direct his troops to form defensive walls, launch coordinated assaults, and unleash devastating volleys of feces grenades. The battle against him is a chaotic brawl, a test of a survivor's ability to manage a battlefield swarming with intelligent, tool-wielding apes.",
-    temperament: 'Aggressive (Boss)',
-    diet: 'Omnivore',
-    habitat: 'Dinopithecus King Arena',
-    realWorldBasis: 'Giant baboon king (fantasy)',
-    sizeClass: 'Titan',
-
-    // Taming System
-    tamingMethod: 'Cannot be tamed',
-    tamingType: 'N/A (Final Boss)',
-    preferredKibble: 'N/A',
-    favoriteFood: 'N/A',
-    tamingSpeed: 'N/A',
-    torpor: {
-      baseValue: 2500000,
-      depleteRate: 'N/A'
-    },
-    specialRequirements: 'Must be summoned with artifacts at his arena.',
-
-    // Base Statistics (Level 1 Wild)
-    baseStats: {
-      health: 1200000, // Alpha
-      stamina: 10000,
-      oxygen: 150,
-      food: 10000,
-      weight: 10000,
-      melee: 2500,
-      speed: 100,
-      torpor: 2500000
-    },
-
-    // Stat Scaling (Per Level)
-    statScaling: {
-      health: 240000,
-      stamina: 1000,
-      oxygen: 15,
-      food: 1000,
-      weight: 200,
-      melee: 125,
-      speed: 1
-    },
-
-    // Equipment & Combat
-    saddleLevel: 0,
-    saddleType: 'N/A',
-    saddleArmor: 0,
-    platformLimit: 0,
-    specialAbilities: ['Minion command', 'feces grenade barrage', 'Tek spear attacks', 'shield defense', 'ground pound'],
-    attackTypes: ['Spear thrust', 'shield bash', 'summon minions', 'grenade throw'],
-    canCarry: ['N/A'],
-
-    // Utility & Roles
-    primaryRole: 'Lost Island\'s final boss challenge',
-    secondaryRoles: ['Unlocking Ascension', 'end of storyline'],
-    gatheringResources: ['Element', 'Dinopithecus King Trophy', 'unlocks Tekgrams'],
-    gatheringEfficiency: {
-      'Boss rewards': 10
-    },
-    ratings: {
-      combat: 10,
-      transport: 0,
-      speed: 6,
-      survivability: 10
-    },
-
-    // Environmental Data
-    speeds: {
-      land: 35,
-      flying: 0,
-      swimming: 15,
-      climbing: 1
-    },
-    environmentalResistances: ['Massive damage resistance', 'Tek resistance'],
-    preferredBiome: 'Dinopithecus King Arena',
-    temperatureRange: {
-      min: 10,
-      max: 50
-    },
-    oxygenRequirement: 'Air breathing',
-
-    // Breeding Genetics
-    breeding: {
-      cooldown: 'Cannot breed',
-      gestationTime: 'N/A',
-      babyFoodConsumption: 'N/A',
-      maturationTime: 'N/A',
-      colorRegions: 6,
-      colorRegionNames: ['Body', 'mane', 'face', 'war paint', 'armor', 'weapon'],
-      mutationChance: 0,
-      breedingDifficulty: 'Cannot breed'
-    },
-
-    // Special Functions
-    workstation: 'N/A',
-    resourceProduction: 'Unlocks Tekgrams',
-    structureFunctions: 'N/A',
-    buffAuras: ['Battle cry buffs minions'],
-    debuffAbilities: ['Feces grenades disable Tek'],
-    uniqueMechanics: ['Troop command system', 'multi-stage fight'],
-
-    // Spawn & Location
-    spawnMaps: ['Lost Island'],
-    spawnZones: ['Dinopithecus King Arena (summoned only)'],
-    rarityRating: 'Mythical',
-    levelRange: '1 (scales with difficulty)',
-    packBehavior: 'Commands a large army of Dinopithecus',
-    territorialBehavior: 'Ultimate territorial aggression',
-
-    // Management Metadata
-    difficultyRating: 'Mythical',
-    beginnerFriendly: false,
-    endGameViable: true,
-    bossFightCapable: true,
-    pvpMeta: 'N/A',
-    resourceInvestment: 'Mythical',
-    maintenanceLevel: 'N/A',
-
-    // Badge Categories
-    badgeCategories: ['boss', 'combat']
-  },
-
-  'Experimental Giganotosaurus': {
+},
+'Experimental Giganotosaurus': {
     // Basic Info
     id: 'EXPERIMENTAL_GIGANOTOSAURUS_451',
     name: 'Experimental Giganotosaurus',
@@ -61656,9 +52345,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['combat', 'boss']
-  },
-
-  'Iceworm Queen': {
+},
+'Iceworm Queen': {
     // Basic Info
     id: 'ICEWORM_QUEEN_452',
     name: 'Iceworm Queen',
@@ -61788,9 +52476,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['boss', 'combat']
-  },
-
-  'Macro-Summoner': {
+},
+'Macro-Summoner': {
     // Basic Info
     id: 'MACRO_SUMMONER_453',
     name: 'Macro-Summoner',
@@ -61918,9 +52605,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['combat', 'boss']
-  },
-
-  'Rockwell Prime': {
+},
+'Rockwell Prime': {
     // Basic Info
     id: 'ROCKWELL_PRIME_454',
     name: 'Rockwell Prime',
@@ -62050,9 +52736,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['boss', 'combat']
-  },
-
-  'Alpha Basilisk': {
+},
+'Alpha Basilisk': {
     // Basic Info
     id: 'ALPHA_BASILISK_455',
     name: 'Alpha Basilisk',
@@ -62182,9 +52867,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['combat']
-  },
-
-  'Alpha Blood Crystal Wyvern': {
+},
+'Alpha Blood Crystal Wyvern': {
     // Basic Info
     id: 'ALPHA_BLOOD_CRYSTAL_WYVERN_456',
     name: 'Alpha Blood Crystal Wyvern',
@@ -62314,9 +52998,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['combat']
-  },
-
-  'Alpha Carnotaurus': {
+},
+'Alpha Carnotaurus': {
     // Basic Info
     id: 'ALPHA_CARNOTAURUS_457',
     name: 'Alpha Carnotaurus',
@@ -62446,9 +53129,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['combat']
-  },
-
-  'Alpha Deathworm': {
+},
+'Alpha Deathworm': {
     // Basic Info
     id: 'ALPHA_DEATHWORM_458',
     name: 'Alpha Deathworm',
@@ -62708,9 +53390,12 @@ const SPECIES_DATABASE = {
   
     // Badge Categories
     badgeCategories: ['combat']
-  },
-
-  'Alpha Karkinos': {
+},
+'Alpha Fire Wyvern': {
+  category: "boss",
+  source: "Scorched Earth DLC"
+},
+'Alpha Karkinos': {
     // Basic Info
     id: 'ALPHA_KARKINOS_460',
     name: 'Alpha Karkinos',
@@ -62840,9 +53525,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['combat']
-  },
-
-  'Alpha Leedsichthys': {
+},
+'Alpha Leedsichthys': {
     // Basic Info
     id: 'ALPHA_LEEDSICHTHYS_461',
     name: 'Alpha Leedsichthys',
@@ -62972,9 +53656,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['combat']
-  },
-
-  'Alpha Megalodon': {
+},
+'Alpha Megalodon': {
     // Basic Info
     id: 'ALPHA_MEGALODON_462',
     name: 'Alpha Megalodon',
@@ -63104,9 +53787,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['combat']
-  },
-
-  'Alpha Mosasaur': {
+},
+'Alpha Mosasaur': {
     // Basic Info
     id: 'ALPHA_MOSASAUR_463',
     name: 'Alpha Mosasaur',
@@ -63236,9 +53918,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['combat']
-  },
-
-  'Alpha Raptor': {
+},
+'Alpha Raptor': {
     // Basic Info
     id: 'ALPHA_RAPTOR_464',
     name: 'Alpha Raptor',
@@ -63368,9 +54049,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['combat']
-  },
-
-  'Alpha Surface Reaper King': {
+},
+'Alpha Surface Reaper King': {
     // Basic Info
     id: 'ALPHA_SURFACE_REAPER_KING_465',
     name: 'Alpha Surface Reaper King',
@@ -63500,9 +54180,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['combat']
-  },
-
-  'Alpha T-Rex': {
+},
+'Alpha T-Rex': {
     // Basic Info
     id: 'ALPHA_T_REX_466',
     name: 'Alpha T-Rex',
@@ -63632,9 +54311,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['combat']
-  },
-
-  'Alpha Tusoteuthis': {
+},
+'Alpha Tusoteuthis': {
     // Basic Info
     id: 'ALPHA_TUSOTEUTHIS_467',
     name: 'Alpha Tusoteuthis',
@@ -63764,9 +54442,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['combat']
-  },
-
-  'Alpha X-Triceratops': {
+},
+'Alpha X-Triceratops': {
     // Basic Info
     id: 'ALPHA_X_TRICERATOPS_468',
     name: 'Alpha X-Triceratops',
@@ -63896,8 +54573,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['combat']
-  },
-  'Basilisk Ghost': {
+},
+'Basilisk Ghost': {
     // Basic Info
     id: 'BASILISK_GHOST_469',
     name: 'Basilisk Ghost',
@@ -64027,9 +54704,8 @@ const SPECIES_DATABASE = {
   
     // Badge Categories
     badgeCategories: ['combat']
-  },
-
-  'Bone Fire Wyvern': {
+},
+'Bone Fire Wyvern': {
     // Basic Info
     id: 'BONE_FIRE_WYVERN_470',
     name: 'Bone Fire Wyvern',
@@ -64159,9 +54835,8 @@ const SPECIES_DATABASE = {
   
     // Badge Categories
     badgeCategories: ['combat']
-  },
-
-  'Bulbdog Ghost': {
+},
+'Bulbdog Ghost': {
     // Basic Info
     id: 'BULBDOG_GHOST_471',
     name: 'Bulbdog Ghost',
@@ -64291,9 +54966,8 @@ const SPECIES_DATABASE = {
   
     // Badge Categories
     badgeCategories: ['utility']
-  },
-
-  'Bunny Dodo': {
+},
+'Bunny Dodo': {
     // Basic Info
     id: 'BUNNY_DODO_472',
     name: 'Bunny Dodo',
@@ -64423,9 +55097,8 @@ const SPECIES_DATABASE = {
   
     // Badge Categories
     badgeCategories: ['utility']
-  },
-
-  'Bunny Oviraptor': {
+},
+'Bunny Oviraptor': {
     // Basic Info
     id: 'BUNNY_OVIRAPTOR_473',
     name: 'Bunny Oviraptor',
@@ -64555,9 +55228,8 @@ const SPECIES_DATABASE = {
   
     // Badge Categories
     badgeCategories: ['utility']
-  },
-
-  'Direwolf Ghost': {
+},
+'Direwolf Ghost': {
     // Basic Info
     id: 'DIREWOLF_GHOST_474',
     name: 'Direwolf Ghost',
@@ -64687,9 +55359,8 @@ const SPECIES_DATABASE = {
   
     // Badge Categories
     badgeCategories: ['combat']
-  },
-
-  'Mantis Ghost': {
+},
+'Mantis Ghost': {
     // Basic Info
     id: 'MANTIS_GHOST_475',
     name: 'Mantis Ghost',
@@ -64819,138 +55490,8 @@ const SPECIES_DATABASE = {
   
     // Badge Categories
     badgeCategories: ['combat']
-  },
-  'Cymathoa': {
-    // Basic Info
-    id: 'CYMATHOA_476',
-    name: 'Cymathoa',
-    icon: '🦠',
-    category: 'utility',
-    rarity: 'common',
-    source: 'ARK Additions Mod',
-    variants: ['Standard'],
-  
-    // Biology & Lore
-    dossierText: "A horrifying parasitic isopod, the Cymathoa is a creature that thrives by attaching to and controlling a host. In the wild, it will latch onto fish, effectively replacing their tongue and feeding on their blood. For a survivor, a 'tamed' Cymathoa is not a pet, but a tool. By allowing it to attach, a survivor can breathe underwater indefinitely. This comes at a cost, as the parasite constantly drains the survivor's food and water. It is a grotesque but effective solution for extended underwater operations without scuba gear.",
-    temperament: 'Parasitic',
-    diet: 'Sanguinivore',
-    habitat: 'Shallow waters, attached to fish',
-    realWorldBasis: 'Cymothoa exigua (tongue-eating louse)',
-    sizeClass: 'Tiny',
-  
-    // Taming System
-    tamingMethod: 'Special (Parasitic Attachment)',
-    tamingType: 'Kill a fish that has a Cymathoa attached, then pick up the Cymathoa to equip it.',
-    preferredKibble: 'N/A',
-    favoriteFood: 'N/A',
-    tamingSpeed: 'N/A',
-    torpor: {
-      baseValue: 10,
-      depleteRate: 'N/A'
-    },
-    specialRequirements: 'Functions as an equippable item rather than a traditional tame.',
-  
-    // Base Statistics (Level 1 Wild)
-    baseStats: {
-      health: 10,
-      stamina: 100,
-      oxygen: 150,
-      food: 100,
-      weight: 5,
-      melee: 0,
-      speed: 100,
-      torpor: 10
-    },
-  
-    // Stat Scaling (Per Level)
-    statScaling: {
-      health: 2,
-      stamina: 10,
-      oxygen: 15,
-      food: 10,
-      weight: 0,
-      melee: 0,
-      speed: 0
-    },
-  
-    // Equipment & Combat
-    saddleLevel: 0,
-    saddleType: 'N/A (Equippable)',
-    saddleArmor: 0,
-    platformLimit: 0,
-    specialAbilities: ['Provides water breathing'],
-    attackTypes: ['None'],
-    canCarry: ['N/A'],
-  
-    // Utility & Roles
-    primaryRole: 'Underwater breathing apparatus',
-    secondaryRoles: ['Early game scuba replacement'],
-    gatheringResources: ['None'],
-    gatheringEfficiency: {},
-    ratings: {
-      combat: 0,
-      transport: 0,
-      speed: 0,
-      survivability: 1
-    },
-  
-    // Environmental Data
-    speeds: {
-      land: 0,
-      flying: 0,
-      swimming: 5,
-      climbing: 0
-    },
-    environmentalResistances: ['None'],
-    preferredBiome: 'Oceans, rivers',
-    temperatureRange: {
-      min: 0,
-      max: 40
-    },
-    oxygenRequirement: 'Water breathing only',
-  
-    // Breeding Genetics
-    breeding: {
-      cooldown: 'Cannot breed',
-      gestationTime: 'N/A',
-      babyFoodConsumption: 'N/A',
-      maturationTime: 'N/A',
-      colorRegions: 1,
-      colorRegionNames: ['Body'],
-      mutationChance: 0,
-      breedingDifficulty: 'Cannot breed'
-    },
-  
-    // Special Functions
-    workstation: 'None',
-    resourceProduction: 'None',
-    structureFunctions: 'None',
-    buffAuras: ['Provides water breathing to the host'],
-    debuffAbilities: ['Drains food and water from the host'],
-    uniqueMechanics: ['Parasitic attachment as an item'],
-  
-    // Spawn & Location
-    spawnMaps: ['The Island', 'The Center', 'Ragnarok (with mod)'],
-    spawnZones: ['Shallow waters, attached to Coelacanth'],
-    rarityRating: 'Common (on hosts)',
-    levelRange: '1-150',
-    packBehavior: 'Solitary (on hosts)',
-    territorialBehavior: 'Passive',
-  
-    // Management Metadata
-    difficultyRating: 'N/A',
-    beginnerFriendly: true,
-    endGameViable: true,
-    bossFightCapable: false,
-    pvpMeta: 'Low',
-    resourceInvestment: 'N/A',
-    maintenanceLevel: 'N/A',
-  
-    // Badge Categories
-    badgeCategories: ['utility']
-  },
-
-  'Monodon': {
+},
+'Monodon': {
     // Basic Info
     id: 'MONODON_477',
     name: 'Monodon',
@@ -65080,141 +55621,8 @@ const SPECIES_DATABASE = {
   
     // Badge Categories
     badgeCategories: ['combat', 'utility']
-  },
-
-  'Mudpuppy': {
-    // Basic Info
-    id: 'MUDPUPPY_478',
-    name: 'Mudpuppy',
-    icon: '🦎',
-    category: 'utility',
-    rarity: 'common',
-    source: 'ARK Additions Mod',
-    variants: ['Standard'],
-  
-    // Biology & Lore
-    dossierText: "A large, neotenic salamander, the Mudpuppy is a common inhabitant of the island's swamps. This passive amphibian spends its days lazily swimming or crawling on the riverbeds. While it offers no combat ability, its skin secretes a potent narcotic. When butchered, the Mudpuppy provides a surprising amount of biotoxin. This makes them a safe, if gruesome, alternative to hunting Cnidaria for tranquilizing agents.",
-    temperament: 'Passive',
-    diet: 'Carnivore (Fish)',
-    habitat: 'Swamps, rivers',
-    realWorldBasis: 'Mudpuppy (salamander)',
-    sizeClass: 'Small',
-  
-    // Taming System
-    tamingMethod: 'Cannot be tamed',
-    tamingType: 'N/A',
-    preferredKibble: 'N/A',
-    favoriteFood: 'N/A',
-    tamingSpeed: 'N/A',
-    torpor: {
-      baseValue: 100,
-      depleteRate: 'N/A'
-    },
-    specialRequirements: 'Harvestable for Biotoxin.',
-  
-    // Base Statistics (Level 1 Wild)
-    baseStats: {
-      health: 50,
-      stamina: 100,
-      oxygen: 150,
-      food: 450,
-      weight: 30,
-      melee: 0,
-      speed: 100,
-      torpor: 100
-    },
-  
-    // Stat Scaling (Per Level)
-    statScaling: {
-      health: 10,
-      stamina: 10,
-      oxygen: 15,
-      food: 45,
-      weight: 0.6,
-      melee: 0,
-      speed: 1
-    },
-  
-    // Equipment & Combat
-    saddleLevel: 0,
-    saddleType: 'N/A',
-    saddleArmor: 0,
-    platformLimit: 0,
-    specialAbilities: ['None'],
-    attackTypes: ['None'],
-    canCarry: ['N/A'],
-  
-    // Utility & Roles
-    primaryRole: 'Resource source (Biotoxin)',
-    secondaryRoles: ['Easy source of meat'],
-    gatheringResources: ['Biotoxin', 'Raw Meat'],
-    gatheringEfficiency: {
-      'Biotoxin': 9
-    },
-    ratings: {
-      combat: 0,
-      transport: 0,
-      speed: 3,
-      survivability: 2
-    },
-  
-    // Environmental Data
-    speeds: {
-      land: 8,
-      flying: 0,
-      swimming: 20,
-      climbing: 0
-    },
-    environmentalResistances: ['None'],
-    preferredBiome: 'Swamps, rivers',
-    temperatureRange: {
-      min: 15,
-      max: 40
-    },
-    oxygenRequirement: 'Water and air breathing',
-  
-    // Breeding Genetics
-    breeding: {
-      cooldown: 'Cannot breed',
-      gestationTime: 'N/A',
-      babyFoodConsumption: 'N/A',
-      maturationTime: 'N/A',
-      colorRegions: 3,
-      colorRegionNames: ['Body', 'Gills', 'Spots'],
-      mutationChance: 0,
-      breedingDifficulty: 'Cannot breed'
-    },
-  
-    // Special Functions
-    workstation: 'None',
-    resourceProduction: 'None',
-    structureFunctions: 'None',
-    buffAuras: ['None'],
-    debuffAbilities: ['None'],
-    uniqueMechanics: ['None'],
-  
-    // Spawn & Location
-    spawnMaps: ['The Island', 'The Center', 'Ragnarok (with mod)'],
-    spawnZones: ['Swamps', 'Rivers'],
-    rarityRating: 'Common',
-    levelRange: '1-150',
-    packBehavior: 'Solitary',
-    territorialBehavior: 'Passive',
-  
-    // Management Metadata
-    difficultyRating: 'N/A',
-    beginnerFriendly: true,
-    endGameViable: true,
-    bossFightCapable: false,
-    pvpMeta: 'None',
-    resourceInvestment: 'N/A',
-    maintenanceLevel: 'N/A',
-  
-    // Badge Categories
-    badgeCategories: ['utility', 'harvesting']
-  },
-
-  'Pygocentrus': {
+},
+'Pygocentrus': {
     // Basic Info
     id: 'PYGOCENTRUS_479',
     name: 'Pygocentrus',
@@ -65344,9 +55752,8 @@ const SPECIES_DATABASE = {
 
     // Badge Categories
     badgeCategories: ['combat']
-  },
-
-  'Qarmoutus': {
+},
+'Qarmoutus': {
     // Basic Info
     id: 'QARMOUTUS_480',
     name: 'Qarmoutus',
@@ -65476,141 +55883,8 @@ const SPECIES_DATABASE = {
   
     // Badge Categories
     badgeCategories: ['combat', 'utility']
-  },
-
-  'Stereolepis': {
-    // Basic Info
-    id: 'STEREOLEPIS_481',
-    name: 'Stereolepis',
-    icon: '🐟',
-    category: 'combat',
-    rarity: 'uncommon',
-    source: 'ARK Additions Mod',
-    variants: ['Standard'],
-  
-    // Biology & Lore
-    dossierText: "The Stereolepis, or Giant Sea Bass, is a massive and powerful fish that dwells in the deep sea. It is a patient ambush predator, lurking in kelp forests and underwater caves. Its true power is its immense mouth, which it can open wide to create a powerful vacuum, sucking in smaller prey. It can then swallow its victim whole, digesting them over time. A tamed Stereolepis is a formidable underwater mount, capable of controlling the battlefield by repositioning and consuming its enemies.",
-    temperament: 'Aggressive',
-    diet: 'Carnivore',
-    habitat: 'Deep ocean, kelp forests',
-    realWorldBasis: 'Stereolepis gigas (Giant sea bass)',
-    sizeClass: 'Large',
-  
-    // Taming System
-    tamingMethod: 'Knockout',
-    tamingType: 'Violent taming with tranquilizers',
-    preferredKibble: 'Exceptional Kibble',
-    favoriteFood: 'Exceptional Kibble',
-    tamingSpeed: 'Slow',
-    torpor: {
-      baseValue: 1500,
-      depleteRate: 'Slow'
-    },
-    specialRequirements: 'Its suction attack makes it dangerous to approach.',
-  
-    // Base Statistics (Level 1 Wild)
-    baseStats: {
-      health: 900,
-      stamina: 300,
-      oxygen: 150,
-      food: 3000,
-      weight: 500,
-      melee: 50,
-      speed: 100,
-      torpor: 1500
-    },
-  
-    // Stat Scaling (Per Level)
-    statScaling: {
-      health: 180,
-      stamina: 30,
-      oxygen: 15,
-      food: 300,
-      weight: 10,
-      melee: 2.5,
-      speed: 1
-    },
-  
-    // Equipment & Combat
-    saddleLevel: 68,
-    saddleType: 'Stereolepis Saddle',
-    saddleArmor: 25,
-    platformLimit: 0,
-    specialAbilities: ['Vacuum suction', 'swallow whole'],
-    attackTypes: ['Bite', 'Suction', 'Swallow'],
-    canCarry: ['Can swallow small to medium creatures'],
-  
-    // Utility & Roles
-    primaryRole: 'Underwater crowd control and combat',
-    secondaryRoles: ['Deep sea exploration', 'creature transport (via swallowing)'],
-    gatheringResources: ['Fish Meat', 'Prime Fish Meat'],
-    gatheringEfficiency: {
-      'Prime Fish Meat': 9
-    },
-    ratings: {
-      combat: 8,
-      transport: 7,
-      speed: 5,
-      survivability: 8
-    },
-  
-    // Environmental Data
-    speeds: {
-      land: 0,
-      flying: 0,
-      swimming: 25,
-      climbing: 0
-    },
-    environmentalResistances: ['Pressure immunity'],
-    preferredBiome: 'Deep ocean, kelp forests',
-    temperatureRange: {
-      min: 0,
-      max: 30
-    },
-    oxygenRequirement: 'Water breathing only',
-  
-    // Breeding Genetics
-    breeding: {
-      cooldown: '18-48 hours',
-      gestationTime: '4 hours',
-      babyFoodConsumption: 'High',
-      maturationTime: '2 days',
-      colorRegions: 4,
-      colorRegionNames: ['Body', 'Fins', 'Spots', 'Belly'],
-      mutationChance: 7.31,
-      breedingDifficulty: 'Hard'
-    },
-  
-    // Special Functions
-    workstation: 'None',
-    resourceProduction: 'None',
-    structureFunctions: 'None',
-    buffAuras: ['None'],
-    debuffAbilities: ['Can swallow creatures, removing them from a fight temporarily.'],
-    uniqueMechanics: ['Suction and swallow abilities'],
-  
-    // Spawn & Location
-    spawnMaps: ['The Island', 'The Center', 'Ragnarok (with mod)'],
-    spawnZones: ['Deep Ocean', 'Kelp Forests'],
-    rarityRating: 'Uncommon',
-    levelRange: '1-150',
-    packBehavior: 'Solitary',
-    territorialBehavior: 'Aggressive',
-  
-    // Management Metadata
-    difficultyRating: 'Hard',
-    beginnerFriendly: false,
-    endGameViable: true,
-    bossFightCapable: false,
-    pvpMeta: 'Medium',
-    resourceInvestment: 'High',
-    maintenanceLevel: 'Medium',
-  
-    // Badge Categories
-    badgeCategories: ['combat', 'utility']
-  },
-
-  'Takifugu': {
+},
+'Takifugu': {
     // Basic Info
     id: 'TAKIFUGU_482',
     name: 'Takifugu',
@@ -65740,141 +56014,8 @@ const SPECIES_DATABASE = {
   
     // Badge Categories
     badgeCategories: ['utility', 'harvesting']
-  },
-
-  'Thunnus': {
-    // Basic Info
-    id: 'THUNNUS_483',
-    name: 'Thunnus',
-    icon: '🐟',
-    category: 'utility',
-    rarity: 'common',
-    source: 'ARK Additions Mod',
-    variants: ['Standard'],
-  
-    // Biology & Lore
-    dossierText: "Thunnus, or Tuna, are fast-swimming fish that travel in large schools through the open ocean. They are a primary food source for many of the larger marine predators. While they cannot be tamed, hunting them is a valuable activity for any tribe. They are an excellent and abundant source of high-quality fish meat, making them a key part of the oceanic food chain and a staple for any survivor's diet.",
-    temperament: 'Skittish',
-    diet: 'Carnivore',
-    habitat: 'Open ocean',
-    realWorldBasis: 'Thunnus (Tuna)',
-    sizeClass: 'Small',
-  
-    // Taming System
-    tamingMethod: 'Cannot be tamed',
-    tamingType: 'N/A',
-    preferredKibble: 'N/A',
-    favoriteFood: 'N/A',
-    tamingSpeed: 'N/A',
-    torpor: {
-      baseValue: 50,
-      depleteRate: 'N/A'
-    },
-    specialRequirements: 'Harvestable for fish meat.',
-  
-    // Base Statistics (Level 1 Wild)
-    baseStats: {
-      health: 40,
-      stamina: 100,
-      oxygen: 150,
-      food: 100,
-      weight: 25,
-      melee: 0,
-      speed: 100,
-      torpor: 50
-    },
-  
-    // Stat Scaling (Per Level)
-    statScaling: {
-      health: 8,
-      stamina: 10,
-      oxygen: 15,
-      food: 10,
-      weight: 0.5,
-      melee: 0,
-      speed: 2
-    },
-  
-    // Equipment & Combat
-    saddleLevel: 0,
-    saddleType: 'N/A',
-    saddleArmor: 0,
-    platformLimit: 0,
-    specialAbilities: ['Schooling behavior'],
-    attackTypes: ['None'],
-    canCarry: ['N/A'],
-  
-    // Utility & Roles
-    primaryRole: 'Resource source (Prime Fish Meat)',
-    secondaryRoles: ['Fishing target'],
-    gatheringResources: ['Raw Prime Fish Meat', 'Raw Fish Meat'],
-    gatheringEfficiency: {
-      'Raw Prime Fish Meat': 10
-    },
-    ratings: {
-      combat: 0,
-      transport: 0,
-      speed: 8,
-      survivability: 2
-    },
-  
-    // Environmental Data
-    speeds: {
-      land: 0,
-      flying: 0,
-      swimming: 40,
-      climbing: 0
-    },
-    environmentalResistances: ['None'],
-    preferredBiome: 'Open ocean',
-    temperatureRange: {
-      min: 10,
-      max: 30
-    },
-    oxygenRequirement: 'Water breathing only',
-  
-    // Breeding Genetics
-    breeding: {
-      cooldown: 'Cannot breed',
-      gestationTime: 'N/A',
-      babyFoodConsumption: 'N/A',
-      maturationTime: 'N/A',
-      colorRegions: 2,
-      colorRegionNames: ['Body', 'Fins'],
-      mutationChance: 0,
-      breedingDifficulty: 'Cannot breed'
-    },
-  
-    // Special Functions
-    workstation: 'None',
-    resourceProduction: 'None',
-    structureFunctions: 'N/A',
-    buffAuras: ['None'],
-    debuffAbilities: ['None'],
-    uniqueMechanics: ['Schooling AI'],
-  
-    // Spawn & Location
-    spawnMaps: ['The Island', 'The Center', 'Ragnarok (with mod)'],
-    spawnZones: ['Open Ocean'],
-    rarityRating: 'Common',
-    levelRange: '1-150',
-    packBehavior: 'Large schools',
-    territorialBehavior: 'Skittish',
-  
-    // Management Metadata
-    difficultyRating: 'N/A',
-    beginnerFriendly: true,
-    endGameViable: true,
-    bossFightCapable: false,
-    pvpMeta: 'None',
-    resourceInvestment: 'N/A',
-    maintenanceLevel: 'N/A',
-  
-    // Badge Categories
-    badgeCategories: ['utility']
-  },
-
-  'Tiktaalik': {
+},
+'Tiktaalik': {
     // Basic Info
     id: 'TIKTAALIK_484',
     name: 'Tiktaalik',
@@ -66005,140 +56146,3297 @@ const SPECIES_DATABASE = {
   
     // Badge Categories
     badgeCategories: ['utility']
+},
+'Solwyn': {
+  id: 'SOLWYN_502',
+  name: 'Solwyn',
+  icon: '🦊',
+  category: 'utility',
+  rarity: 'legendary',
+  source: 'Lost Colony Expansion',
+  variants: ['Evolved from Veilwyn (Support Path)'],
+  dossierText: "Solwyn is the evolved support form of the Veilwyn, achieved when the familiar chooses the path of protection and healing. Larger and more powerful than its Veilwyn base form, the Solwyn is a devoted guardian. It channels cryo-based energy to create protective ice paths for traversal, shield allies from damage, and restore health to injured creatures. Its calm, measured nature makes it the ideal companion for a tribe focused on survival and long expeditions rather than pure aggression.",
+  temperament: 'Protective',
+  diet: 'Omnivore',
+  habitat: 'Lost Colony (Arat Prime)',
+  realWorldBasis: 'Arctic Fox (evolved/mythological)',
+  sizeClass: 'Medium',
+  tamingMethod: 'Evolution',
+  tamingType: 'Evolves from a tamed Veilwyn via the support progression path.',
+  preferredKibble: 'N/A',
+  favoriteFood: 'N/A',
+  tamingSpeed: 'N/A',
+  torpor: { baseValue: 0, depleteRate: 'N/A' },
+  specialRequirements: 'Must own and develop a Veilwyn along the support/defense path. Requires the Lost Colony Expansion Pass.',
+  baseStats: { health: 1200, stamina: 350, oxygen: 150, food: 2000, weight: 250, melee: 40, speed: 100, torpor: 400 },
+  statScaling: { health: 240, stamina: 35, oxygen: 15, food: 200, weight: 5, melee: 2, speed: 1.5 },
+  saddleLevel: 48,
+  saddleType: 'Solwyn Saddle',
+  saddleArmor: 25,
+  platformLimit: 0,
+  specialAbilities: ['Ice path creation', 'ally healing aura', 'protective ice shield', 'cold terrain traversal'],
+  attackTypes: ['Cryo bite', 'ice blast', 'healing pulse'],
+  canCarry: ['Can carry one rider'],
+  primaryRole: 'Support companion and healer',
+  secondaryRoles: ['Cold terrain traversal', 'ally protection', 'healing'],
+  gatheringResources: ['Hide', 'Raw Meat'],
+  gatheringEfficiency: {},
+  ratings: { combat: 5, transport: 7, speed: 8, survivability: 8 },
+  speeds: { land: 35, flying: 0, swimming: 15, climbing: 0 },
+  environmentalResistances: ['Cold immunity', 'cryo resistance'],
+  preferredBiome: 'Arctic and frozen regions',
+  temperatureRange: { min: -60, max: 20 },
+  oxygenRequirement: 'Air breathing',
+  breeding: {
+    cooldown: '18-48 hours', gestationTime: 'N/A (evolved form)', babyFoodConsumption: 'N/A',
+    maturationTime: 'N/A', colorRegions: 6, colorRegionNames: ['Body', 'fur', 'tail', 'eyes', 'ice glow', 'markings'],
+    mutationChance: 7.31, breedingDifficulty: 'N/A (cannot be directly bred — breed base Veilwyn)'
   },
+  workstation: 'None', resourceProduction: 'None', structureFunctions: 'None',
+  buffAuras: ['Healing aura to nearby allies', 'cold resistance buff'], debuffAbilities: ['None'],
+  uniqueMechanics: ['Evolved from Veilwyn (support path)', 'ice path generation for mobility', 'healing pulse ability'],
+  spawnMaps: ['Lost Colony'],
+  spawnZones: ['Does not spawn wild — evolved from Veilwyn'],
+  rarityRating: 'Legendary',
+  levelRange: 'Inherited from Veilwyn',
+  packBehavior: 'Solitary companion',
+  territorialBehavior: 'Protective of owner',
+  difficultyRating: 'Hard (requires Veilwyn progression)',
+  beginnerFriendly: false, endGameViable: true, bossFightCapable: true, pvpMeta: 'High',
+  resourceInvestment: 'High', maintenanceLevel: 'Medium',
+  badgeCategories: ['utility', 'combat']
+},
+'Malwyn': {
+  id: 'MALWYN_503',
+  name: 'Malwyn',
+  icon: '🦊',
+  category: 'combat',
+  rarity: 'legendary',
+  source: 'Lost Colony Expansion',
+  variants: ['Evolved from Veilwyn (Combat Path)'],
+  dossierText: "Malwyn is the aggressive combat evolution of the Veilwyn, a dark mirror of its gentle origins. Choosing violence and ambition, this form trades the Solwyn's protective warmth for offensive fury. The Malwyn can teleport short distances in rapid bursts, curse enemies to weaken them, and reposition itself instantly during a fight. Its cryo-energy manifests as slowing debuffs and devastating cold attacks rather than healing. Fast, unpredictable, and relentless, a Malwyn turns its owner into a flanking nightmare in any engagement.",
+  temperament: 'Aggressive',
+  diet: 'Carnivore',
+  habitat: 'Lost Colony (Arat Prime)',
+  realWorldBasis: 'Arctic Fox (evolved/mythological combat form)',
+  sizeClass: 'Medium',
+  tamingMethod: 'Evolution',
+  tamingType: 'Evolves from a tamed Veilwyn via the combat/aggression progression path.',
+  preferredKibble: 'N/A',
+  favoriteFood: 'N/A',
+  tamingSpeed: 'N/A',
+  torpor: { baseValue: 0, depleteRate: 'N/A' },
+  specialRequirements: 'Must own and develop a Veilwyn along the combat/offense path. Requires the Lost Colony Expansion Pass.',
+  baseStats: { health: 950, stamina: 400, oxygen: 150, food: 1800, weight: 200, melee: 65, speed: 100, torpor: 350 },
+  statScaling: { health: 190, stamina: 40, oxygen: 15, food: 180, weight: 4, melee: 3.25, speed: 2 },
+  saddleLevel: 48,
+  saddleType: 'Malwyn Saddle',
+  saddleArmor: 20,
+  platformLimit: 0,
+  specialAbilities: ['Short-range teleportation', 'enemy curse (weakening)', 'crowd control slows', 'rapid repositioning'],
+  attackTypes: ['Cryo bite', 'teleport slash', 'curse bolt'],
+  canCarry: ['Can carry one rider'],
+  primaryRole: 'Combat flanker and crowd controller',
+  secondaryRoles: ['PVP ambush', 'enemy debuffing', 'rapid assault'],
+  gatheringResources: ['Hide', 'Raw Meat'],
+  gatheringEfficiency: {},
+  ratings: { combat: 9, transport: 6, speed: 10, survivability: 6 },
+  speeds: { land: 45, flying: 0, swimming: 15, climbing: 0 },
+  environmentalResistances: ['Cold immunity'],
+  preferredBiome: 'Arctic and combat zones',
+  temperatureRange: { min: -60, max: 20 },
+  oxygenRequirement: 'Air breathing',
+  breeding: {
+    cooldown: '18-48 hours', gestationTime: 'N/A (evolved form)', babyFoodConsumption: 'N/A',
+    maturationTime: 'N/A', colorRegions: 6, colorRegionNames: ['Body', 'dark fur', 'tail', 'eyes', 'dark energy glow', 'markings'],
+    mutationChance: 7.31, breedingDifficulty: 'N/A (cannot be directly bred — breed base Veilwyn)'
+  },
+  workstation: 'None', resourceProduction: 'None', structureFunctions: 'None',
+  buffAuras: ['None'], debuffAbilities: ['Curse weakens enemy attack and defense', 'cryo slow effect'],
+  uniqueMechanics: ['Evolved from Veilwyn (combat path)', 'short-range teleportation', 'curse debuff system'],
+  spawnMaps: ['Lost Colony'],
+  spawnZones: ['Does not spawn wild — evolved from Veilwyn'],
+  rarityRating: 'Legendary',
+  levelRange: 'Inherited from Veilwyn',
+  packBehavior: 'Solitary companion',
+  territorialBehavior: 'Aggressive to enemies',
+  difficultyRating: 'Hard (requires Veilwyn progression)',
+  beginnerFriendly: false, endGameViable: true, bossFightCapable: true, pvpMeta: 'Very High',
+  resourceInvestment: 'High', maintenanceLevel: 'Medium',
+  badgeCategories: ['combat', 'pvp']
+},
+'Ossidon': {
+  id: 'OSSIDON_504',
+  name: 'Ossidon',
+  icon: '🦍',
+  category: 'combat',
+  rarity: 'rare',
+  source: 'Lost Colony Expansion',
+  variants: ['Standard'],
+  dossierText: "The Ossidon is a hulking, bio-engineered apex predator built to dominate the frozen wastes of Arat Prime. Armed with cryogenic mucus and pure brute force, this monstrous primate is a living symbol of raw endurance and elemental might. Its skull-like visage and enormous claws make it one of the most terrifying sights on the ARK. The Ossidon's signature attack is rolling massive balls of frozen filth and debris that it bowls into enemies with devastating force. Taming one requires a unique and deeply challenging mechanic — you must ride it while it rolls its boulder and guide creatures into it to fill the ball, building enough taming progress before time runs out.",
+  temperament: 'Aggressive',
+  diet: 'Carnivore',
+  habitat: 'Lost Colony (Arat Prime), Cold biomes on Ragnarok, Valguero, The Center',
+  realWorldBasis: 'Primate (bio-engineered/mythological)',
+  sizeClass: 'Massive',
+  tamingMethod: 'Unique (Ride and Roll)',
+  tamingType: 'Tranq to half-torpor, then mount it and roll creatures into its dung ball within a time limit.',
+  preferredKibble: 'Exceptional Kibble',
+  favoriteFood: 'Exceptional Kibble',
+  tamingSpeed: 'Moderate (requires setup)',
+  torpor: { baseValue: 2500, depleteRate: 'Moderate' },
+  specialRequirements: 'Shoot to half-torpor, mount, then roll small/medium creatures into the ball. Creature deaths give progress bonus. Timer is displayed on screen. Requires Lost Colony Expansion Pass.',
+  baseStats: { health: 2200, stamina: 380, oxygen: 150, food: 3000, weight: 550, melee: 80, speed: 100, torpor: 2500 },
+  statScaling: { health: 440, stamina: 38, oxygen: 15, food: 300, weight: 11, melee: 4, speed: 1 },
+  saddleLevel: 55,
+  saddleType: 'Ossidon Saddle',
+  saddleArmor: 30,
+  platformLimit: 0,
+  specialAbilities: ['Boulder rolling attack', 'cryogenic mucus throw', 'icicle spear hurl', 'massive AoE stomp'],
+  attackTypes: ['Claw swipe', 'boulder throw', 'icicle spear', 'stomp'],
+  canCarry: ['Can grab and roll medium creatures'],
+  primaryRole: 'Apex combat mount and siege weapon',
+  secondaryRoles: ['AoE crowd control', 'base assault', 'boss fighting'],
+  gatheringResources: ['Raw Prime Meat', 'Raw Meat', 'Hide'],
+  gatheringEfficiency: { 'Raw Prime Meat': 9 },
+  ratings: { combat: 10, transport: 5, speed: 4, survivability: 10 },
+  speeds: { land: 25, flying: 0, swimming: 10, climbing: 0 },
+  environmentalResistances: ['Cold immunity', 'cryogenic resistance', 'extreme cold adaptation'],
+  preferredBiome: 'Arctic tundra, frozen wastelands',
+  temperatureRange: { min: -80, max: 10 },
+  oxygenRequirement: 'Air breathing',
+  breeding: {
+    cooldown: '18-48 hours', gestationTime: '8 hours', babyFoodConsumption: 'Very High',
+    maturationTime: '4 days, 12 hours', colorRegions: 6,
+    colorRegionNames: ['Body', 'skull markings', 'arms', 'back plates', 'cryo glow', 'belly'],
+    mutationChance: 7.31, breedingDifficulty: 'Very Hard'
+  },
+  workstation: 'None', resourceProduction: 'None', structureFunctions: 'Can destroy up to metal structures.',
+  buffAuras: ['None'], debuffAbilities: ['Cryo slow on hit', 'fear aura slows nearby wild creatures'],
+  uniqueMechanics: ['Unique ride-and-roll taming mechanic', 'boulder construction attack', 'cryogenic mucus'],
+  spawnMaps: ['Lost Colony', 'Ragnarok (cold biomes)', 'Valguero (cold biomes)', 'The Center (cold biomes)'],
+  spawnZones: ['Arctic tundra', 'frozen wastelands', 'cold mountain regions'],
+  rarityRating: 'Rare',
+  levelRange: '1-150',
+  packBehavior: 'Solitary',
+  territorialBehavior: 'Extremely aggressive',
+  difficultyRating: 'Very Hard',
+  beginnerFriendly: false, endGameViable: true, bossFightCapable: true, pvpMeta: 'Very High',
+  resourceInvestment: 'High', maintenanceLevel: 'Medium',
+  badgeCategories: ['combat', 'boss']
+},
+'Gloon': {
+  id: 'GLOON_505',
+  name: 'Gloon',
+  icon: '👁️',
+  category: 'utility',
+  rarity: 'uncommon',
+  source: 'Lost Colony Expansion',
+  variants: ['Standard'],
+  dossierText: "The Gloon is a peculiar bioluminescent creature, a mad scientist's creation that defies easy classification. Hovering through the darkest corners of Arat Prime, the Gloon emits a steady charge light that repels the Nameless and powers Aberration-style devices. It can fire a focused laser beam at targets, and its most terrifying ability is its Frenzy Spit — a viscous biological agent that drives afflicted creatures into a violent, uncontrolled bloodlust, turning them against each other. On a calmer note, its charge glow can be toggled remotely by the player using the 'Clap' emote, making it uniquely interactive.",
+  temperament: 'Passive',
+  diet: 'Omnivore',
+  habitat: 'Lost Colony (Twilight Forest, dark zones)',
+  realWorldBasis: 'Bioluminescent organism (fictional bio-engineered)',
+  sizeClass: 'Small',
+  tamingMethod: 'Passive',
+  tamingType: 'Non-violent passive tame. Approach carefully and feed.',
+  preferredKibble: 'Basic Kibble',
+  favoriteFood: 'Organic Polymer',
+  tamingSpeed: 'Moderate',
+  torpor: { baseValue: 80, depleteRate: 'N/A' },
+  specialRequirements: 'Passive tame. Can be shoulder-mounted. Requires Lost Colony Expansion Pass.',
+  baseStats: { health: 120, stamina: 200, oxygen: 150, food: 1200, weight: 30, melee: 15, speed: 100, torpor: 80 },
+  statScaling: { health: 24, stamina: 20, oxygen: 15, food: 120, weight: 0.6, melee: 0.75, speed: 1 },
+  saddleLevel: 0,
+  saddleType: 'Shoulder pet (no saddle)',
+  saddleArmor: 0,
+  platformLimit: 0,
+  specialAbilities: ['Charge light emission (toggleable via Clap emote)', 'laser beam attack', 'frenzy spit (causes bloodlust in enemies)', 'Nameless/Reaper repulsion'],
+  attackTypes: ['Laser beam', 'frenzy spit'],
+  canCarry: ['Shoulder pet — carried by survivor'],
+  primaryRole: 'Charge light provider and crowd disruptor',
+  secondaryRoles: ['Nameless repulsion on Aberration-style maps', 'enemy crowd control', 'bioluminescent light source'],
+  gatheringResources: [],
+  gatheringEfficiency: {},
+  ratings: { combat: 4, transport: 0, speed: 5, survivability: 4 },
+  speeds: { land: 0, flying: 20, swimming: 10, climbing: 0 },
+  environmentalResistances: ['Dark environment adaptation'],
+  preferredBiome: 'Dark caves, Twilight Forest, bioluminescent zones',
+  temperatureRange: { min: -20, max: 40 },
+  oxygenRequirement: 'Air breathing',
+  breeding: {
+    cooldown: '18-48 hours', gestationTime: '1 hour, 30 minutes', babyFoodConsumption: 'Low',
+    maturationTime: '1 day, 12 hours', colorRegions: 4,
+    colorRegionNames: ['Body', 'bioluminescent spots', 'eyes', 'glow core'],
+    mutationChance: 7.31, breedingDifficulty: 'Easy'
+  },
+  workstation: 'None', resourceProduction: 'None', structureFunctions: 'None',
+  buffAuras: ['Charge light aura repels Nameless and Reapers'], debuffAbilities: ['Frenzy Spit causes bloodlust in target creatures'],
+  uniqueMechanics: ['Charge light toggleable with Clap emote', 'frenzy spit turns creatures on each other', 'shoulder pet mechanics'],
+  spawnMaps: ['Lost Colony'],
+  spawnZones: ['Twilight Forest', 'dark biomes', 'bioluminescent zones'],
+  rarityRating: 'Uncommon',
+  levelRange: '1-150',
+  packBehavior: 'Small clusters',
+  territorialBehavior: 'Passive',
+  difficultyRating: 'Easy',
+  beginnerFriendly: true, endGameViable: true, bossFightCapable: false, pvpMeta: 'Medium',
+  resourceInvestment: 'Low', maintenanceLevel: 'Low',
+  badgeCategories: ['utility']
+},
+'Aureliax': {
+  id: 'AURELIAX_506',
+  name: 'Aureliax',
+  icon: '🐉',
+  category: 'combat',
+  rarity: 'rare',
+  source: 'Lost Colony Expansion',
+  variants: ['Standard'],
+  dossierText: "The Aureliax is a telekinetic dragon of extraordinary power, a living weapon that bends gravity to its will. It can levitate objects and enemies alike, flinging them with focused gravitic beams that deal massive damage. In combat it can aid allies by providing buffs or lock down groups of enemies simultaneously. Its unique taming method involves hunting specific Neophytes to gather the tribute it demands. Once tamed, the Aureliax is arguably the most visually spectacular and tactically versatile flying creature in the ARK universe, capable of reshaping an entire battlefield.",
+  temperament: 'Aggressive',
+  diet: 'Carnivore',
+  habitat: 'Lost Colony (Arat Prime)',
+  realWorldBasis: 'Dragon (fictional bio-engineered)',
+  sizeClass: 'Large',
+  tamingMethod: 'Special Passive (Neophyte tribute)',
+  tamingType: 'Requires defeating Neophytes and offering tribute to the Aureliax.',
+  preferredKibble: 'Exceptional Kibble',
+  favoriteFood: 'Neophyte trophies / tribute',
+  tamingSpeed: 'Moderate',
+  torpor: { baseValue: 1800, depleteRate: 'Moderate' },
+  specialRequirements: 'Kill Neophytes and collect tribute drops. Offer to a tamed Gigadesmodus helps speed this up. Requires Lost Colony Expansion Pass.',
+  baseStats: { health: 1650, stamina: 450, oxygen: 150, food: 3000, weight: 400, melee: 75, speed: 100, torpor: 1800 },
+  statScaling: { health: 330, stamina: 45, oxygen: 15, food: 300, weight: 8, melee: 3.75, speed: 1.5 },
+  saddleLevel: 65,
+  saddleType: 'Aureliax Saddle',
+  saddleArmor: 25,
+  platformLimit: 0,
+  specialAbilities: ['Gravity beam (levitates and flings enemies)', 'ally buff aura', 'gravitational displacement', 'AoE gravity pulse'],
+  attackTypes: ['Gravity beam', 'bite', 'gravity pulse', 'claw strike'],
+  canCarry: ['Can carry one rider', 'can levitate small/medium creatures with gravity beam'],
+  primaryRole: 'Aerial combat and battlefield control',
+  secondaryRoles: ['Gravity-based disruption', 'ally buffing', 'Neophyte farming'],
+  gatheringResources: ['Raw Prime Meat', 'Hide'],
+  gatheringEfficiency: { 'Raw Prime Meat': 9 },
+  ratings: { combat: 10, transport: 7, speed: 8, survivability: 8 },
+  speeds: { land: 20, flying: 50, swimming: 15, climbing: 0 },
+  environmentalResistances: ['Gravitational anomaly resistance'],
+  preferredBiome: 'Open skies, high-altitude zones, Lost Colony',
+  temperatureRange: { min: -30, max: 40 },
+  oxygenRequirement: 'Air breathing',
+  breeding: {
+    cooldown: '18-48 hours', gestationTime: '6 hours', babyFoodConsumption: 'Very High',
+    maturationTime: '4 days', colorRegions: 6,
+    colorRegionNames: ['Body', 'wings', 'spine', 'belly', 'gravitational glow', 'eye'],
+    mutationChance: 7.31, breedingDifficulty: 'Very Hard'
+  },
+  workstation: 'None', resourceProduction: 'None', structureFunctions: 'Can destroy up to metal structures.',
+  buffAuras: ['Ally attack speed buff in vicinity'], debuffAbilities: ['Gravity beam disorients and launches enemies'],
+  uniqueMechanics: ['Gravity beam levitates and flings targets', 'Neophyte tribute taming system', 'gravitational AoE'],
+  spawnMaps: ['Lost Colony'],
+  spawnZones: ['High altitude zones', 'open sky regions of Arat Prime'],
+  rarityRating: 'Rare',
+  levelRange: '1-150',
+  packBehavior: 'Solitary',
+  territorialBehavior: 'Aggressive',
+  difficultyRating: 'Very Hard',
+  beginnerFriendly: false, endGameViable: true, bossFightCapable: true, pvpMeta: 'Very High',
+  resourceInvestment: 'High', maintenanceLevel: 'Medium',
+  badgeCategories: ['combat', 'boss']
+},
+'Gigadesmodus': {
+  id: 'GIGADESMODUS_507',
+  name: 'Gigadesmodus',
+  icon: '🦇',
+  category: 'combat',
+  rarity: 'legendary',
+  source: 'Lost Colony Expansion',
+  variants: ['Standard'],
+  dossierText: "The Gigadesmodus is a truly monstrous creature — a titan among bats that serves as a flying fortress. Unlike anything else in the ARK universe, it cannot be found in the wild; it exists only as a reward for those brave enough to defeat the Lost King and Lost Queen bosses of the Lost Colony. The egg is claimed from the boss arena and hatched. Once raised, the Gigadesmodus functions as a massive aerial platform with a mobile command center that can be built upon its back. Its lifesteal attacks make it self-sustaining in prolonged combat, and its blood spit and execution mechanics are devastatingly effective against both creatures and Neophyte enemies.",
+  temperament: 'Aggressive (tamed only)',
+  diet: 'Carnivore (Blood)',
+  habitat: 'Lost Colony — boss reward only',
+  realWorldBasis: 'Giant bat (fictional mega-fauna)',
+  sizeClass: 'Colossal',
+  tamingMethod: 'Boss Reward (Egg)',
+  tamingType: 'Defeat the Lost King and Lost Queen bosses in Lost Colony. A Gigadesmodus Egg Sac is awarded to all surviving players. Hatch and raise the egg.',
+  preferredKibble: 'N/A (raised from egg)',
+  favoriteFood: 'Blood Pack / Raw Prime Meat',
+  tamingSpeed: 'N/A (boss egg — raises from hatch)',
+  torpor: { baseValue: 0, depleteRate: 'N/A' },
+  specialRequirements: 'Must defeat Lost King and Lost Queen bosses. All surviving players receive a randomly leveled egg. Cannot be found in the wild or knocked out. Requires Lost Colony Expansion Pass.',
+  baseStats: { health: 1450, stamina: 600, oxygen: 150, food: 4000, weight: 700, melee: 100, speed: 100, torpor: 0 },
+  statScaling: { health: 290, stamina: 60, oxygen: 15, food: 400, weight: 14, melee: 5, speed: 1 },
+  saddleLevel: 0,
+  saddleType: 'Built-in Platform (no saddle required)',
+  saddleArmor: 35,
+  platformLimit: 20,
+  specialAbilities: ['Lifesteal attacks (self-sustaining in combat)', 'blood spit (massive damage)', 'execution attack', 'mobile command center platform on back', 'echolocation', 'full damage to Neophytes'],
+  attackTypes: ['Blood spit', 'bite (lifesteal)', 'execution', 'wing slam'],
+  canCarry: ['Multiple survivors and structures on its platform back'],
+  primaryRole: 'Flying fortress and apex combat platform',
+  secondaryRoles: ['Neophyte farming', 'outpost assault', 'aerial base operations'],
+  gatheringResources: ['Blood Pack', 'Raw Prime Meat', 'Hide'],
+  gatheringEfficiency: { 'Blood Pack': 10 },
+  ratings: { combat: 10, transport: 9, speed: 7, survivability: 10 },
+  speeds: { land: 15, flying: 40, swimming: 20, climbing: 0 },
+  environmentalResistances: ['Lifesteal sustains health in combat', 'dark environment adaptation'],
+  preferredBiome: 'All — flying fortress',
+  temperatureRange: { min: -40, max: 50 },
+  oxygenRequirement: 'Air breathing',
+  breeding: {
+    cooldown: '18-48 hours', gestationTime: 'N/A (egg sac from boss)', babyFoodConsumption: 'Extreme',
+    maturationTime: '5 days+', colorRegions: 6,
+    colorRegionNames: ['Body', 'wings', 'membranes', 'spine', 'bioluminescent veins', 'eyes'],
+    mutationChance: 7.31, breedingDifficulty: 'Extreme (boss egg required to obtain)'
+  },
+  workstation: 'None', resourceProduction: 'None', structureFunctions: 'Platform saddle — structures can be built on its back.',
+  buffAuras: ['None'], debuffAbilities: ['Blood spit execution', 'echolocation reveals stealthed targets'],
+  uniqueMechanics: ['Obtained exclusively from Lost King and Lost Queen boss fight', 'platform saddle without a saddle item', 'lifesteal self-sustaining mechanic', 'execution attack mechanic'],
+  spawnMaps: ['Lost Colony (boss reward only)'],
+  spawnZones: ['Does not spawn in the wild — boss egg reward'],
+  rarityRating: 'Legendary',
+  levelRange: 'Random level from boss reward',
+  packBehavior: 'Solitary',
+  territorialBehavior: 'Neutral (tamed only)',
+  difficultyRating: 'Extreme (requires defeating Lost Colony bosses)',
+  beginnerFriendly: false, endGameViable: true, bossFightCapable: true, pvpMeta: 'Extreme',
+  resourceInvestment: 'Extreme', maintenanceLevel: 'Low (self-sustaining)',
+  badgeCategories: ['combat', 'boss', 'transport']
+},
+'Cryolophosaurus': {
+  id: 'CRYOLOPHOSAURUS_508',
+  name: 'Cryolophosaurus',
+  icon: '🦖',
+  category: 'combat',
+  rarity: 'uncommon',
+  source: 'Lost Colony Expansion',
+  variants: ['Standard'],
+  dossierText: "The Cryolophosaurus is a cold-adapted predator that uses biological narcotic artillery to subdue and control enemies. Rather than brute force, it excels at disabling targets — freezing them in place or driving them into a torpor-like stupor with its chilled narcotic sludge. It can also apply buffs to nearby allies, making it a surprisingly versatile support-combatant hybrid. While its raw damage output is modest compared to larger predators, its ability to lock down multiple enemies simultaneously makes it invaluable for controlling dangerous situations.",
+  temperament: 'Aggressive',
+  diet: 'Carnivore',
+  habitat: 'Lost Colony (Arat Prime), cold and snowy regions',
+  realWorldBasis: 'Cryolophosaurus ellioti (real theropod dinosaur)',
+  sizeClass: 'Large',
+  tamingMethod: 'Knockout',
+  tamingType: 'Standard violent taming with tranquilizers.',
+  preferredKibble: 'Regular Kibble',
+  favoriteFood: 'Regular Kibble',
+  tamingSpeed: 'Moderate',
+  torpor: { baseValue: 900, depleteRate: 'Moderate' },
+  specialRequirements: 'Standard knockout tame. Spawns on Lost Colony. Requires Lost Colony Expansion Pass to access on that map; may eventually spawn on other cold maps.',
+  baseStats: { health: 780, stamina: 350, oxygen: 150, food: 2500, weight: 350, melee: 50, speed: 100, torpor: 900 },
+  statScaling: { health: 156, stamina: 35, oxygen: 15, food: 250, weight: 7, melee: 2.5, speed: 1 },
+  saddleLevel: 45,
+  saddleType: 'Cryolophosaurus Saddle',
+  saddleArmor: 25,
+  platformLimit: 0,
+  specialAbilities: ['Narcotic sludge attack (slows and narcs enemies)', 'cryo freeze (immobilizes target briefly)', 'ally buff aura', 'cold terrain speed bonus'],
+  attackTypes: ['Bite', 'narcotic sludge spit', 'cryo freeze spit'],
+  canCarry: ['Cannot pick up creatures'],
+  primaryRole: 'Crowd control and support combatant',
+  secondaryRoles: ['Taming aid (narcing wild creatures)', 'ally buffing', 'cold biome exploration'],
+  gatheringResources: ['Raw Meat', 'Hide', 'Narcotic'],
+  gatheringEfficiency: { 'Narcotic': 7 },
+  ratings: { combat: 6, transport: 5, speed: 6, survivability: 7 },
+  speeds: { land: 30, flying: 0, swimming: 15, climbing: 0 },
+  environmentalResistances: ['Cold immunity', 'ice resistance'],
+  preferredBiome: 'Cold regions, snowy tundra, ice caves',
+  temperatureRange: { min: -60, max: 15 },
+  oxygenRequirement: 'Air breathing',
+  breeding: {
+    cooldown: '18-48 hours', gestationTime: '4 hours', babyFoodConsumption: 'High',
+    maturationTime: '2 days, 12 hours', colorRegions: 6,
+    colorRegionNames: ['Body', 'cryo crest', 'spine', 'belly', 'markings', 'eyes'],
+    mutationChance: 7.31, breedingDifficulty: 'Medium'
+  },
+  workstation: 'None', resourceProduction: 'None', structureFunctions: 'None',
+  buffAuras: ['Ally combat buff when Cryolophosaurus spit lands on enemy'], debuffAbilities: ['Narcotic sludge slows and narcs enemies', 'cryo freeze immobilizes target'],
+  uniqueMechanics: ['Narcotic sludge acts like a biological tranq system', 'ally buff triggered by offensive actions'],
+  spawnMaps: ['Lost Colony'],
+  spawnZones: ['Cold zones', 'tundra', 'icy regions of Arat Prime'],
+  rarityRating: 'Uncommon',
+  levelRange: '1-150',
+  packBehavior: 'Small packs (2-4)',
+  territorialBehavior: 'Aggressive',
+  difficultyRating: 'Medium',
+  beginnerFriendly: false, endGameViable: true, bossFightCapable: false, pvpMeta: 'Medium',
+  resourceInvestment: 'Medium', maintenanceLevel: 'Low',
+  badgeCategories: ['combat', 'utility']
+},
+'Thrall': {
+  id: 'THRALL_509',
+  name: 'Thrall',
+  icon: '⚔️',
+  category: 'combat',
+  rarity: 'uncommon',
+  source: 'Lost Colony Expansion',
+  variants: ['Basic Thrall', 'Elite Thrall', 'Possessed Thrall'],
+  dossierText: "Thralls are the bio-engineered soldiers of the Lost King's army on Arat Prime. Unlike any creature encountered before, they are fully intelligent humanoid fighters capable of wearing armor, wielding weapons, and using teleporters for tactical repositioning. Through the Thrall Mastery system — a core mechanic of Lost Colony — survivors can subdue Thralls found at Defense and Attack Outposts and recruit them into a personal army. Managing and deploying your Thrall force is central to the Lost Colony experience, from raiding outposts to assaulting the final Citadel.",
+  temperament: 'Aggressive (hostile faction)',
+  diet: 'Omnivore',
+  habitat: 'Lost Colony (outposts, Citadel)',
+  realWorldBasis: 'Humanoid (bio-engineered)',
+  sizeClass: 'Medium',
+  tamingMethod: 'Recruitment (Thrall Mastery System)',
+  tamingType: 'Subdue at Defense/Attack Outposts through combat and the Thrall Mastery mechanic. Does not use standard taming food.',
+  preferredKibble: 'N/A',
+  favoriteFood: 'N/A',
+  tamingSpeed: 'Variable (depends on outpost difficulty)',
+  torpor: { baseValue: 500, depleteRate: 'Moderate' },
+  specialRequirements: 'Requires Lost Colony Expansion Pass. Recruited via the Thrall Mastery system, not traditional knockout taming. Can wear armor and use teleporters once recruited.',
+  baseStats: { health: 500, stamina: 300, oxygen: 150, food: 1500, weight: 200, melee: 45, speed: 100, torpor: 500 },
+  statScaling: { health: 100, stamina: 30, oxygen: 15, food: 150, weight: 4, melee: 2.25, speed: 1 },
+  saddleLevel: 0,
+  saddleType: 'N/A (humanoid — no saddle)',
+  saddleArmor: 0,
+  platformLimit: 0,
+  specialAbilities: ['Weapon use (swords, guns, etc.)', 'armor equipping', 'teleporter use', 'tactical AI', 'outpost defense and attack'],
+  attackTypes: ['Melee weapon attacks', 'ranged weapon attacks'],
+  canCarry: ['N/A'],
+  primaryRole: 'Recruited soldier and army unit',
+  secondaryRoles: ['Base defense', 'outpost raiding', 'Citadel assault support'],
+  gatheringResources: [],
+  gatheringEfficiency: {},
+  ratings: { combat: 7, transport: 0, speed: 5, survivability: 6 },
+  speeds: { land: 25, flying: 0, swimming: 10, climbing: 5 },
+  environmentalResistances: ['Armor-dependent'],
+  preferredBiome: 'Arat Prime, outposts, city environments',
+  temperatureRange: { min: -20, max: 40 },
+  oxygenRequirement: 'Air breathing',
+  breeding: {
+    cooldown: 'Cannot breed', gestationTime: 'N/A', babyFoodConsumption: 'N/A',
+    maturationTime: 'N/A', colorRegions: 0, colorRegionNames: [],
+    mutationChance: 0, breedingDifficulty: 'Cannot breed'
+  },
+  workstation: 'None', resourceProduction: 'None', structureFunctions: 'None',
+  buffAuras: ['None'], debuffAbilities: ['None'],
+  uniqueMechanics: ['Thrall Mastery recruitment system', 'can equip armor and weapons', 'intelligent humanoid AI', 'teleporter usage'],
+  spawnMaps: ['Lost Colony'],
+  spawnZones: ['Defense Outposts', 'Attack Outposts', 'Citadel'],
+  rarityRating: 'Common',
+  levelRange: '1-150 (varies by outpost)',
+  packBehavior: 'Organized squads',
+  territorialBehavior: 'Hostile until recruited',
+  difficultyRating: 'Medium',
+  beginnerFriendly: false, endGameViable: true, bossFightCapable: true, pvpMeta: 'High',
+  resourceInvestment: 'Medium', maintenanceLevel: 'Low',
+  badgeCategories: ['combat']
+},
+'Neophyte': {
+  id: 'NEOPHYTE_510',
+  name: 'Neophyte',
+  icon: '🦇',
+  category: 'combat',
+  rarity: 'uncommon',
+  source: 'Lost Colony Expansion',
+  variants: ['Standard', 'Elite'],
+  dossierText: "Neophytes are the elite enforcers of the Lost King's army — towering, bat-like creatures as tall as a Gigantopithecus, with hides nearly impervious to creature attacks. They cannot be tamed, but they are a critical part of the Lost Colony ecosystem. Engaging a Neophyte triggers a dangerous Purge event, sending waves of enemies at the player. However, defeating them drops trophies necessary for taming an Aureliax, and a tamed Gigadesmodus deals full damage to them, making the pair an essential combination for farming these dangerous elites.",
+  temperament: 'Aggressive',
+  diet: 'Carnivore',
+  habitat: 'Lost Colony (Arat Prime, outposts, open world)',
+  realWorldBasis: 'Bat (bio-engineered giant)',
+  sizeClass: 'Large',
+  tamingMethod: 'Cannot be tamed',
+  tamingType: 'N/A — drops Aureliax taming tribute on death.',
+  preferredKibble: 'N/A',
+  favoriteFood: 'N/A',
+  tamingSpeed: 'N/A',
+  torpor: { baseValue: 3000, depleteRate: 'N/A' },
+  specialRequirements: 'Highly resistant to creature damage. Use Gigadesmodus for full damage. Defeating one triggers a Purge event.',
+  baseStats: { health: 3500, stamina: 400, oxygen: 150, food: 2000, weight: 300, melee: 90, speed: 100, torpor: 3000 },
+  statScaling: { health: 700, stamina: 40, oxygen: 15, food: 200, weight: 6, melee: 4.5, speed: 0 },
+  saddleLevel: 0,
+  saddleType: 'N/A (untameable)',
+  saddleArmor: 0,
+  platformLimit: 0,
+  specialAbilities: ['Extreme damage resistance to creatures', 'triggers Purge event on engagement', 'drops Aureliax taming tribute'],
+  attackTypes: ['Melee strike', 'wing slam', 'dive attack'],
+  canCarry: ['Can grab survivors'],
+  primaryRole: 'Elite enemy and Aureliax taming source',
+  secondaryRoles: ['Purge event trigger', 'threat escalation mechanic'],
+  gatheringResources: ['Aureliax Tribute (on death)', 'Hide', 'Raw Meat'],
+  gatheringEfficiency: { 'Aureliax Tribute': 10 },
+  ratings: { combat: 9, transport: 0, speed: 7, survivability: 10 },
+  speeds: { land: 20, flying: 40, swimming: 10, climbing: 0 },
+  environmentalResistances: ['Near immunity to creature attacks'],
+  preferredBiome: 'Arat Prime open world and outposts',
+  temperatureRange: { min: -40, max: 40 },
+  oxygenRequirement: 'Air breathing',
+  breeding: { cooldown: 'Cannot breed', gestationTime: 'N/A', babyFoodConsumption: 'N/A', maturationTime: 'N/A', colorRegions: 0, colorRegionNames: [], mutationChance: 0, breedingDifficulty: 'Cannot breed' },
+  workstation: 'None', resourceProduction: 'None', structureFunctions: 'None',
+  buffAuras: ['None'], debuffAbilities: ['Triggers Purge events'],
+  uniqueMechanics: ['Creature damage immunity', 'Purge event trigger', 'Aureliax taming tribute source'],
+  spawnMaps: ['Lost Colony'],
+  spawnZones: ['Open world Arat Prime', 'outpost zones'],
+  rarityRating: 'Uncommon',
+  levelRange: '1-150',
+  packBehavior: 'Solitary or small groups',
+  territorialBehavior: 'Extremely aggressive',
+  difficultyRating: 'Very Hard',
+  beginnerFriendly: false, endGameViable: true, bossFightCapable: false, pvpMeta: 'None',
+  resourceInvestment: 'N/A', maintenanceLevel: 'N/A',
+  badgeCategories: ['combat']
+},
+'Revenant': {
+  id: 'REVENANT_511',
+  name: 'Revenant',
+  icon: '💀',
+  category: 'combat',
+  rarity: 'uncommon',
+  source: 'Lost Colony Expansion',
+  variants: ['Thrall Revenant', 'Creature Revenant'],
+  dossierText: "Revenants are the corrupted remains of Thralls and creatures that have been infected and reanimated by the liquid Edmundium spilled from the Aberration ARK crash sites. Mindless and relentless, they run in packs and seek to overwhelm their prey with sheer numbers. They guard the most dangerous areas of Arat Prime — the Aberrant Crash Sites — where the richest resources and most advanced materials can be found. While not threatening individually, a Revenant horde can bring down even well-equipped survivors through attrition.",
+  temperament: 'Aggressive',
+  diet: 'N/A (Corrupted)',
+  habitat: 'Lost Colony (Aberrant Crash Sites, radioactive zones)',
+  realWorldBasis: 'N/A (undead/corrupted)',
+  sizeClass: 'Medium',
+  tamingMethod: 'Cannot be tamed',
+  tamingType: 'N/A — hostile corrupted creature.',
+  preferredKibble: 'N/A',
+  favoriteFood: 'N/A',
+  tamingSpeed: 'N/A',
+  torpor: { baseValue: 300, depleteRate: 'N/A' },
+  specialRequirements: 'Cannot be tamed. Guard crash sites containing Edmundium.',
+  baseStats: { health: 400, stamina: 200, oxygen: 150, food: 500, weight: 100, melee: 35, speed: 100, torpor: 300 },
+  statScaling: { health: 80, stamina: 20, oxygen: 15, food: 50, weight: 2, melee: 1.75, speed: 0 },
+  saddleLevel: 0, saddleType: 'N/A', saddleArmor: 0, platformLimit: 0,
+  specialAbilities: ['Pack assault', 'Edmundium corruption aura (damages and slows)'],
+  attackTypes: ['Melee strike', 'corruption bite'],
+  canCarry: ['N/A'],
+  primaryRole: 'Pack enemy guarding crash sites',
+  secondaryRoles: ['Resource area hazard'],
+  gatheringResources: ['Corruption residue', 'Raw Meat'],
+  gatheringEfficiency: {},
+  ratings: { combat: 4, transport: 0, speed: 6, survivability: 4 },
+  speeds: { land: 30, flying: 0, swimming: 10, climbing: 0 },
+  environmentalResistances: ['Radiation resistance'],
+  preferredBiome: 'Crash sites, radioactive zones',
+  temperatureRange: { min: -40, max: 40 },
+  oxygenRequirement: 'Air breathing',
+  breeding: { cooldown: 'Cannot breed', gestationTime: 'N/A', babyFoodConsumption: 'N/A', maturationTime: 'N/A', colorRegions: 0, colorRegionNames: [], mutationChance: 0, breedingDifficulty: 'Cannot breed' },
+  workstation: 'None', resourceProduction: 'None', structureFunctions: 'None',
+  buffAuras: ['None'], debuffAbilities: ['Corruption aura slows and damages'],
+  uniqueMechanics: ['Pack-based swarm tactics', 'Edmundium corruption mechanic'],
+  spawnMaps: ['Lost Colony'],
+  spawnZones: ['Aberrant Crash Sites', 'Edmundium zones'],
+  rarityRating: 'Common (in their zones)',
+  levelRange: '1-150',
+  packBehavior: 'Large packs (6-10+)',
+  territorialBehavior: 'Extremely aggressive',
+  difficultyRating: 'Medium (dangerous in groups)',
+  beginnerFriendly: false, endGameViable: false, bossFightCapable: false, pvpMeta: 'None',
+  resourceInvestment: 'N/A', maintenanceLevel: 'N/A',
+  badgeCategories: ['combat']
+},
+'Gargoyle': {
+  id: 'GARGOYLE_512',
+  name: 'Gargoyle',
+  icon: '🗿',
+  category: 'combat',
+  rarity: 'rare',
+  source: 'Lost Colony Expansion',
+  variants: ['Standard'],
+  dossierText: "Gargoyles on Lost Colony are creatures of stone and shadow that have been frozen in time by a mysterious ancient statue. They are dormant and motionless until alerted by the Red Colony faction, at which point they awaken with terrifying speed and aggression. These are not the tameable Gargoyles of the Astraeos mod — the Lost Colony Gargoyles are pure hazards, guardians of the darkest regions of Arat Prime. Their stone hides are extremely resistant to conventional weapons, and they can fly, making them difficult to evade. None of these creatures carry the Lost effect, meaning they are permanently hostile.",
+  temperament: 'Aggressive (awakened)',
+  diet: 'N/A (Stone creature)',
+  habitat: 'Lost Colony (statue zones, Red Colony territory)',
+  realWorldBasis: 'Gargoyle (mythology)',
+  sizeClass: 'Large',
+  tamingMethod: 'Cannot be tamed',
+  tamingType: 'N/A — hostile, untameable. Awakened by the Red Colony.',
+  preferredKibble: 'N/A',
+  favoriteFood: 'N/A',
+  tamingSpeed: 'N/A',
+  torpor: { baseValue: 4000, depleteRate: 'N/A' },
+  specialRequirements: 'Cannot be tamed. Dormant until Red Colony activates them.',
+  baseStats: { health: 3000, stamina: 300, oxygen: 150, food: 0, weight: 400, melee: 85, speed: 100, torpor: 4000 },
+  statScaling: { health: 600, stamina: 30, oxygen: 15, food: 0, weight: 8, melee: 4.25, speed: 0 },
+  saddleLevel: 0, saddleType: 'N/A', saddleArmor: 0, platformLimit: 0,
+  specialAbilities: ['Stone hide (high damage resistance)', 'flight', 'Red Colony alerting awakens dormant Gargoyles', 'area territorial aggression'],
+  attackTypes: ['Stone claw swipe', 'dive attack', 'stone bite'],
+  canCarry: ['Can grab survivors'],
+  primaryRole: 'Environmental hazard and territorial guardian',
+  secondaryRoles: ['Red Colony defense', 'area denial'],
+  gatheringResources: ['Stone', 'Raw Meat'],
+  gatheringEfficiency: {},
+  ratings: { combat: 8, transport: 0, speed: 7, survivability: 9 },
+  speeds: { land: 20, flying: 38, swimming: 5, climbing: 5 },
+  environmentalResistances: ['Stone body — high physical resistance'],
+  preferredBiome: 'Dark zones, Red Colony territory',
+  temperatureRange: { min: -40, max: 40 },
+  oxygenRequirement: 'Air breathing',
+  breeding: { cooldown: 'Cannot breed', gestationTime: 'N/A', babyFoodConsumption: 'N/A', maturationTime: 'N/A', colorRegions: 0, colorRegionNames: [], mutationChance: 0, breedingDifficulty: 'Cannot breed' },
+  workstation: 'None', resourceProduction: 'None', structureFunctions: 'None',
+  buffAuras: ['None'], debuffAbilities: ['None'],
+  uniqueMechanics: ['Dormant until Red Colony activates', 'stone body damage resistance'],
+  spawnMaps: ['Lost Colony'],
+  spawnZones: ['Statue zones', 'Red Colony territory', 'dark regions of Arat Prime'],
+  rarityRating: 'Rare',
+  levelRange: '1-150',
+  packBehavior: 'Small groups',
+  territorialBehavior: 'Dormant until activated, then extremely aggressive',
+  difficultyRating: 'Hard',
+  beginnerFriendly: false, endGameViable: false, bossFightCapable: false, pvpMeta: 'None',
+  resourceInvestment: 'N/A', maintenanceLevel: 'N/A',
+  badgeCategories: ['combat']
+},
+'Lost King': {
+  id: 'LOST_KING_513',
+  name: 'Lost King',
+  icon: '👑',
+  category: 'boss',
+  rarity: 'legendary',
+  source: 'Lost Colony Expansion',
+  variants: ['Standard', 'Alpha'],
+  dossierText: "The Lost King is the primary antagonist and final boss of the Lost Colony expansion. Once a powerful survivor corrupted by Rockwell's influence, he now rules over Arat Prime from his gothic Citadel with an army of Thralls and bio-engineered creatures at his command. His boss fight takes place within the Citadel itself and requires survivors to have first earned enough Sigils through outpost conquest. Defeating the Lost King is the culmination of the entire Lost Colony narrative arc, and the rewards — including a Gigadesmodus Egg Sac — make him one of the most prestigious boss encounters in all of ARK.",
+  temperament: 'Aggressive (Boss)',
+  diet: 'N/A',
+  habitat: 'Lost Colony — Citadel (boss arena)',
+  realWorldBasis: 'Human (corrupted survivor)',
+  sizeClass: 'Large',
+  tamingMethod: 'Cannot be tamed',
+  tamingType: 'N/A — final boss.',
+  preferredKibble: 'N/A',
+  favoriteFood: 'N/A',
+  tamingSpeed: 'N/A',
+  torpor: { baseValue: 99999, depleteRate: 'N/A' },
+  specialRequirements: 'Must earn Sigils by conquering outposts before the Citadel unlocks. Defeating the Lost King and Lost Queen together awards a Gigadesmodus Egg Sac to all surviving players.',
+  baseStats: { health: 250000, stamina: 9999, oxygen: 150, food: 10000, weight: 9999, melee: 200, speed: 100, torpor: 99999 },
+  statScaling: { health: 0, stamina: 0, oxygen: 0, food: 0, weight: 0, melee: 0, speed: 0 },
+  saddleLevel: 0, saddleType: 'N/A', saddleArmor: 0, platformLimit: 0,
+  specialAbilities: ['Thrall summoning', 'phase transitions', 'Gigadesmodus Egg Sac drop', 'multiple attack phases', 'Neophyte minions'],
+  attackTypes: ['Heavy melee', 'Thrall army summons', 'special phase attacks'],
+  canCarry: ['N/A'],
+  primaryRole: 'Final boss of Lost Colony',
+  secondaryRoles: ['Gigadesmodus unlock', 'narrative climax'],
+  gatheringResources: ['Gigadesmodus Egg Sac (all survivors)', 'Lost King Trophy', 'Ascension items'],
+  gatheringEfficiency: {},
+  ratings: { combat: 10, transport: 0, speed: 5, survivability: 10 },
+  speeds: { land: 20, flying: 0, swimming: 0, climbing: 0 },
+  environmentalResistances: ['Highly resistant to all damage'],
+  preferredBiome: 'Citadel boss arena',
+  temperatureRange: { min: -50, max: 50 },
+  oxygenRequirement: 'Air breathing',
+  breeding: { cooldown: 'Cannot breed', gestationTime: 'N/A', babyFoodConsumption: 'N/A', maturationTime: 'N/A', colorRegions: 0, colorRegionNames: [], mutationChance: 0, breedingDifficulty: 'Cannot breed' },
+  workstation: 'None', resourceProduction: 'None', structureFunctions: 'None',
+  buffAuras: ['None'], debuffAbilities: ['Multiple debuffs during boss fight phases'],
+  uniqueMechanics: ['Sigil requirement to access', 'Gigadesmodus Egg Sac reward', 'combined boss fight with Lost Queen'],
+  spawnMaps: ['Lost Colony'],
+  spawnZones: ['Citadel boss arena (summoned)'],
+  rarityRating: 'Boss',
+  levelRange: 'Boss-dependent',
+  packBehavior: 'Solitary (with Thrall army)',
+  territorialBehavior: 'Aggressive (boss encounter)',
+  difficultyRating: 'Extreme',
+  beginnerFriendly: false, endGameViable: true, bossFightCapable: false, pvpMeta: 'None',
+  resourceInvestment: 'N/A', maintenanceLevel: 'N/A',
+  badgeCategories: ['combat', 'boss']
+},
+'Lost Queen': {
+  id: 'LOST_QUEEN_514',
+  name: 'Lost Queen',
+  icon: '👸',
+  category: 'boss',
+  rarity: 'legendary',
+  source: 'Lost Colony Expansion',
+  variants: ['Standard'],
+  dossierText: "The Lost Queen is the second boss of the Lost Colony Citadel encounter, fought alongside or following the Lost King. She is the source of the Gigadesmodus lineage — a massive bat-queen who serves as both the pinnacle of the Lost King's bio-engineering program and his greatest weapon. Surviving the combined boss encounter against the Lost King and Lost Queen and ascending afterward grants all surviving players a Gigadesmodus Egg Sac, making this the most prestigious and rewarding boss fight in the expansion.",
+  temperament: 'Aggressive (Boss)',
+  diet: 'N/A',
+  habitat: 'Lost Colony — Citadel (boss arena)',
+  realWorldBasis: 'Giant bat queen (fictional bio-engineered)',
+  sizeClass: 'Colossal',
+  tamingMethod: 'Cannot be tamed',
+  tamingType: 'N/A — boss encounter. Drops Gigadesmodus Egg Sac on defeat.',
+  preferredKibble: 'N/A',
+  favoriteFood: 'N/A',
+  tamingSpeed: 'N/A',
+  torpor: { baseValue: 99999, depleteRate: 'N/A' },
+  specialRequirements: 'Part of the combined Lost King and Lost Queen boss encounter in the Citadel. All surviving players who ascend receive a Gigadesmodus Egg Sac.',
+  baseStats: { health: 200000, stamina: 9999, oxygen: 150, food: 10000, weight: 9999, melee: 175, speed: 100, torpor: 99999 },
+  statScaling: { health: 0, stamina: 0, oxygen: 0, food: 0, weight: 0, melee: 0, speed: 0 },
+  saddleLevel: 0, saddleType: 'N/A', saddleArmor: 0, platformLimit: 0,
+  specialAbilities: ['Gigadesmodus Egg Sac drop', 'bat minion summons', 'lifesteal attacks', 'echolocation attacks', 'flying boss mechanics'],
+  attackTypes: ['Bite (lifesteal)', 'wing slam', 'blood spit', 'bat swarm summon'],
+  canCarry: ['Can grab survivors'],
+  primaryRole: 'Second boss of the Citadel encounter',
+  secondaryRoles: ['Gigadesmodus source', 'narrative climax'],
+  gatheringResources: ['Gigadesmodus Egg Sac (all surviving players)', 'Lost Queen Trophy'],
+  gatheringEfficiency: {},
+  ratings: { combat: 10, transport: 0, speed: 7, survivability: 10 },
+  speeds: { land: 10, flying: 45, swimming: 20, climbing: 0 },
+  environmentalResistances: ['Highly resistant to all damage'],
+  preferredBiome: 'Citadel boss arena',
+  temperatureRange: { min: -50, max: 50 },
+  oxygenRequirement: 'Air breathing',
+  breeding: { cooldown: 'Cannot breed', gestationTime: 'N/A', babyFoodConsumption: 'N/A', maturationTime: 'N/A', colorRegions: 0, colorRegionNames: [], mutationChance: 0, breedingDifficulty: 'Cannot breed' },
+  workstation: 'None', resourceProduction: 'None', structureFunctions: 'None',
+  buffAuras: ['None'], debuffAbilities: ['Lifesteal on bite', 'echolocation debuff'],
+  uniqueMechanics: ['Source of all Gigadesmodus tames via egg sac reward', 'combined boss fight with Lost King'],
+  spawnMaps: ['Lost Colony'],
+  spawnZones: ['Citadel boss arena'],
+  rarityRating: 'Boss',
+  levelRange: 'Boss-dependent',
+  packBehavior: 'Solitary (with bat minions)',
+  territorialBehavior: 'Aggressive (boss encounter)',
+  difficultyRating: 'Extreme',
+  beginnerFriendly: false, endGameViable: true, bossFightCapable: false, pvpMeta: 'None',
+  resourceInvestment: 'N/A', maintenanceLevel: 'N/A',
+  badgeCategories: ['combat', 'boss']
+},
+'S-Pyromane': {
+  id: "S_PYROMANE_515",
+  name: "S-Pyromane",
+  icon: "🦁",
+  category: "combat",
+  rarity: "rare",
+  source: "S-Dino Variants - Fantastic Tames (Nekatus mod)",
+  variants: ["S-Variant of Pyromane"],
+  dossierText: "The S-Pyromane is Nekatus's S-Dino variant of the Pyromane Fantastic Tame, bearing the trademark bioluminescent S-Dino shimmer alongside its fiery mane. Like all S-Dinos, it has a 10% chance of spawning in place of a standard Pyromane and grants immunity to radiation damage. It retains all of the Pyromane's fire-based combat abilities — the thermal charge, fire breath, and volcanic area control — with the cosmetic and radiation-immunity benefits of the S-Variant system. S-Dinos can crossbreed with their non-S counterparts. Like all S-variants from Nekatus's S-Dino mod, this creature carries full radiation immunity — a meaningful passive advantage in environments like Aberration and the Genesis simulations where unprotected tames quickly become liabilities. In the wild, it has a 10% chance of spawning as an S-variant in place of the standard creature, identifiable by its distinctive bioluminescent shimmer. Holding E while mounted toggles special particle effects. Crossbreeding with the non-S variant is fully supported, allowing survivors to introduce the radiation immunity and S-variant glow into an established breeding line without sacrificing existing stat gains.",
+  temperament: "Aggressive",
+  diet: "Carnivore",
+  habitat: "Volcanic biomes (same spawns as base Pyromane)",
+  realWorldBasis: "Lion (fire-based fantastical variant)",
+  sizeClass: "Large",
+  tamingMethod: "Knockout",
+  tamingType: "Standard violent taming. Requires owning the Pyromane Fantastic Tame DLC. 10% spawn rate replacing standard Pyromane.",
+  preferredKibble: "Exceptional Kibble",
+  favoriteFood: "Exceptional Kibble",
+  tamingSpeed: "Moderate",
+  torpor: {
+    baseValue: 1200,
+    depleteRate: "Moderate"
+  },
+  specialRequirements: "Requires S-Dino Variants - Fantastic Tames mod by Nekatus AND the Pyromane Fantastic Tame DLC. S-Dinos can crossbreed with non-S variants.",
+  baseStats: {
+    health: 550,
+    stamina: 280,
+    oxygen: 150,
+    food: 2000,
+    weight: 200,
+    melee: 52,
+    speed: 100,
+    torpor: 1200
+  },
+  statScaling: {
+    health: 110,
+    stamina: 28,
+    oxygen: 15,
+    food: 200,
+    weight: 4,
+    melee: 2.6,
+    speed: 1.5
+  },
+  saddleLevel: 55,
+  saddleType: "Pyromane Saddle (compatible)",
+  saddleArmor: 25,
+  platformLimit: 0,
+  specialAbilities: ["S-Dino bioluminescent glow", "radiation immunity", "fire breath", "thermal charge", "volcanic area control", "crossbreeding with standard Pyromane"],
+  attackTypes: ["Fire breath", "thermal charge", "claw swipe", "ground slam"],
+  canCarry: ["One rider"],
+  primaryRole: "Fire-based combat specialist (S-Variant)",
+  secondaryRoles: ["Volcanic exploration", "S-Variant collector piece", "radiation-immune mount"],
+  gatheringResources: ["Sulfur", "Obsidian", "Crystal"],
+  gatheringEfficiency: {
+    Sulfur: 9,
+    Obsidian: 8
+  },
+  ratings: {
+    combat: 9,
+    transport: 7,
+    speed: 6,
+    survivability: 9
+  },
+  speeds: {
+    land: 30,
+    flying: 0,
+    swimming: 15,
+    climbing: 0
+  },
+  environmentalResistances: ["Complete fire immunity", "radiation immunity (S-Variant bonus)", "heat resistance"],
+  preferredBiome: "Volcanic regions",
+  temperatureRange: {
+    min: 25,
+    max: 100
+  },
+  oxygenRequirement: "Air breathing",
+  breeding: {
+    cooldown: "18-48 hours",
+    gestationTime: "5 hours, 30 minutes",
+    babyFoodConsumption: "High",
+    maturationTime: "4 days, 5 hours",
+    colorRegions: 6,
+    colorRegionNames: ["Body", "mane", "markings", "eyes", "S-glow", "underbelly"],
+    mutationChance: 7.31,
+    breedingDifficulty: "Hard"
+  },
+  workstation: "None",
+  resourceProduction: "None",
+  structureFunctions: "Can ignite flammable structures.",
+  buffAuras: ["Heat aura provides warmth"],
+  debuffAbilities: ["Burning effects on enemies"],
+  uniqueMechanics: ["S-Dino crossbreeding enabled", "radiation immunity from S-Variant", "10% wild spawn rate replacing Pyromane", "requires Fantastic Tame DLC ownership"],
+  spawnMaps: ["Maps where Pyromane spawns (volcanic areas)"],
+  spawnZones: ["Volcanic regions, lava fields — 10% chance replacing standard Pyromane"],
+  rarityRating: "Rare",
+  levelRange: "1-150",
+  packBehavior: "Solitary or pairs",
+  territorialBehavior: "Territorial over thermal areas",
+  difficultyRating: "Hard",
+  beginnerFriendly: false,
+  endGameViable: true,
+  bossFightCapable: true,
+  pvpMeta: "High",
+  resourceInvestment: "High",
+  maintenanceLevel: "Medium",
+  badgeCategories: ["combat", "boss"]
+},
+'S-Dreadmare': {
+  id: "S_DREADMARE_516",
+  name: "S-Dreadmare",
+  icon: "🐴",
+  category: "combat",
+  rarity: "legendary",
+  source: "S-Dino Variants - Fantastic Tames (Nekatus mod)",
+  variants: ["S-Dreadmare (Female)", "S-Dreadstallion (Male)"],
+  dossierText: "The S-Dreadmare and S-Dreadstallion are the S-Dino Variants of the Dreadmare Fantastic Tame. Bearing the signature S-Dino bioluminescent shimmer and radiation immunity, these dark equines retain all of the standard Dreadmare's supernatural speed, phase-through-obstacle charges, and dark energy aura — enhanced with the trademark glow of a Nekatus S-Variant. They have a 10% chance of spawning in place of a standard Dreadmare and can crossbreed with the non-S variant. For collectors of both Fantastic Tames and S-Dino variants, the S-Dreadmare represents the pinnacle of dark equine mastery.",
+  temperament: "Aggressive",
+  diet: "Carnivore",
+  habitat: "Same spawns as base Dreadmare",
+  realWorldBasis: "Dark horse / nightmare (mythological)",
+  sizeClass: "Large",
+  tamingMethod: "Knockout",
+  tamingType: "Standard violent taming. Requires owning the Dreadmare Fantastic Tame DLC. 10% spawn rate replacing standard Dreadmare.",
+  preferredKibble: "Exceptional Kibble",
+  favoriteFood: "Exceptional Kibble",
+  tamingSpeed: "Moderate",
+  torpor: {
+    baseValue: 1100,
+    depleteRate: "Moderate"
+  },
+  specialRequirements: "Requires S-Dino Variants - Fantastic Tames mod by Nekatus AND the Dreadmare Fantastic Tame DLC. S-Dinos can crossbreed with non-S variants.",
+  baseStats: {
+    health: 520,
+    stamina: 500,
+    oxygen: 150,
+    food: 2200,
+    weight: 250,
+    melee: 48,
+    speed: 100,
+    torpor: 1100
+  },
+  statScaling: {
+    health: 104,
+    stamina: 50,
+    oxygen: 15,
+    food: 220,
+    weight: 5,
+    melee: 2.4,
+    speed: 2
+  },
+  saddleLevel: 52,
+  saddleType: "Dreadmare Saddle (compatible)",
+  saddleArmor: 25,
+  platformLimit: 0,
+  specialAbilities: ["S-Dino bioluminescent glow", "radiation immunity", "phase-through-obstacle charge", "dark energy aura (fear effect)", "supernatural speed", "crossbreeding with standard Dreadmare"],
+  attackTypes: ["Dark energy charge", "hoof strike", "dark energy burst"],
+  canCarry: ["One rider"],
+  primaryRole: "High-speed combat mount (S-Variant)",
+  secondaryRoles: ["PVP mount", "S-Variant collector piece", "dark energy area denial"],
+  gatheringResources: ["Raw Meat", "Hide"],
+  gatheringEfficiency: {
 
-  'Tridacna': {
-    // Basic Info
-    id: 'TRIDACNA_485',
-    name: 'Tridacna',
-    icon: '🦪',
-    category: 'utility',
-    rarity: 'rare',
-    source: 'ARK Additions Mod',
-    variants: ['Standard'],
-  
-    // Biology & Lore
-    dossierText: "The Tridacna is a colossal bivalve, a true giant clam that rests on the ocean floor. It is a completely stationary and passive creature. Its true value lies in what it produces. The Tridacna filters vast amounts of water, and in doing so, slowly cultivates massive, high-quality silica pearls within its shell. A tamed Tridacna acts as a permanent, living resource node, providing a steady and safe supply of both regular and black pearls for a tribe. It is the cornerstone of any advanced aquatic industrial operation.",
-    temperament: 'Stationary',
-    diet: 'None (Filter-feeder)',
-    habitat: 'Ocean floor, coral reefs',
-    realWorldBasis: 'Tridacna gigas (Giant Clam)',
-    sizeClass: 'Large',
-  
-    // Taming System
-    tamingMethod: 'Passive',
-    tamingType: 'Non-violent, hand-feeding.',
-    preferredKibble: 'N/A',
-    favoriteFood: 'Sweet Vegetable Cake',
-    tamingSpeed: 'Very Slow',
-    torpor: {
-      baseValue: 500,
-      depleteRate: 'N/A'
-    },
-    specialRequirements: 'Stationary tame. It cannot be moved after taming.',
-  
-    // Base Statistics (Level 1 Wild)
-    baseStats: {
-      health: 1000,
-      stamina: 100,
-      oxygen: 150,
-      food: 1000,
-      weight: 10000,
-      melee: 0,
-      speed: 0,
-      torpor: 500
-    },
-  
-    // Stat Scaling (Per Level)
-    statScaling: {
-      health: 200,
-      stamina: 10,
-      oxygen: 15,
-      food: 100,
-      weight: 200,
-      melee: 0,
-      speed: 0
-    },
-  
-    // Equipment & Combat
-    saddleLevel: 0,
-    saddleType: 'N/A',
-    saddleArmor: 0,
-    platformLimit: 0,
-    specialAbilities: ['Pearl generation'],
-    attackTypes: ['None'],
-    canCarry: ['N/A'],
-  
-    // Utility & Roles
-    primaryRole: 'Resource generation (Silica & Black Pearls)',
-    secondaryRoles: ['Aquatic base decoration'],
-    gatheringResources: ['Silica Pearls', 'Black Pearls'],
-    gatheringEfficiency: {
-      'Silica Pearls': 10,
-      'Black Pearls': 10
-    },
-    ratings: {
-      combat: 0,
-      transport: 0,
-      speed: 0,
-      survivability: 8
-    },
-  
-    // Environmental Data
-    speeds: {
-      land: 0,
-      flying: 0,
-      swimming: 0,
-      climbing: 0
-    },
-    environmentalResistances: ['High damage resistance from shell'],
-    preferredBiome: 'Ocean floor',
-    temperatureRange: {
-      min: 0,
-      max: 30
-    },
-    oxygenRequirement: 'Water breathing only',
-  
-    // Breeding Genetics
-    breeding: {
-      cooldown: 'Cannot breed',
-      gestationTime: 'N/A',
-      babyFoodConsumption: 'N/A',
-      maturationTime: 'N/A',
-      colorRegions: 3,
-      colorRegionNames: ['Shell', 'Mantle', 'Pearls'],
-      mutationChance: 0,
-      breedingDifficulty: 'Cannot breed'
-    },
-  
-    // Special Functions
-    workstation: 'None',
-    resourceProduction: 'Passively generates Silica Pearls and Black Pearls in its inventory over time.',
-    structureFunctions: 'None',
-    buffAuras: ['None'],
-    debuffAbilities: ['None'],
-    uniqueMechanics: ['Stationary tame', 'passive resource generation'],
-  
-    // Spawn & Location
-    spawnMaps: ['The Island', 'The Center', 'Ragnarok (with mod)'],
-    spawnZones: ['Ocean Floor', 'Coral Reefs'],
-    rarityRating: 'Rare',
-    levelRange: '1-150',
-    packBehavior: 'Solitary',
-    territorialBehavior: 'Stationary',
-  
-    // Management Metadata
-    difficultyRating: 'Easy',
-    beginnerFriendly: true,
-    endGameViable: true,
-    bossFightCapable: false,
-    pvpMeta: 'Low',
-    resourceInvestment: 'Low',
-    maintenanceLevel: 'Very Low',
-  
-    // Badge Categories
-    badgeCategories: ['utility', 'harvesting']
-  }
+  },
+  ratings: {
+    combat: 8,
+    transport: 8,
+    speed: 10,
+    survivability: 7
+  },
+  speeds: {
+    land: 65,
+    flying: 0,
+    swimming: 20,
+    climbing: 0
+  },
+  environmentalResistances: ["Radiation immunity (S-Variant bonus)", "dark energy resistance"],
+  preferredBiome: "All biomes, darkness preferred",
+  temperatureRange: {
+    min: -30,
+    max: 40
+  },
+  oxygenRequirement: "Air breathing",
+  breeding: {
+    cooldown: "18-48 hours",
+    gestationTime: "6 hours",
+    babyFoodConsumption: "High",
+    maturationTime: "3 days, 12 hours",
+    colorRegions: 6,
+    colorRegionNames: ["Body", "mane", "tail", "dark energy glow", "S-shimmer", "eyes"],
+    mutationChance: 7.31,
+    breedingDifficulty: "Hard"
+  },
+  workstation: "None",
+  resourceProduction: "None",
+  structureFunctions: "None",
+  buffAuras: ["Dark energy aura causes fear in nearby wild creatures"],
+  debuffAbilities: ["Fear effect slows enemies"],
+  uniqueMechanics: ["S-Dino crossbreeding enabled", "radiation immunity from S-Variant", "10% wild spawn rate replacing Dreadmare", "requires Fantastic Tame DLC ownership", "phase-through-obstacle during charge"],
+  spawnMaps: ["Maps where Dreadmare spawns"],
+  spawnZones: ["Replacing standard Dreadmare at 10% spawn rate"],
+  rarityRating: "Legendary",
+  levelRange: "1-150",
+  packBehavior: "Solitary or bonded pair",
+  territorialBehavior: "Territorial, aggressive toward intruders",
+  difficultyRating: "Hard",
+  beginnerFriendly: false,
+  endGameViable: true,
+  bossFightCapable: true,
+  pvpMeta: "Very High",
+  resourceInvestment: "High",
+  maintenanceLevel: "Low",
+  badgeCategories: ["combat", "transport", "pvp"]
+},
+'S-Acro': {
+  id: "S_ACRO_601",
+  name: "S-Acro",
+  icon: "🦖",
+  category: "combat",
+  rarity: "rare",
+  source: "S-Dino Variants (Nekatus mod) — Base Game (S-Variant)",
+  variants: ["S-Variant of Acrocanthosaurus"],
+  dossierText: "Helena's Notes — S-Variant Observation: I almost missed this one. Cresting the redwood ridge at dusk, I caught a flash of bioluminescent blue cutting through the undergrowth — the unmistakable silhouette of an Acrocanthosaurus, but lit from within like a deep-sea creature that had wandered impossibly far from any ocean. This is an S-Acro, and it is as magnificent as it is rare. The base creature has already earned a fearsome reputation among survivors. Where the Acrocanthosaurus shines is not in raw aggression but in resilience — the thick neural spines running its dorsal ridge act as a living shield, allowing it to absorb punishment that would floor a Rex while its adrenaline glands charge to a furious peak. What the S-variant adds is a ghostly luminescence across those spines and the characteristic S-Dino shimmer along its flanks. For survivors operating near Aberrant zones, the practical benefit is radiation immunity — a significant advantage when running the irradiated trench runs that a heavy combat mount like this often finds itself in. When tamed, the S-Acro fights exactly like its vanilla counterpart: enter shield stance to soak incoming fire while building adrenaline, then unleash a burst of buffed melee that also empowers nearby allied tames. It can enter boss arenas, and its mix of tanking and offensive burst makes it a legitimate endgame mount. The S-variant crossbreeds freely with standard Acrocanthosaurus, letting breeders incorporate that radiation immunity without sacrificing any of the base creature's genetic line.",
+  temperament: "Aggressive",
+  diet: "Carnivore",
+  habitat: "Redwoods, grasslands, varied terrain (Base Game)",
+  realWorldBasis: "Acrocanthosaurus atokensis (real theropod with distinctive neural spines)",
+  sizeClass: "Large",
+  tamingMethod: "Special (Frustrated Roar)",
+  tamingType: "Wait for the Acrocanthosaurus to perform its frustrated roar. While its mouth is open, approach and hand-feed Narcotic, Narcoberries, or Bio Toxin directly into its mouth. Repeat until unconscious, then feed Exceptional Kibble.",
+  preferredKibble: "Exceptional Kibble",
+  favoriteFood: "Exceptional Kibble",
+  tamingSpeed: "Moderate",
+  torpor: {
+    baseValue: 1800,
+    depleteRate: "Moderate"
+  },
+  specialRequirements: "S-Dino Variants mod by Nekatus required. 10% chance to spawn replacing a standard Acrocanthosaurus. Can crossbreed with non-S variants. Hold E to toggle bioluminescent particle effects.",
+  baseStats: {
+    health: 1300,
+    stamina: 400,
+    oxygen: 150,
+    food: 3000,
+    weight: 600,
+    melee: 100,
+    speed: 100,
+    torpor: 1800
+  },
+  statScaling: {
+    health: 260,
+    stamina: 40,
+    oxygen: 15,
+    food: 300,
+    weight: 12,
+    melee: 5,
+    speed: 1
+  },
+  saddleLevel: 76,
+  saddleType: "Acrocanthosaurus Saddle",
+  saddleArmor: 25,
+  platformLimit: 0,
+  specialAbilities: ["Shield stance (damage absorption + adrenaline charge)", "Adrenaline burst (melee boost + resistance boost + regen after taking damage in shield stance)", "Ally buff aura (empowers nearby tames when adrenaline activates)", "Stomp (extra damage against smaller targets)", "Bioluminescent glow (S-variant cosmetic)", "Radiation immunity (S-variant)"],
+  attackTypes: ["Bite", "shield bash (knockback)", "stomp", "adrenaline charge"],
+  canCarry: ["Cannot pick up creatures"],
+  primaryRole: "Heavy combat tank and adrenaline-fueled melee attacker",
+  secondaryRoles: ["Boss fighting", "ally buffing", "radiation-immune heavy mount"],
+  gatheringResources: ["Raw Prime Meat", "Raw Meat", "Hide"],
+  gatheringEfficiency: {
+    "Raw Prime Meat": 8
+  },
+  ratings: {
+    combat: 10,
+    transport: 5,
+    speed: 5,
+    survivability: 10
+  },
+  speeds: {
+    land: 28,
+    flying: 0,
+    swimming: 15,
+    climbing: 0
+  },
+  environmentalResistances: ["Radiation immunity (S-variant)", "high physical damage resistance in shield stance"],
+  preferredBiome: "Redwoods, grasslands",
+  temperatureRange: {
+    min: -20,
+    max: 45
+  },
+  oxygenRequirement: "Air breathing",
+  breeding: {
+    cooldown: "18-48 hours",
+    gestationTime: "N/A (egg layer)",
+    babyFoodConsumption: "High",
+    maturationTime: "3 days, 12 hours",
+    colorRegions: 6,
+    colorRegionNames: ["Body", "dorsal spines", "underbelly", "head", "S-glow", "markings"],
+    mutationChance: 7.31,
+    breedingDifficulty: "Hard"
+  },
+  workstation: "None",
+  resourceProduction: "None",
+  structureFunctions: "Can damage up to stone structures.",
+  buffAuras: ["Adrenaline activation buffs nearby allied tames"],
+  debuffAbilities: ["None"],
+  uniqueMechanics: ["Shield stance absorbs damage and charges adrenaline", "frustrated roar taming method", "S-Dino crossbreeding enabled", "radiation immunity"],
+  spawnMaps: ["The Island", "The Center", "Scorched Earth", "Ragnarok", "Valguero", "Aberration", "Extinction", "Genesis", "Crystal Isles", "Genesis Part 2", "Lost Island", "Fjordur", "Astraeos", "Lost Colony"],
+  spawnZones: ["Redwoods", "grasslands — 10% chance replacing standard Acrocanthosaurus"],
+  rarityRating: "Rare",
+  levelRange: "1-150",
+  packBehavior: "Small groups (2-3)",
+  territorialBehavior: "Aggressive",
+  difficultyRating: "Hard",
+  beginnerFriendly: false,
+  endGameViable: true,
+  bossFightCapable: true,
+  pvpMeta: "High",
+  resourceInvestment: "High",
+  maintenanceLevel: "Low",
+  badgeCategories: ["combat", "boss"]
+},
+'S-Andrewsarchus': {
+  id: "S_ANDREWSARCHUS_602",
+  name: "S-Andrewsarchus",
+  icon: "🐗",
+  category: "combat",
+  rarity: "rare",
+  source: "S-Dino Variants (Nekatus mod) — Fjordur DLC (S-Variant)",
+  variants: ["S-Variant of Andrewsarchus"],
+  dossierText: "Helena's Notes — S-Variant Observation: Anyone who has spent time on Fjordur knows that finding an Andrewsarchus is never the hard part. Finding one that glows like a cracked glacier in the midnight sun — that is the rare trick. The S-Andrewsarchus carries Nekatus's signature bioluminescent quality across its boar-like hide, with a shimmering blue-white pattern that makes it look like the living manifestation of a Nordic winter storm. Functionally, it is identical to the standard Andrewsarchus in every way that matters: an amphibious tank that shrugs off threats that would send lighter creatures running, capable of sinking to the ocean floor with the density of a river hippo and running along the bottom in search of black pearls. Its saddle-mounted minigun is, bluntly, one of the most entertaining combat tools in the survivor's arsenal — the ability to drive your mount at full sprint while a passenger or you yourself lays down sustained suppressive fire is something most combat encounters on Fjordur were not designed to withstand. The taming process mirrors the base creature exactly — honey on the ground, mount when distracted, steer correctly when prompted, dismount before the rage bar fills. The S-variant adds radiation immunity on top of all of this, a passive gift that becomes useful the moment you take it off Fjordur and onto more hostile terrain. It crossbreeds cleanly with non-S Andrewsarchus, so the immunity can be bred into an existing bloodline without starting from scratch.",
+  temperament: "Aggressive (moderate aggro range)",
+  diet: "Omnivore",
+  habitat: "Cold regions, coastlines, tundra — Fjordur DLC",
+  realWorldBasis: "Andrewsarchus mongoliensis (real prehistoric hoofed predator, related to whales and hippos)",
+  sizeClass: "Large",
+  tamingMethod: "Passive (Honey Ride)",
+  tamingType: "Wear Ghillie suit. Drop Giant Bee Honey on the ground near it. While it eats, sprint up and mount it. Steer in the direction of the lit arrow indicators. Dismount before the red rage bar fills completely. Repeat until tamed.",
+  preferredKibble: "Superior Kibble",
+  favoriteFood: "Giant Bee Honey",
+  tamingSpeed: "Moderate",
+  torpor: {
+    baseValue: 800,
+    depleteRate: "N/A (passive tame)"
+  },
+  specialRequirements: "S-Dino Variants mod by Nekatus required. 10% chance to spawn replacing standard Andrewsarchus on Fjordur spawns. Can crossbreed with non-S variants. Can be ridden without a saddle. Hold E to toggle particle effects.",
+  baseStats: {
+    health: 800,
+    stamina: 400,
+    oxygen: 150,
+    food: 2000,
+    weight: 500,
+    melee: 100,
+    speed: 100,
+    torpor: 800
+  },
+  statScaling: {
+    health: 160,
+    stamina: 40,
+    oxygen: 15,
+    food: 200,
+    weight: 10,
+    melee: 5,
+    speed: 1
+  },
+  saddleLevel: 66,
+  saddleType: "Andrewsarchus Saddle (armored, with minigun mount)",
+  saddleArmor: 30,
+  platformLimit: 0,
+  specialAbilities: ["Minigun saddle (fires Advanced Rifle Bullets while mounted or turret mode)", "Charge (high-speed dash that destroys trees and rocks)", "Amphibious (sinks to ocean floor, runs underwater)", "Hind kick (knocks back enemies behind it)", "Ctrl to toggle turret mode (WASD controls mount, fire with minigun)", "Bioluminescent glow (S-variant cosmetic)", "Radiation immunity (S-variant)"],
+  attackTypes: ["Bite", "hind kick", "charge", "minigun (turret mode)"],
+  canCarry: ["One rider in armored saddle enclosure"],
+  primaryRole: "Armored assault vehicle and amphibious combat mount",
+  secondaryRoles: ["Ocean floor pearl harvesting", "early-to-mid game all-terrain mount", "base defense with minigun saddle"],
+  gatheringResources: ["Hide", "Raw Meat", "Black Pearls (ocean floor)"],
+  gatheringEfficiency: {
+    "Black Pearls": 6
+  },
+  ratings: {
+    combat: 9,
+    transport: 8,
+    speed: 7,
+    survivability: 9
+  },
+  speeds: {
+    land: 32,
+    flying: 0,
+    swimming: 24,
+    climbing: 0
+  },
+  environmentalResistances: ["Radiation immunity (S-variant)", "amphibious (full function underwater)"],
+  preferredBiome: "Coastal regions, cold tundra, rivers, open ocean floor",
+  temperatureRange: {
+    min: -40,
+    max: 20
+  },
+  oxygenRequirement: "Amphibious (unlimited underwater)",
+  breeding: {
+    cooldown: "18-48 hours",
+    gestationTime: "33 minutes",
+    babyFoodConsumption: "Moderate",
+    maturationTime: "2 days, 9 hours",
+    colorRegions: 6,
+    colorRegionNames: ["Body", "stripe markings", "underbelly", "mane ridge", "S-glow", "face"],
+    mutationChance: 7.31,
+    breedingDifficulty: "Medium"
+  },
+  workstation: "None",
+  resourceProduction: "None",
+  structureFunctions: "Can damage thatch and wood structures.",
+  buffAuras: ["None"],
+  debuffAbilities: ["Charge applies knockback on impact"],
+  uniqueMechanics: ["Honey-based passive ride taming", "minigun saddle (fires while moving)", "sinks and runs on ocean floor", "S-Dino crossbreeding enabled", "radiation immunity"],
+  spawnMaps: ["Fjordur", "maps with Fjordur spawners"],
+  spawnZones: ["Cold regions, snowy tundra, coastal zones on Fjordur — 10% chance replacing standard Andrewsarchus"],
+  rarityRating: "Rare",
+  levelRange: "1-150",
+  packBehavior: "Solitary or pairs",
+  territorialBehavior: "Aggressive when provoked",
+  difficultyRating: "Medium",
+  beginnerFriendly: true,
+  endGameViable: true,
+  bossFightCapable: true,
+  pvpMeta: "High",
+  resourceInvestment: "Medium",
+  maintenanceLevel: "Low",
+  badgeCategories: ["combat", "transport"]
+},
+'S-Argentavis': {
+  id: "S_ARGENTAVIS_603",
+  name: "S-Argentavis",
+  icon: "🦅",
+  category: "transport",
+  rarity: "uncommon",
+  source: "S-Dino Variants (Nekatus mod) — Base Game (S-Variant)",
+  variants: ["S-Variant of Argentavis"],
+  dossierText: "Helena's Notes — S-Variant Observation: Every survivor eventually comes to understand that the Argentavis is not merely a flying mount — it is the workhorse that makes everything else possible. The S-variant of this condor-like giant takes that legacy and wraps it in Nekatus's signature bioluminescent shimmer, painting the massive wings with an iridescent glow that catches the mountain updrafts on The Island like something out of a Norse mural. I have watched this creature carry Ankylosauruses to metal nodes, ferry injured survivors from battlefield to base, and serve as a mobile battlefield platform from which arrows can still be fired. None of that changes with the S-variant. What changes is the soft hum of radiation that rolls off environments like Aberration or the Genesis simulation — the S-Argentavis ignores it entirely, soaring through zones that would require a lesser creature to turn back. Its 50% weight reduction on metal, obsidian, crystal, polymer, and stone makes it the backbone of any serious resource operation, and the saddle doubles as a mobile smithy for field repairs. When you find one bearing the S-Dino glow on a mountainside, the rider's silhouette lit from below by those luminescent feathers, it is one of the genuinely beautiful sights this brutal world has to offer. It crossbreeds with standard Argentavis, so breeders can pass the radiation immunity to an existing high-stat line.",
+  temperament: "Aggressive",
+  diet: "Carnivore",
+  habitat: "Mountains, highlands, cold elevated terrain (Base Game)",
+  realWorldBasis: "Argentavis magnificens (real giant prehistoric condor — largest flying bird known)",
+  sizeClass: "Large",
+  tamingMethod: "Knockout",
+  tamingType: "Standard knockout tame. Use tranquilizer darts or arrows. Feed Superior Kibble for highest efficiency.",
+  preferredKibble: "Superior Kibble",
+  favoriteFood: "Superior Kibble",
+  tamingSpeed: "Moderate",
+  torpor: {
+    baseValue: 600,
+    depleteRate: "Moderate"
+  },
+  specialRequirements: "S-Dino Variants mod by Nekatus required. 10% chance to spawn replacing standard Argentavis. Can crossbreed with non-S variants. Hold E to toggle bioluminescent particle effects.",
+  baseStats: {
+    health: 365,
+    stamina: 400,
+    oxygen: 150,
+    food: 2000,
+    weight: 400,
+    melee: 100,
+    speed: 100,
+    torpor: 600
+  },
+  statScaling: {
+    health: 73,
+    stamina: 40,
+    oxygen: 15,
+    food: 200,
+    weight: 8,
+    melee: 5,
+    speed: 1.5
+  },
+  saddleLevel: 52,
+  saddleType: "Argentavis Saddle (mobile smithy)",
+  saddleArmor: 25,
+  platformLimit: 0,
+  specialAbilities: ["Carry creatures (beak grab)", "Mobile smithy (saddle functions as smithy)", "50% weight reduction on metal, metal ingots, crystal, obsidian, organic polymer, polymer, stone, scrap metal", "Bioluminescent glow (S-variant cosmetic)", "Radiation immunity (S-variant)", "Rider can use weapons while mounted"],
+  attackTypes: ["Talons (primary)", "beak strike", "grab (secondary — carry creatures)"],
+  canCarry: ["Can grab and carry most small/medium creatures with beak"],
+  primaryRole: "Heavy-load transport flyer and mobile resource hauler",
+  secondaryRoles: ["Mobile smithy", "creature transport", "taming assistant (carry target creatures)", "radiation-immune mountain flyer"],
+  gatheringResources: ["Raw Meat", "Raw Prime Meat", "Hide"],
+  gatheringEfficiency: {
+    "Raw Meat": 6
+  },
+  ratings: {
+    combat: 5,
+    transport: 10,
+    speed: 6,
+    survivability: 6
+  },
+  speeds: {
+    land: 15,
+    flying: 45,
+    swimming: 12,
+    climbing: 0
+  },
+  environmentalResistances: ["Radiation immunity (S-variant)", "cold altitude adaptation"],
+  preferredBiome: "Mountains, cold highlands, elevated terrain",
+  temperatureRange: {
+    min: -30,
+    max: 20
+  },
+  oxygenRequirement: "Air breathing",
+  breeding: {
+    cooldown: "18-48 hours",
+    gestationTime: "N/A (egg layer)",
+    babyFoodConsumption: "Moderate",
+    maturationTime: "2 days, 1 hour",
+    colorRegions: 6,
+    colorRegionNames: ["Primary feathers", "secondary feathers", "head plumage", "beak", "S-glow", "body"],
+    mutationChance: 7.31,
+    breedingDifficulty: "Easy"
+  },
+  workstation: "Smithy (when saddled)",
+  resourceProduction: "None",
+  structureFunctions: "Can damage up to metal structures.",
+  buffAuras: ["None"],
+  debuffAbilities: ["None"],
+  uniqueMechanics: ["Mobile smithy via saddle", "50% weight reduction on major resources", "creature carry via beak", "S-Dino crossbreeding enabled", "radiation immunity"],
+  spawnMaps: ["The Island", "The Center", "Scorched Earth", "Ragnarok", "Valguero", "Aberration", "Extinction", "Genesis", "Crystal Isles", "Genesis Part 2", "Lost Island", "Fjordur", "Astraeos", "Lost Colony"],
+  spawnZones: ["Mountains, highlands, elevated terrain — 10% chance replacing standard Argentavis"],
+  rarityRating: "Uncommon",
+  levelRange: "1-150",
+  packBehavior: "Pairs or small flocks (3-5)",
+  territorialBehavior: "Aggressive when territory threatened",
+  difficultyRating: "Medium",
+  beginnerFriendly: false,
+  endGameViable: true,
+  bossFightCapable: false,
+  pvpMeta: "Medium",
+  resourceInvestment: "Low",
+  maintenanceLevel: "Low",
+  badgeCategories: ["transport", "utility"]
+},
+'S-Castoroides': {
+  id: "S_CASTOROIDES_604",
+  name: "S-Castoroides",
+  icon: "🦫",
+  category: "utility",
+  rarity: "uncommon",
+  source: "S-Dino Variants (Nekatus mod) — Base Game (S-Variant)",
+  variants: ["S-Variant of Castoroides"],
+  dossierText: "Helena's Notes — S-Variant Observation: I want to be clear about something: the Castoroides is already one of the most quietly powerful tames on any ARK. Survivors who dismiss it as 'just a giant beaver' have never watched one reduce a dense redwood forest to lumber in under four minutes, or used its saddle to craft an Ascendant saddle from a field position three kilometers from base. The S-Castoroides is all of that, dusted in a soft bioluminescent teal that the creature seems entirely unbothered by, its great flat tail slapping water with the same industry as its standard counterpart. What it brings over a normal Castoroides is the radiation immunity that all S-variants carry — an underappreciated perk for a creature that turns out to be remarkably useful in the hazardous underground environments of Aberration and the Genesis simulations. Wood, thatch, fiber, and stone all weigh half as much in a Castoroides inventory, and the saddle functions as a full mobile smithy wherever it stands. Wild ones build dams that survivors have been raiding for cementing paste since the first days on The Island; tamed ones simply get to work. Cross-breed the S-variant into a standard weight-focused breeding line and the radiation immunity carries forward quietly for any expedition that might wander into dangerous territory.",
+  temperament: "Aggressive",
+  diet: "Herbivore",
+  habitat: "Rivers, swamps, lakesides, forested waterways (Base Game)",
+  realWorldBasis: "Castoroides ohioensis (real giant prehistoric beaver)",
+  sizeClass: "Large",
+  tamingMethod: "Knockout",
+  tamingType: "Standard knockout tame. Tranquilizer arrows or darts. Feed Superior Kibble for highest taming efficiency. Also accepts Archelon Algae as an alternative.",
+  preferredKibble: "Superior Kibble",
+  favoriteFood: "Superior Kibble",
+  tamingSpeed: "Moderate",
+  torpor: {
+    baseValue: 700,
+    depleteRate: "Moderate"
+  },
+  specialRequirements: "S-Dino Variants mod by Nekatus required. 10% chance to spawn replacing standard Castoroides. Can crossbreed with non-S variants. Hold E to toggle bioluminescent particle effects.",
+  baseStats: {
+    health: 450,
+    stamina: 180,
+    oxygen: 200,
+    food: 3000,
+    weight: 300,
+    melee: 100,
+    speed: 100,
+    torpor: 700
+  },
+  statScaling: {
+    health: 90,
+    stamina: 18,
+    oxygen: 20,
+    food: 300,
+    weight: 6,
+    melee: 5,
+    speed: 1
+  },
+  saddleLevel: 61,
+  saddleType: "Castoroides Saddle (mobile smithy)",
+  saddleArmor: 20,
+  platformLimit: 0,
+  specialAbilities: ["Mobile smithy (saddle functions as Smithy — can craft Ascendant quality items)", "50% weight reduction on wood, thatch, fiber, stone", "Excellent wood gathering", "Semi-aquatic (faster in water, deep oxygen reserves)", "Bioluminescent glow (S-variant cosmetic)", "Radiation immunity (S-variant)"],
+  attackTypes: ["Bite (primary)", "tail slap"],
+  canCarry: ["Cannot pick up creatures"],
+  primaryRole: "Wood gathering specialist and mobile smithy",
+  secondaryRoles: ["Field crafting station", "semi-aquatic transport", "cementing paste source (wild dams)", "radiation-immune resource gatherer"],
+  gatheringResources: ["Wood", "Thatch", "Fiber", "Stone"],
+  gatheringEfficiency: {
+    Wood: 10,
+    Thatch: 8,
+    Stone: 5
+  },
+  ratings: {
+    combat: 4,
+    transport: 6,
+    speed: 5,
+    survivability: 6
+  },
+  speeds: {
+    land: 15,
+    flying: 0,
+    swimming: 35,
+    climbing: 0
+  },
+  environmentalResistances: ["Radiation immunity (S-variant)", "amphibious"],
+  preferredBiome: "Rivers, swamps, lakes, forests near water",
+  temperatureRange: {
+    min: -20,
+    max: 35
+  },
+  oxygenRequirement: "Amphibious",
+  breeding: {
+    cooldown: "18-48 hours",
+    gestationTime: "N/A (live birth)",
+    babyFoodConsumption: "Moderate",
+    maturationTime: "2 days, 13 hours",
+    colorRegions: 6,
+    colorRegionNames: ["Body fur", "tail", "underbelly", "paws", "S-glow", "face"],
+    mutationChance: 7.31,
+    breedingDifficulty: "Easy"
+  },
+  workstation: "Smithy (when saddled)",
+  resourceProduction: "None",
+  structureFunctions: "None.",
+  buffAuras: ["None"],
+  debuffAbilities: ["None"],
+  uniqueMechanics: ["Mobile smithy via saddle (Ascendant crafting possible)", "50% weight reduction on building resources", "Wild Castoroides build harvestable dams", "S-Dino crossbreeding enabled", "radiation immunity"],
+  spawnMaps: ["The Island", "The Center", "Ragnarok", "Valguero", "Extinction", "Genesis", "Crystal Isles", "Genesis Part 2", "Lost Island", "Fjordur", "Astraeos", "Lost Colony"],
+  spawnZones: ["Rivers, swamps, lakesides — 10% chance replacing standard Castoroides"],
+  rarityRating: "Uncommon",
+  levelRange: "1-150",
+  packBehavior: "Pairs",
+  territorialBehavior: "Defends dam areas aggressively",
+  difficultyRating: "Easy",
+  beginnerFriendly: true,
+  endGameViable: true,
+  bossFightCapable: false,
+  pvpMeta: "Low",
+  resourceInvestment: "Low",
+  maintenanceLevel: "Low",
+  badgeCategories: ["utility", "harvesting"]
+},
+'S-Cat': {
+  id: "S_CAT_605",
+  name: "S-Cat",
+  icon: "🐱",
+  category: "utility",
+  rarity: "rare",
+  source: "S-Dino Variants (Nekatus mod) — Base Game (S-Variant)",
+  variants: ["S-Variant of Cat"],
+  dossierText: "Helena's Notes — S-Variant Observation: The ordinary Cat already confounds me on a philosophical level. This creature — a domestic feline, essentially unchanged from what house cats were in my era — survived the end of civilization, found its way onto an ARK, and has somehow outlasted everything the ecosystem could throw at it. It does not respect authority. It does not acknowledge the food chain. It sits on survivors' shoulders and surveys the carnage around it with absolute contempt for the concept of danger. The S-Cat is all of this, except it glows. A soft pulsing shimmer runs along its fur coat, and when you see one perched on a rock at the edge of a forest, completely unconcerned about the Allosaurus twenty meters away, the bioluminescence makes it look like a small fuzzy lantern that has decided it owns everything it sees. Like all S-Dinos, the S-Cat carries radiation immunity — practically speaking, this means your glowing shoulder companion will cheerfully accompany you into Aberrant zones without any ill effects. Its temperament toward any given survivor is fixed and unpredictable: some will approach you with a green icon and let themselves be tamed without resistance; others will hiss and claw your face off the instant you get close. Finding the right one is a matter of patience. Once tamed, it sits on your shoulder, alerts you to nearby high-level creatures or hostile players the way a Glowbug might, and its pest control mode scares off Pegomastax, Ichthyornis, and microraptors — which, in terms of quality-of-life improvements, is genuinely underrated. Cross-breed it with a standard Cat and the glow and immunity carry forward.",
+  temperament: "Variable (each cat has a fixed random temperament toward each survivor: passive, aggressive, or scared)",
+  diet: "Carnivore",
+  habitat: "Varied terrain — The Island, The Center, Ragnarok, Valguero, Astraeos, Lost Colony (ported from Atlas)",
+  realWorldBasis: "Felis catus (domestic house cat)",
+  sizeClass: "Small",
+  tamingMethod: "Passive (random temperament)",
+  tamingType: "Find a Cat with a green icon (passive toward you specifically). Place Raw Mutton or Raw Prime Meat in the last hotbar slot. Approach slowly and feed when prompted. The cat may wander — follow and repeat. Cats with yellow or red icons toward you cannot be tamed by you — try a different individual or have a tribemember attempt it.",
+  preferredKibble: "Basic Kibble",
+  favoriteFood: "Raw Mutton",
+  tamingSpeed: "Fast (once the right individual is found)",
+  torpor: {
+    baseValue: 50,
+    depleteRate: "N/A (passive tame)"
+  },
+  specialRequirements: "S-Dino Variants mod by Nekatus required. 10% chance to spawn replacing standard Cat. Must find a Cat that is passive toward you (green icon) — only those can be tamed. Can crossbreed with non-S variants. Shoulder pet. Hold E to toggle bioluminescent particle effects.",
+  baseStats: {
+    health: 125,
+    stamina: 100,
+    oxygen: 150,
+    food: 600,
+    weight: 60,
+    melee: 100,
+    speed: 100,
+    torpor: 50
+  },
+  statScaling: {
+    health: 25,
+    stamina: 10,
+    oxygen: 15,
+    food: 60,
+    weight: 1.2,
+    melee: 5,
+    speed: 1
+  },
+  saddleLevel: 0,
+  saddleType: "Shoulder pet (no saddle needed)",
+  saddleArmor: 0,
+  platformLimit: 0,
+  specialAbilities: ["Shoulder pet (rides on survivor shoulder)", "Pest control (scares off Pegomastax, Ichthyornis, and microraptors when enabled)", "Alert (warns of nearby high-level wild creatures or enemy players like a lightpet)", "Bioluminescent glow (S-variant cosmetic)", "Radiation immunity (S-variant)"],
+  attackTypes: ["Scratch (from shoulder)", "bite"],
+  canCarry: ["Carried by survivor on shoulder"],
+  primaryRole: "Shoulder companion and pest deterrent",
+  secondaryRoles: ["Enemy/high-level creature alert", "cosmetic companion", "early-game nuisance prevention"],
+  gatheringResources: ["Pelt", "Raw Meat", "Hide"],
+  gatheringEfficiency: {
+
+  },
+  ratings: {
+    combat: 1,
+    transport: 0,
+    speed: 5,
+    survivability: 2
+  },
+  speeds: {
+    land: 30,
+    flying: 0,
+    swimming: 10,
+    climbing: 10
+  },
+  environmentalResistances: ["Radiation immunity (S-variant)"],
+  preferredBiome: "Varied — forests, grasslands, ruins",
+  temperatureRange: {
+    min: -10,
+    max: 40
+  },
+  oxygenRequirement: "Air breathing",
+  breeding: {
+    cooldown: "18-48 hours",
+    gestationTime: "N/A (live birth)",
+    babyFoodConsumption: "Low",
+    maturationTime: "1 day, 6 hours",
+    colorRegions: 6,
+    colorRegionNames: ["Primary coat", "secondary markings", "belly", "paws", "S-glow shimmer", "eyes"],
+    mutationChance: 7.31,
+    breedingDifficulty: "Easy"
+  },
+  workstation: "None",
+  resourceProduction: "None",
+  structureFunctions: "None.",
+  buffAuras: ["None"],
+  debuffAbilities: ["Pest control scares small nuisance creatures"],
+  uniqueMechanics: ["Random per-survivor temperament system (green/yellow/red icons)", "pest control mode for nuisance creatures", "high-level creature/player alert", "shoulder pet mechanics", "S-Dino crossbreeding enabled", "radiation immunity"],
+  spawnMaps: ["The Island", "The Center", "Ragnarok", "Valguero", "Astraeos", "Lost Colony"],
+  spawnZones: ["Forests, ruins, grasslands — 10% chance replacing standard Cat"],
+  rarityRating: "Rare",
+  levelRange: "1-150",
+  packBehavior: "Solitary",
+  territorialBehavior: "Unpredictable — variable by individual",
+  difficultyRating: "Easy (once correct individual found)",
+  beginnerFriendly: true,
+  endGameViable: false,
+  bossFightCapable: false,
+  pvpMeta: "Low",
+  resourceInvestment: "Low",
+  maintenanceLevel: "Low",
+  badgeCategories: ["utility"]
+},
+'S-Direwolf': {
+  id: "S_DIREWOLF_606",
+  name: "S-Direwolf",
+  icon: "🐺",
+  category: "combat",
+  rarity: "uncommon",
+  source: "S-Dino Variants (Nekatus mod) — Base Game (S-Variant)",
+  variants: ["S-Variant of Direwolf"],
+  dossierText: "Helena's Notes — S-Variant Observation: The howl of a Direwolf carries across frozen tundra the way few sounds do — it starts at the base of the spine and works upward. Hearing that same howl accompanied by the blue-white shimmer of a bioluminescent S-Direwolf loping toward you through a snowstorm is a different experience entirely. Where most predators on these ARKs are individually terrifying, the Direwolf earns its reputation through coordination: pack tactics, shared threat assessment, and a damage bonus that compounds with each additional pack member in the vicinity. The S-variant does nothing to change these core behaviors. Its bioluminescent markings glow along the flanks and spine in a pattern that traces the musculature underneath — in motion, the effect is almost hypnotic. On Aberration, where survivors constantly manage radiation exposure and every tame choice is weighed against environmental hazards, the S-Direwolf's immunity becomes a meaningful advantage. Take a pack into the blue zone and the wolves are unbothered. Tamed S-Direwolves retain the pack howl, the pack damage scaling, and the excellent pelt-harvesting capability that makes them indispensable for cold-weather gear production. The crossbreeding compatibility with standard Direwolves means this immunity can be introduced into an established pack bloodline without disrupting carefully curated stats.",
+  temperament: "Aggressive",
+  diet: "Carnivore",
+  habitat: "Tundra, snow biomes, highlands, cold regions (Base Game)",
+  realWorldBasis: "Aenocyon dirus (Dire Wolf — real Pleistocene-era canid)",
+  sizeClass: "Large",
+  tamingMethod: "Knockout",
+  tamingType: "Standard knockout tame. Tranquilizer arrows or darts. Feed Superior Kibble for highest taming efficiency. Lone Direwolves are easier targets — packs will all aggro when one is attacked.",
+  preferredKibble: "Superior Kibble",
+  favoriteFood: "Superior Kibble",
+  tamingSpeed: "Fast",
+  torpor: {
+    baseValue: 400,
+    depleteRate: "Moderate"
+  },
+  specialRequirements: "S-Dino Variants mod by Nekatus required. 10% chance to spawn replacing standard Direwolf. Can crossbreed with non-S variants. Hold E to toggle bioluminescent particle effects.",
+  baseStats: {
+    health: 330,
+    stamina: 260,
+    oxygen: 150,
+    food: 1500,
+    weight: 170,
+    melee: 100,
+    speed: 100,
+    torpor: 400
+  },
+  statScaling: {
+    health: 66,
+    stamina: 26,
+    oxygen: 15,
+    food: 150,
+    weight: 3.4,
+    melee: 5,
+    speed: 1.5
+  },
+  saddleLevel: 44,
+  saddleType: "Direwolf Saddle",
+  saddleArmor: 20,
+  platformLimit: 0,
+  specialAbilities: ["Pack bonus (damage scales with number of nearby allied Direwolves)", "Pack howl (activates pack buff, reveals nearby prey/enemies)", "Excellent pelt harvesting", "Bioluminescent glow (S-variant cosmetic)", "Radiation immunity (S-variant)"],
+  attackTypes: ["Bite (primary)", "pounce"],
+  canCarry: ["Cannot pick up creatures"],
+  primaryRole: "Pack combat and pelt harvesting",
+  secondaryRoles: ["Cold biome exploration", "PVP harassment in packs", "early-to-mid game cavalry", "radiation-immune tundra mount"],
+  gatheringResources: ["Pelt", "Raw Meat", "Hide"],
+  gatheringEfficiency: {
+    Pelt: 9,
+    "Raw Meat": 7
+  },
+  ratings: {
+    combat: 7,
+    transport: 6,
+    speed: 7,
+    survivability: 6
+  },
+  speeds: {
+    land: 35,
+    flying: 0,
+    swimming: 18,
+    climbing: 0
+  },
+  environmentalResistances: ["Cold resistance", "radiation immunity (S-variant)"],
+  preferredBiome: "Snow biomes, tundra, cold highlands",
+  temperatureRange: {
+    min: -40,
+    max: 15
+  },
+  oxygenRequirement: "Air breathing",
+  breeding: {
+    cooldown: "18-48 hours",
+    gestationTime: "N/A (live birth)",
+    babyFoodConsumption: "Moderate",
+    maturationTime: "2 days",
+    colorRegions: 6,
+    colorRegionNames: ["Primary coat", "secondary markings", "underbelly", "face", "S-glow", "eyes"],
+    mutationChance: 7.31,
+    breedingDifficulty: "Easy"
+  },
+  workstation: "None",
+  resourceProduction: "None",
+  structureFunctions: "None.",
+  buffAuras: ["Pack bonus buffs all nearby allied Direwolves"],
+  debuffAbilities: ["None"],
+  uniqueMechanics: ["Pack damage scaling system", "pack howl activates bonus and reveals area", "S-Dino crossbreeding enabled", "radiation immunity"],
+  spawnMaps: ["The Island", "The Center", "Scorched Earth", "Ragnarok", "Valguero", "Aberration", "Extinction", "Genesis", "Crystal Isles", "Genesis Part 2", "Lost Island", "Fjordur", "Astraeos", "Lost Colony"],
+  spawnZones: ["Snow biomes, tundra, cold highlands — 10% chance replacing standard Direwolf"],
+  rarityRating: "Uncommon",
+  levelRange: "1-150",
+  packBehavior: "Packs (4-8)",
+  territorialBehavior: "Aggressively territorial as a pack",
+  difficultyRating: "Medium (groups are dangerous)",
+  beginnerFriendly: false,
+  endGameViable: true,
+  bossFightCapable: false,
+  pvpMeta: "Medium",
+  resourceInvestment: "Low",
+  maintenanceLevel: "Low",
+  badgeCategories: ["combat", "utility"]
+},
+'S-Desmodus': {
+  id: "S_DESMODUS_607",
+  name: "S-Desmodus",
+  icon: "🦇",
+  category: "combat",
+  rarity: "rare",
+  source: "S-Dino Variants (Nekatus mod) — Fjordur DLC (S-Variant)",
+  variants: ["S-Variant of Desmodus"],
+  dossierText: "Helena's Notes — S-Variant Observation: The Desmodus Draculae is, by any clinical measure, a horrifying creature. It identifies prey with echolocation, turns itself effectively invisible in darkness, lands on cave ceilings to ambush from above, and then proceeds to drain blood in quantities sufficient to incapacitate. What it becomes as a tame, I have still not fully reconciled. The S-Desmodus takes this gothic nightmare and coats it in Nekatus's bioluminescent treatment — which results in something that looks like a ghost carrying a lantern, a barely-visible shimmer trailing off its wing membranes as it descends on silent, glowing wing-beats. The taming process is unchanged from the base creature: equip blood packs, let it grab you, feed it as it drains you, do not die. Using a high-health passive tame like a Daeodon to boost effectiveness first is strongly recommended. The S-variant carries the same full capability set: blood pack generation from enemies, Sanguine Elixir crafting (a 30% taming or imprinting bonus tool that is arguably one of the highest-value consumables in the game), invisibility in darkness, cave flight, echolocation, and the ability to drain life while in combat. Add radiation immunity from the S-variant status and the result is one of the most versatile cave-operation mounts available. Cross-breed it with a standard Desmodus to pass the immunity to an existing high-stat line — the immunity gene transfers cleanly.",
+  temperament: "Aggressive",
+  diet: "Sanguinivore (Blood)",
+  habitat: "Caves, dark zones — Fjordur DLC; also Lost Colony",
+  realWorldBasis: "Desmodus draculae (real extinct giant vampire bat)",
+  sizeClass: "Medium",
+  tamingMethod: "Passive (Blood Drain)",
+  tamingType: "Equip Blood Packs in your hotbar last slot. Allow the Desmodus to grab and pick you up. It will consume Blood Packs from your inventory. Let it release you, then allow it to grab again. Repeat until tamed. Boosting taming effectiveness first with a high-health passive Daeodon significantly improves results.",
+  preferredKibble: "Exceptional Kibble",
+  favoriteFood: "Blood Pack",
+  tamingSpeed: "Moderate",
+  torpor: {
+    baseValue: 350,
+    depleteRate: "N/A (passive tame)"
+  },
+  specialRequirements: "S-Dino Variants mod by Nekatus required. 10% chance to spawn replacing standard Desmodus on Fjordur. Also spawns on Lost Colony. Can crossbreed with non-S variants. Hold E to toggle bioluminescent particle effects. Cave flying allowed (server config option: DesmodusCaveFlyingAllowed=true).",
+  baseStats: {
+    health: 325,
+    stamina: 200,
+    oxygen: 150,
+    food: 2000,
+    weight: 350,
+    melee: 100,
+    speed: 100,
+    torpor: 350
+  },
+  statScaling: {
+    health: 65,
+    stamina: 20,
+    oxygen: 15,
+    food: 200,
+    weight: 7,
+    melee: 5,
+    speed: 1.5
+  },
+  saddleLevel: 74,
+  saddleType: "Desmodus Saddle",
+  saddleArmor: 20,
+  platformLimit: 0,
+  specialAbilities: ["Life drain attack (generates Blood Packs from enemies when dealing 50+ damage)", "Sanguine Elixir crafting (30% taming/imprinting bonus consumable)", "Camouflage/invisibility in darkness or when in cave mode", "Echolocation (reveals nearby creatures and players)", "Cave flight (can fly inside caves with correct server setting)", "Grab small creatures while flying", "Rider can fire weapons while mounted", "Bioluminescent glow (S-variant cosmetic)", "Radiation immunity (S-variant)"],
+  attackTypes: ["Bite (life drain)", "grab and carry", "swoop dive"],
+  canCarry: ["Can grab and carry small creatures while flying"],
+  primaryRole: "Stealth cave mount, blood pack source, and Sanguine Elixir producer",
+  secondaryRoles: ["Aerial stealth raiding (invisibility)", "echolocation scouting", "Titan slaying (life drain on large targets)", "radiation-immune cave exploration"],
+  gatheringResources: ["Blood Pack (from enemies)", "Hide", "Raw Meat"],
+  gatheringEfficiency: {
+    "Blood Pack": 10
+  },
+  ratings: {
+    combat: 8,
+    transport: 7,
+    speed: 8,
+    survivability: 7
+  },
+  speeds: {
+    land: 12,
+    flying: 44,
+    swimming: 15,
+    climbing: 0
+  },
+  environmentalResistances: ["Radiation immunity (S-variant)", "dark environment specialist"],
+  preferredBiome: "Caves, dark biomes, Fjordur underground",
+  temperatureRange: {
+    min: -20,
+    max: 40
+  },
+  oxygenRequirement: "Air breathing",
+  breeding: {
+    cooldown: "18-48 hours",
+    gestationTime: "N/A (live birth)",
+    babyFoodConsumption: "Moderate",
+    maturationTime: "2 days, 23 hours",
+    colorRegions: 6,
+    colorRegionNames: ["Body", "wing membranes", "underbelly", "ear membranes", "S-glow", "eyes"],
+    mutationChance: 7.31,
+    breedingDifficulty: "Medium"
+  },
+  workstation: "None",
+  resourceProduction: "Blood Pack (passive, from combat)",
+  structureFunctions: "None.",
+  buffAuras: ["None"],
+  debuffAbilities: ["Life drain on enemies", "echolocation reveals stealthed targets"],
+  uniqueMechanics: ["Blood drain generates Blood Packs from combat", "Sanguine Elixir crafting from blood packs", "invisibility in darkness", "cave flight capability", "blood-based passive taming", "S-Dino crossbreeding enabled", "radiation immunity"],
+  spawnMaps: ["Fjordur", "Lost Colony"],
+  spawnZones: ["Caves, dark zones, swamp islands on Fjordur, dark biomes on Lost Colony — 10% chance replacing standard Desmodus"],
+  rarityRating: "Rare",
+  levelRange: "1-150",
+  packBehavior: "Small groups in caves",
+  territorialBehavior: "Aggressive in caves and dark zones",
+  difficultyRating: "Hard (taming requires preparation)",
+  beginnerFriendly: false,
+  endGameViable: true,
+  bossFightCapable: true,
+  pvpMeta: "High",
+  resourceInvestment: "Medium",
+  maintenanceLevel: "Low",
+  badgeCategories: ["combat", "utility"]
+},
+'S-Managarmr': {
+  id: "S_MANAGARMR_608",
+  name: "S-Managarmr",
+  icon: "🐉",
+  category: "combat",
+  rarity: "rare",
+  source: "S-Dino Variants (Nekatus mod) — Extinction DLC (S-Variant)",
+  variants: ["S-Variant of Managarmr"],
+  dossierText: "Helena's Notes — S-Variant Observation: Nothing in the Snow Dome on Extinction prepares you for a Managarmr. It comes at you like a thought — barely registering before it has already changed position twice, fired an ice breath volley that has halved your stamina, and is already mid-air-dash preparing to do it again. The S-Managarmr amplifies only its visual signature: a spectral bioluminescence across its iridescent scale-hide that makes it look, in motion, like a frozen comet orbiting prey it has already decided is finished. In function it remains one of the most agile and vertiginous creatures available for taming — the triple-jump lets it reach height that conventional flyers struggle to match, the air dash makes it essentially uncatchable in open terrain, and the ice breath freezes targets in place long enough that even a hit-and-run pass can be lethal. On Extinction it is a serious mid-tier threat. Tamed, it becomes a speed-focused combat platform with radiation immunity layered on top — a significant gift in Genesis or Aberrant environments. The crossbreeding compatibility with standard Managarmr means the S-variant's glow and immunity can be passed into an established stat line over a few generations. Baby Managarmr of any variant have the endearing and slightly chaotic habit of jet-launching themselves around — the Training option in their radial menu helps considerably.",
+  temperament: "Aggressive",
+  diet: "Carnivore",
+  habitat: "Snow dome, frozen biomes — Extinction DLC; also Lost Island, Genesis Part 2",
+  realWorldBasis: "Múspellsmegir / Norse mythology (the Managarmr of Norse myth, a wolf that would devour the moon)",
+  sizeClass: "Large",
+  tamingMethod: "Knockout",
+  tamingType: "Standard knockout tame. Tranquilizer darts or shocking tranq darts recommended due to high mobility. Feed Exceptional Kibble for highest efficiency. Snow Owls are useful to slow it down before knocking out.",
+  preferredKibble: "Exceptional Kibble",
+  favoriteFood: "Exceptional Kibble",
+  tamingSpeed: "Moderate",
+  torpor: {
+    baseValue: 900,
+    depleteRate: "Fast"
+  },
+  specialRequirements: "S-Dino Variants mod by Nekatus required. 10% chance to spawn replacing standard Managarmr. S-Fenrir spawner entry applies. Can crossbreed with non-S variants. Hold E to toggle bioluminescent particle effects. Baby Managarmr require careful management — use Training option in radial menu to calm jet-launching behavior.",
+  baseStats: {
+    health: 825,
+    stamina: 400,
+    oxygen: 150,
+    food: 2500,
+    weight: 300,
+    melee: 100,
+    speed: 100,
+    torpor: 900
+  },
+  statScaling: {
+    health: 165,
+    stamina: 40,
+    oxygen: 15,
+    food: 250,
+    weight: 6,
+    melee: 5,
+    speed: 1
+  },
+  saddleLevel: 74,
+  saddleType: "Managarmr Saddle",
+  saddleArmor: 20,
+  platformLimit: 0,
+  specialAbilities: ["Ice breath (freezes enemies, reduces stamina)", "Triple jump (exceptional vertical reach)", "Air dash (burst horizontal speed while airborne)", "Ice slam (dive-bomb AoE on landing)", "Bioluminescent glow (S-variant cosmetic)", "Radiation immunity (S-variant)"],
+  attackTypes: ["Bite", "ice breath", "air slam", "swipe"],
+  canCarry: ["Cannot pick up creatures"],
+  primaryRole: "High-mobility aerial combat mount",
+  secondaryRoles: ["Aerial harassment and hit-and-run combat", "ice crowd control", "radiation-immune fast flyer substitute"],
+  gatheringResources: ["Raw Meat", "Raw Prime Meat", "Hide", "Keratin"],
+  gatheringEfficiency: {
+    "Raw Prime Meat": 6
+  },
+  ratings: {
+    combat: 9,
+    transport: 7,
+    speed: 10,
+    survivability: 7
+  },
+  speeds: {
+    land: 30,
+    flying: 55,
+    swimming: 15,
+    climbing: 0
+  },
+  environmentalResistances: ["Cold immunity", "radiation immunity (S-variant)"],
+  preferredBiome: "Snow dome, frozen tundra, cold regions",
+  temperatureRange: {
+    min: -60,
+    max: 10
+  },
+  oxygenRequirement: "Air breathing",
+  breeding: {
+    cooldown: "18-48 hours",
+    gestationTime: "N/A (live birth)",
+    babyFoodConsumption: "High",
+    maturationTime: "3 days, 20 hours",
+    colorRegions: 6,
+    colorRegionNames: ["Body main", "secondary scales", "wing membranes", "underbelly", "S-glow", "face ridge"],
+    mutationChance: 7.31,
+    breedingDifficulty: "Hard"
+  },
+  workstation: "None",
+  resourceProduction: "None",
+  structureFunctions: "None.",
+  buffAuras: ["None"],
+  debuffAbilities: ["Ice breath reduces target stamina and temporarily freezes movement"],
+  uniqueMechanics: ["Triple jump for extreme vertical mobility", "air dash for horizontal burst speed", "ice breath crowd control", "baby Training option to control jet-launching behavior", "S-Dino crossbreeding enabled", "radiation immunity"],
+  spawnMaps: ["Extinction", "Lost Island", "Genesis Part 2"],
+  spawnZones: ["Snow dome and frozen zones on Extinction, cold areas on Lost Island and Genesis 2 — 10% chance replacing standard Managarmr"],
+  rarityRating: "Rare",
+  levelRange: "1-150",
+  packBehavior: "Small groups (2-3)",
+  territorialBehavior: "Extremely aggressive — one of the Snow Dome's most dangerous wild creatures",
+  difficultyRating: "Hard",
+  beginnerFriendly: false,
+  endGameViable: true,
+  bossFightCapable: true,
+  pvpMeta: "Very High",
+  resourceInvestment: "High",
+  maintenanceLevel: "Medium",
+  badgeCategories: ["combat", "transport"]
+},
+'S-Megaraptor': {
+  id: "S_MEGARAPTOR_609",
+  name: "S-Megaraptor",
+  icon: "🦖",
+  category: "combat",
+  rarity: "rare",
+  source: "S-Dino Variants (Nekatus mod) — Valguero DLC (S-Variant)",
+  variants: ["S-Variant of Megaraptor"],
+  dossierText: "Helena's Notes — S-Variant Observation: There is something genuinely unsettling about an ambush predator that glows. The S-Megaraptor's bioluminescence seems, on the surface, like a catastrophic evolutionary disadvantage — every predator that relies on stealth should by all rights be the matte black of deep ocean fish, invisible against its background. And yet here it is: a feathered horror with a spine-ridge of shimmering S-Dino light, stalking the chalk hills of Valguero with what I can only describe as contemptuous confidence. The truth is that the Megaraptor's camouflage operates on a neural level as much as a visual one — its Hunt Mode deploys a disorienting smog that obscures vision, and by the time a target has reoriented, the Megaraptor has already pounced. The glow barely matters. The taming process is one of the more ritually unusual on any ARK: locate the Megaraptor's territory altar (a spire of twisted roots and bones), equip a torch, and challenge the creature. You will be locked into a small area around the altar, vision reduced, and the Megaraptor will stalk toward you semi-visible. Swing the torch when it appears and before it strikes — each successful hit adds torpor. The quality of the torch matters; bring good ones. Once tamed, the S-Megaraptor performs exactly like its base creature: a solo predator optimized for isolation kills, carrying a 66% damage bonus and 33% resistance buff when no other Megaraptors are nearby. The S-variant adds radiation immunity and crossbreeding capability with the standard line.",
+  temperament: "Aggressive (solitary, attacks everything)",
+  diet: "Carnivore",
+  habitat: "Chalk hills, grasslands, jungles — Valguero DLC; also Astraeos, Lost Colony",
+  realWorldBasis: "Megaraptor namunhuaiquii (real large theropod from Patagonia)",
+  sizeClass: "Large",
+  tamingMethod: "Special (Altar Challenge)",
+  tamingType: "Locate the Megaraptor Altar (twisted root spire with bones) near the Megaraptor. Equip a torch in your hotbar. With the Megaraptor nearby, interact with the altar to begin the challenge. Vision is reduced and you are locked to movement around the altar. Watch for the semi-visible Megaraptor to appear and swing the torch before it strikes you (roughly 1-2 second window). Each successful hit adds torpor; missed hits deal damage to you. Once unconscious, feed Exceptional Kibble. Note: do not bring other tames — the Megaraptor will attack them and break the ritual.",
+  preferredKibble: "Exceptional Kibble",
+  favoriteFood: "Exceptional Kibble",
+  tamingSpeed: "Moderate (ritual takes several rounds)",
+  torpor: {
+    baseValue: 600,
+    depleteRate: "Moderate"
+  },
+  specialRequirements: "S-Dino Variants mod by Nekatus required. 10% chance to spawn replacing standard Megaraptor. Do not bring other tames to the altar — they will disrupt the ritual. Higher-quality torches apply more torpor per hit. Can crossbreed with non-S variants. Hold E to toggle bioluminescent particle effects.",
+  baseStats: {
+    health: 350,
+    stamina: 350,
+    oxygen: 150,
+    food: 1800,
+    weight: 325,
+    melee: 100,
+    speed: 100,
+    torpor: 600
+  },
+  statScaling: {
+    health: 70,
+    stamina: 35,
+    oxygen: 15,
+    food: 180,
+    weight: 6.5,
+    melee: 5,
+    speed: 1.5
+  },
+  saddleLevel: 60,
+  saddleType: "Megaraptor Saddle",
+  saddleArmor: 20,
+  platformLimit: 0,
+  specialAbilities: ["Isolator bonus (66% damage boost + 33% resistance when no other Megaraptors are nearby within ~15m)", "Hunt Mode (deploys disorienting smog debuff on target)", "Pounce (pins target, stuns for 5 seconds)", "Double jump", "Camouflage (partial invisibility to targets beyond 30m)", "Reduces nearby wild creature aggro range", "Bioluminescent glow (S-variant cosmetic)", "Radiation immunity (S-variant)"],
+  attackTypes: ["Claw swipe", "double claw combo", "pounce (aerial stun)", "hunt mode smog"],
+  canCarry: ["Cannot pick up creatures"],
+  primaryRole: "Solo ambush predator and isolation-optimized combat mount",
+  secondaryRoles: ["PVP assassination (stealth approach)", "scouting via camouflage", "radiation-immune stalker mount"],
+  gatheringResources: ["Raw Meat", "Raw Prime Meat", "Hide"],
+  gatheringEfficiency: {
+    "Raw Meat": 8,
+    "Raw Prime Meat": 6
+  },
+  ratings: {
+    combat: 9,
+    transport: 6,
+    speed: 8,
+    survivability: 7
+  },
+  speeds: {
+    land: 38,
+    flying: 0,
+    swimming: 18,
+    climbing: 0
+  },
+  environmentalResistances: ["Radiation immunity (S-variant)"],
+  preferredBiome: "Chalk hills, grasslands, forested areas",
+  temperatureRange: {
+    min: -10,
+    max: 40
+  },
+  oxygenRequirement: "Air breathing",
+  breeding: {
+    cooldown: "18-48 hours",
+    gestationTime: "N/A (egg layer — incubation 30-34°C)",
+    babyFoodConsumption: "Moderate",
+    maturationTime: "2 days, 12 hours",
+    colorRegions: 6,
+    colorRegionNames: ["Body", "feather plumage", "spine ridge", "underbelly", "S-glow", "eyes"],
+    mutationChance: 7.31,
+    breedingDifficulty: "Medium"
+  },
+  workstation: "None",
+  resourceProduction: "None",
+  structureFunctions: "Can destroy rocks and trees while sprinting.",
+  buffAuras: ["None"],
+  debuffAbilities: ["Hunt Mode smog reduces target vision field", "pounce stuns target for 5 seconds"],
+  uniqueMechanics: ["Altar challenge taming minigame (torch-based)", "isolator damage and resistance bonus when alone", "partial camouflage beyond 30m range", "hunt mode vision obscurement", "double jump", "S-Dino crossbreeding enabled", "radiation immunity"],
+  spawnMaps: ["Valguero", "Astraeos", "Lost Colony"],
+  spawnZones: ["Chalk hills, grasslands, jungles on Valguero and Astraeos, canyon areas on Lost Colony — 10% chance replacing standard Megaraptor"],
+  rarityRating: "Rare",
+  levelRange: "1-150",
+  packBehavior: "Strictly solitary (loses combat bonuses with other Megaraptors nearby)",
+  territorialBehavior: "Aggressively territorial — attacks all creatures and players on sight",
+  difficultyRating: "Hard (unique altar taming mechanic)",
+  beginnerFriendly: false,
+  endGameViable: true,
+  bossFightCapable: false,
+  pvpMeta: "High",
+  resourceInvestment: "Medium",
+  maintenanceLevel: "Low",
+  badgeCategories: ["combat", "pvp"]
+},
+'S-Ossidon': {
+  id: "S_OSSIDON_610",
+  name: "S-Ossidon",
+  icon: "🦍",
+  category: "combat",
+  rarity: "legendary",
+  source: "S-Dino Variants (Nekatus mod) — Lost Colony Expansion (S-Variant)",
+  variants: ["S-Variant of Ossidon"],
+  dossierText: "Helena's Notes — S-Variant Observation: I have tamed the base Ossidon. I know what that process costs — the tranq darts, the setup, the nerve required to ride a barely-sedated cryogenic primate while rolling creatures into its filth-ball before time expires. Finding an S-Ossidon after all of that is like discovering that the hardest thing you have ever done had an even harder version waiting quietly behind it. The S-Ossidon carries Nekatus's bioluminescent marker in ice-blue and white, traces of light running the dorsal ridge and the joints of those enormous arms in a pattern that looks almost architectural — as if the creature's skeleton itself is illuminated. In the wild, it is functionally identical to the standard Ossidon in temperament and method: apex cryogenic predator of the frozen wastes of Arat Prime, attacks with a skulled face that looks designed to inspire surrender, rolls devastating frozen debris balls that it bowls at targets with enough force to eliminate most obstacles in the way. Tamed, an S-Ossidon is a platform siege weapon with the added cosmetic glory of those luminous markings glowing in the dark. The radiation immunity from its S-variant status removes one concern in environments where that would otherwise factor in. Cross-breeding with a standard Ossidon passes the immunity forward — though sourcing the original S-variant requires finding that 10% spawn among creatures that are already difficult to locate and far more difficult to tame.",
+  temperament: "Aggressive",
+  diet: "Carnivore",
+  habitat: "Arctic tundra, frozen wastelands — Lost Colony (Arat Prime); cold biomes on Ragnarok, Valguero, The Center",
+  realWorldBasis: "Primate (bio-engineered apex predator)",
+  sizeClass: "Massive",
+  tamingMethod: "Special (Ride and Roll)",
+  tamingType: "Shoot with tranquilizers until at approximately half torpor. Mount the dazed Ossidon (interact with its back). A timer appears on screen — during this window, steer the Ossidon as it rolls its dung ball and guide small/medium creatures into it. Creature deaths during rolling give bonus progress. Dismount before time expires. Repeat with more tranquilizers until tamed. Feed Exceptional Kibble once unconscious.",
+  preferredKibble: "Exceptional Kibble",
+  favoriteFood: "Exceptional Kibble",
+  tamingSpeed: "Slow (requires multiple rounds)",
+  torpor: {
+    baseValue: 2500,
+    depleteRate: "Moderate"
+  },
+  specialRequirements: "S-Dino Variants mod by Nekatus required. 10% chance to spawn replacing standard Ossidon. Requires Lost Colony Expansion Pass for Arat Prime spawns. Can crossbreed with non-S variants. Hold E to toggle bioluminescent particle effects.",
+  baseStats: {
+    health: 2200,
+    stamina: 380,
+    oxygen: 150,
+    food: 3000,
+    weight: 550,
+    melee: 100,
+    speed: 100,
+    torpor: 2500
+  },
+  statScaling: {
+    health: 440,
+    stamina: 38,
+    oxygen: 15,
+    food: 300,
+    weight: 11,
+    melee: 5,
+    speed: 1
+  },
+  saddleLevel: 55,
+  saddleType: "Ossidon Saddle",
+  saddleArmor: 30,
+  platformLimit: 0,
+  specialAbilities: ["Boulder rolling attack (rolls frozen debris balls into enemies)", "Cryogenic mucus throw (ranged cryo attack)", "Icicle spear (hurls icicle projectiles)", "Massive AoE stomp", "Bioluminescent glow (S-variant cosmetic)", "Radiation immunity (S-variant)"],
+  attackTypes: ["Claw swipe", "boulder throw", "icicle spear", "stomp", "cryogenic mucus"],
+  canCarry: ["Can grab and incorporate medium creatures into its rolling ball"],
+  primaryRole: "Apex siege combat mount",
+  secondaryRoles: ["Base assault", "AoE crowd control", "boss fighting", "radiation-immune heavy platform"],
+  gatheringResources: ["Raw Prime Meat", "Raw Meat", "Hide"],
+  gatheringEfficiency: {
+    "Raw Prime Meat": 9
+  },
+  ratings: {
+    combat: 10,
+    transport: 4,
+    speed: 3,
+    survivability: 10
+  },
+  speeds: {
+    land: 25,
+    flying: 0,
+    swimming: 10,
+    climbing: 0
+  },
+  environmentalResistances: ["Cold immunity", "cryogenic resistance", "radiation immunity (S-variant)"],
+  preferredBiome: "Arctic tundra, frozen wastelands",
+  temperatureRange: {
+    min: -80,
+    max: 10
+  },
+  oxygenRequirement: "Air breathing",
+  breeding: {
+    cooldown: "18-48 hours",
+    gestationTime: "N/A (live birth)",
+    babyFoodConsumption: "Very High",
+    maturationTime: "4 days, 12 hours",
+    colorRegions: 6,
+    colorRegionNames: ["Body", "skull markings", "arms", "back plates", "S-cryo glow", "belly"],
+    mutationChance: 7.31,
+    breedingDifficulty: "Very Hard"
+  },
+  workstation: "None",
+  resourceProduction: "None",
+  structureFunctions: "Can damage up to metal structures.",
+  buffAuras: ["None"],
+  debuffAbilities: ["Cryo slow on hit", "fear aura reduces wild creature aggro range nearby"],
+  uniqueMechanics: ["Ride-and-roll taming mechanic (rolling creatures into dung ball)", "boulder construction attack", "cryogenic mucus", "S-Dino crossbreeding enabled", "radiation immunity"],
+  spawnMaps: ["Lost Colony", "Ragnarok (cold biomes)", "Valguero (cold biomes)", "The Center (cold biomes)"],
+  spawnZones: ["Arctic tundra, frozen wastelands — 10% chance replacing standard Ossidon"],
+  rarityRating: "Legendary",
+  levelRange: "1-150",
+  packBehavior: "Solitary",
+  territorialBehavior: "Extremely aggressive",
+  difficultyRating: "Extreme",
+  beginnerFriendly: false,
+  endGameViable: true,
+  bossFightCapable: true,
+  pvpMeta: "Extreme",
+  resourceInvestment: "Very High",
+  maintenanceLevel: "Medium",
+  badgeCategories: ["combat", "boss"]
+},
+'Grand Tortugar': {
+  id: "GRAND_TORTUGAR_701",
+  name: "Grand Tortugar",
+  icon: "🐢",
+  category: "utility",
+  rarity: "rare",
+  source: "Astraeos DLC",
+  variants: ["Standard", "Platform Saddle variant"],
+  dossierText: "Helena's Notes: I was not prepared for the Grand Tortugar. I had been warned — the locals speak of it in the same breath as the ancient temples, a remnant of something older and more deliberate than anything this ARK has produced on its own. Then I rounded a coastal headland and there it was: a living fortress, its shell rising at the edges like the walls of a citadel, its legs dragging the ocean floor at a pace that suggested it had never been in a hurry and never intended to start. The Grand Tortugar is a ported creature from the seas of Atlas, now adapted to the waters and shores of Astraeos. It is, by any reasonable measure, one of the most defensively capable creatures I have ever catalogued. Its shell is not merely armor — it is a complete environmental shelter. Close the carapace and those inside become immune to virtually every form of projectile damage, radiation, lava, gas, turret fire, explosive splash, and even being dismounted by other creatures. The rider and any passengers simply vanish from the outside world's point of view. Open the shell and the Grand Tortugar becomes a conventional (if massive) amphibious mount, capable of walking along ocean floors and harvesting black pearls with a weight reduction of 90%. Two saddle types exist: the standard saddle seats the rider inside the shell itself, with the carapace opening and closing on command; the platform saddle allows external structure-building but removes the shell-close function entirely. It is slow on land. Nearly nothing in the ocean can outrun it. The tradeoff is clear.",
+  temperament: "Aggressive",
+  diet: "Omnivore",
+  habitat: "Coasts, shallow seas, ocean floor — Astraeos DLC",
+  realWorldBasis: "Tortoise (giant, mythological — ported from Atlas)",
+  sizeClass: "Colossal",
+  tamingMethod: "Knockout",
+  tamingType: "Standard knockout tame. Use Longneck Rifle with Tranquilizer Darts or Shocking Tranquilizer Darts for efficiency. Its shell has high damage resistance — focus shots on the head or soft belly. Use Chain Bola from Ballista Turret to immobilize first. Standard Bolas do not work. Feed Giant Bee Honey after knockout.",
+  preferredKibble: "Giant Bee Honey",
+  favoriteFood: "Giant Bee Honey",
+  tamingSpeed: "Slow (high torpor pool ~36,000)",
+  torpor: {
+    baseValue: 36000,
+    depleteRate: "Very Slow"
+  },
+  specialRequirements: "Requires Astraeos DLC. Chain Bola required to immobilize (standard bolas ineffective). Shell has extremely high damage resistance — aim for head or belly only. Two saddle options with different functionality.",
+  baseStats: {
+    health: 1050,
+    stamina: 260,
+    oxygen: 0,
+    food: 3000,
+    weight: 2250,
+    melee: 100,
+    speed: 100,
+    torpor: 36000
+  },
+  statScaling: {
+    health: 210,
+    stamina: 26,
+    oxygen: 0,
+    food: 300,
+    weight: 45,
+    melee: 5,
+    speed: 0.5
+  },
+  saddleLevel: 43,
+  saddleType: "Grand Tortugar Saddle (standard, level 43) or Grand Tortugar Platform Saddle (level 52)",
+  saddleArmor: 35,
+  platformLimit: 12,
+  specialAbilities: ["Shell close (C on PC / R1 on PS): rider and passengers become immune to projectiles, explosives, turrets, Tek Rifle splash, radiation, lava, swamp gas, spore damage, and being dismounted or grabbed", "Ocean floor magnetization (X on PC / hold R3 on PS): sinks to and walks along ocean floor", "90% weight reduction on Black Pearls", "Platform saddle (level 52): allows external structure building but disables shell-close ability", "Amphibious: fast swimmer, outpaces most ocean creatures", "1 rider + 3 passenger seats", "Tail whip (high knockback)", "Immune to electrical shock (no oxygen stat)"],
+  attackTypes: ["Bite", "tail whip (high knockback)"],
+  canCarry: ["1 rider + 3 passengers in shell"],
+  primaryRole: "Mobile fortress and amphibious protected transport",
+  secondaryRoles: ["Black pearl harvesting (ocean floor)", "platform base (platform saddle)", "radiation/hazard-immune transport", "soaking damage in boss fights"],
+  gatheringResources: ["Black Pearls", "Raw Meat", "Hide", "Keratin"],
+  gatheringEfficiency: {
+    "Black Pearls": 10,
+    "Raw Meat": 5
+  },
+  ratings: {
+    combat: 6,
+    transport: 9,
+    speed: 3,
+    survivability: 10
+  },
+  speeds: {
+    land: 10,
+    flying: 0,
+    swimming: 35,
+    climbing: 0
+  },
+  environmentalResistances: ["Radiation immunity (shell closed)", "lava resistance (shell closed)", "swamp gas immunity (shell closed)", "amphibious"],
+  preferredBiome: "Coasts, shallow ocean, ocean floor",
+  temperatureRange: {
+    min: -10,
+    max: 45
+  },
+  oxygenRequirement: "Amphibious — no oxygen stat",
+  breeding: {
+    cooldown: "18-48 hours",
+    gestationTime: "N/A (egg — incubation 54-60°C)",
+    babyFoodConsumption: "High",
+    maturationTime: "3 days, 5 hours",
+    colorRegions: 6,
+    colorRegionNames: ["Shell top", "shell sides", "body", "head", "legs", "underbelly"],
+    mutationChance: 7.31,
+    breedingDifficulty: "Hard"
+  },
+  workstation: "None",
+  resourceProduction: "None",
+  structureFunctions: "Platform saddle allows structure building on shell back.",
+  buffAuras: ["None"],
+  debuffAbilities: ["Tail whip applies knockback"],
+  uniqueMechanics: ["Shell close gives near-total rider/passenger protection", "two saddle types with different functionality trade-offs", "ocean floor walking via magnetization", "90% Black Pearl weight reduction", "ported from Atlas"],
+  spawnMaps: ["Astraeos"],
+  spawnZones: ["Coasts, shallow seas, ocean floor zones on Astraeos"],
+  rarityRating: "Rare",
+  levelRange: "1-150",
+  packBehavior: "Solitary",
+  territorialBehavior: "Aggressive when approached too closely",
+  difficultyRating: "Hard (high torpor, resistant shell)",
+  beginnerFriendly: false,
+  endGameViable: true,
+  bossFightCapable: true,
+  pvpMeta: "High",
+  resourceInvestment: "High",
+  maintenanceLevel: "Low",
+  badgeCategories: ["utility", "transport", "combat"]
+},
+'Natrix': {
+  id: "NATRIX_702",
+  name: "Natrix",
+  icon: "🐍",
+  category: "boss",
+  rarity: "legendary",
+  source: "Astraeos DLC",
+  variants: ["Gamma", "Beta", "Alpha"],
+  dossierText: "Helena's Notes: The Astraeos natives tell of a temple in the swamplands where those who entered did not return — not because they were killed, but because they were changed. Stone statues line the approach to Natrix's lair: warriors, explorers, tamed creatures, all frozen mid-motion with expressions of absolute disbelief. Natrix, the Devious is a Gorgon-class Guardian, and the first boss of Astraeos. Her most defining feature is the writhing mass of serpents that serves as her hair, which she uses to cover her face — survivors who catch a direct look at her are stunned. The swamp arena she calls home turns the fight into a war of positioning: Araneo, Titanoboa, and Onyc serve as her minions, the first two inflicting torpor and the third spreading disease. Her stun attacks are her defining threat — tames and survivors hit directly lose their effectiveness for dangerous windows of time. Spinosauruses benefit from the arena's water, Deinosuchus bring devastating bite damage, Yutyrannuses hold the line with their Courage Roar. She was the first boss added to the Astraeos mod before it became an official DLC, and her difficulty is not to be underestimated. Surviving Natrix is the first proof that a survivor can handle what Astraeos has prepared for them.",
+  temperament: "Aggressive (Boss)",
+  diet: "N/A",
+  habitat: "Astraeos — Swamp arena (accessed via portal)",
+  realWorldBasis: "Medusa / Gorgon (Greek mythology)",
+  sizeClass: "Large",
+  tamingMethod: "Cannot be tamed",
+  tamingType: "N/A — Guardian Boss. Summon via Natrix Portal at obelisk terminal using required artifacts and tribute items.",
+  preferredKibble: "N/A",
+  favoriteFood: "N/A",
+  tamingSpeed: "N/A",
+  torpor: {
+    baseValue: 99999,
+    depleteRate: "N/A"
+  },
+  specialRequirements: "Requires Astraeos DLC. Collect required artifacts from Astraeos caves and tribute items to craft the Natrix Portal. Place portal at a Green Obelisk Terminal on Astraeos map.",
+  baseStats: {
+    health: 150000,
+    stamina: 9999,
+    oxygen: 150,
+    food: 9999,
+    weight: 9999,
+    melee: 150,
+    speed: 100,
+    torpor: 99999
+  },
+  statScaling: {
+    health: 0,
+    stamina: 0,
+    oxygen: 0,
+    food: 0,
+    weight: 0,
+    melee: 0,
+    speed: 0
+  },
+  saddleLevel: 0,
+  saddleType: "N/A",
+  saddleArmor: 0,
+  platformLimit: 0,
+  specialAbilities: ["Gorgon stun (direct eye contact stuns tames and survivors)", "Minion summoning (Araneo, Titanoboa, Onyc)", "Torpedo infliction via minions", "Disease infliction via Onyc minions", "Swamp arena (benefits Spino with water buff)"],
+  attackTypes: ["Gorgon stare (stun)", "snake hair whip", "swamp slam"],
+  canCarry: ["N/A"],
+  primaryRole: "Guardian Boss — first Astraeos boss encounter",
+  secondaryRoles: ["Artifact and Tek engram reward source"],
+  gatheringResources: ["Natrix Trophy", "Tekgrams", "Element", "high-tier loot"],
+  gatheringEfficiency: {
+
+  },
+  ratings: {
+    combat: 9,
+    transport: 0,
+    speed: 6,
+    survivability: 9
+  },
+  speeds: {
+    land: 20,
+    flying: 0,
+    swimming: 20,
+    climbing: 0
+  },
+  environmentalResistances: ["Highly resistant to all damage"],
+  preferredBiome: "Swamp arena (Astraeos boss instance)",
+  temperatureRange: {
+    min: -50,
+    max: 50
+  },
+  oxygenRequirement: "Air breathing",
+  breeding: {
+    cooldown: "Cannot breed",
+    gestationTime: "N/A",
+    babyFoodConsumption: "N/A",
+    maturationTime: "N/A",
+    colorRegions: 0,
+    colorRegionNames: [],
+    mutationChance: 0,
+    breedingDifficulty: "Cannot breed"
+  },
+  workstation: "None",
+  resourceProduction: "None",
+  structureFunctions: "None.",
+  buffAuras: ["None"],
+  debuffAbilities: ["Gorgon stun", "Minion torpor/disease"],
+  uniqueMechanics: ["First Astraeos boss — original mod Guardian", "stun mechanic from direct eye contact", "three-way minion threat", "swamp terrain favors Spino"],
+  spawnMaps: ["Astraeos"],
+  spawnZones: ["Boss arena (summoned via Natrix Portal at obelisk)"],
+  rarityRating: "Boss",
+  levelRange: "Boss",
+  packBehavior: "Solitary with summoned minions",
+  territorialBehavior: "Aggressive (boss encounter)",
+  difficultyRating: "Hard",
+  beginnerFriendly: false,
+  endGameViable: true,
+  bossFightCapable: false,
+  pvpMeta: "None",
+  resourceInvestment: "N/A",
+  maintenanceLevel: "N/A",
+  badgeCategories: ["combat", "boss"]
+},
+'Thodes': {
+  id: "THODES_703",
+  name: "Thodes",
+  icon: "👁️",
+  category: "boss",
+  rarity: "legendary",
+  source: "Astraeos DLC",
+  variants: ["Gamma", "Beta", "Alpha"],
+  dossierText: "Helena's Notes: There is something philosophically unsettling about fighting a creature from Greek mythology. The Cyclops of the ancient stories was a shepherd, enormous and simple, undone by cleverness. Thodes the Widowmaker is not that creature. The Astraeos Cyclops is armor-plated, combat-trained, and operates in an arena designed to let it express the full scope of what a creature that size can do. The approach to Thodes's arena requires three artifacts, spread across the most dangerous caves on Astraeos — a gauntlet that feels deliberate, as if the map itself is testing whether you deserve the fight. The arena itself is large enough that standard Rex rushes remain viable, though the terrain demands discipline and the single eye of the creature tracks with unnerving accuracy. Defeating Thodes unlocks Tek engrams appropriate for the next phase of progression on Astraeos, making it the intermediate boss encounter that bridges Natrix's swamp challenge with the more demanding trials that followed in subsequent updates.",
+  temperament: "Aggressive (Boss)",
+  diet: "N/A",
+  habitat: "Astraeos — Cyclops arena (accessed via portal)",
+  realWorldBasis: "Cyclops (Greek mythology)",
+  sizeClass: "Colossal",
+  tamingMethod: "Cannot be tamed",
+  tamingType: "N/A — Guardian Boss. Requires Thodes the Widowmaker Portal. Minimum Survivor Level 85 to craft portal.",
+  preferredKibble: "N/A",
+  favoriteFood: "N/A",
+  tamingSpeed: "N/A",
+  torpor: {
+    baseValue: 99999,
+    depleteRate: "N/A"
+  },
+  specialRequirements: "Requires Astraeos DLC. Minimum Survivor Level 85 to craft Thodes the Widowmaker Portal. Collect artifacts and tribute items. Place at Green Obelisk Terminal. 25-minute time limit after defeating Thodes to loot supply crate.",
+  baseStats: {
+    health: 200000,
+    stamina: 9999,
+    oxygen: 150,
+    food: 9999,
+    weight: 9999,
+    melee: 175,
+    speed: 100,
+    torpor: 99999
+  },
+  statScaling: {
+    health: 0,
+    stamina: 0,
+    oxygen: 0,
+    food: 0,
+    weight: 0,
+    melee: 0,
+    speed: 0
+  },
+  saddleLevel: 0,
+  saddleType: "N/A",
+  saddleArmor: 0,
+  platformLimit: 0,
+  specialAbilities: ["Massive physical attacks", "boulder throw", "stomp (AoE)", "single-eye tracking"],
+  attackTypes: ["Boulder throw", "stomp", "club slam", "swipe"],
+  canCarry: ["Can grab survivors"],
+  primaryRole: "Guardian Boss — second Astraeos boss encounter",
+  secondaryRoles: ["Tek engram progression reward", "artifact collection milestone"],
+  gatheringResources: ["Thodes Trophy", "Tekgrams", "Element", "high-tier loot supply crate"],
+  gatheringEfficiency: {
+
+  },
+  ratings: {
+    combat: 9,
+    transport: 0,
+    speed: 5,
+    survivability: 10
+  },
+  speeds: {
+    land: 18,
+    flying: 0,
+    swimming: 5,
+    climbing: 0
+  },
+  environmentalResistances: ["Highly resistant to all damage"],
+  preferredBiome: "Cyclops arena (Astraeos boss instance)",
+  temperatureRange: {
+    min: -50,
+    max: 50
+  },
+  oxygenRequirement: "Air breathing",
+  breeding: {
+    cooldown: "Cannot breed",
+    gestationTime: "N/A",
+    babyFoodConsumption: "N/A",
+    maturationTime: "N/A",
+    colorRegions: 0,
+    colorRegionNames: [],
+    mutationChance: 0,
+    breedingDifficulty: "Cannot breed"
+  },
+  workstation: "None",
+  resourceProduction: "None",
+  structureFunctions: "None.",
+  buffAuras: ["None"],
+  debuffAbilities: ["AoE stomp knockback"],
+  uniqueMechanics: ["Level 85 minimum requirement to craft portal", "3-artifact collection required", "25-minute loot window after defeat"],
+  spawnMaps: ["Astraeos"],
+  spawnZones: ["Boss arena (summoned via Thodes the Widowmaker Portal)"],
+  rarityRating: "Boss",
+  levelRange: "Boss",
+  packBehavior: "Solitary",
+  territorialBehavior: "Aggressive (boss encounter)",
+  difficultyRating: "Hard",
+  beginnerFriendly: false,
+  endGameViable: true,
+  bossFightCapable: false,
+  pvpMeta: "None",
+  resourceInvestment: "N/A",
+  maintenanceLevel: "N/A",
+  badgeCategories: ["combat", "boss"]
+},
+'Thanatos': {
+  id: "THANATOS_704",
+  name: "Thanatos",
+  icon: "💀",
+  category: "boss",
+  rarity: "legendary",
+  source: "Astraeos DLC",
+  variants: ["World Boss (single difficulty)"],
+  dossierText: "Helena's Notes: Named for the Greek personification of death itself, Thanatos is not summoned. It arrives. A King Titan variant that roams the Therokis island of Astraeos freely, it appears for a limited window before disappearing again — an open-world boss encounter unlike the arena-based Guardians. Where the King Titan on Extinction glows blue and dominates the Wasteland, Thanatos burns orange, its eyes deep ember, its black scales absorbing the Pyranthos heat around it. It is smaller than the King Titan, which should not be taken as reassurance. It is still larger than the Ice, Forest, and Desert Titans, and it kills anything in its path with the methodical certainty of something that has never needed to be fast. Engaging Thanatos without preparation is a death sentence for a tribe and their tames. Engaging it with a prepared force — with the right creatures, the right levels, the right composition — is one of the defining encounters on Astraeos. Like the King Titan, its presence is temporary. Unlike the King Titan, it is not the final boss. It is simply proof that Therokis plays by different rules.",
+  temperament: "Aggressive (World Boss — attacks everything on sight)",
+  diet: "N/A",
+  habitat: "Astraeos — Therokis island (open-world spawn)",
+  realWorldBasis: "Thanatos (Greek personification of death); King Titan variant",
+  sizeClass: "Colossal",
+  tamingMethod: "Cannot be tamed",
+  tamingType: "N/A — World Boss. Roams Therokis freely for a limited window. Engage in the open world with your full force.",
+  preferredKibble: "N/A",
+  favoriteFood: "N/A",
+  tamingSpeed: "N/A",
+  torpor: {
+    baseValue: 99999,
+    depleteRate: "N/A"
+  },
+  specialRequirements: "Requires Astraeos DLC. Spawns periodically on Therokis island. Open-world encounter — no portal or artifacts required to fight. Behaves similarly to the King Titan in Extinction.",
+  baseStats: {
+    health: 500000,
+    stamina: 9999,
+    oxygen: 150,
+    food: 9999,
+    weight: 9999,
+    melee: 250,
+    speed: 100,
+    torpor: 99999
+  },
+  statScaling: {
+    health: 0,
+    stamina: 0,
+    oxygen: 0,
+    food: 0,
+    weight: 0,
+    melee: 0,
+    speed: 0
+  },
+  saddleLevel: 0,
+  saddleType: "N/A",
+  saddleArmor: 0,
+  platformLimit: 0,
+  specialAbilities: ["Corruption beam", "AoE stomp", "element bombardment", "massive physical attacks", "corruption spread to nearby creatures", "limited spawn window (roams then despawns)"],
+  attackTypes: ["Corruption beam", "stomp", "swipe", "element bombardment"],
+  canCarry: ["N/A"],
+  primaryRole: "World Boss — open-world apex threat on Therokis",
+  secondaryRoles: ["Endgame progression milestone", "high-tier loot source"],
+  gatheringResources: ["Thanatos drops (high-tier loot, element, tekgrams)"],
+  gatheringEfficiency: {
+
+  },
+  ratings: {
+    combat: 10,
+    transport: 0,
+    speed: 4,
+    survivability: 10
+  },
+  speeds: {
+    land: 12,
+    flying: 0,
+    swimming: 0,
+    climbing: 0
+  },
+  environmentalResistances: ["Extreme resistance to all damage types"],
+  preferredBiome: "Therokis island — Astraeos open world",
+  temperatureRange: {
+    min: -50,
+    max: 80
+  },
+  oxygenRequirement: "Air breathing",
+  breeding: {
+    cooldown: "Cannot breed",
+    gestationTime: "N/A",
+    babyFoodConsumption: "N/A",
+    maturationTime: "N/A",
+    colorRegions: 0,
+    colorRegionNames: [],
+    mutationChance: 0,
+    breedingDifficulty: "Cannot breed"
+  },
+  workstation: "None",
+  resourceProduction: "None",
+  structureFunctions: "None.",
+  buffAuras: ["None"],
+  debuffAbilities: ["Corruption spread to nearby creatures", "element bombardment AoE"],
+  uniqueMechanics: ["Open-world world boss — no portal or arena required", "limited spawn window on Therokis", "orange King Titan variant unique to Astraeos"],
+  spawnMaps: ["Astraeos"],
+  spawnZones: ["Therokis island — open world spawn on a timed cycle"],
+  rarityRating: "Boss",
+  levelRange: "World Boss",
+  packBehavior: "Solitary",
+  territorialBehavior: "Attacks everything on sight while active",
+  difficultyRating: "Extreme",
+  beginnerFriendly: false,
+  endGameViable: true,
+  bossFightCapable: false,
+  pvpMeta: "None",
+  resourceInvestment: "N/A",
+  maintenanceLevel: "N/A",
+  badgeCategories: ["combat", "boss"]
+},
+'Kirayli': {
+  id: "KIRAYLI_705",
+  name: "Kirayli",
+  icon: "🐑",
+  category: "boss",
+  rarity: "uncommon",
+  source: "Astraeos DLC",
+  variants: ["Miniboss variant"],
+  dossierText: "Helena's Notes: I have catalogued apex predators, living weapons, corrupted monstrosities, and creatures that can crack metal structures with a sneeze. Nothing prepared me for Kirayli. It is a sheep. A very large, very angry sheep, but a sheep nonetheless. I am told by the locals that Kirayli is the guardian of the grassy highlands — that the shepherds of Astraeos's past created something from their mythology that was at once familiar and monstrous. The creature does not have the presence of Natrix or the raw scale of Thodes, and it is classified as a miniboss, not a Guardian. What it does have is the deeply unsettling quality of being something that should be docile, elevated through whatever processes created the Astraeos fauna into something you cannot afford to dismiss. Approaching Kirayli as if it were a normal creature has resulted in the deaths of many unprepared survivors. It hits far harder than it appears to, and it has enough health to outlast careless engagements. Consider it a trial run — a reminder that on Astraeos, nothing is as harmless as it looks.",
+  temperament: "Aggressive (Miniboss)",
+  diet: "N/A",
+  habitat: "Astraeos — grassy highlands and plains",
+  realWorldBasis: "Sheep (mythological giant variant)",
+  sizeClass: "Large",
+  tamingMethod: "Cannot be tamed",
+  tamingType: "N/A — Miniboss. Encountered in the open world on Astraeos. Not summoned via portal.",
+  preferredKibble: "N/A",
+  favoriteFood: "N/A",
+  tamingSpeed: "N/A",
+  torpor: {
+    baseValue: 50000,
+    depleteRate: "N/A"
+  },
+  specialRequirements: "Requires Astraeos DLC. Spawns in grassy highlands as an open-world miniboss. No portal or artifacts required.",
+  baseStats: {
+    health: 50000,
+    stamina: 9999,
+    oxygen: 150,
+    food: 9999,
+    weight: 9999,
+    melee: 100,
+    speed: 100,
+    torpor: 50000
+  },
+  statScaling: {
+    health: 0,
+    stamina: 0,
+    oxygen: 0,
+    food: 0,
+    weight: 0,
+    melee: 0,
+    speed: 0
+  },
+  saddleLevel: 0,
+  saddleType: "N/A",
+  saddleArmor: 0,
+  platformLimit: 0,
+  specialAbilities: ["Charge attack (high damage, knockback)", "wool slam", "deceptive endurance for its size"],
+  attackTypes: ["Ram charge", "headbutt", "stomp"],
+  canCarry: ["N/A"],
+  primaryRole: "Miniboss — mid-tier open-world challenge on Astraeos",
+  secondaryRoles: ["Loot source", "progression checkpoint"],
+  gatheringResources: ["Kirayli drops (wool variant materials, mid-tier loot)"],
+  gatheringEfficiency: {
+
+  },
+  ratings: {
+    combat: 7,
+    transport: 0,
+    speed: 6,
+    survivability: 8
+  },
+  speeds: {
+    land: 25,
+    flying: 0,
+    swimming: 5,
+    climbing: 0
+  },
+  environmentalResistances: ["Moderate damage resistance"],
+  preferredBiome: "Grassy highlands, plains on Astraeos",
+  temperatureRange: {
+    min: -20,
+    max: 40
+  },
+  oxygenRequirement: "Air breathing",
+  breeding: {
+    cooldown: "Cannot breed",
+    gestationTime: "N/A",
+    babyFoodConsumption: "N/A",
+    maturationTime: "N/A",
+    colorRegions: 0,
+    colorRegionNames: [],
+    mutationChance: 0,
+    breedingDifficulty: "Cannot breed"
+  },
+  workstation: "None",
+  resourceProduction: "None",
+  structureFunctions: "None.",
+  buffAuras: ["None"],
+  debuffAbilities: ["Charge knockback"],
+  uniqueMechanics: ["Open-world miniboss — no summon required", "deceptively sheep-like appearance belying combat capability"],
+  spawnMaps: ["Astraeos"],
+  spawnZones: ["Grassy highlands and plains on Astraeos"],
+  rarityRating: "Uncommon (miniboss)",
+  levelRange: "Miniboss",
+  packBehavior: "Solitary",
+  territorialBehavior: "Aggressive when approached",
+  difficultyRating: "Medium",
+  beginnerFriendly: false,
+  endGameViable: false,
+  bossFightCapable: false,
+  pvpMeta: "None",
+  resourceInvestment: "N/A",
+  maintenanceLevel: "N/A",
+  badgeCategories: ["combat", "boss"]
+},
+'Hydraskos': {
+  id: "HYDRASKOS_706",
+  name: "Hydraskos",
+  icon: "🐉",
+  category: "boss",
+  rarity: "legendary",
+  source: "Astraeos DLC (Mega Update, February 2026)",
+  variants: ["Gamma", "Beta", "Alpha"],
+  dossierText: "Helena's Notes: The Hydra of ancient Greek mythology could not be killed by brute force. Cut one head off, two more grew back. Heracles had to cauterize each stump as he went. I do not have a torch large enough for Hydraskos, The Unbroken. This is the third Guardian boss of Astraeos, added in the Pyranthos Mega Update, and it is the most tactically demanding of the three. Five serpentine heads extend from a single massive body, each capable of attacking independently, each requiring individual targeting to progress the fight. The creature is a ported asset from the world of Atlas, adapted to the desert heat of the new Pyranthos landmass. Its red skin absorbs the Pyranthos sun. Its yellow eyes track multiple targets simultaneously. Defeating it requires not just raw damage output but the discipline to focus individual heads rather than spray attacks indiscriminately. The reward is significant: Dragon-tier Tek engrams unlock upon completion, making Hydraskos the gateway to one of the most sought-after Tekgram sets in the game. This is the fight that separates the Astraeos veterans from the tourists.",
+  temperament: "Aggressive (Boss)",
+  diet: "N/A",
+  habitat: "Astraeos — Hydraskos arena (Pyranthos region, added February 2026)",
+  realWorldBasis: "Lernaean Hydra (Greek mythology); ported from Atlas",
+  sizeClass: "Colossal",
+  tamingMethod: "Cannot be tamed",
+  tamingType: "N/A — Guardian Boss. Requires Hydraskos portal and tribute items from the Pyranthos region of Astraeos. Added in v83.x Mega Update.",
+  preferredKibble: "N/A",
+  favoriteFood: "N/A",
+  tamingSpeed: "N/A",
+  torpor: {
+    baseValue: 99999,
+    depleteRate: "N/A"
+  },
+  specialRequirements: "Requires Astraeos DLC and Pyranthos Mega Update (v83.x). Three difficulty variants. Defeating Hydraskos unlocks Dragon-tier Tek engrams.",
+  baseStats: {
+    health: 300000,
+    stamina: 9999,
+    oxygen: 150,
+    food: 9999,
+    weight: 9999,
+    melee: 200,
+    speed: 100,
+    torpor: 99999
+  },
+  statScaling: {
+    health: 0,
+    stamina: 0,
+    oxygen: 0,
+    food: 0,
+    weight: 0,
+    melee: 0,
+    speed: 0
+  },
+  saddleLevel: 0,
+  saddleType: "N/A",
+  saddleArmor: 0,
+  platformLimit: 0,
+  specialAbilities: ["Five independent serpentine heads (each attacks separately and must be targeted individually)", "head-focused damage mechanic (must target each head)", "venom bite (poison DoT)", "sweeping multi-head AoE", "water-based attacks (fins on each head)", "Dragon Tek engram reward on defeat"],
+  attackTypes: ["Multi-head bite", "venom spit", "head sweep AoE", "body slam"],
+  canCarry: ["N/A"],
+  primaryRole: "Guardian Boss — third Astraeos Guardian, Dragon Tekgram source",
+  secondaryRoles: ["Pyranthos progression milestone", "high-tier loot source"],
+  gatheringResources: ["Hydraskos Trophy", "Dragon Tek Engrams", "Element", "high-tier loot"],
+  gatheringEfficiency: {
+
+  },
+  ratings: {
+    combat: 10,
+    transport: 0,
+    speed: 6,
+    survivability: 10
+  },
+  speeds: {
+    land: 0,
+    flying: 0,
+    swimming: 35,
+    climbing: 0
+  },
+  environmentalResistances: ["Highly resistant to all damage types"],
+  preferredBiome: "Boss arena (desert/Pyranthos biome)",
+  temperatureRange: {
+    min: -50,
+    max: 80
+  },
+  oxygenRequirement: "Amphibious",
+  breeding: {
+    cooldown: "Cannot breed",
+    gestationTime: "N/A",
+    babyFoodConsumption: "N/A",
+    maturationTime: "N/A",
+    colorRegions: 0,
+    colorRegionNames: [],
+    mutationChance: 0,
+    breedingDifficulty: "Cannot breed"
+  },
+  workstation: "None",
+  resourceProduction: "None",
+  structureFunctions: "None.",
+  buffAuras: ["None"],
+  debuffAbilities: ["Venom DoT from bites", "multi-head sweep disorganizes tame formations"],
+  uniqueMechanics: ["Five independent heads require individual targeting", "Dragon Tek engram reward", "ported from Atlas", "Pyranthos-exclusive boss arena"],
+  spawnMaps: ["Astraeos"],
+  spawnZones: ["Hydraskos arena — Pyranthos region (summoned via portal)"],
+  rarityRating: "Boss",
+  levelRange: "Boss",
+  packBehavior: "Solitary",
+  territorialBehavior: "Aggressive (boss encounter)",
+  difficultyRating: "Very Hard",
+  beginnerFriendly: false,
+  endGameViable: true,
+  bossFightCapable: false,
+  pvpMeta: "None",
+  resourceInvestment: "N/A",
+  maintenanceLevel: "N/A",
+  badgeCategories: ["combat", "boss"]
+},
+'Minotarchos': {
+  id: "MINOTARCHOS_707",
+  name: "Minotarchos",
+  icon: "🐂",
+  category: "boss",
+  rarity: "rare",
+  source: "Astraeos DLC (Mega Update, February 2026)",
+  variants: ["Standard"],
+  dossierText: "Helena's Notes: The Minotaurus is a creature of Astraeos that survivors tame, breed, and ride. The Minotarchos is what the Minotaurus aspires to become in its darkest nightmares. It is the temple guardian — an ancient, golden-chained specimen that stands noticeably larger than any tamed Minotaurus, its chains worn not as restraints but as trophies, wrapped around its arms and shoulders with the casual ease of something that has broken every chain it was given. Where the standard Minotaurus is an endgame combat mount with impressive stats and breedable utility, the Minotarchos is a miniboss encounter tied to the temple dungeons of the Pyranthos region, added in the Mega Update alongside Hydraskos. It does not summon minions or use exotic abilities — it fights the way a creature that size fights, which is to say with enough force to turn a tame army into a logistics problem. Survivors who have cleared Natrix and Thodes will find the Minotarchos a satisfying capstone challenge for the dungeon content of Astraeos's desert expansion.",
+  temperament: "Aggressive (Boss)",
+  diet: "N/A",
+  habitat: "Astraeos — temple dungeons (Pyranthos region)",
+  realWorldBasis: "Minotaur (Greek mythology) — boss variant of the tamed Minotaurus",
+  sizeClass: "Massive",
+  tamingMethod: "Cannot be tamed",
+  tamingType: "N/A — Dungeon Miniboss. Encountered in Pyranthos temple dungeons on Astraeos. Not summoned via portal.",
+  preferredKibble: "N/A",
+  favoriteFood: "N/A",
+  tamingSpeed: "N/A",
+  torpor: {
+    baseValue: 75000,
+    depleteRate: "N/A"
+  },
+  specialRequirements: "Requires Astraeos DLC and Pyranthos Mega Update (v83.x). Found in temple dungeons, not open world.",
+  baseStats: {
+    health: 75000,
+    stamina: 9999,
+    oxygen: 150,
+    food: 9999,
+    weight: 9999,
+    melee: 150,
+    speed: 100,
+    torpor: 75000
+  },
+  statScaling: {
+    health: 0,
+    stamina: 0,
+    oxygen: 0,
+    food: 0,
+    weight: 0,
+    melee: 0,
+    speed: 0
+  },
+  saddleLevel: 0,
+  saddleType: "N/A",
+  saddleArmor: 0,
+  platformLimit: 0,
+  specialAbilities: ["Chain slam (AoE)", "massive physical damage", "golden chain weapons as combat tools", "area denial charge"],
+  attackTypes: ["Chain slam", "charge", "stomp", "swipe"],
+  canCarry: ["Can grab survivors"],
+  primaryRole: "Dungeon Miniboss — Pyranthos temple guardian",
+  secondaryRoles: ["High-tier loot source", "dungeon progression gate"],
+  gatheringResources: ["Minotarchos drops (high-tier loot, materials)"],
+  gatheringEfficiency: {
+
+  },
+  ratings: {
+    combat: 9,
+    transport: 0,
+    speed: 5,
+    survivability: 9
+  },
+  speeds: {
+    land: 20,
+    flying: 0,
+    swimming: 5,
+    climbing: 0
+  },
+  environmentalResistances: ["High physical damage resistance"],
+  preferredBiome: "Temple dungeons — Pyranthos region of Astraeos",
+  temperatureRange: {
+    min: -50,
+    max: 80
+  },
+  oxygenRequirement: "Air breathing",
+  breeding: {
+    cooldown: "Cannot breed",
+    gestationTime: "N/A",
+    babyFoodConsumption: "N/A",
+    maturationTime: "N/A",
+    colorRegions: 0,
+    colorRegionNames: [],
+    mutationChance: 0,
+    breedingDifficulty: "Cannot breed"
+  },
+  workstation: "None",
+  resourceProduction: "None",
+  structureFunctions: "None.",
+  buffAuras: ["None"],
+  debuffAbilities: ["Chain slam AoE knockback"],
+  uniqueMechanics: ["Golden chain weapons as combat tools", "larger variant of the tamed Minotaurus", "dungeon-based encounter (not open world)"],
+  spawnMaps: ["Astraeos"],
+  spawnZones: ["Pyranthos temple dungeons (not a portal boss — found in dungeon"],
+  rarityRating: "Rare (dungeon miniboss)",
+  levelRange: "Miniboss",
+  packBehavior: "Solitary",
+  territorialBehavior: "Guards temple area aggressively",
+  difficultyRating: "Hard",
+  beginnerFriendly: false,
+  endGameViable: true,
+  bossFightCapable: false,
+  pvpMeta: "None",
+  resourceInvestment: "N/A",
+  maintenanceLevel: "N/A",
+  badgeCategories: ["combat", "boss"]
+},
+'Erymanthian and Kalydonios': {
+  id: "ERYMANTHIAN_KALYDONIOS_708",
+  name: "Erymanthian and Kalydonios",
+  icon: "⚔️",
+  category: "boss",
+  rarity: "legendary",
+  source: "Astraeos DLC (Lemnokis Update)",
+  variants: ["Standard"],
+  dossierText: "Helena's Notes: Every boss I have encountered on the ARKs has been a solitary creature — the apex of something, alone at the top of whatever ecosystem designed it. The Lemnokis Update changed that. Erymanthian and Kalydonios are a duo miniboss encounter, the first of their kind in the entire ARK universe, and the combination is deeply unpleasant to deal with. Where a single boss allows a tame army to establish a clear focal point and coordinate attacks, the duo forces constant threat assessment — which one is charging, which one is recovering, which one is about to use a combo attack that the other sets up. Named after the Erymanthian Boar and the Calydonian Boar of Greek myth — two legendary animals from Heracles' labors and the Calydonian Boar Hunt — they fight with what I can only describe as practiced coordination, as if they have been hunting together long enough to develop something resembling tactics. They represent a category of boss design that Astraeos introduced and that no other map has attempted. Defeating them separately is not an option. They fall together or not at all.",
+  temperament: "Aggressive (Duo Miniboss)",
+  diet: "N/A",
+  habitat: "Astraeos — duo miniboss arena (Lemnokis region)",
+  realWorldBasis: "Erymanthian Boar and Calydonian Boar (Greek mythology)",
+  sizeClass: "Large",
+  tamingMethod: "Cannot be tamed",
+  tamingType: "N/A — Duo Miniboss. First duo boss encounter in ARK. Added with the Lemnokis Update for Astraeos.",
+  preferredKibble: "N/A",
+  favoriteFood: "N/A",
+  tamingSpeed: "N/A",
+  torpor: {
+    baseValue: 60000,
+    depleteRate: "N/A"
+  },
+  specialRequirements: "Requires Astraeos DLC and Lemnokis Update. Duo fight — both creatures must be engaged and defeated. Unique combo attacks that require both bosses to execute.",
+  baseStats: {
+    health: 60000,
+    stamina: 9999,
+    oxygen: 150,
+    food: 9999,
+    weight: 9999,
+    melee: 130,
+    speed: 100,
+    torpor: 60000
+  },
+  statScaling: {
+    health: 0,
+    stamina: 0,
+    oxygen: 0,
+    food: 0,
+    weight: 0,
+    melee: 0,
+    speed: 0
+  },
+  saddleLevel: 0,
+  saddleType: "N/A",
+  saddleArmor: 0,
+  platformLimit: 0,
+  specialAbilities: ["Duo coordination (combo attacks requiring both creatures)", "charge (Erymanthian)", "ground slam (Kalydonios)", "flanking coordination", "first duo boss encounter in ARK history"],
+  attackTypes: ["Charge", "stomp", "gore", "coordinated combo attacks"],
+  canCarry: ["N/A"],
+  primaryRole: "Duo Miniboss — first duo boss encounter in ARK",
+  secondaryRoles: ["Lemnokis region progression milestone", "loot source"],
+  gatheringResources: ["Erymanthian and Kalydonios drops (mid-to-high-tier loot, materials)"],
+  gatheringEfficiency: {
+
+  },
+  ratings: {
+    combat: 8,
+    transport: 0,
+    speed: 7,
+    survivability: 8
+  },
+  speeds: {
+    land: 28,
+    flying: 0,
+    swimming: 10,
+    climbing: 0
+  },
+  environmentalResistances: ["Moderate damage resistance"],
+  preferredBiome: "Lemnokis region — Astraeos",
+  temperatureRange: {
+    min: -20,
+    max: 50
+  },
+  oxygenRequirement: "Air breathing",
+  breeding: {
+    cooldown: "Cannot breed",
+    gestationTime: "N/A",
+    babyFoodConsumption: "N/A",
+    maturationTime: "N/A",
+    colorRegions: 0,
+    colorRegionNames: [],
+    mutationChance: 0,
+    breedingDifficulty: "Cannot breed"
+  },
+  workstation: "None",
+  resourceProduction: "None",
+  structureFunctions: "None.",
+  buffAuras: ["None"],
+  debuffAbilities: ["Duo coordination creates unpredictable attack windows"],
+  uniqueMechanics: ["First-ever duo boss encounter in ARK", "coordinated combo attacks between two bosses", "both must be defeated — cannot be killed separately"],
+  spawnMaps: ["Astraeos"],
+  spawnZones: ["Lemnokis region — duo miniboss arena"],
+  rarityRating: "Boss",
+  levelRange: "Miniboss",
+  packBehavior: "Bonded pair",
+  territorialBehavior: "Aggressive as a coordinated duo",
+  difficultyRating: "Hard",
+  beginnerFriendly: false,
+  endGameViable: true,
+  bossFightCapable: false,
+  pvpMeta: "None",
+  resourceInvestment: "N/A",
+  maintenanceLevel: "N/A",
+  badgeCategories: ["combat", "boss"]
+},
+'Grendel': {
+  id: "GRENDEL_709",
+  name: "Grendel",
+  icon: "🦖",
+  category: "boss",
+  rarity: "legendary",
+  source: "Valguero Ascended DLC",
+  variants: ["Gamma", "Beta", "Alpha"],
+  dossierText: "Helena's Notes: When Studio WildCard reworked Valguero for ARK: Survival Ascended, the old trio of the Forsaken Oasis — Megapithecus, Manticore, Dragon — was retired. What replaced them was Grendel, a creature whose namesake from Beowulf was already associated with lurking in darkness and striking without warning. The ASA Grendel earns that name. It looks like a Megaraptor scaled up and crowned with a skull helmet, and it fights with the same guerrilla instincts: phases of immunity, arena-wide fog that kills visibility, and a mechanic where you must find and light a specific cauldron in the darkened arena to make Grendel vulnerable for a brief window. Its minions — Deinonychus and vultures at level 500 — bleed your tames while you hunt for the light source. On Alpha, Grendel carries 600,000 health and heals rapidly, drops 520 Element on death, and ranks among the more demanding Guardian encounters in the game. The recommended approach favors Therizinos with Veggie Cakes, Deinotherium for raw pressure, or Stegosaurus for sustained soaking, with a Yutyrannur leading the charge. Like the Megaraptor it resembles, Grendel has a particular disdain for being surrounded — isolating it from its minions is the first priority in every difficulty.",
+  temperament: "Aggressive (Boss)",
+  diet: "N/A",
+  habitat: "Valguero Ascended — Guardian arena",
+  realWorldBasis: "Grendel (from Beowulf); Megaraptor-based Guardian",
+  sizeClass: "Large",
+  tamingMethod: "Cannot be tamed",
+  tamingType: "N/A — Guardian Boss replacing the old Valguero Forsaken Oasis trio. Summon via Grendel Portal at obelisk using artifacts and tribute items.",
+  preferredKibble: "N/A",
+  favoriteFood: "N/A",
+  tamingSpeed: "N/A",
+  torpor: {
+    baseValue: 99999,
+    depleteRate: "N/A"
+  },
+  specialRequirements: "Requires Valguero Ascended. Collect required artifacts and tribute items. Minimum player levels: 70 (Gamma), 80 (Beta), 90 (Alpha). Alpha drops 520 Element. Heals quickly — maintain sustained DPS.",
+  baseStats: {
+    health: 600000,
+    stamina: 9999,
+    oxygen: 150,
+    food: 9999,
+    weight: 9999,
+    melee: 175,
+    speed: 100,
+    torpor: 99999
+  },
+  statScaling: {
+    health: 0,
+    stamina: 0,
+    oxygen: 0,
+    food: 0,
+    weight: 0,
+    melee: 0,
+    speed: 0
+  },
+  saddleLevel: 0,
+  saddleType: "N/A",
+  saddleArmor: 0,
+  platformLimit: 0,
+  specialAbilities: ["Immunity phases (cannot be damaged during jump phase)", "Hunt Mode (arena-wide fog blankets visibility)", "Cauldron mechanic (must light specific cauldron to make Grendel vulnerable for ~30 seconds)", "Camouflage (similar to Megaraptor)", "Rapid self-healing", "Bleed damage", "Level 500 minion summons (Deinonychus + Vultures)"],
+  attackTypes: ["Claw slash (bleed)", "pounce", "jump (immunity during this phase)", "fog cloud deploy"],
+  canCarry: ["N/A"],
+  primaryRole: "Guardian Boss — Valguero Ascended primary boss",
+  secondaryRoles: ["520 Element source (Alpha)", "Tekgram reward", "replaced Forsaken Oasis trio in ASA"],
+  gatheringResources: ["Grendel Trophy", "Element (520 on Alpha)", "Tekgrams", "high-tier loot"],
+  gatheringEfficiency: {
+
+  },
+  ratings: {
+    combat: 9,
+    transport: 0,
+    speed: 8,
+    survivability: 9
+  },
+  speeds: {
+    land: 30,
+    flying: 0,
+    swimming: 10,
+    climbing: 0
+  },
+  environmentalResistances: ["Immune during jump phase", "rapid health regeneration"],
+  preferredBiome: "Boss arena (Valguero)",
+  temperatureRange: {
+    min: -50,
+    max: 50
+  },
+  oxygenRequirement: "Air breathing",
+  breeding: {
+    cooldown: "Cannot breed",
+    gestationTime: "N/A",
+    babyFoodConsumption: "N/A",
+    maturationTime: "N/A",
+    colorRegions: 0,
+    colorRegionNames: [],
+    mutationChance: 0,
+    breedingDifficulty: "Cannot breed"
+  },
+  workstation: "None",
+  resourceProduction: "None",
+  structureFunctions: "None.",
+  buffAuras: ["None"],
+  debuffAbilities: ["Bleed from claw attacks", "fog reduces all survivor vision in arena"],
+  uniqueMechanics: ["Cauldron lighting mechanic to expose vulnerability windows", "arena fog visibility wipe", "immunity during jump phase", "replaced old Forsaken Oasis trio in ASA Valguero", "Beowulf mythology theming"],
+  spawnMaps: ["Valguero"],
+  spawnZones: ["Grendel arena (summoned via portal at obelisk)"],
+  rarityRating: "Boss",
+  levelRange: "Boss",
+  packBehavior: "Solitary (with summoned minions)",
+  territorialBehavior: "Aggressive (boss encounter)",
+  difficultyRating: "Hard",
+  beginnerFriendly: false,
+  endGameViable: true,
+  bossFightCapable: false,
+  pvpMeta: "None",
+  resourceInvestment: "N/A",
+  maintenanceLevel: "N/A",
+  badgeCategories: ["combat", "boss"]
+},
+'Nunatak': {
+  id: "NUNATAK_710",
+  name: "Nunatak",
+  icon: "🐲",
+  category: "boss",
+  rarity: "legendary",
+  source: "Ragnarok Ascended DLC",
+  variants: ["Gamma", "Beta", "Alpha"],
+  dossierText: "Helena's Notes: The old Ragnarok was Dragon and Manticore together — a fight that survivors from Evolved remembered as two simultaneous apex encounters that demanded sustained DPS from every angle. Ragnarok Ascended gave that slot to Nunatak, and the design philosophy shifted entirely. Where the Dragon was brute fire and the Manticore was mobile chaos, Nunatak is an Ice Wyvern variant that has been elevated into something that belongs in the same category as the bosses it replaced. Do not let its Ice Wyvern heritage deceive you. Standard Ice Wyverns are considered the weakest Wyvern type, their frost breath valued mainly for the slow rather than the damage. Nunatak has 1.2 million health, flies continuously for most of the fight, and has committed to a guerrilla strategy of frost breath salvos, spike rains from above, and Iceworm spawning that creates a sustained secondary threat throughout the arena. The boss only lands intermittently — and that landing window is the only time your tame army can do meaningful damage. Missing those windows, letting the Iceworms pile up, or failing to maintain healing between frost salvos results in an attrition loss that can end a boss run surprisingly quickly. It carries the trophies and Tekgrams that Ragnarok's lore warrants, and it has become one of the more memorable Guardian encounters in ASA.",
+  temperament: "Aggressive (Boss)",
+  diet: "N/A",
+  habitat: "Ragnarok Ascended — Ragnarok Guardian arena",
+  realWorldBasis: "Nunatak (an isolated rocky peak surrounded by glacial ice) — Ice Wyvern Guardian variant",
+  sizeClass: "Colossal",
+  tamingMethod: "Cannot be tamed",
+  tamingType: "N/A — Guardian Boss. Replaced the Dragon + Manticore duo in ASA Ragnarok. Summon via portal at obelisk using artifacts and tribute items.",
+  preferredKibble: "N/A",
+  favoriteFood: "N/A",
+  tamingSpeed: "N/A",
+  torpor: {
+    baseValue: 99999,
+    depleteRate: "N/A"
+  },
+  specialRequirements: "Requires Ragnarok Ascended. Collect artifacts and tribute items. Note: Ragnarok arena shows corpses of Dragon and Manticore frozen in the snowscape — narrative acknowledgment that Nunatak defeated them. Damage window: boss must land before tames can deal full damage.",
+  baseStats: {
+    health: 1200000,
+    stamina: 9999,
+    oxygen: 150,
+    food: 9999,
+    weight: 9999,
+    melee: 200,
+    speed: 100,
+    torpor: 99999
+  },
+  statScaling: {
+    health: 0,
+    stamina: 0,
+    oxygen: 0,
+    food: 0,
+    weight: 0,
+    melee: 0,
+    speed: 0
+  },
+  saddleLevel: 0,
+  saddleType: "N/A",
+  saddleArmor: 0,
+  platformLimit: 0,
+  specialAbilities: ["Frost breath (slows all targets, reduces attack speed)", "Spike rain (aerial AoE spike bombardment)", "Iceworm spawning (constant minion wave throughout fight)", "Airborne evasion (majority of fight spent flying — limited ground damage window)", "Bite (when landed)", "Cold aura (reduces tame effectiveness in range)"],
+  attackTypes: ["Frost breath", "spike rain (aerial)", "Iceworm summon", "bite (grounded phase)"],
+  canCarry: ["Can grab survivors during aerial passes"],
+  primaryRole: "Guardian Boss — Ragnarok Ascended primary boss (replaced Dragon + Manticore)",
+  secondaryRoles: ["Ragnarok Tekgram source", "high-tier loot and trophy"],
+  gatheringResources: ["Nunatak Trophy", "Tekgrams", "Element", "high-tier loot crate"],
+  gatheringEfficiency: {
+
+  },
+  ratings: {
+    combat: 10,
+    transport: 0,
+    speed: 9,
+    survivability: 10
+  },
+  speeds: {
+    land: 15,
+    flying: 55,
+    swimming: 10,
+    climbing: 0
+  },
+  environmentalResistances: ["Cold immunity", "extreme resistance to all damage types"],
+  preferredBiome: "Boss arena (Ragnarok — snow and ice environment)",
+  temperatureRange: {
+    min: -70,
+    max: -10
+  },
+  oxygenRequirement: "Air breathing",
+  breeding: {
+    cooldown: "Cannot breed",
+    gestationTime: "N/A",
+    babyFoodConsumption: "N/A",
+    maturationTime: "N/A",
+    colorRegions: 0,
+    colorRegionNames: [],
+    mutationChance: 0,
+    breedingDifficulty: "Cannot breed"
+  },
+  workstation: "None",
+  resourceProduction: "None",
+  structureFunctions: "None.",
+  buffAuras: ["None"],
+  debuffAbilities: ["Frost breath slows all targets", "Iceworm minions maintain constant secondary damage pressure", "Cold aura reduces tame combat effectiveness"],
+  uniqueMechanics: ["Replaced Dragon + Manticore duo in ASA Ragnarok", "arena features frozen Dragon and Manticore corpses (lore nod)", "grounded landing creates the only reliable damage window", "Iceworm spawn mechanic creates sustained secondary threat", "1.2M HP — one of the highest base HP Guardian bosses"],
+  spawnMaps: ["Ragnarok"],
+  spawnZones: ["Ragnarok Guardian arena (summoned via portal at obelisk)"],
+  rarityRating: "Boss",
+  levelRange: "Boss",
+  packBehavior: "Solitary (with summoned Iceworm minions)",
+  territorialBehavior: "Aggressive (boss encounter)",
+  difficultyRating: "Hard",
+  beginnerFriendly: false,
+  endGameViable: true,
+  bossFightCapable: false,
+  pvpMeta: "None",
+  resourceInvestment: "N/A",
+  maintenanceLevel: "N/A",
+  badgeCategories: ["combat", "boss"]
+},
+'Moeder': {
+  id: "MOEDER_711",
+  name: "Moeder",
+  icon: "🐍",
+  category: "boss",
+  rarity: "legendary",
+  source: "Genesis: Part 1 DLC",
+  variants: ["Gamma (green glow)", "Beta (blue-purple glow)", "Alpha (red glow)"],
+  dossierText: "Helena's Notes: The Genesis Simulation contains five Master AI, each governing one of its biomes. Four were shut down by Rockwell after he corrupted the Master Controller. One was not. Moeder, Master of the Ocean, survived because she was smarter than Rockwell expected — she anticipated his shutdown sequence and preemptively shut herself down first, leaving no signal for him to trigger. A creature that can outthink Rockwell deserves significant respect. Moeder is the first underwater boss in the history of ARK, and the fight reflects that novelty entirely. It takes place beneath the ocean of the Genesis simulation, meaning your tame selection must work underwater: Basilo, Mosa, Tuso, Spinosaurus in rivers, Shadowmane if accessible. Moeder herself spends most of the fight hidden in a burrow while her Eel Minions — which carry their own boss health bars — attack in waves. Only when all Eel Minions are eliminated does Moeder emerge to fight directly. She then attacks until a damage threshold forces her back into hiding, and the cycle repeats. At least three full cycles are required before she can be defeated. The whirlpools that spawn mid-fight add positioning complexity. She heals if not kept under continuous damage. The three difficulty variants glow green (Gamma), blue-purple (Beta), and red (Alpha), with health scaling accordingly. The rewards include Moeder Trophy and Tekgrams accessed through the Genesis mission system.",
+  temperament: "Aggressive (Master AI Boss)",
+  diet: "N/A",
+  habitat: "Genesis: Part 1 — Ocean Biome (underwater boss arena)",
+  realWorldBasis: "Giant eel / snake (mythological); inspiration from Charybdis and Scylla (Greek mythology)",
+  sizeClass: "Colossal",
+  tamingMethod: "Cannot be tamed",
+  tamingType: "N/A — Master AI Boss. Accessed via the Genesis mission terminal underwater at coordinates 39, 52 or through the Genesis mission system (One Tough Moeder mission). Requires completing enough Genesis missions to unlock.",
+  preferredKibble: "N/A",
+  favoriteFood: "N/A",
+  tamingSpeed: "N/A",
+  torpor: {
+    baseValue: 99999,
+    depleteRate: "N/A"
+  },
+  specialRequirements: "Requires Genesis Part 1 DLC. Underwater fight — all tames must be able to fight underwater. Sea creatures permitted (sea creature drag weight restrictions do not apply). Maximum 10 survivors and 20 creatures. Moeder heals if damage stops — maintain continuous pressure.",
+  baseStats: {
+    health: 1500000,
+    stamina: 9999,
+    oxygen: 9999,
+    food: 9999,
+    weight: 9999,
+    melee: 250,
+    speed: 100,
+    torpor: 99999
+  },
+  statScaling: {
+    health: 0,
+    stamina: 0,
+    oxygen: 0,
+    food: 0,
+    weight: 0,
+    melee: 0,
+    speed: 0
+  },
+  saddleLevel: 0,
+  saddleType: "N/A",
+  saddleArmor: 0,
+  platformLimit: 0,
+  specialAbilities: ["Eel Minion phase (hides in burrow while minions attack — must kill all minions before Moeder emerges)", "Eel Minions have their own boss health bars", "Electric orb barrage (returns to hiding after barrage)", "Whirlpool spawn (mid-fight positioning hazard)", "Electrocuted debuff (reduces damage output and movement speed on hit)", "Rapid self-healing (if not continuously damaged)", "Bioluminescent green (Gamma) / blue-purple (Beta) / red (Alpha) color variants", "Roughly 250m in length — largest creature in the game"],
+  attackTypes: ["Massive bite", "electric orb barrage (immunity phase)", "body slam", "Eel Minion summoning"],
+  canCarry: ["Can push large tames through arena walls (known bug)"],
+  primaryRole: "Master AI Boss — Ocean Biome Guardian of Genesis Part 1",
+  secondaryRoles: ["Moeder Trophy source", "Genesis Tekgram reward", "unique underwater boss progression"],
+  gatheringResources: ["Moeder Trophy", "Tekgrams", "Genesis mission loot"],
+  gatheringEfficiency: {
+
+  },
+  ratings: {
+    combat: 10,
+    transport: 0,
+    speed: 7,
+    survivability: 10
+  },
+  speeds: {
+    land: 0,
+    flying: 0,
+    swimming: 40,
+    climbing: 0
+  },
+  environmentalResistances: ["Full aquatic adaptation", "electric resistance", "extreme resistance to all damage"],
+  preferredBiome: "Underwater — Genesis Simulation Ocean Biome",
+  temperatureRange: {
+    min: -50,
+    max: 50
+  },
+  oxygenRequirement: "Fully aquatic",
+  breeding: {
+    cooldown: "Cannot breed",
+    gestationTime: "N/A",
+    babyFoodConsumption: "N/A",
+    maturationTime: "N/A",
+    colorRegions: 0,
+    colorRegionNames: [],
+    mutationChance: 0,
+    breedingDifficulty: "Cannot breed"
+  },
+  workstation: "None",
+  resourceProduction: "None",
+  structureFunctions: "None.",
+  buffAuras: ["None"],
+  debuffAbilities: ["Electrocuted debuff (reduces damage output + movement speed)", "Whirlpool disorientation (no damage but disrupts positioning)"],
+  uniqueMechanics: ["First underwater boss in ARK history", "phase mechanic: Eel Minions must be killed before Moeder becomes vulnerable", "Eel Minions have boss-tier health bars", "heals rapidly if damage stops", "three-color difficulty variants", "only survivor who outthought Rockwell Prime", "approximately 250m long — largest catalogued creature"],
+  spawnMaps: ["Genesis Part 1"],
+  spawnZones: ["Ocean Biome underwater boss arena (accessed via mission terminal at 39, 52 or Genesis mission system)"],
+  rarityRating: "Boss",
+  levelRange: "Boss",
+  packBehavior: "Solitary (with Eel Minion phases)",
+  territorialBehavior: "Defensive (hidden until Eel Minions cleared)",
+  difficultyRating: "Hard",
+  beginnerFriendly: false,
+  endGameViable: true,
+  bossFightCapable: false,
+  pvpMeta: "None",
+  resourceInvestment: "N/A",
+  maintenanceLevel: "N/A",
+  badgeCategories: ["combat", "boss"]
+},
+'Forest Wyvern': {
+  id: "FOREST_WYVERN_324",
+  name: "Forest Wyvern",
+  icon: "🌿",
+  category: "boss",
+  rarity: "rare",
+  source: "Extinction DLC",
+  variants: ["Forest Titan Minion"],
+  dossierText: "The Forest Wyvern is not a naturally occurring creature — it is a corruption wyvern spawned by the Forest Titan during its boss fight on Extinction. Called forth from the element-corrupted forest the Titan commands, these wyverns harass survivors and their tames while the Titan remains the primary target. They are not tameable, do not lay eggs, and do not exist outside the Forest Titan encounter. Their appearance resembles a wyvern twisted by Element corruption, with dark bark-like plating along the wings and torso. Survivors fighting the Forest Titan should assign dedicated tames or designated members to clear these minions quickly — allowing them to accumulate turns a manageable Titan fight into a war on two fronts.",
+  temperament: "Aggressive (Boss Minion)",
+  diet: "N/A (Corruption)",
+  habitat: "Extinction — Forest Titan boss arena",
+  realWorldBasis: "Wyvern (mythology) / Corruption creature",
+  sizeClass: "Large",
+  tamingMethod: "Cannot be tamed",
+  tamingType: "N/A — Boss minion. Spawns only during Forest Titan fight on Extinction.",
+  preferredKibble: "N/A",
+  favoriteFood: "N/A",
+  tamingSpeed: "N/A",
+  torpor: {
+    baseValue: 99999,
+    depleteRate: "N/A"
+  },
+  specialRequirements: "Spawns only during Forest Titan boss fight. Cannot be tamed. Does not exist in the open world.",
+  baseStats: {
+    health: 8000,
+    stamina: 400,
+    oxygen: 150,
+    food: 2000,
+    weight: 400,
+    melee: 150,
+    speed: 100,
+    torpor: 99999
+  },
+  statScaling: {
+    health: 0,
+    stamina: 0,
+    oxygen: 0,
+    food: 0,
+    weight: 0,
+    melee: 0,
+    speed: 0
+  },
+  saddleLevel: 0,
+  saddleType: "N/A",
+  saddleArmor: 0,
+  platformLimit: 0,
+  specialAbilities: ["Fire breath", "aerial dive attack", "corruption aura"],
+  attackTypes: ["Fire breath", "bite", "dive attack"],
+  canCarry: ["N/A"],
+  primaryRole: "Forest Titan boss minion — secondary threat during Titan fight",
+  secondaryRoles: ["Aerial harassment", "distraction from Forest Titan primary target"],
+  gatheringResources: [],
+  gatheringEfficiency: {
+
+  },
+  ratings: {
+    combat: 7,
+    transport: 0,
+    speed: 8,
+    survivability: 6
+  },
+  speeds: {
+    land: 15,
+    flying: 45,
+    swimming: 10,
+    climbing: 0
+  },
+  environmentalResistances: ["Corruption resistance"],
+  preferredBiome: "Forest Titan boss arena (Extinction)",
+  temperatureRange: {
+    min: -20,
+    max: 50
+  },
+  oxygenRequirement: "Air breathing",
+  breeding: {
+    cooldown: "Cannot breed",
+    gestationTime: "N/A",
+    babyFoodConsumption: "N/A",
+    maturationTime: "N/A",
+    colorRegions: 0,
+    colorRegionNames: [],
+    mutationChance: 0,
+    breedingDifficulty: "Cannot breed"
+  },
+  workstation: "None",
+  resourceProduction: "None",
+  structureFunctions: "None.",
+  buffAuras: ["None"],
+  debuffAbilities: ["Fire breath burns targets"],
+  uniqueMechanics: ["Only exists during Forest Titan boss fight", "corruption-twisted wyvern variant"],
+  spawnMaps: ["Extinction"],
+  spawnZones: ["Forest Titan boss arena only (not open world)"],
+  rarityRating: "Rare (boss encounter only)",
+  levelRange: "Fixed (boss encounter)",
+  packBehavior: "Swarms during Forest Titan fight",
+  territorialBehavior: "Aggressive to all survivors",
+  difficultyRating: "Medium (as part of larger Forest Titan encounter)",
+  beginnerFriendly: false,
+  endGameViable: false,
+  bossFightCapable: false,
+  pvpMeta: "None",
+  resourceInvestment: "N/A",
+  maintenanceLevel: "N/A",
+  badgeCategories: ["combat", "boss"]
+}
 
 // Close top-level SPECIES_DATABASE (ensures object literal is terminated)
 };

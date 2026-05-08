@@ -37,8 +37,8 @@ if (serveClient) {
           // Always fetch latest html so SPA updates are visible immediately
           res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
         } else if (/\.(js|css)$/.test(filePath)) {
-          // Short caching for JS/CSS since we don't fingerprint files here
-          res.setHeader('Cache-Control', 'public, max-age=86400'); // 1 day
+          // No caching for JS/CSS — we don't fingerprint files so must always fetch fresh
+          res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
         } else if (/\.(png|jpg|jpeg|svg|gif|webp)$/.test(filePath)) {
           res.setHeader('Cache-Control', 'public, max-age=604800'); // 7 days
         }
@@ -58,7 +58,11 @@ if (serveClient) {
 
 // Initialize Database
 const path = require('path');
-const dbPath = path.resolve(__dirname, 'database.sqlite');
+// Use Render's persistent disk in production so data survives service restarts.
+// The disk is mounted at /opt/render/project/src/data per render.yaml.
+const dbPath = process.env.RENDER_DISK_MOUNT_PATH
+    ? path.join(process.env.RENDER_DISK_MOUNT_PATH, 'database.sqlite')
+    : path.resolve(__dirname, 'database.sqlite');
 const db = new sqlite3.Database(dbPath);
 console.log(`Connected to SQLite database at ${dbPath}`);
 

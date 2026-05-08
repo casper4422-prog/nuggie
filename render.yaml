@@ -17,6 +17,8 @@ services:
         value: true
       - key: PORT
         value: 10000
+      - key: RENDER_DISK_MOUNT_PATH
+        value: /opt/render/project/src/data
     disk:
       name: nuggie-data
       mountPath: /opt/render/project/src/data

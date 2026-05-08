@@ -1121,21 +1121,13 @@ function loadMyNuggiesPage() {
                 </div>
                 
                 <div class="filter-section">
-                    <select id="speciesFilter" class="filter-select">
-                        <option value="">All Species</option>
-                        ${Object.keys(creaturesBySpecies).sort().map(species => 
-                            `<option value="${species}">${species} (${creaturesBySpecies[species].length})</option>`
-                        ).join('')}
-                    </select>
-                    
-                    <select id="sortFilter" class="filter-select">
-                        <option value="species">Group by Species</option>
-                        <option value="level">Sort by Level</option>
-                        <option value="name">Sort by Name</option>
-                        <option value="recent">Recently Added</option>
-                    </select>
-                    
-                    <button class="btn btn-sm btn-secondary" onclick="clearCollectionFilters()">Clear Filters</button>
+                    ${mkSelect('speciesFilter',
+                        [{ v: '', l: 'All Species' }, ...Object.keys(creaturesBySpecies).sort().map(s => ({ v: s, l: `${s} (${creaturesBySpecies[s].length})` }))],
+                        '', 'All Species')}
+                    ${mkSelect('sortFilter',
+                        [{ v: 'species', l: 'Group by Species' }, { v: 'level', l: 'Sort by Level' }, { v: 'name', l: 'Sort by Name' }, { v: 'recent', l: 'Recently Added' }],
+                        'species', 'Group by Species')}
+                    <button class="btn btn-sm btn-secondary" onclick="clearCollectionFilters()">Clear</button>
                 </div>
             </div>
             
@@ -1242,26 +1234,15 @@ function renderEmptyCollection() {
 
 function setupCollectionFilters() {
     const searchInput = document.getElementById('creatureSearch');
-    const speciesFilter = document.getElementById('speciesFilter');
-    const sortFilter = document.getElementById('sortFilter');
-    
-    if (searchInput) {
-        searchInput.addEventListener('input', debounce(filterCreatureCollection, 300));
-    }
-    
-    if (speciesFilter) {
-        speciesFilter.addEventListener('change', filterCreatureCollection);
-    }
-    
-    if (sortFilter) {
-        sortFilter.addEventListener('change', filterCreatureCollection);
-    }
+    if (searchInput) searchInput.addEventListener('input', debounce(filterCreatureCollection, 300));
+    document.getElementById('csel_speciesFilter')?.addEventListener('cselchange', filterCreatureCollection);
+    document.getElementById('csel_sortFilter')?.addEventListener('cselchange', filterCreatureCollection);
 }
 
 function filterCreatureCollection() {
     const searchTerm = document.getElementById('creatureSearch')?.value.toLowerCase() || '';
-    const selectedSpecies = document.getElementById('speciesFilter')?.value || '';
-    const sortBy = document.getElementById('sortFilter')?.value || 'species';
+    const selectedSpecies = document.getElementById('csel_speciesFilter')?.dataset.val || '';
+    const sortBy = document.getElementById('csel_sortFilter')?.dataset.val || 'species';
     
     const sections = document.querySelectorAll('.species-collection-section');
     
@@ -1295,13 +1276,11 @@ function filterCreatureCollection() {
 
 function clearCollectionFilters() {
     const searchInput = document.getElementById('creatureSearch');
-    const speciesFilter = document.getElementById('speciesFilter');
-    const sortFilter = document.getElementById('sortFilter');
-    
     if (searchInput) searchInput.value = '';
-    if (speciesFilter) speciesFilter.value = '';
-    if (sortFilter) sortFilter.value = 'species';
-    
+    const sf = document.getElementById('csel_speciesFilter');
+    if (sf) { sf.dataset.val = ''; document.getElementById('csel_lbl_speciesFilter').textContent = 'All Species'; }
+    const so = document.getElementById('csel_sortFilter');
+    if (so) { so.dataset.val = 'species'; document.getElementById('csel_lbl_sortFilter').textContent = 'Group by Species'; }
     filterCreatureCollection();
 }
 
@@ -3102,20 +3081,19 @@ async function loadBossPlanner() {
             }).join('') || '<div class="no-results">No bosses match your filters.</div>';
     }
 
+    const mapOpts = [{ v: '', l: 'All Maps' }, ...maps.map(m => ({ v: m, l: m }))];
+
     main.innerHTML = `
-        <div class="boss-page">
-            <div class="boss-header">
+        <div class="std-page">
+            <div class="std-page-header">
                 <div class="page-title">
                     <h1>👑 Boss Planner</h1>
-                    <div class="boss-count">${templates.length} bosses · ${plans.length} planned</div>
+                    <div class="page-subtitle">${templates.length} bosses · ${plans.length} planned</div>
                 </div>
             </div>
-            <div class="boss-filters">
-                <input id="bossSearchInput" class="form-control search-input" placeholder="🔍 Search bosses..." style="flex:1">
-                <select id="bossMapFilter" class="form-control filter-select" style="width:180px">
-                    <option value="">All Maps</option>
-                    ${maps.map(m => `<option value="${m}">${m}</option>`).join('')}
-                </select>
+            <div class="std-filters">
+                <input id="bossSearchInput" class="form-control search-input" placeholder="🔍 Search bosses or maps...">
+                ${mkSelect('bossMapFilter', mapOpts, '', 'All Maps')}
             </div>
             <div id="bossCardGrid" class="boss-template-grid">
                 ${renderCards({})}
@@ -3124,11 +3102,13 @@ async function loadBossPlanner() {
     `;
 
     const searchEl = document.getElementById('bossSearchInput');
-    const mapEl = document.getElementById('bossMapFilter');
     const grid = document.getElementById('bossCardGrid');
-    function refresh() { grid.innerHTML = renderCards({ search: searchEl.value, map: mapEl.value }); }
+    function refresh() {
+        const map = document.getElementById('csel_bossMapFilter')?.dataset.val || '';
+        grid.innerHTML = renderCards({ search: searchEl.value, map });
+    }
     searchEl.addEventListener('input', refresh);
-    mapEl.addEventListener('change', refresh);
+    document.getElementById('csel_bossMapFilter')?.addEventListener('cselchange', refresh);
 }
 
 function openBossPlanning(bossId) {
@@ -3766,6 +3746,49 @@ async function handleRegister(event) {
 }
 window.handleRegister = handleRegister;
 
+// --- Custom dropdown (replaces native <select> to avoid white-on-white on Windows) ---
+// mkSelect(id, options, selected, placeholder)
+// options = [{v: 'value', l: 'Label'}, ...]
+// Listen for cselchange events on the wrapper div for value changes.
+function mkSelect(id, opts, selected, placeholder) {
+    const selOpt = opts.find(o => o.v === selected);
+    const label = selOpt ? selOpt.l : (placeholder || 'Select...');
+    return `<div class="csel" id="csel_${id}" data-val="${escAttr(selected)}">
+        <div class="csel-btn" onclick="cselOpen('${id}')">
+            <span class="csel-label" id="csel_lbl_${id}">${label}</span>
+            <svg class="csel-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="csel-list" id="csel_list_${id}">
+            ${opts.map(o => `<div class="csel-opt${o.v === selected ? ' sel' : ''}" onclick="cselPick('${id}','${escAttr(o.v)}',this)">${o.l}</div>`).join('')}
+        </div>
+    </div>`;
+}
+function escAttr(s) { return String(s || '').replace(/'/g, '&#39;').replace(/"/g, '&quot;'); }
+function cselOpen(id) {
+    const list = document.getElementById(`csel_list_${id}`);
+    if (!list) return;
+    const isOpen = list.classList.contains('open');
+    document.querySelectorAll('.csel-list.open').forEach(l => l.classList.remove('open'));
+    if (!isOpen) list.classList.add('open');
+}
+function cselPick(id, val, optEl) {
+    const wrap = document.getElementById(`csel_${id}`);
+    if (!wrap) return;
+    wrap.dataset.val = val;
+    const lbl = document.getElementById(`csel_lbl_${id}`);
+    if (lbl) lbl.textContent = optEl.textContent.trim();
+    document.getElementById(`csel_list_${id}`)?.classList.remove('open');
+    wrap.querySelectorAll('.csel-opt').forEach(o => o.classList.remove('sel'));
+    optEl.classList.add('sel');
+    wrap.dispatchEvent(new CustomEvent('cselchange', { bubbles: true, detail: { id, val } }));
+}
+document.addEventListener('click', e => {
+    if (!e.target.closest('.csel')) document.querySelectorAll('.csel-list.open').forEach(l => l.classList.remove('open'));
+});
+window.mkSelect = mkSelect;
+window.cselOpen = cselOpen;
+window.cselPick = cselPick;
+
 // --- API helper and server-sync for creature persistence ---
 async function apiRequest(path, opts = {}) {
 	const token = localStorage.getItem('token');
@@ -4066,14 +4089,9 @@ async function loadSpeciesPage() {
                     <div class="filter-group">
                         <input id="searchInput" class="form-control search-input" placeholder="🔍 Search species by name, category, or diet...">
                     </div>
-                    <div class="filter-group">
-                        <select id="categoryFilter" class="form-control filter-select">
-                            <option value="">All Categories</option>
-                        </select>
-                        <select id="rarityFilter" class="form-control filter-select">
-                            <option value="">All Rarities</option>
-                        </select>
-                        <button id="clearFiltersBtn" class="btn btn-secondary">Clear Filters</button>
+                    <div class="filter-group" id="speciesFilterSelects">
+                        <span class="filter-placeholder">Loading filters...</span>
+                        <button id="clearFiltersBtn" class="btn btn-secondary">Clear</button>
                     </div>
                 </div>
                 
@@ -4113,32 +4131,16 @@ async function loadSpeciesPage() {
         if (s.rarity) rarities.add(s.rarity.toLowerCase());
     });
 
-    // Populate filters
-    const categoryFilter = document.getElementById('categoryFilter');
-    if (categoryFilter) {
-        const options = ['<option value="">All Categories</option>'];
-        Array.from(categories).sort().forEach(cat => {
-            options.push(`<option value="${cat}">${capitalize(cat)}</option>`);
-        });
-        categoryFilter.innerHTML = options.join('');
-    }
+    // Build and inject custom dropdowns now that we have the data
+    const catOpts = [{ v: '', l: 'All Categories' }, ...Array.from(categories).sort().map(c => ({ v: c, l: capitalize(c) }))];
+    const canonicalRarities = ['common','uncommon','rare','very rare','unique','extinct'].filter(r => rarities.has(r));
+    const rarOpts = [{ v: '', l: 'All Rarities' }, ...canonicalRarities.map(r => ({ v: r, l: capitalize(r) }))];
 
-    const rarityFilter = document.getElementById('rarityFilter');
-    if (rarityFilter) {
-        const canonicalRarities = [
-            'common',
-            'uncommon',
-            'rare',
-            'very rare',
-            'unique',
-            'extinct'
-        ].filter(r => rarities.has(r));
-
-        const options = ['<option value="">All Rarities</option>'];
-        canonicalRarities.forEach(rarity => {
-            options.push(`<option value="${rarity}">${capitalize(rarity)}</option>`);
-        });
-        rarityFilter.innerHTML = options.join('');
+    const filterSelects = document.getElementById('speciesFilterSelects');
+    if (filterSelects) {
+        filterSelects.innerHTML = mkSelect('categoryFilter', catOpts, '', 'All Categories') +
+                                  mkSelect('rarityFilter', rarOpts, '', 'All Rarities') +
+                                  `<button id="clearFiltersBtn" class="btn btn-secondary">Clear</button>`;
     }
 
     // Set up filtering functionality
@@ -4150,8 +4152,8 @@ async function loadSpeciesPage() {
         }
 
         const searchTerm = (document.getElementById('searchInput')?.value || '').toLowerCase();
-        const category = document.getElementById('categoryFilter')?.value?.toLowerCase();
-        const rarity = document.getElementById('rarityFilter')?.value?.toLowerCase();
+        const category = (document.getElementById('csel_categoryFilter')?.dataset.val || '').toLowerCase();
+        const rarity = (document.getElementById('csel_rarityFilter')?.dataset.val || '').toLowerCase();
 
         const filteredSpecies = Object.values(speciesData).filter(s => {
             if (searchTerm && !s.name?.toLowerCase().includes(searchTerm) && 
@@ -4238,13 +4240,19 @@ async function loadSpeciesPage() {
     const clearBtn = document.getElementById('clearFiltersBtn');
 
     if (searchInput) searchInput.addEventListener('input', debounce(filterSpecies, 180));
-    if (categoryFilter) categoryFilter.addEventListener('change', filterSpecies);
-    if (rarityFilter) rarityFilter.addEventListener('change', filterSpecies);
+    document.getElementById('csel_categoryFilter')?.addEventListener('cselchange', filterSpecies);
+    document.getElementById('csel_rarityFilter')?.addEventListener('cselchange', filterSpecies);
     if (clearBtn) {
         clearBtn.addEventListener('click', () => {
             if (searchInput) searchInput.value = '';
-            if (categoryFilter) categoryFilter.value = '';
-            if (rarityFilter) rarityFilter.value = '';
+            // Reset custom selects
+            ['categoryFilter','rarityFilter'].forEach(id => {
+                const wrap = document.getElementById(`csel_${id}`);
+                if (wrap) { wrap.dataset.val = ''; }
+                const lbl = document.getElementById(`csel_lbl_${id}`);
+                if (lbl) lbl.textContent = id === 'categoryFilter' ? 'All Categories' : 'All Rarities';
+                document.getElementById(`csel_list_${id}`)?.querySelectorAll('.csel-opt').forEach((o,i) => o.classList.toggle('sel', i===0));
+            });
             filterSpecies();
         });
     }

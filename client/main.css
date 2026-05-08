@@ -2616,6 +2616,45 @@ select option {
     min-height: 32px;
 }
 
+/* ── Custom dropdown (dark-themed, replaces native <select>) ── */
+.csel { position: relative; display: inline-block; min-width: 150px; }
+.csel-btn {
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+    padding: 10px 14px; background: #1e293b; border: 1px solid #334155;
+    border-radius: 8px; color: #f1f5f9; cursor: pointer; font-size: 0.9rem;
+    user-select: none; transition: border-color 0.2s;
+    white-space: nowrap;
+}
+.csel-btn:hover { border-color: #3b82f6; }
+.csel-arrow { color: #94a3b8; flex-shrink: 0; }
+.csel-list {
+    display: none;
+    position: absolute; top: calc(100% + 4px); left: 0; min-width: 100%;
+    background: #1e293b; border: 1px solid #334155; border-radius: 8px;
+    z-index: 2000; overflow: hidden; box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+}
+.csel-list.open { display: block; }
+.csel-opt {
+    padding: 10px 14px; color: #e2e8f0; font-size: 0.88rem; cursor: pointer;
+    transition: background 0.12s; white-space: nowrap;
+}
+.csel-opt:hover { background: #334155; }
+.csel-opt.sel { color: #60a5fa; background: rgba(59,130,246,0.12); }
+
+/* ── Shared page layout (boss planner + future pages) ── */
+.std-page { max-width: 1400px; margin: 0 auto; padding: 20px; }
+.std-page-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 24px; padding: 24px 28px;
+    background: linear-gradient(135deg, #1e293b 0%, #2d3748 100%);
+    border-radius: 14px; border: 1px solid rgba(255,255,255,0.07);
+    box-shadow: 0 6px 24px rgba(0,0,0,0.3);
+}
+.std-page-header .page-title h1 { color: #f1f5f9; margin: 0 0 4px; font-size: 2rem; }
+.std-page-header .page-subtitle { color: #94a3b8; font-size: 0.9rem; }
+.std-filters { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }
+.std-filters .search-input { flex: 1; min-width: 180px; }
+
 /* ── Boss Planner ── */
 .boss-filters { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
 .boss-template-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }

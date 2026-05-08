@@ -336,8 +336,11 @@ function showMainApp() {
 }
 window.showMainApp = showMainApp;
 function handleAuthClick() {
-	if (isLoggedIn()) {
+	if (localStorage.getItem('token')) {
 		localStorage.removeItem('token');
+		localStorage.removeItem('userId');
+		localStorage.removeItem('userEmail');
+		localStorage.removeItem('userNickname');
 		showLoginPage();
 		try { updateAuthUI(); } catch (e) {}
 	}

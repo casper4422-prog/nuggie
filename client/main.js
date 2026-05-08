@@ -3371,38 +3371,57 @@ function cleanupModals() {
 }
 
 // Boss template system based on ASA Boss Guide
+function _deriveBossType(species) {
+    const check = [
+        species.primaryRole || '',
+        species.dossierText || '',
+        species.source || ''
+    ].join(' ').toLowerCase();
+    if (check.includes('world boss'))         return 'World Boss';
+    if (check.includes('master ai'))          return 'Master AI';
+    if (check.includes('overseer'))           return 'Overseer';
+    if (check.includes('titan') && !check.includes('titanosaur')) return 'Titan';
+    if (check.includes('guardian'))           return 'Guardian';
+    if (check.includes('duo') || check.includes('duo miniboss')) return 'Duo Boss';
+    if (check.includes('miniboss') || check.includes('mini-boss')) return 'Miniboss';
+    if (check.includes('event'))              return 'Event Boss';
+    if (check.includes('ascension'))          return 'Ascension';
+    return 'Boss';
+}
+
+function _deriveBossStrategy(species) {
+    const mechanics = (species.uniqueMechanics || []).filter(m =>
+        m && m !== 'None' && m.length > 10
+    );
+    const debuffs = (species.debuffAbilities || []).filter(d =>
+        d && d !== 'None' && d !== 'none'
+    );
+    if (mechanics.length > 0) return mechanics[0];
+    if (debuffs.length > 0) return 'Watch for: ' + debuffs[0];
+    if (species.primaryRole) return species.primaryRole;
+    return 'See species detail for full encounter info.';
+}
+
 function getBossTemplates() {
-    return [
-        // The Island
-        { id: 'broodmother', name: 'Broodmother Lysrix', map: 'The Island', type: 'Guardian', description: 'Giant spider boss with insect minions', strategy: 'Use Megatheriums (250% damage vs insects), bring stimulants' },
-        { id: 'megapithecus', name: 'Megapithecus', map: 'The Island', type: 'Guardian', description: 'Giant ape boss (easiest guardian)', strategy: 'Avoid center pit, keep creatures away from edges' },
-        { id: 'dragon', name: 'Dragon', map: 'The Island', type: 'Guardian', description: 'Fire-breathing dragon (hardest guardian)', strategy: 'Use Woolly Rhinos for fire resistance, percentage-based damage makes Rexes less effective' },
-        { id: 'overseer', name: 'Overseer', map: 'The Island', type: 'Ascension', description: 'Final ascension boss in Tek Cave', strategy: 'Requires trophies from all three guardians' },
-        
-        // Scorched Earth
-        { id: 'manticore', name: 'Manticore', map: 'Scorched Earth', type: 'Guardian', description: 'Lion-bodied creature with wings and scorpion tail', strategy: 'Use Wyverns to rush boss, Gas Mask for torpor protection' },
-        
-        // The Center
-        { id: 'dual_arena', name: 'Broodmother & Megapithecus', map: 'The Center', type: 'Dual Boss', description: 'Fight both bosses simultaneously', strategy: 'Focus one boss at a time, 25-minute time limit' },
-        
-        // Aberration
-        { id: 'rockwell', name: 'Rockwell', map: 'Aberration', type: 'Ascension', description: 'Mutated human-plant hybrid', strategy: 'Hazard suits for radiation, Rock Drakes for mobility, lengthy fight' },
-        
-        // Ragnarok
-        { id: 'nunatak', name: 'Nunatak', map: 'Ragnarok', type: 'Ice Wyvern', description: 'Massive Ice Wyvern with guerrilla tactics', strategy: 'Use Shadowmanes for mobility, avoid freeze attacks' },
-        { id: 'iceworm_queen', name: 'Iceworm Queen', map: 'Ragnarok', type: 'Mini-Boss', description: 'Mini-boss in Frozen Dungeon', strategy: 'Fast maneuverable mounts recommended' },
-        { id: 'lava_elemental', name: 'Lava Elemental', map: 'Ragnarok', type: 'Mini-Boss', description: 'Mini-boss in Jungle Dungeon', strategy: 'Fire resistance and high-level creatures' },
-        
-        // Astraeos
-        { id: 'thodes', name: 'Thodes the Widowmaker', map: 'Astraeos', type: 'Mythology', description: 'Primary Greek mythology boss', strategy: 'Requires 6 artifacts, Greek-themed encounter' },
-        { id: 'natrix', name: 'Natrix the Devious', map: 'Astraeos', type: 'Mythology', description: 'Secondary Greek mythology boss', strategy: 'Enhanced creature variants with improved loot' },
-        
-        // Extinction
-        { id: 'desert_titan', name: 'Desert Titan', map: 'Extinction', type: 'Titan', description: 'Massive flying stingray-like creature', strategy: 'Snow Owls for mobility, stays airborne, TAMEABLE' },
-        { id: 'forest_titan', name: 'Forest Titan', map: 'Extinction', type: 'Titan', description: 'Extremely slow but powerful', strategy: 'Hit-and-run tactics, destroy corruption nodules, TAMEABLE' },
-        { id: 'ice_titan', name: 'Ice Titan', map: 'Extinction', type: 'Titan', description: 'Most agile titan with frost attacks', strategy: 'Constant movement, target ankle/shoulder/chest nodules, TAMEABLE' },
-        { id: 'king_titan', name: 'King Titan', map: 'Extinction', type: 'Final Boss', description: 'Ultimate boss requiring all other titans', strategy: 'Keep fight centered (respawns with full health if moves too far), NOT TAMEABLE' }
-    ];
+    const db = (typeof window !== 'undefined' && window.SPECIES_DATABASE) || {};
+    const templates = [];
+    for (const [name, species] of Object.entries(db)) {
+        if (species.category !== 'boss') continue;
+        const map = (species.spawnMaps && species.spawnMaps[0]) || 'Unknown';
+        templates.push({
+            id: (species.id || name).toString().toLowerCase().replace(/[^a-z0-9]+/g, '_'),
+            name: species.name || name,
+            map: map,
+            type: _deriveBossType(species),
+            description: (species.dossierText || '').slice(0, 140) + ((species.dossierText || '').length > 140 ? '…' : ''),
+            strategy: _deriveBossStrategy(species)
+        });
+    }
+    templates.sort((a, b) => {
+        if (a.map !== b.map) return a.map.localeCompare(b.map);
+        return a.name.localeCompare(b.name);
+    });
+    return templates;
 }
 window.openBossModal = openBossModal;
 window.showBossDetail = showBossDetail;

@@ -3059,148 +3059,259 @@ async function loadBossPlanner() {
     const main = document.getElementById('appMainContent');
     if (!main) return;
 
+    // Load saved plans if not already loaded
+    if (!window.appState?.bossPlans) await loadServerBossData();
+    const plans = window.appState?.bossPlans || [];
+
     const templates = getBossTemplates();
+    const maps = [...new Set(templates.map(t => t.map))].sort();
+
+    function renderCards(filter) {
+        const search = (filter.search || '').toLowerCase();
+        const mapF = filter.map || '';
+        return templates
+            .filter(t =>
+                (!search || t.name.toLowerCase().includes(search) || t.map.toLowerCase().includes(search)) &&
+                (!mapF || t.map === mapF)
+            )
+            .map(t => {
+                const plan = plans.find(p => p.bossId === t.id);
+                const hasPlan = !!plan;
+                const diff = plan?.difficulty || '';
+                const diffLabel = { gamma: '🟢 Gamma', beta: '🔵 Beta', alpha: '🔴 Alpha' }[diff] || '';
+                return `
+                <div class="boss-planning-card" onclick="openBossPlanning('${t.id}')">
+                    <div class="template-header">
+                        <h4>${t.name}</h4>
+                        <div class="template-header-badges">
+                            ${hasPlan ? `<span class="plan-saved-badge">✓ Planned</span>` : ''}
+                            ${diffLabel ? `<span class="plan-diff-badge">${diffLabel}</span>` : ''}
+                        </div>
+                    </div>
+                    <span class="template-map">${t.map}</span>
+                    <div class="template-type">${t.type}</div>
+                    <div class="template-strategy">${t.strategy}</div>
+                    <div class="boss-planning-footer">
+                        <span class="click-hint">${hasPlan ? 'View / edit plan →' : 'Click to plan →'}</span>
+                    </div>
+                </div>`;
+            }).join('') || '<div class="no-results">No bosses match your filters.</div>';
+    }
 
     main.innerHTML = `
         <div class="boss-page">
             <div class="boss-header">
                 <div class="page-title">
                     <h1>👑 Boss Planner</h1>
-                    <div class="boss-count">Plan fights for ${templates.length} available bosses</div>
-                </div>
-                <div class="header-actions">
-                    <button class="btn btn-secondary" onclick="exportBossPlans()">📤 Export Plans</button>
-                    <button class="btn btn-secondary" onclick="bossCalculator()">🧮 Calculator</button>
+                    <div class="boss-count">${templates.length} bosses · ${plans.length} planned</div>
                 </div>
             </div>
-            
-            <div class="boss-template-grid">
-                ${templates.map(template => `
-                    <div class="boss-planning-card" onclick="openBossPlanning('${template.id}')">
-                        <div class="template-header">
-                            <h4>${template.name}</h4>
-                            <span class="template-map">${template.map}</span>
-                        </div>
-                        <div class="template-type">${template.type}</div>
-                        <div class="template-description">${template.description}</div>
-                        <div class="template-strategy"><strong>Strategy:</strong> ${template.strategy}</div>
-                        <div class="boss-planning-footer">
-                            <span class="click-hint">Click to plan this boss fight →</span>
-                        </div>
-                    </div>
-                `).join('')}
+            <div class="boss-filters">
+                <input id="bossSearchInput" class="form-control search-input" placeholder="🔍 Search bosses..." style="flex:1">
+                <select id="bossMapFilter" class="form-control filter-select" style="width:180px">
+                    <option value="">All Maps</option>
+                    ${maps.map(m => `<option value="${m}">${m}</option>`).join('')}
+                </select>
+            </div>
+            <div id="bossCardGrid" class="boss-template-grid">
+                ${renderCards({})}
             </div>
         </div>
     `;
+
+    const searchEl = document.getElementById('bossSearchInput');
+    const mapEl = document.getElementById('bossMapFilter');
+    const grid = document.getElementById('bossCardGrid');
+    function refresh() { grid.innerHTML = renderCards({ search: searchEl.value, map: mapEl.value }); }
+    searchEl.addEventListener('input', refresh);
+    mapEl.addEventListener('change', refresh);
 }
 
-// Open collaborative boss planning page
 function openBossPlanning(bossId) {
     const template = getBossTemplates().find(t => t.id === bossId);
     if (!template) return;
-    
     const main = document.getElementById('appMainContent');
     if (!main) return;
-    
+
+    const plans = window.appState?.bossPlans || [];
+    const existing = plans.find(p => p.bossId === bossId) || {};
+    const selectedIds = new Set(existing.creatureIds || []);
+
+    const creatures = window.appState?.creatures || [];
+
+    const CONSUMABLES = [
+        { key: 'stimulants',       label: '💊 Stimulants' },
+        { key: 'medicalBrew',      label: '🧪 Medical Brew' },
+        { key: 'battleTartare',    label: '🥩 Battle Tartare' },
+        { key: 'shadowSteak',      label: '🌑 Shadow Steak Saute' },
+        { key: 'lazarusChowder',   label: '🍲 Lazarus Chowder' },
+        { key: 'focalChili',       label: '🌶️ Focal Chili' },
+        { key: 'sweetVeggieCake',  label: '🎂 Sweet Veggie Cake' },
+    ];
+    const savedCons = existing.consumables || {};
+
     main.innerHTML = `
         <div class="boss-planning-page">
             <div class="boss-planning-header">
-                <button class="btn btn-secondary back-btn" onclick="loadBossPlanner()">← Back to Boss List</button>
+                <button class="btn btn-secondary back-btn" onclick="loadBossPlanner()">← Back</button>
                 <div class="boss-info">
                     <h1>${template.name}</h1>
                     <div class="boss-meta">
-                        <span class="boss-map">${template.map}</span>
-                        <span class="boss-type">${template.type}</span>
+                        <span class="boss-map-tag">${template.map}</span>
+                        <span class="boss-type-tag">${template.type}</span>
                     </div>
                     <p class="boss-description">${template.description}</p>
-                    <div class="boss-strategy">
-                        <strong>Recommended Strategy:</strong> ${template.strategy}
-                    </div>
+                    <div class="boss-strategy-hint"><strong>Tip:</strong> ${template.strategy}</div>
                 </div>
             </div>
-            
+
             <div class="planning-sections">
+
+                <!-- FIGHT PLAN -->
                 <div class="planning-section">
-                    <div class="section-header">
-                        <h3>👥 Team & Invites</h3>
-                        <button class="btn btn-primary" onclick="invitePlayers('${bossId}')">+ Invite Players</button>
-                    </div>
-                    <div class="team-list" id="teamList-${bossId}">
-                        <div class="team-member">
-                            <div class="member-avatar" style="width:40px;height:40px;border-radius:50%;background:#334155;display:flex;align-items:center;justify-content:center;font-size:18px;">👤</div>
-                            <div class="member-info">
-                                <div class="member-name">You</div>
-                                <div class="member-role">Leader</div>
+                    <div class="section-header"><h3>📋 Fight Plan</h3></div>
+                    <div class="plan-fields">
+                        <div class="plan-row">
+                            <div class="plan-field">
+                                <label class="form-label">Difficulty</label>
+                                <select id="bp-difficulty" class="form-control">
+                                    <option value="gamma" ${existing.difficulty==='gamma'?'selected':''}>🟢 Gamma (Easy)</option>
+                                    <option value="beta"  ${existing.difficulty==='beta' ?'selected':''}>🔵 Beta (Medium)</option>
+                                    <option value="alpha" ${existing.difficulty==='alpha'?'selected':''}>🔴 Alpha (Hard)</option>
+                                </select>
+                            </div>
+                            <div class="plan-field">
+                                <label class="form-label">Scheduled Date & Time</label>
+                                <input id="bp-schedule" type="datetime-local" class="form-control" value="${existing.scheduledAt || ''}">
                             </div>
                         </div>
-                        <div class="invite-placeholder">
-                            <div class="placeholder-text">Invite friends and tribe mates to plan together</div>
+                        <div class="plan-field" style="margin-top:12px">
+                            <label class="form-label">Tactics & Notes</label>
+                            <textarea id="bp-notes" class="form-control" rows="4" placeholder="Strategy, timing, positioning, roles...">${existing.notes || ''}</textarea>
+                        </div>
+                        <div class="plan-field" style="margin-top:12px">
+                            <label class="form-label">Other Supplies & Notes</label>
+                            <textarea id="bp-other" class="form-control" rows="2" placeholder="Artifacts needed, hazmat suits, gas masks, saddle requirements...">${existing.otherSupplies || ''}</textarea>
                         </div>
                     </div>
                 </div>
-                
+
+                <!-- CONSUMABLES -->
+                <div class="planning-section">
+                    <div class="section-header"><h3>🎒 Consumables</h3></div>
+                    <div class="consumables-grid">
+                        ${CONSUMABLES.map(c => `
+                        <div class="consumable-item">
+                            <label class="form-label">${c.label}</label>
+                            <input id="bp-con-${c.key}" type="number" class="form-control" min="0" placeholder="0" value="${savedCons[c.key] || ''}">
+                        </div>`).join('')}
+                    </div>
+                </div>
+
+                <!-- CREATURE LINEUP -->
                 <div class="planning-section">
                     <div class="section-header">
                         <h3>🦖 Creature Lineup</h3>
-                        <button class="btn btn-primary" onclick="uploadCreatures('${bossId}')">+ Add Creatures</button>
+                        <span class="lineup-count" id="bp-lineup-count">${selectedIds.size} selected</span>
                     </div>
-                    <div class="creature-lineup" id="creatureLineup-${bossId}">
-                        <div class="creature-slot empty" onclick="uploadCreatures('${bossId}')">
-                            <div class="slot-content">
-                                <div class="add-icon">+</div>
-                                <div class="slot-text">Add your creatures</div>
-                            </div>
-                        </div>
-                        <div class="lineup-placeholder">
-                            <div class="placeholder-text">Upload your saved creature cards to share with the team</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="planning-section">
-                    <div class="section-header">
-                        <h3>📋 Fight Plan</h3>
-                        <div class="difficulty-selector">
-                            <label>Difficulty:</label>
-                            <select id="difficulty-${bossId}" class="form-control">
-                                <option value="gamma">Gamma (Easy)</option>
-                                <option value="beta">Beta (Medium)</option>
-                                <option value="alpha">Alpha (Hard)</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="fight-plan" id="fightPlan-${bossId}">
-                        <textarea class="form-control" placeholder="Add notes about the fight plan, tactics, timing, etc..." rows="4"></textarea>
-                        <div class="plan-actions">
-                            <button class="btn btn-success" onclick="saveFightPlan('${bossId}')">💾 Save Plan</button>
-                            <button class="btn btn-warning" onclick="scheduleFight('${bossId}')">⏰ Schedule Fight</button>
-                        </div>
+                    ${creatures.length === 0
+                        ? `<div class="empty-lineup-msg">You have no saved Nuggies yet. Add creatures from the Creatures page first.</div>`
+                        : `<div class="nuggie-picker" id="bp-nuggie-picker">
+                            ${creatures.map(c => {
+                                const sel = selectedIds.has(c.id);
+                                const hp = c.baseStats?.Health || 0;
+                                const mel = c.baseStats?.Melee || 0;
+                                return `
+                                <div class="nuggie-pick-card ${sel ? 'selected' : ''}" data-cid="${c.id}" onclick="bpToggleCreature('${c.id}')">
+                                    <div class="nuggie-pick-name">${c.name || 'Unnamed'}</div>
+                                    <div class="nuggie-pick-species">${c.species || '?'}</div>
+                                    <div class="nuggie-pick-stats">HP ${hp} · Mel ${mel}</div>
+                                    ${sel ? '<div class="nuggie-pick-check">✓</div>' : ''}
+                                </div>`;
+                            }).join('')}
+                           </div>`
+                    }
+                    <div class="lineup-selected" id="bp-lineup-list">
+                        ${renderLineupList(selectedIds, creatures)}
                     </div>
                 </div>
+
+            </div>
+
+            <div class="plan-save-bar">
+                <span id="bp-save-status" class="save-status">${existing.savedAt ? `Last saved ${new Date(existing.savedAt).toLocaleString()}` : 'Not saved yet'}</span>
+                <button class="btn btn-primary btn-lg" onclick="saveFightPlan('${bossId}')">💾 Save Plan</button>
             </div>
         </div>
     `;
-    
+
     setActiveNavButton('boss');
 }
 
-// Collaborative functions for boss planning
-function invitePlayers(bossId) {
-    alert(`Invite system for ${bossId} - Coming soon! This will open a modal to invite friends and tribe mates.`);
+function renderLineupList(selectedIds, creatures) {
+    const selected = creatures.filter(c => selectedIds.has(c.id));
+    if (!selected.length) return '<div class="lineup-empty-hint">No creatures selected yet — click cards above to add them.</div>';
+    return `<div class="lineup-summary">
+        ${selected.map(c => `<span class="lineup-chip">${c.name || 'Unnamed'} <em>${c.species || ''}</em></span>`).join('')}
+    </div>`;
 }
 
-function uploadCreatures(bossId) {
-    alert(`Creature upload for ${bossId} - Coming soon! This will let you select from your saved creature cards.`);
+window._bpSelectedIds = new Set();
+function bpToggleCreature(creatureId) {
+    const card = document.querySelector(`.nuggie-pick-card[data-cid="${creatureId}"]`);
+    if (!card) return;
+    const sel = card.classList.toggle('selected');
+    if (sel) {
+        card.insertAdjacentHTML('beforeend', '<div class="nuggie-pick-check">✓</div>');
+    } else {
+        card.querySelector('.nuggie-pick-check')?.remove();
+    }
+    const picker = document.getElementById('bp-nuggie-picker');
+    const allSelected = new Set([...picker.querySelectorAll('.nuggie-pick-card.selected')].map(el => el.dataset.cid));
+    document.getElementById('bp-lineup-count').textContent = `${allSelected.size} selected`;
+    document.getElementById('bp-lineup-list').innerHTML = renderLineupList(allSelected, window.appState?.creatures || []);
 }
+window.bpToggleCreature = bpToggleCreature;
 
-function saveFightPlan(bossId) {
-    const plan = document.querySelector(`#fightPlan-${bossId} textarea`).value;
-    const difficulty = document.querySelector(`#difficulty-${bossId}`).value;
-    alert(`Plan saved for ${bossId}! Difficulty: ${difficulty}. Plan: ${plan}`);
-}
+async function saveFightPlan(bossId) {
+    const statusEl = document.getElementById('bp-save-status');
+    if (statusEl) statusEl.textContent = 'Saving...';
 
-function scheduleFight(bossId) {
-    alert(`Schedule fight for ${bossId} - Coming soon! This will let you set a date/time and notify team members.`);
+    const picker = document.getElementById('bp-nuggie-picker');
+    const creatureIds = picker
+        ? [...picker.querySelectorAll('.nuggie-pick-card.selected')].map(el => el.dataset.cid)
+        : [];
+
+    const CONSUMABLE_KEYS = ['stimulants','medicalBrew','battleTartare','shadowSteak','lazarusChowder','focalChili','sweetVeggieCake'];
+    const consumables = {};
+    CONSUMABLE_KEYS.forEach(k => {
+        const val = parseInt(document.getElementById(`bp-con-${k}`)?.value);
+        if (val > 0) consumables[k] = val;
+    });
+
+    const plan = {
+        bossId,
+        difficulty: document.getElementById('bp-difficulty')?.value || 'gamma',
+        scheduledAt: document.getElementById('bp-schedule')?.value || '',
+        notes: document.getElementById('bp-notes')?.value || '',
+        otherSupplies: document.getElementById('bp-other')?.value || '',
+        creatureIds,
+        consumables,
+        savedAt: new Date().toISOString()
+    };
+
+    const plans = window.appState?.bossPlans || [];
+    const idx = plans.findIndex(p => p.bossId === bossId);
+    if (idx >= 0) plans[idx] = plan; else plans.push(plan);
+    window.appState = window.appState || {};
+    window.appState.bossPlans = plans;
+
+    try {
+        const { res } = await apiRequest('/api/bosses', { method: 'PUT', body: JSON.stringify(plans) });
+        if (statusEl) statusEl.textContent = res.ok ? `Saved ${new Date().toLocaleTimeString()}` : 'Save failed — check connection';
+    } catch (e) {
+        if (statusEl) statusEl.textContent = 'Save failed';
+    }
 }
 
 function renderBossGrid(bosses) {
@@ -3773,10 +3884,14 @@ window.loadServerCreatures = loadServerCreatures;
 window.saveDataToServer = saveDataToServer;
 window.deleteCreatureOnServer = deleteCreatureOnServer;
 
-// Placeholder functions for boss data and arena collections
 async function loadServerBossData() {
-    // Placeholder - boss data loading will be implemented later
-    console.log('loadServerBossData called (placeholder)');
+    try {
+        const { res, body } = await apiRequest('/api/bosses', { method: 'GET' });
+        if (res.ok && Array.isArray(body)) {
+            window.appState = window.appState || {};
+            window.appState.bossPlans = body;
+        }
+    } catch (e) { console.warn('loadServerBossData failed', e); }
 }
 
 async function loadServerArenaCollections() {

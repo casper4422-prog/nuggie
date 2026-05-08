@@ -598,7 +598,7 @@ function openSpeciesDetail(speciesName) {
                 <div class="planning-section">
                     <div class="section-header">
                         <h3>📊 Statistics & Performance</h3>
-                        <button class="btn btn-primary" onclick="openAddCreatureModal('${speciesName}')">➕ Add Your ${species.name}</button>
+                        <button class="btn btn-primary" onclick="addNewCreature('${speciesName}')">➕ Add Your ${species.name}</button>
                     </div>
                     <div class="stats-grid">
                         <div class="stat-card combat">
@@ -1107,7 +1107,6 @@ function loadMyNuggiesPage() {
                     <div class="creature-count">${creatures.length} creatures across ${Object.keys(creaturesBySpecies).length} species</div>
                 </div>
                 <div class="header-actions">
-                    <button class="btn btn-primary" onclick="addNewCreature()">➕ Add Creature</button>
                     <button class="btn btn-secondary" onclick="exportCreatures()">📤 Export</button>
                     <button class="btn btn-secondary" onclick="importCreatures()">📥 Import</button>
                 </div>
@@ -1233,17 +1232,7 @@ function renderEmptyCollection() {
         <div class="empty-collection-state">
             <div class="empty-icon">🦕</div>
             <div class="empty-title">No Creatures Yet</div>
-            <div class="empty-description">Start building your collection by adding your first creature!</div>
-            <button class="btn btn-primary empty-action" onclick="addNewCreature()">➕ Add Your First Creature</button>
-            <div class="empty-help">
-                <div class="help-title">💡 Getting Started Tips:</div>
-                <ul class="help-list">
-                    <li>Browse the Species Database to learn about different creatures</li>
-                    <li>Add creatures with detailed stats and information</li>
-                    <li>Organize your collection by species and level</li>
-                    <li>Use the search and filter tools to find specific creatures</li>
-                </ul>
-            </div>
+            <div class="empty-description">Head to the <strong>Creatures</strong> page, find a species, and click <strong>Add Your [Species]</strong> to start your collection.</div>
         </div>
     `;
 }

@@ -30,7 +30,7 @@
   modal.innerHTML = `
     <div class="modal-content">
       <div class="modal-header">
-        <h2 class="modal-title" id="creatureModalTitle">${creature ? 'Edit Creature' : 'Add Creature'}</h2>
+        <h2 class="modal-title" id="creatureModalTitle">${creature ? 'Edit Creature' : (appState.currentSpecies ? `Add ${appState.currentSpecies}` : 'Add Creature')}</h2>
         <button class="close-btn" id="closeCreatureBtn">&times;</button>
       </div>
       <div class="modal-body">

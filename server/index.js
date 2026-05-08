@@ -767,6 +767,8 @@ app.get('/api/friends', authenticateToken, (req, res) => {
   let statusCondition = '';
   if (status === 'pending') {
     statusCondition = `AND f.status = 'pending' AND f.friend_user_id = ${userId}`;
+  } else if (status === 'sent') {
+    statusCondition = `AND f.status = 'pending' AND f.user_id = ${userId}`;
   } else if (status === 'accepted') {
     statusCondition = `AND f.status = 'accepted'`;
   }
@@ -843,6 +845,18 @@ app.delete('/api/friends/:id', authenticateToken, (req, res) => {
     if (err) return res.status(500).json({ error: 'Failed to remove friend' });
     if (this.changes === 0) return res.status(404).json({ error: 'Friendship not found' });
     res.json({ success: true });
+  });
+});
+
+// Get any user's creature cards (used by View Creatures on Friends page)
+app.get('/api/users/:id/creatures', authenticateToken, (req, res) => {
+  const targetId = req.params.id;
+  db.all('SELECT id, data FROM creature_cards WHERE user_id = ?', [targetId], (err, rows) => {
+    if (err) return res.status(500).json({ error: 'Failed to load' });
+    try {
+      const parsed = (rows || []).map(r => ({ id: r.id, ...JSON.parse(r.data || '{}') }));
+      res.json(parsed);
+    } catch (e) { res.status(500).json({ error: 'Failed to parse' }); }
   });
 });
 

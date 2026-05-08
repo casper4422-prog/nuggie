@@ -1,453 +1,261 @@
-// Friends list page management
+// Friends page — all API calls use apiRequest() so they hit the correct backend
+
 async function loadFriendsPage() {
+    setActiveNavButton('friends');
     const main = document.getElementById('appMainContent');
     if (!main) return;
-    main.innerHTML = `
-        <section class="friends-page">
-            <h1>👥 Friends</h1>
-            <div class="friends-tabs">
-                <button class="btn btn-tab" id="tabFriendsList">Friends List</button>
-                <button class="btn btn-tab" id="tabTribeManager">Tribe Manager</button>
-            </div>
-            <div id="friendsTabContent"></div>
-        </section>
-    `;
-    // Default to Friends List tab
-    renderFriendsTab('list');
-    document.getElementById('tabFriendsList').addEventListener('click', () => renderFriendsTab('list'));
-    document.getElementById('tabTribeManager').addEventListener('click', () => renderFriendsTab('tribe'));
-}
+    main.innerHTML = `<div class="std-page"><div style="color:#94a3b8;padding:40px 0">Loading friends...</div></div>`;
 
-// Tab content rendering
-async function renderFriendsTab(tab) {
-    const tabContent = document.getElementById('friendsTabContent');
-    if (!tabContent) return;
-    if (tab === 'list') {
-        tabContent.innerHTML = `
-            <div class="friends-actions">
-                <input type="text" id="friendSearchInput" class="form-control" placeholder="Search users by email, nickname, or Discord...">
-                <button class="btn btn-primary" id="friendSearchBtn">Search</button>
+    const [friends, incoming, sent] = await Promise.all([
+        apiRequest('/api/friends?status=accepted').then(r => Array.isArray(r.body) ? r.body : []).catch(() => []),
+        apiRequest('/api/friends?status=pending').then(r => Array.isArray(r.body) ? r.body : []).catch(() => []),
+        apiRequest('/api/friends?status=sent').then(r => Array.isArray(r.body) ? r.body : []).catch(() => [])
+    ]);
+
+    main.innerHTML = `
+        <div class="std-page">
+            <div class="std-page-header">
+                <div class="page-title">
+                    <h1>👥 Friends</h1>
+                    <div class="page-subtitle">${friends.length} friend${friends.length !== 1 ? 's' : ''}</div>
+                </div>
+            </div>
+
+            <!-- Search -->
+            <div class="friends-search-bar">
+                <input id="friendSearchInput" class="form-control search-input" placeholder="🔍 Search users by name, email, or Discord...">
+                <button class="btn btn-primary" onclick="friendsDoSearch()">Search</button>
             </div>
             <div id="friendSearchResults"></div>
-            <h2 style="margin-top:32px;">Your Friends</h2>
-            <div id="friendsList"></div>
-            <h2 style="margin-top:32px;">Pending Requests</h2>
-            <div id="pendingRequests"></div>
-        `;
-        document.getElementById('friendSearchBtn').addEventListener('click', doFriendSearch);
-        document.getElementById('friendSearchInput').addEventListener('keydown', e => { if (e.key === 'Enter') doFriendSearch(); });
-        await renderFriendsList();
-        await renderPendingRequests();
-    } else if (tab === 'tribe') {
-        tabContent.innerHTML = `
-            <h2>Tribe Manager</h2>
-            <div id="tribeStatus"></div>
-            <div class="tribe-actions">
-                <button class="btn btn-primary" id="createTribeBtn">Create New Tribe</button>
-                <button class="btn btn-secondary" id="joinTribeBtn">Join Tribe</button>
+
+            <!-- Incoming requests -->
+            ${incoming.length ? `
+            <div class="friends-section">
+                <h2 class="friends-section-title">📬 Friend Requests <span class="friends-badge">${incoming.length}</span></h2>
+                <div class="friends-list" id="incomingList">
+                    ${incoming.map(r => friendRequestCard(r, 'incoming')).join('')}
+                </div>
+            </div>` : ''}
+
+            <!-- Sent requests -->
+            ${sent.length ? `
+            <div class="friends-section">
+                <h2 class="friends-section-title">📤 Sent Requests</h2>
+                <div class="friends-list">
+                    ${sent.map(r => friendRequestCard(r, 'sent')).join('')}
+                </div>
+            </div>` : ''}
+
+            <!-- Friends list -->
+            <div class="friends-section">
+                <h2 class="friends-section-title">👥 Your Friends</h2>
+                <div class="friends-list" id="friendsList">
+                    ${friends.length
+                        ? friends.map(f => friendCard(f)).join('')
+                        : '<div class="friends-empty">No friends yet. Search for users above to add them.</div>'
+                    }
+                </div>
             </div>
-            <div id="tribeFriendsList"></div>
-        `;
-        document.getElementById('createTribeBtn').addEventListener('click', () => showCreateTribeModal());
-        document.getElementById('joinTribeBtn').addEventListener('click', () => showJoinTribeModal());
-        await renderTribeStatus();
-        await renderTribeFriendsList();
-    }
+        </div>`;
+
+    document.getElementById('friendSearchInput')?.addEventListener('keydown', e => {
+        if (e.key === 'Enter') friendsDoSearch();
+    });
 }
 
-// Friend search functionality
-async function doFriendSearch() {
-    const input = document.getElementById('friendSearchInput');
+function friendCard(f) {
+    return `
+        <div class="friend-card" id="friend-${f.id}">
+            <div class="friend-avatar">👤</div>
+            <div class="friend-info">
+                <div class="friend-name">${f.friend_nickname || f.friend_email || 'Unknown'}</div>
+                ${f.friend_discord_name ? `<div class="friend-meta">Discord: ${f.friend_discord_name}</div>` : ''}
+            </div>
+            <div class="friend-actions">
+                <button class="btn btn-secondary btn-sm" onclick="friendViewCreatures(${f.friend_id}, '${(f.friend_nickname || f.friend_email || 'Friend').replace(/'/g, "\\'")}')">🦖 Creatures</button>
+                <button class="btn btn-danger btn-sm" onclick="friendRemove(${f.id})">Remove</button>
+            </div>
+        </div>`;
+}
+
+function friendRequestCard(r, type) {
+    if (type === 'incoming') {
+        return `
+        <div class="friend-card" id="freq-${r.id}">
+            <div class="friend-avatar">👤</div>
+            <div class="friend-info">
+                <div class="friend-name">${r.friend_nickname || r.friend_email || 'Unknown'}</div>
+                ${r.friend_discord_name ? `<div class="friend-meta">Discord: ${r.friend_discord_name}</div>` : ''}
+            </div>
+            <div class="friend-actions">
+                <button class="btn btn-primary btn-sm" onclick="friendRespond(${r.id}, 'accept')">Accept</button>
+                <button class="btn btn-danger btn-sm" onclick="friendRespond(${r.id}, 'reject')">Decline</button>
+            </div>
+        </div>`;
+    }
+    return `
+        <div class="friend-card" id="freq-${r.id}">
+            <div class="friend-avatar">👤</div>
+            <div class="friend-info">
+                <div class="friend-name">${r.friend_nickname || r.friend_email || 'Unknown'}</div>
+                <div class="friend-meta">Waiting for response...</div>
+            </div>
+            <div class="friend-actions">
+                <button class="btn btn-secondary btn-sm" onclick="friendCancel(${r.id})">Cancel</button>
+            </div>
+        </div>`;
+}
+
+// ── Search ───────────────────────────────────────────────────────────
+async function friendsDoSearch() {
+    const q = document.getElementById('friendSearchInput')?.value.trim();
     const resultsDiv = document.getElementById('friendSearchResults');
-    if (!input || !resultsDiv) return;
-    const q = input.value.trim();
+    if (!resultsDiv) return;
     if (!q) { resultsDiv.innerHTML = ''; return; }
-    resultsDiv.innerHTML = '<div class="loading">Searching...</div>';
-    try {
-        const res = await fetch(`/api/users/search?q=${encodeURIComponent(q)}`, {
-            headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
-        });
-        const users = await res.json();
-        if (!Array.isArray(users) || users.length === 0) {
-            resultsDiv.innerHTML = '<div class="error-message">No users found.</div>';
-            return;
-        }
-        resultsDiv.innerHTML = users.map(u => `
-            <div class="friend-search-result">
-                <div class="friend-info">
-                    <strong>${u.nickname || u.email}</strong>
-                    <span class="friend-meta">${u.discord_name ? `Discord: ${u.discord_name}` : ''}</span>
-                </div>
-                ${renderFriendActionButton(u)}
-            </div>
-        `).join('');
-    } catch (e) {
-        resultsDiv.innerHTML = '<div class="error-message">Search failed.</div>';
-    }
-}
 
-function renderFriendActionButton(user) {
-    if (user.friend_status === 'accepted') {
-        return '<span class="friend-status">Already Friends</span>';
-    } else if (user.friend_status === 'pending') {
-        return '<span class="friend-status">Request Pending</span>';
+    resultsDiv.innerHTML = '<div class="friends-loading">Searching...</div>';
+    const { res, body } = await apiRequest(`/api/users/search?q=${encodeURIComponent(q)}`);
+
+    if (!res.ok || !Array.isArray(body) || !body.length) {
+        resultsDiv.innerHTML = '<div class="friends-empty" style="margin-bottom:16px">No users found.</div>';
+        return;
+    }
+
+    resultsDiv.innerHTML = `
+        <div class="friends-section">
+            <h2 class="friends-section-title">Search Results</h2>
+            <div class="friends-list">
+                ${body.map(u => `
+                <div class="friend-card">
+                    <div class="friend-avatar">👤</div>
+                    <div class="friend-info">
+                        <div class="friend-name">${u.nickname || u.email}</div>
+                        ${u.discord_name ? `<div class="friend-meta">Discord: ${u.discord_name}</div>` : ''}
+                    </div>
+                    <div class="friend-actions">
+                        ${u.friend_status === 'accepted'
+                            ? `<span class="friend-status-tag accepted">✓ Friends</span>`
+                            : u.friend_status === 'pending'
+                            ? `<span class="friend-status-tag pending">Request Pending</span>`
+                            : `<button class="btn btn-primary btn-sm" onclick="friendSendRequest(${u.id}, this)">Add Friend</button>`
+                        }
+                    </div>
+                </div>`).join('')}
+            </div>
+        </div>`;
+}
+window.friendsDoSearch = friendsDoSearch;
+
+// ── Actions ──────────────────────────────────────────────────────────
+async function friendSendRequest(userId, btn) {
+    if (btn) { btn.disabled = true; btn.textContent = 'Sending...'; }
+    const { res, body } = await apiRequest('/api/friends/request', {
+        method: 'POST', body: JSON.stringify({ friend_user_id: userId })
+    });
+    if (res.ok) {
+        if (btn) { btn.textContent = 'Request Sent'; btn.className = 'btn btn-secondary btn-sm'; }
     } else {
-        return `<button class="btn btn-secondary" onclick="sendFriendRequest(${user.id})">Add Friend</button>`;
+        if (btn) { btn.disabled = false; btn.textContent = 'Add Friend'; }
+        alert(body?.error || 'Failed to send friend request.');
     }
 }
+window.friendSendRequest = friendSendRequest;
 
-// Friend request management
-async function sendFriendRequest(friendUserId) {
-    try {
-        const res = await fetch('/api/friends/request', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-            },
-            body: JSON.stringify({ friend_user_id: friendUserId })
-        });
-        if (res.ok) {
-            alert('Friend request sent!');
-            doFriendSearch();
-            await renderPendingRequests();
-        } else {
-            const err = await res.json();
-            alert(err.error || 'Failed to send friend request');
-        }
-    } catch (e) {
-        alert('Failed to send friend request');
+async function friendRespond(friendshipId, action) {
+    const { res, body } = await apiRequest(`/api/friends/${friendshipId}`, {
+        method: 'PUT', body: JSON.stringify({ action })
+    });
+    if (res.ok) {
+        loadFriendsPage();
+    } else {
+        alert(body?.error || 'Failed to respond to request.');
     }
 }
+window.friendRespond = friendRespond;
 
-// Render friends list
-async function renderFriendsList() {
-    const listDiv = document.getElementById('friendsList');
-    if (!listDiv) return;
-    listDiv.innerHTML = '<div class="loading">Loading friends...</div>';
-    try {
-        const res = await fetch('/api/friends', {
-            headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
-        });
-        const friends = await res.json();
-        if (!Array.isArray(friends) || friends.length === 0) {
-            listDiv.innerHTML = '<div class="error-message">No friends yet.</div>';
-            return;
-        }
-        listDiv.innerHTML = friends.map(f => `
-            <div class="friend-list-item">
-                <div class="friend-info">
-                    <strong>${f.friend_nickname || f.friend_email}</strong>
-                    <span class="friend-meta">${f.friend_discord_name ? `Discord: ${f.friend_discord_name}` : ''}</span>
-                </div>
-                <button class="btn btn-danger btn-small" onclick="removeFriend(${f.id})">Remove</button>
-                <button class="btn btn-secondary btn-small" onclick="viewFriendCreatures(${f.friend_id})">View Creatures</button>
-            </div>
-        `).join('');
-    } catch (e) {
-        listDiv.innerHTML = '<div class="error-message">Failed to load friends.</div>';
+async function friendCancel(friendshipId) {
+    if (!confirm('Cancel this friend request?')) return;
+    const { res, body } = await apiRequest(`/api/friends/${friendshipId}`, { method: 'DELETE' });
+    if (res.ok) {
+        loadFriendsPage();
+    } else {
+        alert(body?.error || 'Failed to cancel request.');
     }
 }
+window.friendCancel = friendCancel;
 
-// Render pending friend requests
-async function renderPendingRequests() {
-    const listDiv = document.getElementById('pendingRequests');
-    if (!listDiv) return;
-    listDiv.innerHTML = '<div class="loading">Loading requests...</div>';
-    try {
-        const res = await fetch('/api/friends?status=pending', {
-            headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
-        });
-        const requests = await res.json();
-        if (!Array.isArray(requests) || requests.length === 0) {
-            listDiv.innerHTML = '<div class="error-message">No pending requests.</div>';
-            return;
-        }
-        listDiv.innerHTML = requests.map(r => `
-            <div class="friend-list-item">
-                <div class="friend-info">
-                    <strong>${r.friend_nickname || r.friend_email}</strong>
-                    <span class="friend-meta">${r.friend_discord_name ? `Discord: ${r.friend_discord_name}` : ''}</span>
-                </div>
-                <button class="btn btn-primary btn-small" onclick="respondToFriendRequest(${r.id}, 'accept')">Accept</button>
-                <button class="btn btn-danger btn-small" onclick="respondToFriendRequest(${r.id}, 'reject')">Reject</button>
-            </div>
-        `).join('');
-    } catch (e) {
-        listDiv.innerHTML = '<div class="error-message">Failed to load requests.</div>';
-    }
-}
-
-// Friend request response handling
-async function respondToFriendRequest(friendshipId, action) {
-    try {
-        const res = await fetch(`/api/friends/${friendshipId}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-            },
-            body: JSON.stringify({ action })
-        });
-        if (res.ok) {
-            await renderFriendsList();
-            await renderPendingRequests();
-        } else {
-            alert('Failed to respond to request');
-        }
-    } catch (e) {
-        alert('Failed to respond to request');
-    }
-}
-
-// Remove friend
-async function removeFriend(friendshipId) {
+async function friendRemove(friendshipId) {
     if (!confirm('Remove this friend?')) return;
-    try {
-        const res = await fetch(`/api/friends/${friendshipId}`, {
-            method: 'DELETE',
-            headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
-        });
-        if (res.ok) {
-            await renderFriendsList();
-        } else {
-            alert('Failed to remove friend');
-        }
-    } catch (e) {
-        alert('Failed to remove friend');
+    const { res, body } = await apiRequest(`/api/friends/${friendshipId}`, { method: 'DELETE' });
+    if (res.ok) {
+        const el = document.getElementById(`friend-${friendshipId}`);
+        if (el) el.remove();
+    } else {
+        alert(body?.error || 'Failed to remove friend.');
     }
 }
+window.friendRemove = friendRemove;
 
-// View friend's creatures
-function viewFriendCreatures(friendUserId) {
-    // For now, just alert. Later, implement a modal or page to show friend's creatures.
-    alert('View creatures for user ID: ' + friendUserId);
-}
+// ── View Friend's Creatures ───────────────────────────────────────────
+async function friendViewCreatures(userId, name) {
+    const modal = document.createElement('div');
+    modal.className = 'modal active';
+    modal.innerHTML = `
+        <div class="modal-content" style="max-width:680px">
+            <div class="modal-header">
+                <h2 class="modal-title">🦖 ${name}'s Nuggies</h2>
+                <button class="close-btn" onclick="this.closest('.modal').remove()">&times;</button>
+            </div>
+            <div class="modal-body" id="friendCreaturesBody">
+                <div style="color:#94a3b8">Loading...</div>
+            </div>
+        </div>`;
+    document.body.appendChild(modal);
 
-// Tribe Manager functionality
-async function renderTribeFriendsList() {
-    const tribeDiv = document.getElementById('tribeFriendsList');
-    if (!tribeDiv) return;
-    tribeDiv.innerHTML = '<div class="loading">Loading friends...</div>';
-    try {
-        const res = await fetch('/api/friends', {
-            headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
-        });
-        const friends = await res.json();
-        if (!Array.isArray(friends) || friends.length === 0) {
-            tribeDiv.innerHTML = '<div class="error-message">No friends to assign to your tribe.</div>';
-            return;
-        }
-        const myTribe = await getMyTribe();
-        const tribeMembers = myTribe ? (myTribe.members || []).map(m => m.user_id) : [];
-        tribeDiv.innerHTML = friends.map(f => {
-            const isInTribe = tribeMembers.includes(f.friend_user_id);
-            return `<div class="tribe-friend-item">
-                <span><strong>${f.friend_nickname || f.friend_email}</strong> ${f.friend_discord_name ? `<span class='friend-meta'>Discord: ${f.friend_discord_name}</span>` : ''}</span>
-                <button class="btn btn-sm ${isInTribe ? 'btn-danger' : 'btn-primary'}" onclick="${isInTribe ? `removeFromTribe(${f.friend_user_id})` : `addToTribe(${f.friend_user_id})`}">${isInTribe ? 'Remove from Tribe' : 'Add to Tribe'}</button>
+    const { res, body } = await apiRequest(`/api/users/${userId}/creatures`);
+    const bodyEl = document.getElementById('friendCreaturesBody');
+    if (!bodyEl) return;
+
+    if (!res.ok || !Array.isArray(body) || !body.length) {
+        bodyEl.innerHTML = '<div style="color:#64748b;padding:20px 0">No creatures yet.</div>';
+        return;
+    }
+
+    bodyEl.innerHTML = `<div class="friend-creatures-grid">
+        ${body.map(c => {
+            const bs = c.baseStats || {};
+            const muts = c.mutations || {};
+            const dom = c.domesticLevels || {};
+            const totalMuts = Object.values(muts).reduce((a, b) => a + b, 0);
+            const badges = (window.BadgeSystem && typeof window.BadgeSystem.generateBadgeHTML === 'function')
+                ? window.BadgeSystem.generateBadgeHTML(c) : '';
+            return `
+            <div class="friend-creature-card">
+                <div class="friend-creature-header">
+                    <div>
+                        <div class="friend-creature-name">${c.name || 'Unnamed'}</div>
+                        <div class="friend-creature-species">${c.species || '?'} · Lvl ${c.level || 1} · ${c.gender || '?'}</div>
+                    </div>
+                    ${badges ? `<div>${badges}</div>` : ''}
+                </div>
+                <div class="friend-creature-stats">
+                    <div class="fc-stat"><span>❤️ HP</span><strong>${bs.Health||0}</strong></div>
+                    <div class="fc-stat"><span>⚡ Stam</span><strong>${bs.Stamina||0}</strong></div>
+                    <div class="fc-stat"><span>🍖 Food</span><strong>${bs.Food||0}</strong></div>
+                    <div class="fc-stat"><span>🏋️ Wgt</span><strong>${bs.Weight||0}</strong></div>
+                    <div class="fc-stat"><span>⚔️ Mel</span><strong>${bs.Melee||0}</strong></div>
+                    <div class="fc-stat"><span>🧬 Muts</span><strong>${totalMuts}</strong></div>
+                </div>
+                ${c.notes ? `<div class="friend-creature-notes">${c.notes}</div>` : ''}
             </div>`;
-        }).join('');
-    } catch (e) {
-        tribeDiv.innerHTML = '<div class="error-message">Failed to load tribe friends.</div>';
-    }
+        }).join('')}
+    </div>`;
 }
+window.friendViewCreatures = friendViewCreatures;
 
-// Add friend to tribe
-async function addToTribe(friendUserId) {
-    try {
-        const myTribe = await getMyTribe();
-        if (!myTribe) return alert('You are not in a tribe.');
-        const res = await fetch(`/api/tribes/${myTribe.id}/members`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-            },
-            body: JSON.stringify({ user_id: friendUserId })
-        });
-        if (res.ok) {
-            await renderTribeFriendsList();
-        } else {
-            const err = await res.json().catch(() => ({}));
-            alert(err.error || 'Failed to add to tribe');
-        }
-    } catch (e) {
-        alert('Failed to add to tribe');
-    }
-}
-
-// Remove friend from tribe
-async function removeFromTribe(friendUserId) {
-    if (!confirm('Remove from tribe?')) return;
-    try {
-        const myTribe = await getMyTribe();
-        if (!myTribe) return alert('You are not in a tribe.');
-        const res = await fetch(`/api/tribes/${myTribe.id}/members/${friendUserId}`, {
-            method: 'DELETE',
-            headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
-        });
-        if (res.ok) {
-            await renderTribeFriendsList();
-        } else {
-            const err = await res.json().catch(() => ({}));
-            alert(err.error || 'Failed to remove from tribe');
-        }
-    } catch (e) {
-        alert('Failed to remove from tribe');
-    }
-}
-
-// Helper: fetch current user's tribe (returns tribe object or null)
-async function getMyTribe() {
-    try {
-        const res = await fetch('/api/my-tribe', {
-            headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
-        });
-        if (!res.ok) return null;
-        return await res.json();
-    } catch (e) {
-        return null;
-    }
-}
-
-// Render tribe status
-async function renderTribeStatus() {
-    const statusDiv = document.getElementById('tribeStatus');
-    if (!statusDiv) return;
-    try {
-        const tribe = await getMyTribe();
-        if (tribe) {
-            statusDiv.innerHTML = `<p>You are in tribe: <strong>${tribe.name}</strong> <span class="friend-meta">(${tribe.role})</span></p>`;
-        } else {
-            statusDiv.innerHTML = '<p>You are not in a tribe.</p>';
-        }
-    } catch (e) {
-        statusDiv.innerHTML = '<p>Unable to load tribe status.</p>';
-    }
-}
-
-// Show create tribe modal
-function showCreateTribeModal() {
-    const modal = document.createElement('div');
-    modal.className = 'modal';
-    modal.innerHTML = `
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Create New Tribe</h2>
-                <button class="close-btn" id="closeCreateTribe">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label>Tribe Name</label>
-                    <input type="text" id="tribeNameInput" class="form-control" placeholder="Enter tribe name">
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" id="cancelCreateTribe">Cancel</button>
-                <button class="btn btn-primary" id="submitCreateTribe">Create</button>
-            </div>
-        </div>
-    `;
-    document.body.appendChild(modal);
-    modal.classList.add('active');
-
-    document.getElementById('closeCreateTribe').addEventListener('click', () => modal.remove());
-    document.getElementById('cancelCreateTribe').addEventListener('click', () => modal.remove());
-    document.getElementById('submitCreateTribe').addEventListener('click', async () => {
-        const name = document.getElementById('tribeNameInput').value.trim();
-        if (!name) return alert('Please enter a tribe name.');
-
-        try {
-            const response = await fetch('/api/tribes', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                },
-                body: JSON.stringify({ name })
-            });
-
-            if (response.ok) {
-                alert('Tribe created successfully!');
-                modal.remove();
-                await renderTribeStatus();
-                await renderTribeFriendsList();
-            } else {
-                alert('Failed to create tribe.');
-            }
-        } catch (e) {
-            alert('Error creating tribe.');
-        }
-    });
-}
-
-// Show join tribe modal
-function showJoinTribeModal() {
-    const modal = document.createElement('div');
-    modal.className = 'modal';
-    modal.innerHTML = `
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Join Tribe</h2>
-                <button class="close-btn" id="closeJoinTribe">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label>Tribe Name or ID</label>
-                    <input type="text" id="joinTribeInput" class="form-control" placeholder="Enter tribe name or ID">
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" id="cancelJoinTribe">Cancel</button>
-                <button class="btn btn-primary" id="submitJoinTribe">Request to Join</button>
-            </div>
-        </div>
-    `;
-    document.body.appendChild(modal);
-    modal.classList.add('active');
-
-    document.getElementById('closeJoinTribe').addEventListener('click', () => modal.remove());
-    document.getElementById('cancelJoinTribe').addEventListener('click', () => modal.remove());
-    document.getElementById('submitJoinTribe').addEventListener('click', async () => {
-        const tribeIdentifier = document.getElementById('joinTribeInput').value.trim();
-        if (!tribeIdentifier) return alert('Please enter a tribe name or ID.');
-
-        try {
-            // Search for the tribe by name, then join by ID
-            const searchRes = await fetch(`/api/tribes?q=${encodeURIComponent(tribeIdentifier)}`, {
-                headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
-            });
-            const tribes = await searchRes.json();
-            const match = Array.isArray(tribes) && tribes.find(t =>
-                t.name.toLowerCase() === tribeIdentifier.toLowerCase() || String(t.id) === tribeIdentifier
-            );
-            if (!match) return alert('Tribe not found. Check the name and try again.');
-            const response = await fetch(`/api/tribes/${match.id}/join`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                },
-                body: JSON.stringify({})
-            });
-
-            if (response.ok) {
-                alert('Join request sent!');
-                modal.remove();
-            } else {
-                alert('Failed to send join request.');
-            }
-        } catch (e) {
-            alert('Error sending join request.');
-        }
-    });
-}
-
-// Make functions available globally
+// Legacy exports (kept for any remaining references in other files)
 window.loadFriendsPage = loadFriendsPage;
-window.sendFriendRequest = sendFriendRequest;
-window.removeFriend = removeFriend;
-window.respondToFriendRequest = respondToFriendRequest;
-window.viewFriendCreatures = viewFriendCreatures;
-window.addToTribe = addToTribe;
-window.removeFromTribe = removeFromTribe;
+window.sendFriendRequest = friendSendRequest;
+window.removeFriend = friendRemove;
+window.respondToFriendRequest = friendRespond;
+window.viewFriendCreatures = friendViewCreatures;

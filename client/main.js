@@ -2262,9 +2262,18 @@ async function loadMyProfilePage() {
             ach.forEach(a => topBadges.push({ ...a, creatureName: c.name || 'Unnamed', species: c.species || '' }));
         });
     }
-    // Sort: diamond first, then by id
-    const tierOrder = { diamond: 0, gold: 1, silver: 2, bronze: 3, titan: 0, alpha: 1, beta: 2, gamma: 3 };
+    const tierOrder = { diamond: 0, titan: 0, gold: 1, alpha: 1, silver: 2, beta: 2, bronze: 3, gamma: 3 };
     topBadges.sort((a, b) => (tierOrder[a.tier] ?? 9) - (tierOrder[b.tier] ?? 9));
+
+    // Collector badges (per full collection)
+    const collectorBadges = (window.BadgeSystem && typeof window.BadgeSystem.calculateCollectorBadges === 'function')
+        ? window.BadgeSystem.calculateCollectorBadges(creatures) : [];
+
+    // Also count utility badges
+    let utilityCount = 0;
+    if (window.BadgeSystem && typeof window.BadgeSystem.calculateUtilityHarvester === 'function') {
+        creatures.forEach(c => { if (window.BadgeSystem.calculateUtilityHarvester(c).length > 0) utilityCount++; });
+    }
 
     // My trade listings + received offers
     const myListings = trades.filter(t => t.user_id === myId && t.status === 'open');
@@ -2309,20 +2318,47 @@ async function loadMyProfilePage() {
                     </div>
                 </div>
 
-                <!-- Achievements -->
+                <!-- Per-creature Badges -->
                 <div class="profile-card">
-                    <div class="profile-card-header"><h3>🏆 Badges Earned</h3></div>
+                    <div class="profile-card-header"><h3>🏆 Creature Badges</h3></div>
                     ${topBadges.length === 0
-                        ? `<div class="friends-empty">No badges yet — add creatures with strong stats to earn them.</div>`
+                        ? `<div class="friends-empty">No badges yet. Add creatures with strong stats to earn them.</div>`
                         : `<div class="profile-badges-list">
-                            ${topBadges.slice(0, 6).map(a => {
-                                const emoji = window.BadgeSystem?.generateBadgeHTML ? '' : '';
-                                const tierLabel = { diamond:'💎', gold:'🥇', silver:'🥈', bronze:'🥉', titan:'💎', alpha:'🔴', beta:'🔵', gamma:'🟢' }[a.tier] || '🏆';
+                            ${topBadges.slice(0, 8).map(a => {
+                                const bs = window.BadgeSystem;
+                                const mockC = { baseStats:{}, mutations:{}, domesticLevels:{}, species:'', achievements:[a] };
+                                // Use emojiFor indirectly via id/tier pattern
+                                const tierEmoji = { diamond:'💎', titan:'💎', gold:'🥇', alpha:'🥇', silver:'🥈', beta:'🥈', bronze:'🥉', gamma:'🥉' }[a.tier] || '🏆';
+                                const prefixEmoji = a.id && a.id.startsWith('util_') ? { util_yield:'⛏️', util_gatherer:'🌿', util_cargo:'📦', util_refinery:'🔥', util_gemstone:'💍' }[a.id] || '🔧' : '';
+                                const displayEmoji = prefixEmoji ? prefixEmoji + tierEmoji : tierEmoji;
                                 return `<div class="profile-badge-row">
-                                    <span class="pb-icon">${tierLabel}</span>
+                                    <span class="pb-icon">${displayEmoji}</span>
                                     <div class="pb-info">
                                         <div class="pb-name">${a.name}</div>
                                         <div class="pb-creature">${a.creatureName} · ${a.species}</div>
+                                    </div>
+                                </div>`;
+                            }).join('')}
+                            ${topBadges.length > 8 ? `<div class="friends-empty" style="text-align:center">+${topBadges.length - 8} more badges</div>` : ''}
+                           </div>`
+                    }
+                </div>
+
+                <!-- Collection Achievements (Collector badges) -->
+                <div class="profile-card">
+                    <div class="profile-card-header"><h3>🎖️ Collection Achievements</h3></div>
+                    ${collectorBadges.length === 0
+                        ? `<div class="friends-empty">Keep collecting — these unlock at 5 combat, 3 harvesting, or 3 transport creatures.</div>`
+                        : `<div class="profile-badges-list">
+                            ${collectorBadges.map(a => {
+                                const trackEmoji = a.id.startsWith('collector_boss_slayer') ? '🗡️'
+                                    : a.id.startsWith('collector_harvester') ? '🪓' : '🗺️';
+                                const tierEmoji = { diamond:'💎', gold:'🥇', silver:'🥈', bronze:'🥉' }[a.tier] || '🏆';
+                                return `<div class="profile-badge-row">
+                                    <span class="pb-icon">${trackEmoji}${tierEmoji}</span>
+                                    <div class="pb-info">
+                                        <div class="pb-name">${a.name}</div>
+                                        <div class="pb-creature">${a.meta?.count || 0} qualifying creatures</div>
                                     </div>
                                 </div>`;
                             }).join('')}
@@ -2375,6 +2411,7 @@ async function loadMyProfilePage() {
                         <div class="profile-stat-block"><div class="psb-val">${badgeCount}</div><div class="psb-lbl">🏆 Prized Bloodlines</div></div>
                         <div class="profile-stat-block"><div class="psb-val">${bossReadyCount}</div><div class="psb-lbl">👑 Boss Ready</div></div>
                         <div class="profile-stat-block"><div class="psb-val">${underdogCount}</div><div class="psb-lbl">🥊 Underdogs</div></div>
+                        <div class="profile-stat-block"><div class="psb-val">${utilityCount}</div><div class="psb-lbl">⛏️ Utility Badges</div></div>
                         <div class="profile-stat-block"><div class="psb-val">${myListings.length}</div><div class="psb-lbl">🔁 Active Listings</div></div>
                     </div>
                 </div>

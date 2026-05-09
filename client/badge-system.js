@@ -1,220 +1,408 @@
-// Lightweight BadgeSystem: calculates achievements and renders small badge HTML.
-(function(){
+// BadgeSystem — complete badge calculation and rendering engine.
+// Sections: Prized Bloodline | Boss Ready | Underdog | Utility/Harvester | Collector
+(function () {
+
+  // ── Shared helpers ────────────────────────────────────────────────────────
+
+  // Compute total effective stat points: base + (mutations × 2) + domestic levels
+  function calcTotal(base, muts, dom) {
+    return (Number(base) || 0) + ((Number(muts) || 0) * 2) + (Number(dom) || 0);
+  }
+
+  // Case-insensitive species membership check (partial match)
+  function speciesIn(creatureSpecies, list) {
+    const s = (creatureSpecies || '').toLowerCase();
+    return list.some(n => s.includes(n));
+  }
+
+  // Resolve tier → CSS class
+  const TIER_CSS = {
+    bronze: 'badge-bronze',
+    silver: 'badge-silver',
+    gold:   'badge-gold',
+    diamond:'badge-diamond',
+    gamma:  'badge-bronze',
+    beta:   'badge-silver',
+    alpha:  'badge-gold',
+    titan:  'badge-diamond',
+  };
+
+  // Resolve badge id + tier → display emoji
+  function emojiFor(id, tier) {
+    id   = (id   || '').toLowerCase();
+    tier = (tier || '').toLowerCase();
+
+    // Prized Bloodline
+    if (id === 'prized_bloodline') {
+      if (tier === 'diamond') return '💎';
+      if (tier === 'gold')    return '🥇';
+      if (tier === 'silver')  return '🥈';
+      return '🥉';
+    }
+
+    // Boss Ready — core tiers
+    if (id === 'boss_gamma_ready')  return '⭐';
+    if (id === 'boss_beta_ready')   return '⭐⭐';
+    if (id === 'boss_alpha_ready')  return '⭐⭐⭐';
+    if (id === 'boss_titan_slayer') return '⚡';
+
+    // Boss Ready — role badges
+    if (id === 'boss_tank')      return '🛡️';
+    if (id === 'boss_dps')       return '⚔️';
+    if (id === 'boss_juggernaut')return '💪';
+    if (id === 'boss_bruiser')   return '🪓';
+
+    // Underdog
+    if (id.startsWith('underdog')) {
+      if (tier === 'titan') return '🐾💎';
+      if (tier === 'alpha') return '🐾🥇';
+      if (tier === 'beta')  return '🐾🥈';
+      return '🐾🥉';
+    }
+
+    // Utility — Yield Harvester
+    if (id === 'util_yield') {
+      if (tier === 'diamond') return '⛏️💎';
+      if (tier === 'gold')    return '⛏️🥇';
+      if (tier === 'silver')  return '⛏️🥈';
+      return '⛏️🥉';
+    }
+
+    // Utility — Specialized Gatherer
+    if (id === 'util_gatherer') {
+      if (tier === 'diamond') return '🌿💎';
+      if (tier === 'gold')    return '🌿🥇';
+      if (tier === 'silver')  return '🌿🥈';
+      return '🌿🥉';
+    }
+
+    // Utility — Cargo Transport
+    if (id === 'util_cargo') {
+      if (tier === 'diamond') return '📦💎';
+      if (tier === 'gold')    return '📦🥇';
+      if (tier === 'silver')  return '📦🥈';
+      return '📦🥉';
+    }
+
+    // Utility — Mobile Refinery
+    if (id === 'util_refinery') {
+      if (tier === 'diamond') return '🔥💎';
+      if (tier === 'gold')    return '🔥🥇';
+      if (tier === 'silver')  return '🔥🥈';
+      return '🔥🥉';
+    }
+
+    // Utility — Gemstone Specialist
+    if (id === 'util_gemstone') {
+      if (tier === 'diamond') return '💍💎';
+      if (tier === 'gold')    return '💍🥇';
+      if (tier === 'silver')  return '💍🥈';
+      return '💍🥉';
+    }
+
+    // Collector — Boss Slayer track
+    if (id.startsWith('collector_boss_slayer')) {
+      if (tier === 'diamond') return '🗡️💎';
+      if (tier === 'gold')    return '🗡️🥇';
+      if (tier === 'silver')  return '🗡️🥈';
+      return '🗡️🥉';
+    }
+
+    // Collector — Master Harvester track
+    if (id.startsWith('collector_harvester')) {
+      if (tier === 'diamond') return '🪓💎';
+      if (tier === 'gold')    return '🪓🥇';
+      if (tier === 'silver')  return '🪓🥈';
+      return '🪓🥉';
+    }
+
+    // Collector — Transport Specialist track
+    if (id.startsWith('collector_transport')) {
+      if (tier === 'diamond') return '🗺️💎';
+      if (tier === 'gold')    return '🗺️🥇';
+      if (tier === 'silver')  return '🗺️🥈';
+      return '🗺️🥉';
+    }
+
+    return '🏆';
+  }
+
+  // ── Meta lists ─────────────────────────────────────────────────────────────
+
+  // Creatures eligible for Boss Ready (NOT eligible for Underdog)
+  // Allosaurus intentionally excluded — Casper moved it to Underdog eligibility
+  const META_LIST = [
+    'rex', 'giganotosaurus', 'carcharodontosaurus', 'therizinosaurus',
+    'deinonychus', 'megatherium', 'yutyrannus', 'daeodon', 'woolly rhino',
+    'shadowmane', 'reaper', 'rock drake', 'megalosaurus', 'spino',
+    'baryonyx', 'velonasaur', 'managarmr'
+  ];
+
+  // ── Badge System ───────────────────────────────────────────────────────────
+
   const BadgeSystem = {
-    // Determine prized bloodline qualification using legacy Old Nugget rules.
-    // Legacy core stats omitted Oxygen and used thresholds: Bronze >=45, Silver >=50, Gold >=55
-    calculatePrizedBloodline(creature){
-      if (!creature || !creature.baseStats) return { qualified: false, tier: null, minStat: 0 };
-      const core = ['Health','Stamina','Food','Weight','Melee'];
-      const values = core.map(s => Number(creature.baseStats?.[s] || 0));
-      // ignore zeros when computing min (legacy filtered zero values)
-      const positive = values.filter(v => typeof v === 'number' && v > 0);
-      const minStat = positive.length > 0 ? Math.min(...positive) : 0;
 
-  const qualifiedBronze = positive.length === core.length && values.every(v => v >= 45);
-  const qualifiedSilver = positive.length === core.length && values.every(v => v >= 50);
-  const qualifiedGold = positive.length === core.length && values.every(v => v >= 55);
-  const qualifiedDiamond = positive.length === core.length && values.every(v => v >= 60);
+    calculateTotal: calcTotal,
 
-  if (qualifiedDiamond) return { qualified: true, tier: 'diamond', minStat, id: 'prized_bloodline', name: 'Prized Bloodline', meta: { announce: true } };
-  if (qualifiedGold) return { qualified: true, tier: 'gold', minStat, id: 'prized_bloodline', name: 'Prized Bloodline' };
-  if (qualifiedSilver) return { qualified: true, tier: 'silver', minStat, id: 'prized_bloodline', name: 'Prized Bloodline' };
-  if (qualifiedBronze) return { qualified: true, tier: 'bronze', minStat, id: 'prized_bloodline', name: 'Prized Bloodline' };
-      return { qualified: false, tier: null, minStat, id: 'prized_bloodline', name: 'Prized Bloodline' };
+    // ── Prized Bloodline ───────────────────────────────────────────────────
+    // Wild base stats only (Health, Stamina, Food, Weight, Melee).
+    // All 5 must meet the threshold — one weak stat disqualifies.
+    calculatePrizedBloodline(creature) {
+      try {
+        if (!creature || !creature.baseStats) return { qualified: false, tier: null, minStat: 0 };
+        const core = ['Health', 'Stamina', 'Food', 'Weight', 'Melee'];
+        const values = core.map(s => Number(creature.baseStats[s] || 0));
+        const nonZero = values.filter(v => v > 0);
+        if (nonZero.length < core.length) return { qualified: false, tier: null, minStat: 0, id: 'prized_bloodline', name: 'Prized Bloodline' };
+        const minStat = Math.min(...values);
+
+        let tier = null;
+        if (values.every(v => v >= 60)) tier = 'diamond';
+        else if (values.every(v => v >= 55)) tier = 'gold';
+        else if (values.every(v => v >= 50)) tier = 'silver';
+        else if (values.every(v => v >= 45)) tier = 'bronze';
+
+        return {
+          qualified: tier !== null,
+          tier,
+          minStat,
+          id: 'prized_bloodline',
+          name: 'Prized Bloodline',
+          meta: tier === 'diamond' ? { announce: true } : {}
+        };
+      } catch (e) { return { qualified: false, tier: null, minStat: 0 }; }
     },
 
-    // Legacy helper to format stat displays like "base/mutations/levels"
-    formatStatDisplay(basePoints, mutations, levels) {
-      return `${basePoints || 0}/${mutations || 0}/${levels || 0}`;
-    },
-
-    // Legacy helper to compute total effective stat (1 mutation = 2 levels)
-    calculateTotal(basePoints, mutations, levels, scaling = 1) {
-      const mutationLevels = (mutations || 0) * 2;
-      return ((basePoints || 0) + mutationLevels + (levels || 0)) * (scaling || 1);
-    },
-
-  // Mutation Master and Tank achievements removed per request
-
-    // Boss Ready calculations per provided rules (uses total = base + mutations*2 + domesticLevels)
-    calculateBossReady(creature){
+    // ── Boss Ready ──────────────────────────────────────────────────────────
+    // Meta creatures only. Formula: base + (muts × 2) + domestic.
+    // Returns an array — a creature can have both a tier badge AND role badges.
+    calculateBossReady(creature) {
       try {
         if (!creature) return [];
-        const base = creature.baseStats || {};
-        const muts = creature.mutations || {};
-        const dom = creature.domesticLevels || {};
+        const species = (creature.species || '').toLowerCase();
+        if (!META_LIST.some(n => species.includes(n))) return [];
 
-        const healthTotal = BadgeSystem.calculateTotal(base.Health || 0, muts.Health || 0, dom.Health || 0);
-        const meleeTotal = BadgeSystem.calculateTotal(base.Melee || 0, muts.Melee || 0, dom.Melee || 0);
-        const staminaTotal = BadgeSystem.calculateTotal(base.Stamina || 0, muts.Stamina || 0, dom.Stamina || 0);
-        const weightTotal = BadgeSystem.calculateTotal(base.Weight || 0, muts.Weight || 0, dom.Weight || 0);
+        const base = creature.baseStats    || {};
+        const muts = creature.mutations    || {};
+        const dom  = creature.domesticLevels || {};
+
+        const hp     = calcTotal(base.Health  || 0, muts.Health  || 0, dom.Health  || 0);
+        const melee  = calcTotal(base.Melee   || 0, muts.Melee   || 0, dom.Melee   || 0);
+        const stam   = calcTotal(base.Stamina || 0, muts.Stamina || 0, dom.Stamina || 0);
+        const weight = calcTotal(base.Weight  || 0, muts.Weight  || 0, dom.Weight  || 0);
 
         const badges = [];
-        // Main difficulty tiers (require both Health and Melee thresholds)
-        if (healthTotal >= 150 && meleeTotal >= 150) badges.push({ id: 'boss_titan_slayer', name: 'Titan Slayer', qualified: true, tier: 'titan', meta:{ healthTotal, meleeTotal } });
-        else if (healthTotal >= 125 && meleeTotal >= 125) badges.push({ id: 'boss_alpha_ready', name: 'Alpha Ready', qualified: true, tier: 'alpha', meta:{ healthTotal, meleeTotal } });
-        else if (healthTotal >= 100 && meleeTotal >= 100) badges.push({ id: 'boss_beta_ready', name: 'Beta Ready', qualified: true, tier: 'beta', meta:{ healthTotal, meleeTotal } });
-        else if (healthTotal >= 75 && meleeTotal >= 75) badges.push({ id: 'boss_gamma_ready', name: 'Gamma Ready', qualified: true, tier: 'gamma', meta:{ healthTotal, meleeTotal } });
 
-        // Specialized role badges (can exist independently)
-        if (healthTotal >= 175) badges.push({ id: 'boss_tank', name: 'Boss Tank', qualified: true, tier: 'gold', meta:{ healthTotal } });
-        if (meleeTotal >= 175) badges.push({ id: 'boss_dps', name: 'Boss DPS', qualified: true, tier: 'gold', meta:{ meleeTotal } });
-        if (healthTotal >= 125 && staminaTotal >= 125) badges.push({ id: 'boss_juggernaut', name: 'Boss Juggernaut', qualified: true, tier: 'gold', meta:{ healthTotal, staminaTotal } });
-        if (healthTotal >= 125 && weightTotal >= 125) badges.push({ id: 'boss_bruiser', name: 'Boss Bruiser', qualified: true, tier: 'gold', meta:{ healthTotal, weightTotal } });
+        // Core difficulty tier (only highest applies)
+        if      (hp >= 150 && melee >= 150) badges.push({ id: 'boss_titan_slayer', name: 'Titan Slayer',  tier: 'titan' });
+        else if (hp >= 125 && melee >= 125) badges.push({ id: 'boss_alpha_ready',  name: 'Alpha Ready',   tier: 'alpha' });
+        else if (hp >= 100 && melee >= 100) badges.push({ id: 'boss_beta_ready',   name: 'Beta Ready',    tier: 'beta'  });
+        else if (hp >= 75  && melee >= 75 ) badges.push({ id: 'boss_gamma_ready',  name: 'Gamma Ready',   tier: 'gamma' });
 
-        // Normalize to minimal shape like other calculators
-        return badges.map(b => ({ id: b.id, name: b.name, qualified: !!b.qualified, tier: b.tier || null, meta: b.meta || {} }));
+        // Specialized roles (independent of tier — can stack)
+        if (hp    >= 175) badges.push({ id: 'boss_tank',      name: 'Boss Tank',      tier: 'gold' });
+        if (melee >= 175) badges.push({ id: 'boss_dps',       name: 'Boss DPS',       tier: 'gold' });
+        if (hp >= 125 && stam   >= 125) badges.push({ id: 'boss_juggernaut', name: 'Boss Juggernaut', tier: 'gold' });
+        if (hp >= 125 && weight >= 125) badges.push({ id: 'boss_bruiser',    name: 'Boss Bruiser',    tier: 'gold' });
+
+        return badges.map(b => ({ id: b.id, name: b.name, qualified: true, tier: b.tier, meta: { hp, melee } }));
       } catch (e) { return []; }
     },
 
-    // Underdog calculations: exclude canonical meta-boss species, use harsher thresholds
-    calculateUnderdog(creature){
+    // ── Underdog ────────────────────────────────────────────────────────────
+    // Non-meta creatures only. Same stat formula as Boss Ready.
+    calculateUnderdog(creature) {
       try {
         if (!creature) return [];
-        const ineligible = [
-          'rex','giganotosaurus','carcharodontosaurus','therizinosaurus','deinonychus','megatherium','yutyrannus','daeodon','woolly rhino','shadowmane','reaper','rock drake'
-        ];
-        const species = (creature.species || '').toString().toLowerCase();
-        // If species is one of the revised meta boss creatures, do not award underdog tiers
-        if (ineligible.some(n => species.indexOf(n) !== -1)) return [];
+        const species = (creature.species || '').toLowerCase();
+        if (META_LIST.some(n => species.includes(n))) return [];
 
-        const base = creature.baseStats || {};
-        const muts = creature.mutations || {};
-        const dom = creature.domesticLevels || {};
-        const healthTotal = BadgeSystem.calculateTotal(base.Health || 0, muts.Health || 0, dom.Health || 0);
-        const meleeTotal = BadgeSystem.calculateTotal(base.Melee || 0, muts.Melee || 0, dom.Melee || 0);
+        const base = creature.baseStats    || {};
+        const muts = creature.mutations    || {};
+        const dom  = creature.domesticLevels || {};
+
+        const hp    = calcTotal(base.Health || 0, muts.Health || 0, dom.Health || 0);
+        const melee = calcTotal(base.Melee  || 0, muts.Melee  || 0, dom.Melee  || 0);
+
         const badges = [];
-        if (healthTotal >= 160 && meleeTotal >= 160) badges.push({ id: 'underdog_titan', name: 'Underdog Titan', qualified: true, tier: 'titan', meta:{ healthTotal, meleeTotal } });
-        else if (healthTotal >= 140 && meleeTotal >= 140) badges.push({ id: 'underdog_legend', name: 'Underdog Legend', qualified: true, tier: 'alpha', meta:{ healthTotal, meleeTotal } });
-        else if (healthTotal >= 115 && meleeTotal >= 115) badges.push({ id: 'underdog_hero', name: 'Underdog Hero', qualified: true, tier: 'beta', meta:{ healthTotal, meleeTotal } });
-        else if (healthTotal >= 90 && meleeTotal >= 90) badges.push({ id: 'underdog_champion', name: 'Underdog Champion', qualified: true, tier: 'gamma', meta:{ healthTotal, meleeTotal } });
+        if      (hp >= 160 && melee >= 160) badges.push({ id: 'underdog_titan',    name: 'Underdog Titan',    tier: 'titan' });
+        else if (hp >= 140 && melee >= 140) badges.push({ id: 'underdog_legend',   name: 'Underdog Legend',   tier: 'alpha' });
+        else if (hp >= 115 && melee >= 115) badges.push({ id: 'underdog_hero',     name: 'Underdog Hero',     tier: 'beta'  });
+        else if (hp >= 90  && melee >= 90 ) badges.push({ id: 'underdog_champion', name: 'Underdog Champion', tier: 'gamma' });
 
-        return badges.map(b => ({ id: b.id, name: b.name, qualified: !!b.qualified, tier: b.tier || null, meta: b.meta || {} }));
+        return badges.map(b => ({ id: b.id, name: b.name, qualified: true, tier: b.tier, meta: { hp, melee } }));
       } catch (e) { return []; }
     },
 
-    // Aggregate all achievement calculators into a list
-    calculateAchievements(creature){
+    // ── Utility & Harvester ─────────────────────────────────────────────────
+    // Species-gated. Each category has its own eligible list and formula.
+    calculateUtilityHarvester(creature) {
       try {
-        const ach = [];
-  // Prized is a single-object result
-  const prized = BadgeSystem.calculatePrizedBloodline(creature);
-  if (prized && prized.qualified) ach.push(prized);
-  // (Mutation Master and Tank removed)
-  // Boss Ready may return multiple badges
-  const bossBadges = BadgeSystem.calculateBossReady(creature) || [];
-  bossBadges.forEach(b => { if (b && b.qualified) ach.push(b); });
-  // Underdog may return multiple badges (and will be empty for ineligible species)
-  const underdogBadges = BadgeSystem.calculateUnderdog(creature) || [];
-  underdogBadges.forEach(b => { if (b && b.qualified) ach.push(b); });
+        if (!creature || !creature.species) return [];
+        const s    = creature.species;
+        const base = creature.baseStats    || {};
+        const muts = creature.mutations    || {};
+        const dom  = creature.domesticLevels || {};
 
-  // Normalize and return
-  return ach.filter(a => a && a.qualified).map(a => ({ id: a.id, name: a.name, tier: a.tier, meta: a }));
-      } catch (e) { return []; }
-    },
+        const meleeT  = calcTotal(base.Melee   || 0, muts.Melee   || 0, dom.Melee   || 0);
+        const weightT = calcTotal(base.Weight  || 0, muts.Weight  || 0, dom.Weight  || 0);
+        const stamT   = calcTotal(base.Stamina || 0, muts.Stamina || 0, dom.Stamina || 0);
 
-    // Return a small HTML snippet for a creature's badges using emojis (accessible)
-    generateBadgeHTML(creature){
-      try {
-        const achievements = BadgeSystem.calculateAchievements(creature) || [];
-        if (!achievements || achievements.length === 0) return '';
+        // Specialized Gatherer uses sum of all domestic levels (how invested the owner is across all stats)
+        const totalDom = Object.values(dom).reduce((sum, v) => sum + (Number(v) || 0), 0);
 
-        // Helper: map an achievement id + tier to a single emoji (or short emoji string)
-        function emojiFor(a){
-          const id = (a.id || '').toString().toLowerCase();
-          const tier = (a.tier || '').toString().toLowerCase();
+        const badges = [];
 
-          // Prized uses tier-specific medals / diamond
-          if (id === 'prized_bloodline'){
-            if (tier === 'diamond') return '💎';
-            if (tier === 'gold') return '🥇';
-            if (tier === 'silver') return '🥈';
-            return '🥉';
-          }
-
-          // Tank (only boss-specific tank badge uses shield emoji)
-          if (id === 'boss_tank') return '🛡️';
-
-          // Boss difficulty tiers: represent by star count
-          if (id === 'boss_gamma_ready') return '⭐';
-          if (id === 'boss_beta_ready') return '⭐⭐';
-          if (id === 'boss_alpha_ready') return '⭐⭐⭐';
-          if (id === 'boss_titan_slayer') return '⭐⭐⭐⭐';
-
-          // Boss roles
-          if (id === 'boss_dps') return '⚔️';
-          if (id === 'boss_juggernaut') return '💪';
-          if (id === 'boss_bruiser') return '🪓';
-
-          // Underdog badges: paw + optional stars by tier
-          if (id.indexOf('underdog') === 0) {
-            if (tier === 'titan') return '🐾⭐⭐⭐';
-            if (tier === 'alpha') return '🐾⭐⭐';
-            if (tier === 'beta') return '🐾⭐';
-            return '🐾';
-          }
-
-          // Fallback: a trophy
-          return '🏆';
+        // Helper: tier from value + thresholds [bronze, silver, gold, diamond]
+        function tier4(val, t) {
+          if (val >= t[3]) return 'diamond';
+          if (val >= t[2]) return 'gold';
+          if (val >= t[1]) return 'silver';
+          if (val >= t[0]) return 'bronze';
+          return null;
+        }
+        function tier3(val, t) { // 3 tiers: bronze/silver/gold
+          if (val >= t[2]) return 'gold';
+          if (val >= t[1]) return 'silver';
+          if (val >= t[0]) return 'bronze';
+          return null;
         }
 
-        // Map semantic tiers to visual classes used by CSS (preserve styling hooks)
-        const visualMap = {
-          'bronze': 'badge-bronze', 'silver': 'badge-silver', 'gold': 'badge-gold',
-          'gamma': 'badge-bronze', 'beta': 'badge-silver', 'alpha': 'badge-gold', 'titan': 'badge-gold'
-        };
+        // A — Yield Harvesters (Melee total | 80/105/130/155)
+        if (speciesIn(s, ['ankylosaurus','doedicurus','castoroides','mammoth','magmasaur','therizinosaurus'])) {
+          const t = tier4(meleeT, [80, 105, 130, 155]);
+          if (t) badges.push({ id: 'util_yield', name: 'Yield Harvester', tier: t });
+        }
 
-        // Render up to 3 emoji badges, keep full text in title/aria-label for screen-readers
-        return achievements.slice(0,3).map(a => {
-          const tier = (a.tier || '').toString().toLowerCase();
-          const cls = visualMap[tier] || `badge-${tier || 'bronze'}`;
-          const emoji = emojiFor(a);
-          const title = (typeof escapeHtml === 'function') ? escapeHtml(`${a.name}${a.tier ? ` (${a.tier})` : ''}`) : `${a.name}${a.tier ? ` (${a.tier})` : ''}`;
-          const aria = (typeof escapeHtml === 'function') ? escapeHtml(`${a.name} ${a.tier || ''}`) : `${a.name} ${a.tier || ''}`;
-          return `<span class="badge ${cls}" role="img" aria-label="${aria}" title="${title}">${emoji}</span>`;
+        // B — Specialized Gatherers (total domestic levels | 50/70/90/110)
+        if (speciesIn(s, ['therizinosaurus','gigantopithecus','kairuku','mantis','moschops','achatina'])) {
+          const t = tier4(totalDom, [50, 70, 90, 110]);
+          if (t) badges.push({ id: 'util_gatherer', name: 'Specialized Gatherer', tier: t });
+        }
+
+        // C — Cargo Transport (Weight total | 80/105/130/155)
+        if (speciesIn(s, ['argentavis','quetzal','gasbags','paraceratherium','mosasaurus','dunkleosteus'])) {
+          const t = tier4(weightT, [80, 105, 130, 155]);
+          if (t) badges.push({ id: 'util_cargo', name: 'Cargo Transport', tier: t });
+        }
+
+        // D — Mobile Refinery (min of Weight + Stamina | 75/100/125/150)
+        if (speciesIn(s, ['argentavis','castoroides','thorny dragon','phoenix','magmasaur','equus'])) {
+          const t = tier4(Math.min(weightT, stamT), [75, 100, 125, 150]);
+          if (t) badges.push({ id: 'util_refinery', name: 'Mobile Refinery', tier: t });
+        }
+
+        // E — Gemstone Specialists (Melee total | 80/105/130/155)
+        if (speciesIn(s, ['ankylosaurus','roll rat','phoenix','karkinos'])) {
+          const t = tier4(meleeT, [80, 105, 130, 155]);
+          if (t) badges.push({ id: 'util_gemstone', name: 'Gemstone Specialist', tier: t });
+        }
+
+        return badges.map(b => ({ id: b.id, name: b.name, qualified: true, tier: b.tier, meta: {} }));
+      } catch (e) { return []; }
+    },
+
+    // ── Collector Badges ────────────────────────────────────────────────────
+    // Takes the FULL creature array (not a single creature).
+    // Counts by species badgeCategories: combat | harvesting | transport.
+    // Only the highest tier per track is awarded.
+    calculateCollectorBadges(allCreatures) {
+      try {
+        if (!Array.isArray(allCreatures) || !allCreatures.length) return [];
+        const db = (typeof window !== 'undefined' && window.SPECIES_DATABASE) || {};
+
+        let combat = 0, harvesting = 0, transport = 0;
+        allCreatures.forEach(c => {
+          const sp   = db[c.species] || {};
+          const cats = sp.badgeCategories || [];
+          if (cats.includes('combat'))     combat++;
+          if (cats.includes('harvesting')) harvesting++;
+          if (cats.includes('transport'))  transport++;
+        });
+
+        const badges = [];
+
+        // Boss Slayer track (5 / 15 / 30 / 50)
+        if      (combat >= 50) badges.push({ id: 'collector_boss_slayer_4', name: 'Apex Legend',     tier: 'diamond', count: combat });
+        else if (combat >= 30) badges.push({ id: 'collector_boss_slayer_3', name: 'Alpha Predator',  tier: 'gold',    count: combat });
+        else if (combat >= 15) badges.push({ id: 'collector_boss_slayer_2', name: 'Veteran Slayer',  tier: 'silver',  count: combat });
+        else if (combat >= 5)  badges.push({ id: 'collector_boss_slayer_1', name: 'Novice Hunter',   tier: 'bronze',  count: combat });
+
+        // Master Harvester track (3 / 10 / 20 / 35)
+        if      (harvesting >= 35) badges.push({ id: 'collector_harvester_4', name: 'Mining Mogul',    tier: 'diamond', count: harvesting });
+        else if (harvesting >= 20) badges.push({ id: 'collector_harvester_3', name: 'Resource Lord',   tier: 'gold',    count: harvesting });
+        else if (harvesting >= 10) badges.push({ id: 'collector_harvester_2', name: 'Industrialist',   tier: 'silver',  count: harvesting });
+        else if (harvesting >= 3)  badges.push({ id: 'collector_harvester_1', name: 'Gatherer',        tier: 'bronze',  count: harvesting });
+
+        // Transport Specialist track (3 / 8 / 15 / 25)
+        if      (transport >= 25) badges.push({ id: 'collector_transport_4', name: 'Transport Tycoon',  tier: 'diamond', count: transport });
+        else if (transport >= 15) badges.push({ id: 'collector_transport_3', name: 'Fleet Commander',   tier: 'gold',    count: transport });
+        else if (transport >= 8)  badges.push({ id: 'collector_transport_2', name: 'Logistics Expert',  tier: 'silver',  count: transport });
+        else if (transport >= 3)  badges.push({ id: 'collector_transport_1', name: 'Pack Mule',         tier: 'bronze',  count: transport });
+
+        return badges.map(b => ({ id: b.id, name: b.name, qualified: true, tier: b.tier, meta: { count: b.count } }));
+      } catch (e) { return []; }
+    },
+
+    // ── Aggregate (per-creature) ─────────────────────────────────────────────
+    // Called on a single creature. Returns all earned badges.
+    calculateAchievements(creature) {
+      try {
+        const ach = [];
+
+        const prized = BadgeSystem.calculatePrizedBloodline(creature);
+        if (prized && prized.qualified) ach.push(prized);
+
+        BadgeSystem.calculateBossReady(creature).forEach(b => { if (b.qualified) ach.push(b); });
+        BadgeSystem.calculateUnderdog(creature).forEach(b => { if (b.qualified) ach.push(b); });
+        BadgeSystem.calculateUtilityHarvester(creature).forEach(b => { if (b.qualified) ach.push(b); });
+
+        return ach.map(a => ({ id: a.id, name: a.name, tier: a.tier, qualified: true, meta: a.meta || a }));
+      } catch (e) { return []; }
+    },
+
+    // ── Rendering ───────────────────────────────────────────────────────────
+    // Small inline badge HTML for creature cards (up to 3 badges).
+    generateBadgeHTML(creature) {
+      try {
+        const ach = BadgeSystem.calculateAchievements(creature);
+        if (!ach.length) return '';
+        return ach.slice(0, 3).map(a => {
+          const cls   = TIER_CSS[a.tier] || 'badge-bronze';
+          const emoji = emojiFor(a.id, a.tier);
+          const label = `${a.name}${a.tier ? ' (' + a.tier + ')' : ''}`;
+          return `<span class="badge ${cls}" role="img" aria-label="${label}" title="${label}">${emoji}</span>`;
         }).join(' ');
       } catch (e) { return ''; }
     },
 
-    // Return a fuller textual badge list for detail views (emoji + full name)
-    generateBadgeDetailHTML(creature){
+    // Detailed badge HTML for modals / profile (shows emoji + full name).
+    generateBadgeDetailHTML(creature) {
       try {
-        const achievements = BadgeSystem.calculateAchievements(creature) || [];
-        if (!achievements || achievements.length === 0) return '';
-        function emojiFor(a){
-          const id = (a.id || '').toString().toLowerCase();
-          const tier = (a.tier || '').toString().toLowerCase();
-          if (id === 'prized_bloodline'){
-            if (tier === 'diamond') return '💎';
-            if (tier === 'gold') return '🥇';
-            if (tier === 'silver') return '🥈';
-            return '🥉';
-          }
-          if (id === 'boss_tank') return '🛡️';
-          if (id === 'boss_gamma_ready') return '⭐';
-          if (id === 'boss_beta_ready') return '⭐⭐';
-          if (id === 'boss_alpha_ready') return '⭐⭐⭐';
-          if (id === 'boss_titan_slayer') return '⭐⭐⭐⭐';
-          if (id === 'boss_dps') return '⚔️';
-          if (id === 'boss_juggernaut') return '💪';
-          if (id === 'boss_bruiser') return '🪓';
-          if (id.indexOf('underdog') === 0) {
-            if (tier === 'titan') return '🐾⭐⭐⭐';
-            if (tier === 'alpha') return '🐾⭐⭐';
-            if (tier === 'beta') return '🐾⭐';
-            return '🐾';
-          }
-          return '🏆';
-        }
-        return achievements.map(a => {
-          const emoji = emojiFor(a);
-          const label = (typeof escapeHtml === 'function') ? escapeHtml(`${a.name}${a.tier ? ` (${a.tier})` : ''}`) : `${a.name}${a.tier ? ` (${a.tier})` : ''}`;
-          return `<div class="badge-detail-item" title="${label}"><span class="badge-emoji" aria-hidden="true">${emoji}</span> <span class="badge-text">${label}</span></div>`;
+        const ach = BadgeSystem.calculateAchievements(creature);
+        if (!ach.length) return '';
+        return ach.map(a => {
+          const emoji = emojiFor(a.id, a.tier);
+          const label = `${a.name}${a.tier ? ' (' + a.tier + ')' : ''}`;
+          return `<div class="badge-detail-item"><span class="badge-emoji" aria-hidden="true">${emoji}</span> <span class="badge-text">${label}</span></div>`;
+        }).join('');
+      } catch (e) { return ''; }
+    },
+
+    // Collector badge HTML — pass the full creature array.
+    generateCollectorBadgeHTML(allCreatures) {
+      try {
+        const ach = BadgeSystem.calculateCollectorBadges(allCreatures);
+        if (!ach.length) return '';
+        return ach.map(a => {
+          const emoji = emojiFor(a.id, a.tier);
+          const label = `${a.name} (${a.meta?.count || 0})`;
+          const cls   = TIER_CSS[a.tier] || 'badge-bronze';
+          return `<div class="badge-detail-item"><span class="badge ${cls} badge-emoji">${emoji}</span> <span class="badge-text">${label}</span></div>`;
         }).join('');
       } catch (e) { return ''; }
     }
   };
 
-  // Export to window
   if (typeof window !== 'undefined') window.BadgeSystem = BadgeSystem;
 })();

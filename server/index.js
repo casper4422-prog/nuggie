@@ -205,12 +205,52 @@ db.serialize(() => {
     FOREIGN KEY(user_id) REFERENCES users(id)
   )`);
 
-  // Per-user arena creature lists (stored as JSON mapping arenaId -> [creature objects])
+  // Per-user arena creature lists (legacy blob storage)
   db.run(`CREATE TABLE IF NOT EXISTS arena_collections (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER NOT NULL,
     data TEXT NOT NULL,
     updated_at TEXT DEFAULT (datetime('now')),
+    FOREIGN KEY(user_id) REFERENCES users(id)
+  )`);
+
+  // Arena collaborative sessions (boss fight war rooms)
+  db.run(`CREATE TABLE IF NOT EXISTS arena_sessions (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    boss_id TEXT NOT NULL,
+    boss_name TEXT,
+    creator_user_id INTEGER NOT NULL,
+    join_code TEXT UNIQUE NOT NULL,
+    difficulty TEXT DEFAULT 'alpha',
+    status TEXT DEFAULT 'open',
+    created_at TEXT DEFAULT (datetime('now')),
+    FOREIGN KEY(creator_user_id) REFERENCES users(id)
+  )`);
+  db.run(`CREATE TABLE IF NOT EXISTS arena_session_members (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    session_id INTEGER NOT NULL,
+    user_id INTEGER NOT NULL,
+    joined_at TEXT DEFAULT (datetime('now')),
+    FOREIGN KEY(session_id) REFERENCES arena_sessions(id),
+    FOREIGN KEY(user_id) REFERENCES users(id)
+  )`);
+  db.run(`CREATE TABLE IF NOT EXISTS arena_creatures (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    session_id INTEGER NOT NULL,
+    user_id INTEGER NOT NULL,
+    creature_data TEXT NOT NULL,
+    added_at TEXT DEFAULT (datetime('now')),
+    FOREIGN KEY(session_id) REFERENCES arena_sessions(id),
+    FOREIGN KEY(user_id) REFERENCES users(id)
+  )`);
+  db.run(`CREATE TABLE IF NOT EXISTS arena_chat (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    session_id INTEGER NOT NULL,
+    user_id INTEGER NOT NULL,
+    message_type TEXT DEFAULT 'text',
+    content TEXT NOT NULL,
+    created_at TEXT DEFAULT (datetime('now')),
+    FOREIGN KEY(session_id) REFERENCES arena_sessions(id),
     FOREIGN KEY(user_id) REFERENCES users(id)
   )`);
 
@@ -1365,6 +1405,201 @@ app.put('/api/arena/creatures', authenticateToken, (req, res) => {
     db.run('INSERT INTO arena_collections (user_id, data) VALUES (?, ?)', [req.user.userId, payload], function(err2) {
       if (err2) return res.status(500).json({ error: 'Failed to save' });
       res.json({ success: true });
+    });
+  });
+});
+
+// ── Arena collaborative session routes ───────────────────────────────────────
+
+function arenaJoinCode() {
+  const words = ['IRON','DARK','FIRE','STORM','FROST','BLOOD','WILD','SHADOW','STEEL','RAVEN'];
+  return words[Math.floor(Math.random() * words.length)] + '-' + (1000 + Math.floor(Math.random() * 9000));
+}
+
+// Create a session
+app.post('/api/arena/sessions', authenticateToken, (req, res) => {
+  const { boss_id, boss_name, difficulty } = req.body || {};
+  if (!boss_id) return res.status(400).json({ error: 'Missing boss_id' });
+  const join_code = arenaJoinCode();
+  db.run('INSERT INTO arena_sessions (boss_id, boss_name, creator_user_id, join_code, difficulty) VALUES (?, ?, ?, ?, ?)',
+    [boss_id, boss_name || null, req.user.userId, join_code, difficulty || 'alpha'], function(err) {
+    if (err) return res.status(500).json({ error: 'Failed to create session' });
+    const sessionId = this.lastID;
+    db.run('INSERT INTO arena_session_members (session_id, user_id) VALUES (?, ?)', [sessionId, req.user.userId]);
+    res.status(201).json({ success: true, id: sessionId, join_code });
+  });
+});
+
+// List sessions the user belongs to
+app.get('/api/arena/sessions', authenticateToken, (req, res) => {
+  db.all(`SELECT s.id, s.boss_id, s.boss_name, s.difficulty, s.status, s.join_code, s.created_at,
+           s.creator_user_id, COUNT(DISTINCT m2.user_id) as member_count
+          FROM arena_sessions s
+          JOIN arena_session_members m ON s.id = m.session_id AND m.user_id = ?
+          LEFT JOIN arena_session_members m2 ON s.id = m2.session_id
+          GROUP BY s.id ORDER BY s.created_at DESC`,
+    [req.user.userId], (err, rows) => {
+    if (err) return res.status(500).json({ error: 'Failed to load sessions' });
+    res.json(rows || []);
+  });
+});
+
+// Get session details (members + creatures)
+app.get('/api/arena/sessions/:id', authenticateToken, (req, res) => {
+  const id = req.params.id;
+  db.get('SELECT id FROM arena_session_members WHERE session_id = ? AND user_id = ?',
+    [id, req.user.userId], (err, me) => {
+    if (err || !me) return res.status(403).json({ error: 'Not a session member' });
+    db.get('SELECT * FROM arena_sessions WHERE id = ?', [id], (err2, session) => {
+      if (err2 || !session) return res.status(404).json({ error: 'Session not found' });
+      db.all(`SELECT m.user_id, u.nickname, u.email FROM arena_session_members m
+              LEFT JOIN users u ON m.user_id = u.id WHERE m.session_id = ?`, [id], (err3, members) => {
+        db.all(`SELECT ac.id, ac.user_id, ac.creature_data, ac.added_at, u.nickname, u.email
+                FROM arena_creatures ac LEFT JOIN users u ON ac.user_id = u.id
+                WHERE ac.session_id = ?`, [id], (err4, creatures) => {
+          const parsed = (creatures || []).map(c => ({
+            id: c.id, user_id: c.user_id,
+            owner: c.nickname || c.email || 'Unknown',
+            added_at: c.added_at,
+            creature: (() => { try { return JSON.parse(c.creature_data); } catch(e) { return {}; } })()
+          }));
+          res.json({ ...session, members: members || [], creatures: parsed });
+        });
+      });
+    });
+  });
+});
+
+// Join by code
+app.post('/api/arena/sessions/join', authenticateToken, (req, res) => {
+  const { join_code } = req.body || {};
+  if (!join_code) return res.status(400).json({ error: 'Missing join code' });
+  db.get("SELECT * FROM arena_sessions WHERE UPPER(join_code) = UPPER(?) AND status = 'open'",
+    [join_code.trim()], (err, session) => {
+    if (err || !session) return res.status(404).json({ error: 'Session not found or closed' });
+    db.get('SELECT id FROM arena_session_members WHERE session_id = ? AND user_id = ?',
+      [session.id, req.user.userId], (err2, existing) => {
+      if (existing) return res.json({ success: true, id: session.id, already_member: true });
+      db.run('INSERT INTO arena_session_members (session_id, user_id) VALUES (?, ?)',
+        [session.id, req.user.userId], function(err3) {
+        if (err3) return res.status(500).json({ error: 'Failed to join' });
+        try {
+          const p = JSON.stringify({ sessionId: session.id, bossName: session.boss_name || session.boss_id });
+          db.run('INSERT INTO notifications (user_id, actor_user_id, type, payload, read) VALUES (?,?,?,?,0)',
+            [session.creator_user_id, req.user.userId, 'arena_join', p]);
+        } catch(e) {}
+        res.json({ success: true, id: session.id });
+      });
+    });
+  });
+});
+
+// Invite a user (adds them + notifies)
+app.post('/api/arena/sessions/:id/invite', authenticateToken, (req, res) => {
+  const sessionId = req.params.id;
+  const { user_id } = req.body || {};
+  if (!user_id) return res.status(400).json({ error: 'Missing user_id' });
+  db.get('SELECT id FROM arena_session_members WHERE session_id = ? AND user_id = ?',
+    [sessionId, req.user.userId], (err, me) => {
+    if (err || !me) return res.status(403).json({ error: 'Not a member' });
+    db.get('SELECT * FROM arena_sessions WHERE id = ?', [sessionId], (err2, session) => {
+      if (!session) return res.status(404).json({ error: 'Not found' });
+      db.get('SELECT id FROM arena_session_members WHERE session_id = ? AND user_id = ?',
+        [sessionId, user_id], (err3, exists) => {
+        if (exists) return res.status(400).json({ error: 'Already a member' });
+        db.run('INSERT INTO arena_session_members (session_id, user_id) VALUES (?, ?)',
+          [sessionId, user_id], function(err4) {
+          if (err4) return res.status(500).json({ error: 'Failed to invite' });
+          try {
+            const p = JSON.stringify({ sessionId, bossName: session.boss_name || session.boss_id, join_code: session.join_code });
+            db.run('INSERT INTO notifications (user_id, actor_user_id, type, payload, read) VALUES (?,?,?,?,0)',
+              [user_id, req.user.userId, 'arena_invite', p]);
+          } catch(e) {}
+          res.json({ success: true });
+        });
+      });
+    });
+  });
+});
+
+// Close session (creator only)
+app.put('/api/arena/sessions/:id/close', authenticateToken, (req, res) => {
+  db.run("UPDATE arena_sessions SET status = 'closed' WHERE id = ? AND creator_user_id = ?",
+    [req.params.id, req.user.userId], function(err) {
+    if (err) return res.status(500).json({ error: 'Failed to close' });
+    if (this.changes === 0) return res.status(403).json({ error: 'Not the creator or already closed' });
+    res.json({ success: true });
+  });
+});
+
+// Add a creature to the session roster
+app.post('/api/arena/sessions/:id/creatures', authenticateToken, (req, res) => {
+  const sessionId = req.params.id;
+  const { creature_data } = req.body || {};
+  if (!creature_data) return res.status(400).json({ error: 'Missing creature_data' });
+  db.get('SELECT id FROM arena_session_members WHERE session_id = ? AND user_id = ?',
+    [sessionId, req.user.userId], (err, me) => {
+    if (err || !me) return res.status(403).json({ error: 'Not a member' });
+    db.run('INSERT INTO arena_creatures (session_id, user_id, creature_data) VALUES (?, ?, ?)',
+      [sessionId, req.user.userId, JSON.stringify(creature_data)], function(err2) {
+      if (err2) return res.status(500).json({ error: 'Failed to add creature' });
+      res.status(201).json({ success: true, id: this.lastID });
+    });
+  });
+});
+
+// Remove your creature from the session
+app.delete('/api/arena/sessions/:id/creatures/:cid', authenticateToken, (req, res) => {
+  db.run('DELETE FROM arena_creatures WHERE id = ? AND session_id = ? AND user_id = ?',
+    [req.params.cid, req.params.id, req.user.userId], function(err) {
+    if (err) return res.status(500).json({ error: 'Failed to remove' });
+    if (this.changes === 0) return res.status(404).json({ error: 'Not found or not yours' });
+    res.json({ success: true });
+  });
+});
+
+// Send a chat message (text or creature share)
+app.post('/api/arena/sessions/:id/chat', authenticateToken, (req, res) => {
+  const sessionId = req.params.id;
+  const { message_type, content } = req.body || {};
+  if (!content) return res.status(400).json({ error: 'Missing content' });
+  db.get('SELECT id FROM arena_session_members WHERE session_id = ? AND user_id = ?',
+    [sessionId, req.user.userId], (err, me) => {
+    if (err || !me) return res.status(403).json({ error: 'Not a member' });
+    const type = message_type === 'creature' ? 'creature' : 'text';
+    const str = type === 'creature' ? JSON.stringify(content) : String(content).slice(0, 1000);
+    db.run('INSERT INTO arena_chat (session_id, user_id, message_type, content) VALUES (?, ?, ?, ?)',
+      [sessionId, req.user.userId, type, str], function(err2) {
+      if (err2) return res.status(500).json({ error: 'Failed to send' });
+      res.status(201).json({ success: true, id: this.lastID });
+    });
+  });
+});
+
+// Get chat messages (supports ?since=lastId for polling)
+app.get('/api/arena/sessions/:id/chat', authenticateToken, (req, res) => {
+  const sessionId = req.params.id;
+  const since = parseInt(req.query.since) || 0;
+  db.get('SELECT id FROM arena_session_members WHERE session_id = ? AND user_id = ?',
+    [sessionId, req.user.userId], (err, me) => {
+    if (err || !me) return res.status(403).json({ error: 'Not a member' });
+    db.all(`SELECT c.id, c.user_id, c.message_type, c.content, c.created_at,
+            u.nickname, u.email FROM arena_chat c
+            LEFT JOIN users u ON c.user_id = u.id
+            WHERE c.session_id = ? AND c.id > ?
+            ORDER BY c.created_at ASC LIMIT 100`,
+      [sessionId, since], (err2, rows) => {
+      if (err2) return res.status(500).json({ error: 'Failed to load chat' });
+      const messages = (rows || []).map(r => ({
+        id: r.id, user_id: r.user_id,
+        sender: r.nickname || r.email || 'Unknown',
+        message_type: r.message_type,
+        content: r.message_type === 'creature'
+          ? (() => { try { return JSON.parse(r.content); } catch(e) { return {}; } })()
+          : r.content,
+        created_at: r.created_at
+      }));
+      res.json(messages);
     });
   });
 });

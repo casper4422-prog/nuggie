@@ -2320,55 +2320,493 @@ function loadBossPage() {
     setupBossSearch();
 }
 
-function loadArenaPage() {
+// ── Arena — Boss Fight War Rooms ───────────────────────────────────────────
+// A shared workspace for planning and coordinating boss fights with allies.
+// Not PvP — this is collaborative raid prep.
+
+let _arenaSessionId = null;  // currently open session
+let _arenaChatPollTimer = null;
+let _arenaLastChatId = 0;
+
+async function loadArenaPage() {
     setActiveNavButton('arena');
     const main = document.getElementById('appMainContent');
     if (!main) return;
-    
-    const userCreatures = window.appState?.creatures || [];
-    const arenaMatches = getArenaMatches();
-    const leaderboard = getArenaLeaderboard();
-    
+    arenaClearPoll();
+    main.innerHTML = `<div class="std-page"><div style="color:#94a3b8;padding:40px">Loading war rooms...</div></div>`;
+
+    const { res, body: sessions } = await apiRequest('/api/arena/sessions').catch(() => ({ res:{ok:false}, body:[] }));
+    const list = res.ok && Array.isArray(sessions) ? sessions : [];
+
     main.innerHTML = `
-        <div class="arena-page">
-            <div class="arena-header">
+        <div class="std-page">
+            <div class="std-page-header">
                 <div class="page-title">
                     <h1>⚔️ Arena</h1>
-                    <div class="arena-rank">Rank: #${getUserArenaRank()} (${getUserArenaRating()} ELO)</div>
+                    <div class="page-subtitle">Boss fight war rooms — coordinate with allies across tribes</div>
                 </div>
-                <div class="header-actions">
-                    <button class="btn btn-primary" onclick="quickMatch()">⚡ Quick Match</button>
-                    <button class="btn btn-secondary" onclick="createCustomMatch()">🎯 Custom Match</button>
-                    <button class="btn btn-secondary" onclick="arenaShop()">🏦 Arena Shop</button>
+                <div style="display:flex;gap:10px">
+                    <button class="btn btn-secondary" onclick="arenaJoinModal()">🔑 Join with Code</button>
+                    <button class="btn btn-primary" onclick="arenaCreateModal()">➕ Create War Room</button>
                 </div>
             </div>
-            
-            <div class="arena-tabs">
-                <button class="arena-tab active" onclick="switchArenaTab('overview')" data-tab="overview">
-                    📈 Overview
-                </button>
-                <button class="arena-tab" onclick="switchArenaTab('matches')" data-tab="matches">
-                    ⚔️ Active Matches (${arenaMatches.length})
-                </button>
-                <button class="arena-tab" onclick="switchArenaTab('leaderboard')" data-tab="leaderboard">
-                    🏆 Leaderboard
-                </button>
-                <button class="arena-tab" onclick="switchArenaTab('history')" data-tab="history">
-                    📅 Battle History
-                </button>
-                <button class="arena-tab" onclick="switchArenaTab('tournaments')" data-tab="tournaments">
-                    🏅 Tournaments (2)
-                </button>
-            </div>
-            
-            <div class="arena-content">
-                <div id="arenaContainer" class="arena-container">
-                    ${renderArenaOverview(userCreatures, arenaMatches, leaderboard)}
-                </div>
+
+            ${list.length === 0
+                ? `<div class="friends-empty" style="text-align:center;padding:60px 0">
+                     <div style="font-size:3rem;margin-bottom:12px">⚔️</div>
+                     <div style="color:#94a3b8;font-size:1rem">No active war rooms yet.</div>
+                     <div style="color:#64748b;font-size:0.85rem;margin-top:6px">Create one to plan a boss fight with allies.</div>
+                   </div>`
+                : `<div class="arena-session-list">
+                    ${list.map(s => arenaSessionCard(s)).join('')}
+                   </div>`
+            }
+        </div>`;
+}
+window.loadArenaPage = loadArenaPage;
+
+function arenaSessionCard(s) {
+    const diffColor = { alpha:'#ef4444', beta:'#3b82f6', gamma:'#22c55e' }[s.difficulty] || '#94a3b8';
+    const diffLabel = { alpha:'🔴 Alpha', beta:'🔵 Beta', gamma:'🟢 Gamma' }[s.difficulty] || s.difficulty;
+    return `
+    <div class="arena-session-card" onclick="arenaOpenSession(${s.id})">
+        <div class="arena-session-info">
+            <div class="arena-session-boss">👑 ${s.boss_name || s.boss_id}</div>
+            <div class="arena-session-meta">
+                <span style="color:${diffColor}">${diffLabel}</span>
+                <span>·</span>
+                <span>👥 ${s.member_count} member${s.member_count!==1?'s':''}</span>
+                <span>·</span>
+                <span class="arena-session-code">🔑 ${s.join_code}</span>
             </div>
         </div>
-    `;
+        <div style="display:flex;align-items:center;gap:8px">
+            <span class="arena-session-status ${s.status}">${s.status}</span>
+            <span style="color:#3b82f6;font-size:0.85rem">Open →</span>
+        </div>
+    </div>`;
 }
+
+// ── Create modal ──────────────────────────────────────────────────────────────
+function arenaCreateModal() {
+    const bosses = getBossTemplates();
+    const modal = document.createElement('div');
+    modal.className = 'modal active';
+    modal.innerHTML = `
+        <div class="modal-content" style="max-width:460px">
+            <div class="modal-header">
+                <h2 class="modal-title">➕ Create War Room</h2>
+                <button class="close-btn" onclick="this.closest('.modal').remove()">&times;</button>
+            </div>
+            <div class="modal-body" style="display:flex;flex-direction:column;gap:14px">
+                <div class="plan-field">
+                    <label class="form-label">Boss Fight *</label>
+                    ${mkSelect('arenaCreateBoss',
+                        [{ v:'', l:'Select a boss...' }, ...bosses.map(b => ({ v: b.id, l: `${b.name} — ${b.map}` }))],
+                        '', 'Select a boss...')}
+                </div>
+                <div class="plan-field">
+                    <label class="form-label">Difficulty</label>
+                    ${mkSelect('arenaCreateDiff',
+                        [{ v:'gamma', l:'🟢 Gamma (Easy)' }, { v:'beta', l:'🔵 Beta (Medium)' }, { v:'alpha', l:'🔴 Alpha (Hard)' }],
+                        'alpha', 'Alpha')}
+                </div>
+                <div id="arenaCreateErr" style="color:#ef4444;font-size:0.85rem;display:none"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="this.closest('.modal').remove()">Cancel</button>
+                <button class="btn btn-primary" onclick="arenaDoCreate()">Create Room</button>
+            </div>
+        </div>`;
+    document.body.appendChild(modal);
+}
+window.arenaCreateModal = arenaCreateModal;
+
+async function arenaDoCreate() {
+    const bossId = document.getElementById('csel_arenaCreateBoss')?.dataset.val;
+    const difficulty = document.getElementById('csel_arenaCreateDiff')?.dataset.val || 'alpha';
+    const errEl = document.getElementById('arenaCreateErr');
+    if (!bossId) { if (errEl) { errEl.textContent = 'Select a boss.'; errEl.style.display='block'; } return; }
+    const bossName = getBossTemplates().find(b => b.id === bossId)?.name || bossId;
+    const { res, body } = await apiRequest('/api/arena/sessions', {
+        method: 'POST', body: JSON.stringify({ boss_id: bossId, boss_name: bossName, difficulty })
+    });
+    if (res.ok) {
+        document.querySelector('.modal.active')?.remove();
+        arenaOpenSession(body.id);
+    } else {
+        if (errEl) { errEl.textContent = body?.error || 'Failed to create.'; errEl.style.display='block'; }
+    }
+}
+window.arenaDoCreate = arenaDoCreate;
+
+// ── Join modal ────────────────────────────────────────────────────────────────
+function arenaJoinModal() {
+    const modal = document.createElement('div');
+    modal.className = 'modal active';
+    modal.innerHTML = `
+        <div class="modal-content" style="max-width:400px">
+            <div class="modal-header">
+                <h2 class="modal-title">🔑 Join with Code</h2>
+                <button class="close-btn" onclick="this.closest('.modal').remove()">&times;</button>
+            </div>
+            <div class="modal-body" style="display:flex;flex-direction:column;gap:14px">
+                <div class="plan-field">
+                    <label class="form-label">Join Code</label>
+                    <input id="arenaJoinCode" class="form-control" placeholder="e.g. RAVEN-4291" style="text-transform:uppercase;letter-spacing:0.1em">
+                </div>
+                <div id="arenaJoinErr" style="color:#ef4444;font-size:0.85rem;display:none"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="this.closest('.modal').remove()">Cancel</button>
+                <button class="btn btn-primary" onclick="arenaDoJoin()">Join Room</button>
+            </div>
+        </div>`;
+    document.body.appendChild(modal);
+    document.getElementById('arenaJoinCode')?.focus();
+}
+window.arenaJoinModal = arenaJoinModal;
+
+async function arenaDoJoin() {
+    const code = document.getElementById('arenaJoinCode')?.value.trim().toUpperCase();
+    const errEl = document.getElementById('arenaJoinErr');
+    if (!code) { if (errEl) { errEl.textContent='Enter a join code.'; errEl.style.display='block'; } return; }
+    const { res, body } = await apiRequest('/api/arena/sessions/join', {
+        method: 'POST', body: JSON.stringify({ join_code: code })
+    });
+    if (res.ok) {
+        document.querySelector('.modal.active')?.remove();
+        arenaOpenSession(body.id);
+    } else {
+        if (errEl) { errEl.textContent = body?.error || 'Code not found.'; errEl.style.display='block'; }
+    }
+}
+window.arenaDoJoin = arenaDoJoin;
+
+// ── Session view ──────────────────────────────────────────────────────────────
+async function arenaOpenSession(sessionId) {
+    _arenaSessionId = sessionId;
+    _arenaLastChatId = 0;
+    arenaClearPoll();
+    const main = document.getElementById('appMainContent');
+    if (!main) return;
+    main.innerHTML = `<div class="std-page"><div style="color:#94a3b8;padding:40px">Loading war room...</div></div>`;
+    await arenaRenderSession(sessionId, main);
+    // Start chat polling every 5 seconds
+    _arenaChatPollTimer = setInterval(() => arenaPollChat(sessionId), 5000);
+}
+window.arenaOpenSession = arenaOpenSession;
+
+async function arenaRenderSession(sessionId, main) {
+    const { res, body: session } = await apiRequest(`/api/arena/sessions/${sessionId}`).catch(() => ({ res:{ok:false}, body:null }));
+    if (!res.ok || !session) {
+        main.innerHTML = `<div class="std-page"><div class="friends-empty">Failed to load session.</div></div>`;
+        return;
+    }
+    const myId = parseInt(localStorage.getItem('userId') || '0');
+    const isCreator = session.creator_user_id === myId;
+    const diffColor = { alpha:'#ef4444', beta:'#3b82f6', gamma:'#22c55e' }[session.difficulty] || '#94a3b8';
+
+    // Group creatures by owner
+    const byOwner = {};
+    (session.creatures || []).forEach(c => {
+        if (!byOwner[c.owner]) byOwner[c.owner] = { userId: c.user_id, creatures: [] };
+        byOwner[c.owner].creatures.push(c);
+    });
+
+    main.innerHTML = `
+        <div class="std-page arena-session-page">
+            <div class="arena-session-header">
+                <button class="btn btn-secondary btn-sm" onclick="arenaClearPoll();loadArenaPage()">← War Rooms</button>
+                <div class="arena-session-title">
+                    <h1>👑 ${session.boss_name || session.boss_id}</h1>
+                    <div class="arena-session-meta">
+                        <span style="color:${diffColor}">${session.difficulty?.toUpperCase()}</span>
+                        <span>· 👥 ${session.members?.length || 0} members</span>
+                        <span>· 🔑 <strong style="letter-spacing:0.08em">${session.join_code}</strong></span>
+                        <span class="arena-session-status ${session.status}">${session.status}</span>
+                    </div>
+                </div>
+                <div style="display:flex;gap:8px">
+                    <button class="btn btn-secondary btn-sm" onclick="arenaInviteModal(${sessionId})">+ Invite</button>
+                    ${isCreator && session.status === 'open'
+                        ? `<button class="btn btn-danger btn-sm" onclick="arenaCloseSession(${sessionId})">Close Room</button>`
+                        : ''}
+                </div>
+            </div>
+
+            <div class="arena-layout">
+                <!-- Roster -->
+                <div class="arena-roster-panel">
+                    <div class="arena-panel-header">
+                        <span>🦖 Roster (${session.creatures?.length || 0})</span>
+                        ${session.status === 'open'
+                            ? `<button class="btn btn-primary btn-sm" onclick="arenaAddNuggieModal(${sessionId})">+ Add Nuggie</button>`
+                            : ''}
+                    </div>
+                    <div class="arena-roster-list" id="arenaRoster">
+                        ${Object.keys(byOwner).length === 0
+                            ? `<div class="friends-empty" style="padding:20px 0">No creatures added yet. Add your Nuggies to the roster!</div>`
+                            : Object.entries(byOwner).map(([owner, data]) => `
+                                <div class="arena-roster-group">
+                                    <div class="arena-roster-owner">👤 ${owner}</div>
+                                    ${data.creatures.map(c => {
+                                        const cr = c.creature;
+                                        const isMine = c.user_id === myId;
+                                        return `<div class="arena-roster-card">
+                                            <div>
+                                                <div class="arena-roster-name">${cr.name || 'Unnamed'}</div>
+                                                <div class="arena-roster-species">${cr.species || '?'} · Lvl ${cr.level || 1}</div>
+                                                <div class="arena-roster-stats">HP ${cr.baseStats?.Health||0} · Mel ${cr.baseStats?.Melee||0}</div>
+                                            </div>
+                                            ${isMine && session.status === 'open'
+                                                ? `<button class="btn btn-danger btn-sm" onclick="arenaRemoveCreature(${sessionId},${c.id})">✕</button>`
+                                                : ''}
+                                        </div>`;
+                                    }).join('')}
+                                </div>`
+                            ).join('')}
+                    </div>
+                </div>
+
+                <!-- Chat -->
+                <div class="arena-chat-panel">
+                    <div class="arena-panel-header"><span>💬 Chat</span></div>
+                    <div class="arena-chat-messages" id="arenaChatMessages">
+                        <div style="color:#64748b;text-align:center;padding:20px">Loading chat...</div>
+                    </div>
+                    ${session.status === 'open' ? `
+                    <div class="arena-chat-input-row">
+                        <input id="arenaChatInput" class="form-control" placeholder="Type a message... (Enter to send)"
+                            onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();arenaSendChat(${sessionId},'text')}">
+                        <button class="btn btn-secondary btn-sm" onclick="arenaShareNuggieModal(${sessionId})" title="Share a Nuggie">🦖</button>
+                        <button class="btn btn-primary btn-sm" onclick="arenaSendChat(${sessionId},'text')">Send</button>
+                    </div>` : `<div style="color:#64748b;font-size:0.85rem;padding:10px;text-align:center">This war room is closed.</div>`}
+                </div>
+            </div>
+        </div>`;
+
+    // Load initial chat
+    await arenaPollChat(sessionId, true);
+}
+
+async function arenaPollChat(sessionId, initial) {
+    if (_arenaSessionId !== sessionId) return; // navigated away
+    const { res, body } = await apiRequest(`/api/arena/sessions/${sessionId}/chat?since=${_arenaLastChatId}`).catch(() => ({ res:{ok:false}, body:[] }));
+    if (!res.ok || !Array.isArray(body) || !body.length) return;
+
+    const chatEl = document.getElementById('arenaChatMessages');
+    if (!chatEl) return;
+
+    if (initial) chatEl.innerHTML = '';
+
+    body.forEach(msg => {
+        if (msg.id > _arenaLastChatId) _arenaLastChatId = msg.id;
+        const div = document.createElement('div');
+        div.className = 'arena-chat-msg';
+        const myId = parseInt(localStorage.getItem('userId') || '0');
+        const isMe = msg.user_id === myId;
+        const time = msg.created_at ? new Date(msg.created_at).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}) : '';
+
+        if (msg.message_type === 'creature') {
+            const cr = msg.content || {};
+            const bs = cr.baseStats || {};
+            div.innerHTML = `
+                <div class="arena-chat-bubble ${isMe ? 'mine' : ''}">
+                    <div class="arena-chat-sender">${isMe ? 'You' : msg.sender} shared a Nuggie</div>
+                    <div class="arena-nuggie-share">
+                        <div class="arena-roster-name">${cr.name || 'Unnamed'}</div>
+                        <div class="arena-roster-species">${cr.species || '?'} · Lvl ${cr.level || 1}</div>
+                        <div class="arena-roster-stats">❤️ ${bs.Health||0} · ⚔️ ${bs.Melee||0} · ⚡ ${bs.Stamina||0} · 🏋️ ${bs.Weight||0}</div>
+                    </div>
+                    <div class="arena-chat-time">${time}</div>
+                </div>`;
+        } else {
+            div.innerHTML = `
+                <div class="arena-chat-bubble ${isMe ? 'mine' : ''}">
+                    ${!isMe ? `<div class="arena-chat-sender">${msg.sender}</div>` : ''}
+                    <div class="arena-chat-text">${msg.content}</div>
+                    <div class="arena-chat-time">${time}</div>
+                </div>`;
+        }
+        chatEl.appendChild(div);
+    });
+
+    // Scroll to bottom
+    chatEl.scrollTop = chatEl.scrollHeight;
+}
+
+async function arenaSendChat(sessionId, type) {
+    const input = document.getElementById('arenaChatInput');
+    const text = input?.value.trim();
+    if (!text) return;
+    input.value = '';
+    await apiRequest(`/api/arena/sessions/${sessionId}/chat`, {
+        method: 'POST', body: JSON.stringify({ message_type: 'text', content: text })
+    });
+    await arenaPollChat(sessionId, false);
+}
+window.arenaSendChat = arenaSendChat;
+
+// Add Nuggie to roster modal
+function arenaAddNuggieModal(sessionId) {
+    const creatures = window.appState?.creatures || [];
+    if (!creatures.length) return alert('No Nuggies in My Nuggies yet!');
+    const modal = document.createElement('div');
+    modal.className = 'modal active';
+    modal.innerHTML = `
+        <div class="modal-content" style="max-width:500px">
+            <div class="modal-header">
+                <h2 class="modal-title">🦖 Add to Roster</h2>
+                <button class="close-btn" onclick="this.closest('.modal').remove()">&times;</button>
+            </div>
+            <div class="modal-body"><div class="nuggie-picker">
+                ${creatures.map(c => `
+                <div class="nuggie-pick-card" onclick="arenaAddCreature(${sessionId},'${c.id}',this)">
+                    <div class="nuggie-pick-name">${c.name||'Unnamed'}</div>
+                    <div class="nuggie-pick-species">${c.species||'?'} · Lvl ${c.level||1}</div>
+                    <div class="nuggie-pick-stats">HP ${c.baseStats?.Health||0} · Mel ${c.baseStats?.Melee||0}</div>
+                </div>`).join('')}
+            </div></div>
+        </div>`;
+    document.body.appendChild(modal);
+}
+window.arenaAddNuggieModal = arenaAddNuggieModal;
+
+async function arenaAddCreature(sessionId, creatureId, el) {
+    const creature = (window.appState?.creatures||[]).find(c => c.id === creatureId);
+    if (!creature) return;
+    const { res, body } = await apiRequest(`/api/arena/sessions/${sessionId}/creatures`, {
+        method: 'POST', body: JSON.stringify({ creature_data: creature })
+    });
+    if (res.ok) {
+        el.closest('.modal')?.remove();
+        await arenaRenderSession(sessionId, document.getElementById('appMainContent'));
+    } else { alert(body?.error || 'Failed to add creature.'); }
+}
+window.arenaAddCreature = arenaAddCreature;
+
+async function arenaRemoveCreature(sessionId, creatureEntryId) {
+    if (!confirm('Remove this creature from the roster?')) return;
+    const { res } = await apiRequest(`/api/arena/sessions/${sessionId}/creatures/${creatureEntryId}`, { method: 'DELETE' });
+    if (res.ok) arenaRenderSession(sessionId, document.getElementById('appMainContent'));
+}
+window.arenaRemoveCreature = arenaRemoveCreature;
+
+// Share Nuggie into chat
+function arenaShareNuggieModal(sessionId) {
+    const creatures = window.appState?.creatures || [];
+    if (!creatures.length) return alert('No Nuggies to share!');
+    const modal = document.createElement('div');
+    modal.className = 'modal active';
+    modal.innerHTML = `
+        <div class="modal-content" style="max-width:500px">
+            <div class="modal-header">
+                <h2 class="modal-title">🦖 Share Nuggie to Chat</h2>
+                <button class="close-btn" onclick="this.closest('.modal').remove()">&times;</button>
+            </div>
+            <div class="modal-body"><div class="nuggie-picker">
+                ${creatures.map(c => `
+                <div class="nuggie-pick-card" onclick="arenaShareNuggie(${sessionId},'${c.id}',this)">
+                    <div class="nuggie-pick-name">${c.name||'Unnamed'}</div>
+                    <div class="nuggie-pick-species">${c.species||'?'}</div>
+                    <div class="nuggie-pick-stats">HP ${c.baseStats?.Health||0} · Mel ${c.baseStats?.Melee||0}</div>
+                </div>`).join('')}
+            </div></div>
+        </div>`;
+    document.body.appendChild(modal);
+}
+window.arenaShareNuggieModal = arenaShareNuggieModal;
+
+async function arenaShareNuggie(sessionId, creatureId, el) {
+    const creature = (window.appState?.creatures||[]).find(c => c.id === creatureId);
+    if (!creature) return;
+    await apiRequest(`/api/arena/sessions/${sessionId}/chat`, {
+        method: 'POST', body: JSON.stringify({ message_type: 'creature', content: creature })
+    });
+    el.closest('.modal')?.remove();
+    await arenaPollChat(sessionId, false);
+}
+window.arenaShareNuggie = arenaShareNuggie;
+
+// Invite modal
+function arenaInviteModal(sessionId) {
+    const friends = [];
+    const modal = document.createElement('div');
+    modal.className = 'modal active';
+    modal.innerHTML = `
+        <div class="modal-content" style="max-width:400px">
+            <div class="modal-header">
+                <h2 class="modal-title">+ Invite Player</h2>
+                <button class="close-btn" onclick="this.closest('.modal').remove()">&times;</button>
+            </div>
+            <div class="modal-body" style="display:flex;flex-direction:column;gap:12px">
+                <div style="color:#94a3b8;font-size:0.85rem">Search for a user to invite directly, or share the join code with them.</div>
+                <div class="plan-field">
+                    <label class="form-label">Search by email or nickname</label>
+                    <div style="display:flex;gap:8px">
+                        <input id="arenaInviteSearch" class="form-control" placeholder="username...">
+                        <button class="btn btn-secondary" onclick="arenaSearchInvite(${sessionId})">Find</button>
+                    </div>
+                </div>
+                <div id="arenaInviteResults"></div>
+                <div id="arenaInviteErr" style="color:#ef4444;font-size:0.85rem;display:none"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="this.closest('.modal').remove()">Done</button>
+            </div>
+        </div>`;
+    document.body.appendChild(modal);
+    document.getElementById('arenaInviteSearch')?.addEventListener('keydown', e => {
+        if (e.key === 'Enter') arenaSearchInvite(sessionId);
+    });
+}
+window.arenaInviteModal = arenaInviteModal;
+
+async function arenaSearchInvite(sessionId) {
+    const q = document.getElementById('arenaInviteSearch')?.value.trim();
+    const resultsEl = document.getElementById('arenaInviteResults');
+    if (!q || !resultsEl) return;
+    resultsEl.innerHTML = '<div style="color:#94a3b8;font-size:0.85rem">Searching...</div>';
+    const { res, body } = await apiRequest(`/api/users/search?q=${encodeURIComponent(q)}`);
+    if (!res.ok || !Array.isArray(body) || !body.length) {
+        resultsEl.innerHTML = '<div style="color:#64748b;font-size:0.85rem">No users found.</div>';
+        return;
+    }
+    resultsEl.innerHTML = body.map(u => `
+        <div class="friend-card" style="margin-top:8px">
+            <div class="friend-avatar">👤</div>
+            <div class="friend-info">
+                <div class="friend-name">${u.nickname || u.email}</div>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="arenaDoInvite(${sessionId},${u.id},this)">Invite</button>
+        </div>`).join('');
+}
+window.arenaSearchInvite = arenaSearchInvite;
+
+async function arenaDoInvite(sessionId, userId, btn) {
+    if (btn) { btn.disabled = true; btn.textContent = 'Sending...'; }
+    const { res, body } = await apiRequest(`/api/arena/sessions/${sessionId}/invite`, {
+        method: 'POST', body: JSON.stringify({ user_id: userId })
+    });
+    if (res.ok) { if (btn) { btn.textContent = 'Invited ✓'; btn.className = 'btn btn-secondary btn-sm'; } }
+    else { if (btn) { btn.disabled = false; btn.textContent = 'Invite'; } alert(body?.error || 'Failed to invite.'); }
+}
+window.arenaDoInvite = arenaDoInvite;
+
+async function arenaCloseSession(sessionId) {
+    if (!confirm('Close this war room? Members will no longer be able to chat or add creatures.')) return;
+    const { res, body } = await apiRequest(`/api/arena/sessions/${sessionId}/close`, { method: 'PUT' });
+    if (res.ok) { arenaClearPoll(); loadArenaPage(); }
+    else alert(body?.error || 'Failed to close.');
+}
+window.arenaCloseSession = arenaCloseSession;
+
+function arenaClearPoll() {
+    if (_arenaChatPollTimer) { clearInterval(_arenaChatPollTimer); _arenaChatPollTimer = null; }
+    _arenaSessionId = null;
+}
+window.arenaClearPoll = arenaClearPoll;
 
 // Friends page: full implementation lives in client/friends.js
 
@@ -4647,6 +5085,14 @@ function formatNotification(n) {
         case 'boss_invite': {
             const boss = p.bossId || 'a boss';
             return { icon: '👑', title: 'Boss Fight Invite', message: `${actor} invited you to fight ${boss}.`, navigate: () => { closeNotifications(); loadBossPlanner(); } };
+        }
+        case 'arena_join': {
+            const bossN = p.bossName || 'a boss';
+            return { icon: '⚔️', title: 'War Room: Player Joined', message: `${actor} joined your ${bossN} war room.`, navigate: () => { closeNotifications(); loadArenaPage(); } };
+        }
+        case 'arena_invite': {
+            const bossI = p.bossName || 'a boss';
+            return { icon: '⚔️', title: 'War Room Invite', message: `${actor} invited you to a ${bossI} war room. Code: ${p.join_code || ''}`, navigate: () => { closeNotifications(); loadArenaPage(); } };
         }
         default:
             return { icon: '🔔', title: 'Notification', message: p.message || 'You have a new notification.', navigate: () => closeNotifications() };

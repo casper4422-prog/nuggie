@@ -73,8 +73,11 @@ db.serialize(() => {
   email TEXT UNIQUE NOT NULL,
   password TEXT NOT NULL,
   nickname TEXT UNIQUE,
-  discord_name TEXT
+  discord_name TEXT,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 )`);
+  // Add created_at to existing databases that pre-date this column
+  db.run(`ALTER TABLE users ADD COLUMN created_at DATETIME DEFAULT CURRENT_TIMESTAMP`, () => {});
   db.run(`CREATE TABLE IF NOT EXISTS creature_cards (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER NOT NULL,
@@ -636,7 +639,7 @@ app.get('/api/profile', authenticateToken, (req, res) => {
   const userId = req.user.userId;
   
   // Get user info
-  db.get('SELECT id, email, nickname, discord_name FROM users WHERE id = ?', [userId], (err, user) => {
+  db.get('SELECT id, email, nickname, discord_name, created_at FROM users WHERE id = ?', [userId], (err, user) => {
     if (err) return res.status(500).json({ error: 'Failed to fetch profile' });
     if (!user) return res.status(404).json({ error: 'User not found' });
     
@@ -666,6 +669,7 @@ app.get('/api/profile', authenticateToken, (req, res) => {
             email: user.email,
             nickname: user.nickname,
             discord_name: user.discord_name,
+            created_at: user.created_at,
             tribe: tribeInfo ? {
               name: tribeInfo.tribe_name,
               role: tribeInfo.tribe_role,
@@ -680,15 +684,72 @@ app.get('/api/profile', authenticateToken, (req, res) => {
   });
 });
 
-// Update user profile
+// Update user profile (nickname, email, discord_name)
 app.put('/api/profile', authenticateToken, (req, res) => {
   const userId = req.user.userId;
-  const { discord_name } = req.body || {};
-  
-  // For now, only allow updating discord_name (email/nickname changes would need more validation)
-  db.run('UPDATE users SET discord_name = ? WHERE id = ?', [discord_name || null, userId], (err) => {
-    if (err) return res.status(500).json({ error: 'Failed to update profile' });
+  const { nickname, email, discord_name } = req.body || {};
+  // Build update dynamically for only provided fields
+  const fields = [];
+  const values = [];
+  if (discord_name !== undefined) { fields.push('discord_name = ?'); values.push(discord_name || null); }
+  if (nickname !== undefined) { fields.push('nickname = ?'); values.push(nickname || null); }
+  if (email !== undefined) { fields.push('email = ?'); values.push(email || null); }
+  if (!fields.length) return res.status(400).json({ error: 'No fields to update' });
+  values.push(userId);
+  db.run(`UPDATE users SET ${fields.join(', ')} WHERE id = ?`, values, function(err) {
+    if (err) {
+      if (err.message && err.message.includes('UNIQUE')) return res.status(400).json({ error: 'Nickname or email already taken' });
+      return res.status(500).json({ error: 'Failed to update profile' });
+    }
     res.json({ success: true });
+  });
+});
+
+// Change password
+app.put('/api/profile/password', authenticateToken, (req, res) => {
+  const userId = req.user.userId;
+  const { current_password, new_password } = req.body || {};
+  if (!current_password || !new_password) return res.status(400).json({ error: 'Missing fields' });
+  if (new_password.length < 6) return res.status(400).json({ error: 'New password must be at least 6 characters' });
+  db.get('SELECT password FROM users WHERE id = ?', [userId], (err, user) => {
+    if (err || !user) return res.status(404).json({ error: 'User not found' });
+    bcrypt.compare(current_password, user.password, (err, match) => {
+      if (!match) return res.status(400).json({ error: 'Current password is incorrect' });
+      bcrypt.hash(new_password, 10, (err, hash) => {
+        if (err) return res.status(500).json({ error: 'Failed to hash password' });
+        db.run('UPDATE users SET password = ? WHERE id = ?', [hash, userId], (err) => {
+          if (err) return res.status(500).json({ error: 'Failed to update password' });
+          res.json({ success: true });
+        });
+      });
+    });
+  });
+});
+
+// Delete account
+app.delete('/api/profile', authenticateToken, (req, res) => {
+  const userId = req.user.userId;
+  const { password } = req.body || {};
+  if (!password) return res.status(400).json({ error: 'Password required to delete account' });
+  db.get('SELECT password FROM users WHERE id = ?', [userId], (err, user) => {
+    if (err || !user) return res.status(404).json({ error: 'User not found' });
+    bcrypt.compare(password, user.password, (err, match) => {
+      if (!match) return res.status(400).json({ error: 'Incorrect password' });
+      // Cascade delete all user data
+      db.serialize(() => {
+        db.run('DELETE FROM creature_cards WHERE user_id = ?', [userId]);
+        db.run('DELETE FROM friends WHERE user_id = ? OR friend_user_id = ?', [userId, userId]);
+        db.run('DELETE FROM tribe_memberships WHERE user_id = ?', [userId]);
+        db.run('DELETE FROM trades WHERE user_id = ?', [userId]);
+        db.run('DELETE FROM offers WHERE from_user_id = ? OR to_user_id = ?', [userId, userId]);
+        db.run('DELETE FROM notifications WHERE user_id = ? OR actor_user_id = ?', [userId, userId]);
+        db.run('DELETE FROM boss_planner WHERE user_id = ?', [userId]);
+        db.run('DELETE FROM users WHERE id = ?', [userId], function(err) {
+          if (err) return res.status(500).json({ error: 'Failed to delete account' });
+          res.json({ success: true });
+        });
+      });
+    });
   });
 });
 

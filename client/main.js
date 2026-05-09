@@ -2227,276 +2227,335 @@ async function loadMyProfilePage() {
     setActiveNavButton('profile');
     const main = document.getElementById('appMainContent');
     if (!main) return;
-    
-    const userEmail = localStorage.getItem('userEmail') || 'user@example.com';
-    const userNickname = localStorage.getItem('userNickname') || 'Player';
-    const userDiscord = localStorage.getItem('userDiscord') || 'Not set';
-    const userId = localStorage.getItem('userId') || '1';
-    
-    // Get user stats
+    main.innerHTML = `<div class="std-page"><div style="color:#94a3b8;padding:40px 0">Loading profile...</div></div>`;
+
+    // Fetch real profile + friends + trades in parallel
+    const [profile, friends, trades, myOffers] = await Promise.all([
+        apiRequest('/api/profile').then(r => r.body || {}).catch(() => ({})),
+        apiRequest('/api/friends?status=accepted').then(r => Array.isArray(r.body) ? r.body : []).catch(() => []),
+        apiRequest('/api/trades').then(r => Array.isArray(r.body) ? r.body : []).catch(() => []),
+        apiRequest('/api/offers').then(r => Array.isArray(r.body) ? r.body : []).catch(() => [])
+    ]);
+
+    const myId = parseInt(localStorage.getItem('userId') || '0');
     const creatures = window.appState?.creatures || [];
-    const totalCreatures = creatures.length;
-    const speciesOwned = new Set(creatures.map(c => c.species)).size;
-    const database = window.SPECIES_DATABASE || window.EXPANDED_SPECIES_DATABASE;
-    const totalSpecies = database ? Object.keys(database).length : 501;
-    
-    // Calculate achievements (placeholder for now)
-    const achievements = calculateUserAchievements(creatures);
-    
+    const db = window.SPECIES_DATABASE || {};
+    const totalSpecies = Object.keys(db).length;
+    const speciesOwned = new Set(creatures.map(c => c.species).filter(Boolean)).size;
+
+    // Compute real badge stats from BadgeSystem
+    let badgeCount = 0, bossReadyCount = 0, underdogCount = 0;
+    if (window.BadgeSystem && typeof window.BadgeSystem.calculateAchievements === 'function') {
+        creatures.forEach(c => {
+            const ach = window.BadgeSystem.calculateAchievements(c) || [];
+            if (ach.some(a => a.id === 'prized_bloodline')) badgeCount++;
+            if (ach.some(a => a.id && a.id.startsWith('boss_'))) bossReadyCount++;
+            if (ach.some(a => a.id && a.id.startsWith('underdog_'))) underdogCount++;
+        });
+    }
+
+    // Top badges across all creatures (for achievements card)
+    const topBadges = [];
+    if (window.BadgeSystem && typeof window.BadgeSystem.calculateAchievements === 'function') {
+        creatures.forEach(c => {
+            const ach = window.BadgeSystem.calculateAchievements(c) || [];
+            ach.forEach(a => topBadges.push({ ...a, creatureName: c.name || 'Unnamed', species: c.species || '' }));
+        });
+    }
+    // Sort: diamond first, then by id
+    const tierOrder = { diamond: 0, gold: 1, silver: 2, bronze: 3, titan: 0, alpha: 1, beta: 2, gamma: 3 };
+    topBadges.sort((a, b) => (tierOrder[a.tier] ?? 9) - (tierOrder[b.tier] ?? 9));
+
+    // My trade listings + received offers
+    const myListings = trades.filter(t => t.user_id === myId && t.status === 'open');
+    const pendingOffers = myOffers.filter(o => o.status === 'pending');
+
+    const joinedDate = profile.created_at
+        ? new Date(profile.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long' })
+        : 'The Nursery';
+
     main.innerHTML = `
-        <div class="profile-page">
-            <div class="profile-header">
-                <div class="profile-avatar">
-                    <div class="avatar-icon">🦕</div>
-                </div>
-                <div class="profile-info">
-                    <h1 class="profile-name">${userNickname}</h1>
-                    <div class="profile-title">Dino Nuggie Trainer</div>
-                    <div class="profile-stats-quick">
-                        <div class="quick-stat">
-                            <span class="stat-value">${totalCreatures}</span>
-                            <span class="stat-label">Creatures</span>
-                        </div>
-                        <div class="quick-stat">
-                            <span class="stat-value">${speciesOwned}/${totalSpecies}</span>
-                            <span class="stat-label">Species</span>
-                        </div>
-                        <div class="quick-stat">
-                            <span class="stat-value">${achievements.total}</span>
-                            <span class="stat-label">Achievements</span>
-                        </div>
+        <div class="std-page profile-page-wrap">
+
+            <!-- Hero header -->
+            <div class="profile-hero">
+                <div class="profile-hero-avatar">🦕</div>
+                <div class="profile-hero-info">
+                    <h1 class="profile-hero-name">${profile.nickname || 'Trainer'}</h1>
+                    <div class="profile-hero-sub">Dino Nuggie Trainer · Joined ${joinedDate}</div>
+                    ${profile.tribe ? `<div class="profile-hero-tribe">🏛️ ${profile.tribe.name} <span style="color:#64748b;font-size:0.8rem">(${profile.tribe.role})</span></div>` : ''}
+                    <div class="profile-hero-stats">
+                        <div class="profile-hstat"><span class="profile-hstat-val">${creatures.length}</span><span class="profile-hstat-lbl">Nuggies</span></div>
+                        <div class="profile-hstat"><span class="profile-hstat-val">${speciesOwned}/${totalSpecies}</span><span class="profile-hstat-lbl">Species</span></div>
+                        <div class="profile-hstat"><span class="profile-hstat-val">${friends.length}</span><span class="profile-hstat-lbl">Friends</span></div>
+                        <div class="profile-hstat"><span class="profile-hstat-val">${badgeCount}</span><span class="profile-hstat-lbl">Badges</span></div>
                     </div>
                 </div>
             </div>
-            
-            <div class="profile-content">
-                <div class="profile-grid">
-                    <!-- User Information Card -->
-                    <div class="profile-card">
-                        <div class="card-header">
-                            <h3>👤 Account Information</h3>
-                            <button class="btn btn-sm btn-secondary" onclick="editAccountInfo()">Edit</button>
-                        </div>
-                        <div class="info-list">
-                            <div class="info-item">
-                                <span class="info-label">Email:</span>
-                                <span class="info-value">${userEmail}</span>
-                            </div>
-                            <div class="info-item">
-                                <span class="info-label">Nickname:</span>
-                                <span class="info-value">${userNickname}</span>
-                            </div>
-                            <div class="info-item">
-                                <span class="info-label">Discord:</span>
-                                <span class="info-value">${userDiscord}</span>
-                            </div>
-                            <div class="info-item">
-                                <span class="info-label">Member Since:</span>
-                                <span class="info-value">October 2025</span>
-                            </div>
-                        </div>
+
+            <div class="profile-grid">
+
+                <!-- Account Information -->
+                <div class="profile-card">
+                    <div class="profile-card-header">
+                        <h3>👤 Account Information</h3>
+                        <button class="btn btn-sm btn-secondary" onclick="profileEditModal()">Edit</button>
                     </div>
-                    
-                    <!-- Achievements Card -->
-                    <div class="profile-card">
-                        <div class="card-header">
-                            <h3>� Recent Achievements</h3>
-                            <button class="btn btn-sm btn-secondary" onclick="viewAllAchievements()">View All</button>
-                        </div>
-                        <div class="achievement-list">
-                            ${renderRecentAchievements(achievements)}
-                        </div>
-                    </div>
-                    
-                    <!-- Friends Card -->
-                    <div class="profile-card">
-                        <div class="card-header">
-                            <h3>👥 Friends</h3>
-                            <button class="btn btn-sm btn-secondary" onclick="loadFriendsPage()">Manage</button>
-                        </div>
-                        <div class="friends-preview">
-                            <div class="friend-count">5 friends online</div>
-                            <div class="friend-avatars">
-                                <!-- Will load dynamically -->
-                                <div class="loading-text">Loading friends...</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Active Trades Card -->
-                    <div class="profile-card">
-                        <div class="card-header">
-                            <h3>🔁 Active Trades</h3>
-                            <button class="btn btn-sm btn-secondary" onclick="loadTradingPage()">View All</button>
-                        </div>
-                        <div class="trades-preview">
-                            <div class="trade-item">
-                                <span class="trade-status pending">Pending</span>
-                                <span class="trade-desc">Rex for 1000 Metal</span>
-                            </div>
-                            <div class="trade-item">
-                                <span class="trade-status incoming">Incoming</span>
-                                <span class="trade-desc">Spino trade offer</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Quick Stats Card -->
-                    <div class="profile-card">
-                        <div class="card-header">
-                            <h3>📊 Statistics</h3>
-                        </div>
-                        <div class="stats-grid-profile">
-                            <div class="stat-item">
-                                <div class="stat-icon">🦖</div>
-                                <div class="stat-details">
-                                    <span class="stat-number">${totalCreatures}</span>
-                                    <span class="stat-text">Total Creatures</span>
-                                </div>
-                            </div>
-                            <div class="stat-item">
-                                <div class="stat-icon">🏆</div>
-                                <div class="stat-details">
-                                    <span class="stat-number">${achievements.badges}</span>
-                                    <span class="stat-text">Badges Earned</span>
-                                </div>
-                            </div>
-                            <div class="stat-item">
-                                <div class="stat-icon">👑</div>
-                                <div class="stat-details">
-                                    <span class="stat-number">${achievements.bosses}</span>
-                                    <span class="stat-text">Boss Ready</span>
-                                </div>
-                            </div>
-                            <div class="stat-item">
-                                <div class="stat-icon">🔄</div>
-                                <div class="stat-details">
-                                    <span class="stat-number">12</span>
-                                    <span class="stat-text">Trades Completed</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Account Settings Card -->
-                    <div class="profile-card">
-                        <div class="card-header">
-                            <h3>⚙️ Account Settings</h3>
-                        </div>
-                        <div class="settings-list">
-                            <button class="setting-item" onclick="changePassword()">
-                                <span>🔒 Change Password</span>
-                                <span class="setting-arrow">→</span>
-                            </button>
-                            <button class="setting-item" onclick="notificationSettings()">
-                                <span>🔔 Notification Settings</span>
-                                <span class="setting-arrow">→</span>
-                            </button>
-                            <button class="setting-item" onclick="privacySettings()">
-                                <span>🛡️ Privacy Settings</span>
-                                <span class="setting-arrow">→</span>
-                            </button>
-                            <button class="setting-item danger" onclick="deleteAccount()">
-                                <span>🗑️ Delete Account</span>
-                                <span class="setting-arrow">→</span>
-                            </button>
-                        </div>
+                    <div class="profile-info-list">
+                        <div class="profile-info-row"><span class="pil-label">Email</span><span class="pil-val">${profile.email || '—'}</span></div>
+                        <div class="profile-info-row"><span class="pil-label">Nickname</span><span class="pil-val">${profile.nickname || '—'}</span></div>
+                        <div class="profile-info-row"><span class="pil-label">Discord</span><span class="pil-val">${profile.discord_name || 'Not set'}</span></div>
+                        <div class="profile-info-row"><span class="pil-label">Joined</span><span class="pil-val">${joinedDate}</span></div>
                     </div>
                 </div>
+
+                <!-- Achievements -->
+                <div class="profile-card">
+                    <div class="profile-card-header"><h3>🏆 Badges Earned</h3></div>
+                    ${topBadges.length === 0
+                        ? `<div class="friends-empty">No badges yet — add creatures with strong stats to earn them.</div>`
+                        : `<div class="profile-badges-list">
+                            ${topBadges.slice(0, 6).map(a => {
+                                const emoji = window.BadgeSystem?.generateBadgeHTML ? '' : '';
+                                const tierLabel = { diamond:'💎', gold:'🥇', silver:'🥈', bronze:'🥉', titan:'💎', alpha:'🔴', beta:'🔵', gamma:'🟢' }[a.tier] || '🏆';
+                                return `<div class="profile-badge-row">
+                                    <span class="pb-icon">${tierLabel}</span>
+                                    <div class="pb-info">
+                                        <div class="pb-name">${a.name}</div>
+                                        <div class="pb-creature">${a.creatureName} · ${a.species}</div>
+                                    </div>
+                                </div>`;
+                            }).join('')}
+                           </div>`
+                    }
+                </div>
+
+                <!-- Friends -->
+                <div class="profile-card">
+                    <div class="profile-card-header">
+                        <h3>👥 Friends</h3>
+                        <button class="btn btn-sm btn-secondary" onclick="loadFriendsPage()">Manage</button>
+                    </div>
+                    ${friends.length === 0
+                        ? `<div class="friends-empty">No friends yet.</div>`
+                        : `<div class="profile-friends-list">
+                            ${friends.slice(0, 5).map(f => `
+                            <div class="profile-friend-row">
+                                <div class="profile-friend-avatar">👤</div>
+                                <div class="profile-friend-name">${f.friend_nickname || f.friend_email || 'Friend'}</div>
+                            </div>`).join('')}
+                            ${friends.length > 5 ? `<div class="friends-empty">+${friends.length - 5} more</div>` : ''}
+                           </div>`
+                    }
+                </div>
+
+                <!-- Active Trades -->
+                <div class="profile-card">
+                    <div class="profile-card-header">
+                        <h3>🔁 Active Trades</h3>
+                        <button class="btn btn-sm btn-secondary" onclick="loadTradingPage()">View All</button>
+                    </div>
+                    <div class="profile-info-list">
+                        <div class="profile-info-row"><span class="pil-label">Your listings</span><span class="pil-val">${myListings.length}</span></div>
+                        <div class="profile-info-row"><span class="pil-label">Offers sent</span><span class="pil-val">${pendingOffers.length} pending</span></div>
+                    </div>
+                    ${myListings.slice(0, 3).map(t => `
+                    <div class="profile-trade-row">
+                        <span class="pil-label">${t.creature?.name || 'Unnamed'} <em style="color:#64748b">${t.creature?.species||''}</em></span>
+                        <span class="friend-status-tag accepted">Open</span>
+                    </div>`).join('')}
+                </div>
+
+                <!-- Statistics -->
+                <div class="profile-card">
+                    <div class="profile-card-header"><h3>📊 Statistics</h3></div>
+                    <div class="profile-stats-grid">
+                        <div class="profile-stat-block"><div class="psb-val">${creatures.length}</div><div class="psb-lbl">🦖 Total Nuggies</div></div>
+                        <div class="profile-stat-block"><div class="psb-val">${speciesOwned}</div><div class="psb-lbl">🌿 Species Owned</div></div>
+                        <div class="profile-stat-block"><div class="psb-val">${badgeCount}</div><div class="psb-lbl">🏆 Prized Bloodlines</div></div>
+                        <div class="profile-stat-block"><div class="psb-val">${bossReadyCount}</div><div class="psb-lbl">👑 Boss Ready</div></div>
+                        <div class="profile-stat-block"><div class="psb-val">${underdogCount}</div><div class="psb-lbl">🥊 Underdogs</div></div>
+                        <div class="profile-stat-block"><div class="psb-val">${myListings.length}</div><div class="psb-lbl">🔁 Active Listings</div></div>
+                    </div>
+                </div>
+
+                <!-- Account Settings -->
+                <div class="profile-card">
+                    <div class="profile-card-header"><h3>⚙️ Account Settings</h3></div>
+                    <div class="profile-settings-list">
+                        <button class="profile-setting-btn" onclick="profileEditModal()">
+                            <span>✏️ Edit Profile</span><span>→</span>
+                        </button>
+                        <button class="profile-setting-btn" onclick="profileChangePassword()">
+                            <span>🔒 Change Password</span><span>→</span>
+                        </button>
+                        <button class="profile-setting-btn danger" onclick="profileDeleteAccount()">
+                            <span>🗑️ Delete Account</span><span>→</span>
+                        </button>
+                    </div>
+                </div>
+
             </div>
-        </div>
-    `;
-    
-    // Load dynamic content
-    loadFriendsPreview();
-    loadTradesPreview();
+        </div>`;
 }
 
-// Calculate user achievements
-function calculateUserAchievements(creatures) {
-    let badges = 0;
-    let bosses = 0;
-    
-    creatures.forEach(creature => {
-        const bs = creature.baseStats || {};
-        if ((bs.Health || 0) >= 45 && (bs.Stamina || 0) >= 45 && (bs.Food || 0) >= 45 &&
-            (bs.Weight || 0) >= 45 && (bs.Melee || 0) >= 45) {
-            badges++;
-        }
-        if ((bs.Health || 0) >= 75 && (bs.Melee || 0) >= 75) {
-            bosses++;
-        }
-    });
-    
-    return {
-        total: badges + bosses,
-        badges: badges,
-        bosses: bosses
-    };
-}
-
-// Render recent achievements
-function renderRecentAchievements(achievements) {
-    if (achievements.total === 0) {
-        return '<div class="no-achievements">No achievements yet. Start breeding creatures to earn badges!</div>';
-    }
-    
-    return `
-        <div class="achievement-item">
-            <div class="achievement-icon">🥉</div>
-            <div class="achievement-details">
-                <span class="achievement-name">Bronze Bloodline</span>
-                <span class="achievement-desc">Bred a creature with solid genetics</span>
+// ── Edit Profile modal ────────────────────────────────────────────────────────
+function profileEditModal() {
+    const modal = document.createElement('div');
+    modal.className = 'modal active';
+    const email = localStorage.getItem('userEmail') || '';
+    const nick = localStorage.getItem('userNickname') || '';
+    modal.innerHTML = `
+        <div class="modal-content" style="max-width:440px">
+            <div class="modal-header">
+                <h2 class="modal-title">✏️ Edit Profile</h2>
+                <button class="close-btn" onclick="this.closest('.modal').remove()">&times;</button>
             </div>
-            <span class="achievement-time">2 hours ago</span>
-        </div>
-        <div class="achievement-item">
-            <div class="achievement-icon">👑</div>
-            <div class="achievement-details">
-                <span class="achievement-name">Boss Ready</span>
-                <span class="achievement-desc">Trained a Gamma-ready creature</span>
+            <div class="modal-body" style="display:flex;flex-direction:column;gap:14px">
+                <div class="plan-field">
+                    <label class="form-label">Nickname</label>
+                    <input id="editNick" class="form-control" value="${nick}" placeholder="Display name">
+                </div>
+                <div class="plan-field">
+                    <label class="form-label">Email</label>
+                    <input id="editEmail" class="form-control" type="email" value="${email}">
+                </div>
+                <div class="plan-field">
+                    <label class="form-label">Discord Username</label>
+                    <input id="editDiscord" class="form-control" placeholder="your_discord_name">
+                </div>
+                <div id="editProfileError" style="color:#ef4444;font-size:0.85rem;display:none"></div>
             </div>
-            <span class="achievement-time">1 day ago</span>
-        </div>
-    `;
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="this.closest('.modal').remove()">Cancel</button>
+                <button class="btn btn-primary" onclick="profileSubmitEdit()">Save Changes</button>
+            </div>
+        </div>`;
+    document.body.appendChild(modal);
 }
+window.profileEditModal = profileEditModal;
 
-// Placeholder functions for profile actions
-function editAccountInfo() {
-    alert('Account editing will be implemented soon!');
-}
-
-function viewAllAchievements() {
-    alert('Achievement gallery will be implemented soon!');
-}
-
-function loadFriendsPreview() {
-    // Will load actual friends list preview
-    console.log('Loading friends preview...');
-}
-
-function loadTradesPreview() {
-    // Will load actual trades preview  
-    console.log('Loading trades preview...');
-}
-
-function changePassword() {
-    alert('Password change will be implemented soon!');
-}
-
-function notificationSettings() {
-    alert('Notification settings will be implemented soon!');
-}
-
-function privacySettings() {
-    alert('Privacy settings will be implemented soon!');
-}
-
-function deleteAccount() {
-    if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
-        alert('Account deletion will be implemented soon!');
+async function profileSubmitEdit() {
+    const nickname = document.getElementById('editNick')?.value.trim();
+    const email = document.getElementById('editEmail')?.value.trim();
+    const discord_name = document.getElementById('editDiscord')?.value.trim() || null;
+    const errEl = document.getElementById('editProfileError');
+    if (!nickname) { if (errEl) { errEl.textContent = 'Nickname is required.'; errEl.style.display = 'block'; } return; }
+    if (!email || !email.includes('@')) { if (errEl) { errEl.textContent = 'Valid email is required.'; errEl.style.display = 'block'; } return; }
+    const { res, body } = await apiRequest('/api/profile', { method: 'PUT', body: JSON.stringify({ nickname, email, discord_name }) });
+    if (res.ok) {
+        localStorage.setItem('userNickname', nickname);
+        localStorage.setItem('userEmail', email);
+        document.querySelector('.modal.active')?.remove();
+        loadMyProfilePage();
+    } else {
+        if (errEl) { errEl.textContent = body?.error || 'Failed to save.'; errEl.style.display = 'block'; }
     }
 }
+window.profileSubmitEdit = profileSubmitEdit;
+
+// ── Change Password modal ─────────────────────────────────────────────────────
+function profileChangePassword() {
+    const modal = document.createElement('div');
+    modal.className = 'modal active';
+    modal.innerHTML = `
+        <div class="modal-content" style="max-width:400px">
+            <div class="modal-header">
+                <h2 class="modal-title">🔒 Change Password</h2>
+                <button class="close-btn" onclick="this.closest('.modal').remove()">&times;</button>
+            </div>
+            <div class="modal-body" style="display:flex;flex-direction:column;gap:14px">
+                <div class="plan-field">
+                    <label class="form-label">Current Password</label>
+                    <input id="pwCurrent" class="form-control" type="password">
+                </div>
+                <div class="plan-field">
+                    <label class="form-label">New Password</label>
+                    <input id="pwNew" class="form-control" type="password" placeholder="Minimum 6 characters">
+                </div>
+                <div class="plan-field">
+                    <label class="form-label">Confirm New Password</label>
+                    <input id="pwConfirm" class="form-control" type="password">
+                </div>
+                <div id="pwError" style="color:#ef4444;font-size:0.85rem;display:none"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="this.closest('.modal').remove()">Cancel</button>
+                <button class="btn btn-primary" onclick="profileSubmitPassword()">Change Password</button>
+            </div>
+        </div>`;
+    document.body.appendChild(modal);
+}
+window.profileChangePassword = profileChangePassword;
+
+async function profileSubmitPassword() {
+    const current = document.getElementById('pwCurrent')?.value;
+    const newPw = document.getElementById('pwNew')?.value;
+    const confirm = document.getElementById('pwConfirm')?.value;
+    const errEl = document.getElementById('pwError');
+    const showErr = msg => { if (errEl) { errEl.textContent = msg; errEl.style.display = 'block'; } };
+    if (!current || !newPw || !confirm) return showErr('All fields are required.');
+    if (newPw.length < 6) return showErr('New password must be at least 6 characters.');
+    if (newPw !== confirm) return showErr('Passwords do not match.');
+    const { res, body } = await apiRequest('/api/profile/password', { method: 'PUT', body: JSON.stringify({ current_password: current, new_password: newPw }) });
+    if (res.ok) { document.querySelector('.modal.active')?.remove(); alert('Password changed successfully!'); }
+    else showErr(body?.error || 'Failed to change password.');
+}
+window.profileSubmitPassword = profileSubmitPassword;
+
+// ── Delete Account ────────────────────────────────────────────────────────────
+function profileDeleteAccount() {
+    const modal = document.createElement('div');
+    modal.className = 'modal active';
+    modal.innerHTML = `
+        <div class="modal-content" style="max-width:400px">
+            <div class="modal-header">
+                <h2 class="modal-title" style="color:#ef4444">🗑️ Delete Account</h2>
+                <button class="close-btn" onclick="this.closest('.modal').remove()">&times;</button>
+            </div>
+            <div class="modal-body" style="display:flex;flex-direction:column;gap:14px">
+                <div style="background:#1a0a0a;border:1px solid #7f1d1d;border-radius:8px;padding:14px;color:#fca5a5;font-size:0.9rem;line-height:1.5">
+                    ⚠️ This will <strong>permanently delete</strong> your account, all your Nuggies, trade listings, tribe memberships, and friend connections. This cannot be undone.
+                </div>
+                <div class="plan-field">
+                    <label class="form-label">Enter your password to confirm</label>
+                    <input id="deletePassword" class="form-control" type="password" placeholder="Your password">
+                </div>
+                <div id="deleteError" style="color:#ef4444;font-size:0.85rem;display:none"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="this.closest('.modal').remove()">Cancel</button>
+                <button class="btn btn-danger" onclick="profileSubmitDelete()">Delete Forever</button>
+            </div>
+        </div>`;
+    document.body.appendChild(modal);
+}
+window.profileDeleteAccount = profileDeleteAccount;
+
+async function profileSubmitDelete() {
+    const password = document.getElementById('deletePassword')?.value;
+    const errEl = document.getElementById('deleteError');
+    if (!password) { if (errEl) { errEl.textContent = 'Password required.'; errEl.style.display = 'block'; } return; }
+    const { res, body } = await apiRequest('/api/profile', { method: 'DELETE', body: JSON.stringify({ password }) });
+    if (res.ok) {
+        document.querySelector('.modal.active')?.remove();
+        localStorage.clear();
+        window.appState = {};
+        showLoginPage();
+    } else {
+        if (errEl) { errEl.textContent = body?.error || 'Failed to delete account.'; errEl.style.display = 'block'; }
+    }
+}
+window.profileSubmitDelete = profileSubmitDelete;
+
+// Legacy stubs kept to avoid ReferenceErrors from any old references
+function loadFriendsPreview() {}
+function loadTradesPreview() {}
+function editAccountInfo() { profileEditModal(); }
+function changePassword() { profileChangePassword(); }
+function deleteAccount() { profileDeleteAccount(); }
+function notificationSettings() { alert('Notification settings coming soon!'); }
+function privacySettings() { alert('Privacy settings coming soon!'); }
 
 // Creature Management Functions
 function generateSpeciesFilterOptions() {

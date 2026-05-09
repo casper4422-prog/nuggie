@@ -2632,7 +2632,7 @@ async function arenaPollChat(sessionId, initial) {
         } else {
             div.innerHTML = `
                 <div class="arena-chat-bubble ${isMe ? 'mine' : ''}">
-                    ${!isMe ? `<div class="arena-chat-sender">${msg.sender}</div>` : ''}
+                    <div class="arena-chat-sender">${isMe ? 'You' : msg.sender}</div>
                     <div class="arena-chat-text">${msg.content}</div>
                     <div class="arena-chat-time">${time}</div>
                 </div>`;

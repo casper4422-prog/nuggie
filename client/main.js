@@ -2485,14 +2485,13 @@ window.arenaDoJoin = arenaDoJoin;
 
 // ── Session view ──────────────────────────────────────────────────────────────
 async function arenaOpenSession(sessionId) {
-    _arenaSessionId = sessionId;
+    arenaClearPoll();               // clear any previous timer first
+    _arenaSessionId = sessionId;    // THEN set the new session id
     _arenaLastChatId = 0;
-    arenaClearPoll();
     const main = document.getElementById('appMainContent');
     if (!main) return;
     main.innerHTML = `<div class="std-page"><div style="color:#94a3b8;padding:40px">Loading war room...</div></div>`;
     await arenaRenderSession(sessionId, main);
-    // Start chat polling every 5 seconds
     _arenaChatPollTimer = setInterval(() => arenaPollChat(sessionId), 5000);
 }
 window.arenaOpenSession = arenaOpenSession;
@@ -2592,13 +2591,22 @@ async function arenaRenderSession(sessionId, main) {
 
 async function arenaPollChat(sessionId, initial) {
     if (_arenaSessionId !== sessionId) return; // navigated away
-    const { res, body } = await apiRequest(`/api/arena/sessions/${sessionId}/chat?since=${_arenaLastChatId}`).catch(() => ({ res:{ok:false}, body:[] }));
-    if (!res.ok || !Array.isArray(body) || !body.length) return;
 
     const chatEl = document.getElementById('arenaChatMessages');
     if (!chatEl) return;
 
-    if (initial) chatEl.innerHTML = '';
+    const { res, body } = await apiRequest(`/api/arena/sessions/${sessionId}/chat?since=${_arenaLastChatId}`).catch(() => ({ res:{ok:false}, body:[] }));
+
+    // On initial load, always clear "Loading chat..." regardless of whether there are messages
+    if (initial) {
+        chatEl.innerHTML = '';
+        if (!res.ok || !Array.isArray(body) || !body.length) {
+            chatEl.innerHTML = '<div style="color:#64748b;text-align:center;padding:20px;font-size:0.88rem">No messages yet. Say hello! 👋</div>';
+            return;
+        }
+    } else if (!res.ok || !Array.isArray(body) || !body.length) {
+        return;
+    }
 
     body.forEach(msg => {
         if (msg.id > _arenaLastChatId) _arenaLastChatId = msg.id;

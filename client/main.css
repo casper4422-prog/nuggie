@@ -3230,10 +3230,12 @@ select option {
 [data-theme="dark"] .stat-text,
 [data-theme="dark"] .stat-label { color: #94a3b8 !important; }
 
-/* Tab inactive text */
-[data-theme="dark"] .tribes-tab:not(.active) { color: #94a3b8 !important; }
+/* Tab inactive text — covers tribes-tab, tribe-tab (trading), arena-tab */
+[data-theme="dark"] .tribes-tab:not(.active),
+[data-theme="dark"] .tribe-tab:not(.active),
 [data-theme="dark"] .arena-tab:not(.active) { color: #94a3b8 !important; }
 [data-theme="dark"] .tribes-tab:hover:not(.active) { color: #CD853F !important; }
+[data-theme="dark"] .tribe-tab:hover:not(.active) { color: #94a3b8 !important; background: rgba(255,255,255,0.06) !important; }
 
 /* Tribe stat values (dark brown → gold) */
 [data-theme="dark"] .tribe-stat-value { color: #CD853F !important; }

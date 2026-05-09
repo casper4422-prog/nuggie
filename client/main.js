@@ -329,8 +329,6 @@ function showMainApp() {
 		const appMain = document.getElementById('appMainContent');
 		if (appMain) appMain.style.display = '';
 		
-		// Apply dark mode preference
-		initDarkMode();
 		// Request browser notification permission
 		requestNotificationPermission();
 		// Handle hash-based routing (e.g. #creature/123 from shared links)
@@ -1086,17 +1084,8 @@ function setupNavigationListeners() {
                 case 'leaderboards':
                     loadLeaderboardsPage();
                     break;
-                case 'tamecalc':
-                    loadTameCalcPage();
-                    break;
-                case 'wildfinds':
-                    loadWildFindsPage();
-                    break;
                 case 'messages':
                     loadDMInboxPage();
-                    break;
-                case 'events':
-                    loadEventsPage();
                     break;
                 case 'notifications':
                     toggleNotifications();
@@ -1126,23 +1115,22 @@ function loadMyNuggiesPage() {
     }, {});
     
     main.innerHTML = `
-        <div class="nuggies-page">
-            <div class="nuggies-header">
+        <div class="std-page">
+            <div class="std-page-header">
                 <div class="page-title">
-                    <h1>🍗 My Nuggies Collection</h1>
-                    <div class="creature-count">${creatures.length} creatures across ${Object.keys(creaturesBySpecies).length} species</div>
+                    <h1>🍗 My Nuggies</h1>
+                    <div class="page-subtitle">${creatures.length} creature${creatures.length !== 1 ? 's' : ''} across ${Object.keys(creaturesBySpecies).length} species</div>
                 </div>
-                <div class="header-actions">
+                <div style="display:flex;gap:8px">
                     <button class="btn btn-secondary" onclick="exportCreatures()">📤 Export</button>
                     <button class="btn btn-secondary" onclick="importCreatures()">📥 Import</button>
                 </div>
             </div>
-            
-            <div class="collection-controls">
+
+            <div class="nuggies-controls">
                 <div class="search-section">
                     <input type="text" id="creatureSearch" placeholder="🔍 Search your creatures..." class="search-input">
                 </div>
-                
                 <div class="filter-section">
                     ${mkSelect('speciesFilter',
                         [{ v: '', l: 'All Species' }, ...Object.keys(creaturesBySpecies).sort().map(s => ({ v: s, l: `${s} (${creaturesBySpecies[s].length})` }))],
@@ -1153,7 +1141,7 @@ function loadMyNuggiesPage() {
                     <button class="btn btn-sm btn-secondary" onclick="clearCollectionFilters()">Clear</button>
                 </div>
             </div>
-            
+
             <div class="collection-content">
                 ${creatures.length > 0 ? renderCreatureCollection(creaturesBySpecies, database) : renderEmptyCollection()}
             </div>

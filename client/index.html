@@ -1,15 +1,12 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width,initial-scale=1">
         <title>🦕 Dino Nuggie Manager</title>
-        <!-- Simple data URL favicon to prevent 404 -->
         <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text y='14' font-size='16'>🦕</text></svg>">
-        <!-- Hide document content until JS declares it's ready (prevents raw inline JS from flashing) -->
+        <!-- Hide document content until JS declares it's ready -->
         <style>html:not([data-ready="true"]) { visibility: hidden !important; }</style>
-        <!-- Apply dark mode immediately from localStorage to prevent flash -->
-        <script>try { if (localStorage.getItem('darkMode') === 'true') document.documentElement.setAttribute('data-theme', 'dark'); } catch(e) {}</script>
         <!-- PWA manifest -->
         <link rel="manifest" href="manifest.json">
         <meta name="theme-color" content="#3b82f6">
@@ -28,16 +25,11 @@
     </head>
     <body>
         <script>
-            // nuggie-1.onrender.com = static frontend only (API calls 404 there).
-            // nuggie.onrender.com = the real Express backend with persistent database.
             window.__API_BASE = 'https://nuggie.onrender.com';
-            // Defensive fallback: ensure showMainApp exists so early callers won't throw
-            // This will be overwritten by the real implementation in main.js when it loads.
             window.showMainApp = window.showMainApp || function() {
                 try { console.warn('[SPA] fallback showMainApp invoked'); } catch (e) {}
                 try { const landing = document.getElementById('landingPage'); const mainApp = document.getElementById('mainApp'); const appMain = document.getElementById('appMainContent'); if (landing) landing.style.display = 'none'; if (mainApp) mainApp.style.display = ''; if (appMain) appMain.style.display = ''; } catch (e) {}
             };
-            // Set data-ready to show the page initially
             document.documentElement.setAttribute('data-ready', 'true');
         </script>
         <!-- Minimal app shell. All JS lives in external files. -->
@@ -72,16 +64,12 @@
                             <button class="btn btn-secondary nav-btn" id="goToMyNuggiesBtn" data-page="nuggies">🍗 My Nuggies</button>
                             <button class="btn btn-secondary nav-btn" id="goToFriendsBtn" data-page="friends">👥 Friends</button>
                             <button class="btn btn-secondary nav-btn" id="goToMessagesBtn" data-page="messages">💬 Messages</button>
-                            <button class="btn btn-secondary nav-btn" id="goToEventsBtn" data-page="events">📅 Events</button>
-                            <button class="btn btn-secondary nav-btn" id="openTribeManagerBtn" data-page="tribe">🛡️ Tribe Manager</button>
+                            <button class="btn btn-secondary nav-btn" id="openTribeManagerBtn" data-page="tribe">🛡️ Tribe</button>
                             <button class="btn btn-secondary nav-btn" id="goToTradingBtn" data-page="trading">🔁 Trading</button>
                             <button class="btn btn-secondary nav-btn" id="goToBossPlannerBtn" data-page="boss">👑 Boss Planner</button>
                             <button class="btn btn-secondary nav-btn" id="goToArenaBtn" data-page="arena">⚔️ Arena</button>
                             <button class="btn btn-secondary nav-btn" id="goToLeaderboardsBtn" data-page="leaderboards">🏆 Leaderboards</button>
-                            <button class="btn btn-secondary nav-btn" id="goToTameCalcBtn" data-page="tamecalc">🧮 Tame Calc</button>
-                            <button class="btn btn-secondary nav-btn" id="goToWildFindsBtn" data-page="wildfinds">🗺️ Wild Finds</button>
                             <button class="btn btn-secondary nav-btn" id="goToNotificationsBtn" data-page="notifications">🔔 Notifications <span class="notification-badge" id="notificationCount"></span></button>
-                            <button id="darkModeBtn" class="btn btn-secondary" onclick="toggleDarkMode()" title="Toggle dark mode">🌙</button>
                             <button id="authBtn" class="btn btn-primary">Sign Out</button>
                         </div>
                     </div>

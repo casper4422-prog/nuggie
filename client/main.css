@@ -2655,6 +2655,30 @@ select option {
 .std-filters { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }
 .std-filters .search-input { flex: 1; min-width: 180px; }
 
+/* ── Trading Post ── */
+.trade-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; margin-top: 16px; }
+.trade-card {
+    background: rgba(30,41,59,0.8); border: 1px solid rgba(59,130,246,0.2);
+    border-radius: 12px; padding: 0; overflow: hidden;
+    display: flex; flex-direction: column;
+    transition: border-color 0.2s, transform 0.15s;
+}
+.trade-card:hover { border-color: #3b82f6; transform: translateY(-2px); }
+.trade-card-header { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-bottom: 1px solid rgba(59,130,246,0.1); }
+.trade-card-icon { width: 44px; height: 44px; background: linear-gradient(135deg, #0f4c75, #1b6ca8); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+.trade-card-name { font-weight: 600; color: #f1f5f9; font-size: 0.95rem; }
+.trade-card-species { color: #64748b; font-size: 0.78rem; margin-top: 2px; }
+.trade-card-stats { display: flex; gap: 10px; padding: 10px 16px; flex-wrap: wrap; }
+.trade-card-stats span { color: #94a3b8; font-size: 0.82rem; }
+.trade-card-badges { padding: 0 16px 6px; }
+.trade-card-want { padding: 6px 16px; }
+.trade-want-label { color: #64748b; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.04em; }
+.trade-want-val { color: #cbd5e1; font-size: 0.85rem; display: block; margin-top: 2px; }
+.trade-card-price { padding: 4px 16px; color: #f59e0b; font-size: 0.85rem; font-weight: 600; }
+.trade-offer-btn { margin: 10px 16px 14px; }
+.trade-activity { display: flex; flex-direction: column; }
+.trade-offer-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; background: #0f172a; border-radius: 6px; padding: 10px 14px; margin-top: 8px; flex-wrap: wrap; color: #cbd5e1; font-size: 0.88rem; }
+
 /* ── Friends Page ── */
 .friends-search-bar { display: flex; gap: 10px; margin-bottom: 8px; }
 .friends-search-bar .search-input { flex: 1; }

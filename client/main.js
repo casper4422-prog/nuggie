@@ -1364,395 +1364,361 @@ function generateSpeciesTips(species) {
     return tips.join(' • ');
 }
 
-function loadTradingPage() {
+// ── Trading Post ────────────────────────────────────────────────────────────
+async function loadTradingPage() {
     setActiveNavButton('trading');
     const main = document.getElementById('appMainContent');
     if (!main) return;
-    
-    const userCreatures = window.appState?.creatures || [];
-    const mockTrades = []; // Empty for live site
-    
+    main.innerHTML = `<div class="std-page"><div style="color:#94a3b8;padding:40px 0">Loading marketplace...</div></div>`;
+
+    const myId = parseInt(localStorage.getItem('userId') || '0');
+    const [trades, myOffers] = await Promise.all([
+        apiRequest('/api/trades?status=open').then(r => Array.isArray(r.body) ? r.body : []).catch(() => []),
+        apiRequest('/api/offers').then(r => Array.isArray(r.body) ? r.body : []).catch(() => [])
+    ]);
+
+    // Separate my listings from others
+    const myListings = trades.filter(t => t.user_id === myId);
+    const otherListings = trades.filter(t => t.user_id !== myId);
+
     main.innerHTML = `
-        <div class="trading-page">
-            <div class="trading-header">
+        <div class="std-page">
+            <div class="std-page-header">
                 <div class="page-title">
-                    <h1>🔄 Trading Hub</h1>
-                    <div class="trade-count">${mockTrades.length} active trades</div>
+                    <h1>🔁 Trading Post</h1>
+                    <div class="page-subtitle">${otherListings.length} listing${otherListings.length !== 1 ? 's' : ''} available</div>
                 </div>
-                <div class="header-actions">
-                    <button class="btn btn-primary" onclick="createNewTrade()">➕ Create Trade</button>
-                    <button class="btn btn-secondary" onclick="viewMyTrades()">📋 My Trades</button>
-                    <button class="btn btn-secondary" onclick="tradeHistory()">📈 Trade History</button>
-                </div>
+                <button class="btn btn-primary" onclick="tradeShowListModal()">➕ List a Creature</button>
             </div>
-            
-            <div class="trading-tabs">
-                <button class="trade-tab active" onclick="switchTradeTab('marketplace')" data-tab="marketplace">
-                    🏢 Marketplace
-                </button>
-                <button class="trade-tab" onclick="switchTradeTab('my-trades')" data-tab="my-trades">
-                    📋 My Trades (3)
-                </button>
-                <button class="trade-tab" onclick="switchTradeTab('pending')" data-tab="pending">
-                    ⏳ Pending (2)
-                </button>
-                <button class="trade-tab" onclick="switchTradeTab('completed')" data-tab="completed">
-                    ✅ Completed (15)
-                </button>
+
+            <div class="tribe-tabs">
+                <button class="tribe-tab active" data-ttab="market" onclick="tradeTab(this,'market')">🏪 Marketplace</button>
+                <button class="tribe-tab" data-ttab="activity" onclick="tradeTab(this,'activity')">📋 My Activity</button>
             </div>
-            
-            <div class="trading-controls">
-                <div class="search-section">
-                    <div class="search-group">
-                        <input type="text" id="tradeSearch" placeholder="Search trades..." class="search-input">
-                        <button class="search-btn" onclick="searchTrades()">🔍</button>
-                    </div>
-                </div>
-                
-                <div class="filter-section">
-                    <select id="tradeTypeFilter" class="filter-select" onchange="filterTrades()">
-                        <option value="">All Trade Types</option>
-                        <option value="creature">Creature for Creature</option>
-                        <option value="resources">Creature for Resources</option>
-                        <option value="mixed">Mixed Trades</option>
-                    </select>
-                    
-                    <select id="speciesWantedFilter" class="filter-select" onchange="filterTrades()">
-                        <option value="">Any Species Wanted</option>
-                        <option value="rex">Rex</option>
-                        <option value="spino">Spino</option>
-                        <option value="giga">Giga</option>
-                        <option value="wyvern">Wyvern</option>
-                    </select>
-                    
-                    <select id="tradeSortFilter" class="filter-select" onchange="sortTrades()">
-                        <option value="recent">Most Recent</option>
-                        <option value="value">Highest Value</option>
-                        <option value="ending">Ending Soon</option>
-                        <option value="rating">Best Rated</option>
-                    </select>
-                    
-                    <button class="btn btn-sm btn-secondary" onclick="clearTradeFilters()">Clear All</button>
-                </div>
+
+            <div id="tradeTabContent">
+                ${renderTradeMarket(otherListings, myId)}
             </div>
-            
-            <div class="trading-content">
-                <div id="tradesContainer" class="trades-container">
-                    ${renderTradingMarketplace(mockTrades)}
-                </div>
-            </div>
-        </div>
-    `;
-    
-    setupTradingSearch();
+        </div>`;
+
+    // store for tab switching
+    window._tradeData = { trades, myListings, myOffers, myId };
 }
 
-// Trading System Functions
-function generateMockTrades() {
-    return [
-        {
-            id: '1',
-            trader: 'AlphaBreeder',
-            traderRating: 4.8,
-            type: 'creature',
-            offering: {
-                type: 'creature',
-                species: 'Rex',
-                name: 'Thunder King',
-                level: 380,
-                stats: { health: 85, melee: 92, stamina: 70 },
-                gender: 'male',
-                mutations: 12
-            },
-            wanting: {
-                type: 'creature',
-                species: 'Spino',
-                minLevel: 350,
-                preferredStats: { health: 80, melee: 85 },
-                gender: 'female'
-            },
-            created: '2 hours ago',
-            expires: '5 days',
-            status: 'active',
-            offers: 3
-        },
-        {
-            id: '2',
-            trader: 'DinoMaster99',
-            traderRating: 4.5,
-            type: 'resources',
-            offering: {
-                type: 'creature',
-                species: 'Giga',
-                name: 'Devastator',
-                level: 450,
-                stats: { health: 78, melee: 95, stamina: 65 },
-                gender: 'female',
-                mutations: 8
-            },
-            wanting: {
-                type: 'resources',
-                items: [
-                    { name: 'Metal Ingot', quantity: 50000 },
-                    { name: 'Polymer', quantity: 10000 },
-                    { name: 'Electronics', quantity: 5000 }
-                ]
-            },
-            created: '1 day ago',
-            expires: '3 days',
-            status: 'active',
-            offers: 7
-        },
-        {
-            id: '3',
-            trader: 'WyvernRider',
-            traderRating: 4.9,
-            type: 'creature',
-            offering: {
-                type: 'creature',
-                species: 'Crystal Wyvern',
-                name: 'Prism Wing',
-                level: 320,
-                stats: { health: 88, melee: 75, stamina: 90 },
-                gender: 'female',
-                mutations: 15
-            },
-            wanting: {
-                type: 'creature',
-                species: 'Rock Drake',
-                minLevel: 300,
-                preferredStats: { health: 75, melee: 80 },
-                gender: 'any'
-            },
-            created: '3 hours ago',
-            expires: '1 week',
-            status: 'active',
-            offers: 1
-        }
-    ];
-}
-
-function renderTradingMarketplace(trades) {
-    if (trades.length === 0) {
-        return `
-            <div class="empty-state">
-                <div class="empty-icon">🛒</div>
-                <h3>No trades available</h3>
-                <p>Be the first to create a trade in the marketplace!</p>
-                <button class="btn btn-primary" onclick="createNewTrade()">➕ Create First Trade</button>
-            </div>
-        `;
+function tradeTab(btn, tab) {
+    document.querySelectorAll('.tribe-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const { trades, myListings, myOffers, myId } = window._tradeData || {};
+    const content = document.getElementById('tradeTabContent');
+    if (!content) return;
+    if (tab === 'market') {
+        const others = (trades||[]).filter(t => t.user_id !== myId);
+        content.innerHTML = renderTradeMarket(others, myId);
+        tradeMarketSearch();
+    } else {
+        content.innerHTML = renderTradeActivity(myListings||[], myOffers||[], myId);
     }
-    
-    return trades.map(trade => {
-        const offeringStats = trade.offering.stats;
-        const badges = calculateTradeBadges(trade.offering);
-        
+}
+window.tradeTab = tradeTab;
+
+// ── Marketplace tab ──────────────────────────────────────────────────────────
+function renderTradeMarket(listings, myId) {
+    return `
+        <div class="std-filters" style="margin-top:20px">
+            <input id="tradeSearch" class="form-control search-input" placeholder="🔍 Search by species...">
+        </div>
+        <div id="tradeGrid" class="trade-grid">
+            ${renderTradeCards(listings)}
+        </div>`;
+}
+
+function renderTradeCards(listings) {
+    if (!listings.length) return '<div class="friends-empty" style="padding:32px 0;text-align:center">No listings yet — be the first to post one!</div>';
+    return listings.map(t => {
+        const c = t.creature || {};
+        const bs = c.baseStats || {};
+        const db = window.SPECIES_DATABASE || {};
+        const icon = (db[c.species] || {}).icon || '🦖';
+        const badges = (window.BadgeSystem && typeof window.BadgeSystem.generateBadgeHTML === 'function')
+            ? window.BadgeSystem.generateBadgeHTML(c) : '';
         return `
-            <div class="trade-card" onclick="openTradeDetails('${trade.id}')">
-                <div class="trade-header">
-                    <div class="trader-info">
-                        <div class="trader-name">${trade.trader}</div>
-                        <div class="trader-rating">
-                            ${renderStars(trade.traderRating)} (${trade.traderRating})
-                        </div>
-                    </div>
-                    <div class="trade-status">
-                        <span class="status-badge ${trade.status}">${trade.status}</span>
-                        <div class="offers-count">${trade.offers} offers</div>
-                    </div>
-                </div>
-                
-                <div class="trade-content">
-                    <div class="trade-offering">
-                        <div class="trade-section-title">Offering</div>
-                        <div class="creature-offer">
-                            <div class="creature-summary">
-                                <span class="creature-species">${trade.offering.species}</span>
-                                <span class="creature-name">"${trade.offering.name}"</span>
-                                <span class="creature-level">Lvl ${trade.offering.level}</span>
-                                <span class="creature-gender">${trade.offering.gender === 'male' ? '♂️' : '♀️'}</span>
-                            </div>
-                            
-                            <div class="creature-stats-mini">
-                                <div class="stat-mini">HP: ${offeringStats.health}</div>
-                                <div class="stat-mini">Melee: ${offeringStats.melee}</div>
-                                <div class="stat-mini">Stam: ${offeringStats.stamina}</div>
-                                <div class="mutations-count">${trade.offering.mutations} muts</div>
-                            </div>
-                            
-                            <div class="creature-badges-mini">
-                                ${badges.map(badge => `<div class="badge-mini ${badge.class}">${badge.icon}</div>`).join('')}
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="trade-arrow">↔️</div>
-                    
-                    <div class="trade-wanting">
-                        <div class="trade-section-title">Wanting</div>
-                        ${renderTradeWanting(trade.wanting)}
-                    </div>
-                </div>
-                
-                <div class="trade-footer">
-                    <div class="trade-meta">
-                        <span class="trade-time">Posted ${trade.created}</span>
-                        <span class="trade-expires">Expires in ${trade.expires}</span>
-                    </div>
-                    <div class="trade-actions">
-                        <button class="btn btn-sm btn-primary" onclick="event.stopPropagation(); makeOffer('${trade.id}')">
-                            💰 Make Offer
-                        </button>
-                        <button class="btn btn-sm btn-secondary" onclick="event.stopPropagation(); addToWatchlist('${trade.id}')">
-                            🔖 Watch
-                        </button>
-                    </div>
+        <div class="trade-card">
+            <div class="trade-card-header">
+                <div class="trade-card-icon">${icon}</div>
+                <div class="trade-card-title">
+                    <div class="trade-card-name">${c.name || 'Unnamed'}</div>
+                    <div class="trade-card-species">${c.species || '?'} · Lvl ${c.level || 1} · ${c.gender || '?'}</div>
                 </div>
             </div>
-        `;
+            <div class="trade-card-stats">
+                <span>❤️ ${bs.Health||0}</span>
+                <span>⚔️ ${bs.Melee||0}</span>
+                <span>⚡ ${bs.Stamina||0}</span>
+                <span>🏋️ ${bs.Weight||0}</span>
+            </div>
+            ${badges ? `<div class="trade-card-badges">${badges}</div>` : ''}
+            <div class="trade-card-want">
+                <span class="trade-want-label">Looking for:</span>
+                <span class="trade-want-val">${t.wanted || 'Open to offers'}</span>
+            </div>
+            ${t.price ? `<div class="trade-card-price">💰 ${t.price}</div>` : ''}
+            <button class="btn btn-primary btn-sm trade-offer-btn" onclick="tradeShowOfferModal(${t.id},'${(c.name||'Unnamed').replace(/'/g,"\\'")}')">Make Offer</button>
+        </div>`;
     }).join('');
 }
 
-function renderTradeWanting(wanting) {
-    if (wanting.type === 'creature') {
-        return `
-            <div class="creature-wanted">
-                <div class="wanted-species">${wanting.species}</div>
-                <div class="wanted-requirements">
-                    <div class="wanted-req">Min Level: ${wanting.minLevel}</div>
-                    <div class="wanted-req">Gender: ${wanting.gender}</div>
-                    ${wanting.preferredStats ? `
-                        <div class="wanted-stats">
-                            Preferred: HP ${wanting.preferredStats.health}+ / Melee ${wanting.preferredStats.melee}+
-                        </div>
-                    ` : ''}
+function tradeMarketSearch() {
+    const input = document.getElementById('tradeSearch');
+    if (!input) return;
+    input.addEventListener('input', () => {
+        const q = input.value.toLowerCase();
+        const { trades, myId } = window._tradeData || {};
+        const filtered = (trades||[]).filter(t => t.user_id !== myId && (
+            !q ||
+            (t.creature?.species||'').toLowerCase().includes(q) ||
+            (t.creature?.name||'').toLowerCase().includes(q) ||
+            (t.wanted||'').toLowerCase().includes(q)
+        ));
+        document.getElementById('tradeGrid').innerHTML = renderTradeCards(filtered);
+    });
+}
+
+// ── My Activity tab ──────────────────────────────────────────────────────────
+function renderTradeActivity(myListings, myOffers, myId) {
+    return `
+        <div class="trade-activity">
+            <h2 class="friends-section-title" style="margin-top:20px">Your Listings</h2>
+            ${myListings.length
+                ? myListings.map(t => renderMyListing(t)).join('')
+                : '<div class="friends-empty">No listings yet.</div>'}
+
+            <h2 class="friends-section-title" style="margin-top:28px">Your Offers</h2>
+            ${myOffers.length
+                ? myOffers.map(o => renderMyOffer(o)).join('')
+                : '<div class="friends-empty">No offers sent yet.</div>'}
+        </div>`;
+}
+
+function renderMyListing(t) {
+    const c = t.creature || {};
+    return `
+        <div class="friend-card" style="flex-direction:column;align-items:flex-start;gap:10px" id="listing-${t.id}">
+            <div style="display:flex;align-items:center;justify-content:space-between;width:100%">
+                <div>
+                    <div class="friend-name">${c.name||'Unnamed'} <span style="color:#64748b;font-weight:400">${c.species||'?'}</span></div>
+                    <div class="friend-meta">Looking for: ${t.wanted||'Open to offers'}${t.price ? ` · 💰 ${t.price}` : ''}</div>
+                </div>
+                <button class="btn btn-danger btn-sm" onclick="tradeRemoveListing(${t.id})">Remove</button>
+            </div>
+            <div id="listing-offers-${t.id}">
+                <button class="btn btn-secondary btn-sm" onclick="tradeLoadOffers(${t.id})">View Offers</button>
+            </div>
+        </div>`;
+}
+
+function renderMyOffer(o) {
+    const statusColor = { pending:'#60a5fa', accepted:'#22c55e', rejected:'#ef4444', cancelled:'#64748b' }[o.status] || '#94a3b8';
+    const oc = o.offered_creature_data || {};
+    return `
+        <div class="friend-card" id="offer-${o.id}">
+            <div class="friend-info">
+                <div class="friend-name">Offer on Trade #${o.trade_id}</div>
+                <div class="friend-meta">Offering: ${oc.name||'Unnamed'} (${oc.species||'?'})${o.message ? ` · "${o.message}"` : ''}</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;flex-shrink:0">
+                <span style="font-size:0.82rem;color:${statusColor};text-transform:capitalize">${o.status}</span>
+                ${o.status === 'pending' ? `<button class="btn btn-secondary btn-sm" onclick="tradeCancelOffer(${o.id})">Cancel</button>` : ''}
+            </div>
+        </div>`;
+}
+
+// ── Actions ──────────────────────────────────────────────────────────────────
+async function tradeLoadOffers(tradeId) {
+    const container = document.getElementById(`listing-offers-${tradeId}`);
+    if (!container) return;
+    container.innerHTML = '<span style="color:#94a3b8;font-size:0.85rem">Loading offers...</span>';
+    const { res, body } = await apiRequest(`/api/trades/${tradeId}/offers`);
+    if (!res.ok || !Array.isArray(body) || !body.length) {
+        container.innerHTML = '<span style="color:#64748b;font-size:0.85rem">No offers yet.</span>';
+        return;
+    }
+    container.innerHTML = body.map(o => {
+        const oc = o.offered_creature_data || {};
+        const statusColor = { pending:'#60a5fa', accepted:'#22c55e', rejected:'#ef4444' }[o.status] || '#94a3b8';
+        return `<div class="trade-offer-row">
+            <div>
+                <span style="color:#f1f5f9;font-weight:500">${o.from_nickname || 'User #'+o.from_user_id}</span>
+                offers <strong>${oc.name||'Unnamed'}</strong> (${oc.species||'?'})
+                ${o.message ? `<em style="color:#64748b"> — "${o.message}"</em>` : ''}
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;flex-shrink:0">
+                <span style="font-size:0.8rem;color:${statusColor};text-transform:capitalize">${o.status}</span>
+                ${o.status === 'pending' ? `
+                    <button class="btn btn-primary btn-sm" onclick="tradeAcceptOffer(${o.id},${tradeId})">Accept</button>
+                    <button class="btn btn-secondary btn-sm" onclick="tradeRejectOffer(${o.id})">Decline</button>
+                ` : ''}
+            </div>
+        </div>`;
+    }).join('');
+}
+window.tradeLoadOffers = tradeLoadOffers;
+
+async function tradeAcceptOffer(offerId, tradeId) {
+    if (!confirm('Accept this offer? The creature will transfer to the buyer.')) return;
+    const { res, body } = await apiRequest(`/api/offers/${offerId}`, { method: 'PUT', body: JSON.stringify({ status: 'accepted' }) });
+    if (res.ok) { alert('Deal done! Creature transferred.'); loadTradingPage(); }
+    else alert(body?.error || 'Failed to accept offer.');
+}
+window.tradeAcceptOffer = tradeAcceptOffer;
+
+async function tradeRejectOffer(offerId) {
+    const { res, body } = await apiRequest(`/api/offers/${offerId}`, { method: 'PUT', body: JSON.stringify({ status: 'rejected' }) });
+    if (res.ok) { const el = document.getElementById(`offer-row-${offerId}`); if (el) el.remove(); else loadTradingPage(); }
+    else alert(body?.error || 'Failed to decline offer.');
+}
+window.tradeRejectOffer = tradeRejectOffer;
+
+async function tradeCancelOffer(offerId) {
+    if (!confirm('Cancel this offer?')) return;
+    const { res, body } = await apiRequest(`/api/offers/${offerId}`, { method: 'PUT', body: JSON.stringify({ status: 'cancelled' }) });
+    if (res.ok) loadTradingPage();
+    else alert(body?.error || 'Failed to cancel offer.');
+}
+window.tradeCancelOffer = tradeCancelOffer;
+
+async function tradeRemoveListing(tradeId) {
+    if (!confirm('Remove this listing?')) return;
+    const { res, body } = await apiRequest(`/api/trades/${tradeId}`, { method: 'DELETE' });
+    if (res.ok) loadTradingPage();
+    else alert(body?.error || 'Failed to remove listing.');
+}
+window.tradeRemoveListing = tradeRemoveListing;
+
+// ── List a Creature modal ─────────────────────────────────────────────────────
+function tradeShowListModal() {
+    const creatures = window.appState?.creatures || [];
+    if (!creatures.length) return alert('You have no creatures in My Nuggies yet. Add some first!');
+    const modal = document.createElement('div');
+    modal.className = 'modal active';
+    modal.innerHTML = `
+        <div class="modal-content" style="max-width:560px">
+            <div class="modal-header">
+                <h2 class="modal-title">➕ List a Creature</h2>
+                <button class="close-btn" onclick="this.closest('.modal').remove()">&times;</button>
+            </div>
+            <div class="modal-body" style="display:flex;flex-direction:column;gap:16px">
+                <div class="plan-field">
+                    <label class="form-label">Choose a Nuggie to list</label>
+                    <div class="nuggie-picker">
+                        ${creatures.map(c => `
+                        <div class="nuggie-pick-card" onclick="tradeSelectNuggie('${c.id}',this)" data-cid="${c.id}">
+                            <div class="nuggie-pick-name">${c.name||'Unnamed'}</div>
+                            <div class="nuggie-pick-species">${c.species||'?'}</div>
+                            <div class="nuggie-pick-stats">HP ${c.baseStats?.Health||0} · Mel ${c.baseStats?.Melee||0}</div>
+                        </div>`).join('')}
+                    </div>
+                </div>
+                <div class="plan-field">
+                    <label class="form-label">What are you looking for?</label>
+                    <input id="tradeWanted" class="form-control" placeholder="e.g. High-stat Rex, anything with 50+ melee...">
+                </div>
+                <div class="plan-field">
+                    <label class="form-label">Price / notes (optional)</label>
+                    <input id="tradePrice" class="form-control" placeholder="e.g. rare items only, message me first...">
                 </div>
             </div>
-        `;
-    } else if (wanting.type === 'resources') {
-        return `
-            <div class="resources-wanted">
-                ${wanting.items.map(item => `
-                    <div class="resource-item">
-                        <span class="resource-name">${item.name}</span>
-                        <span class="resource-quantity">${item.quantity.toLocaleString()}</span>
-                    </div>
-                `).join('')}
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="this.closest('.modal').remove()">Cancel</button>
+                <button class="btn btn-primary" onclick="tradeSubmitListing()">Post Listing</button>
             </div>
-        `;
-    }
-    return '<div>Mixed trade requirements</div>';
+        </div>`;
+    document.body.appendChild(modal);
+    window._selectedTradeNuggie = null;
 }
+window.tradeShowListModal = tradeShowListModal;
 
-function renderStars(rating) {
-    const fullStars = Math.floor(rating);
-    const hasHalfStar = rating % 1 >= 0.5;
-    const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
-    
-    return '⭐'.repeat(fullStars) + 
-           (hasHalfStar ? '🌟' : '') + 
-           '☆'.repeat(emptyStars);
+function tradeSelectNuggie(id, el) {
+    document.querySelectorAll('.nuggie-pick-card').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    window._selectedTradeNuggie = (window.appState?.creatures||[]).find(c => c.id === id) || null;
 }
+window.tradeSelectNuggie = tradeSelectNuggie;
 
-function calculateTradeBadges(creature) {
-    const badges = [];
-    
-    if (creature.stats.health >= 80 && creature.stats.melee >= 80) {
-        badges.push({ icon: '👑', class: 'legendary' });
-    } else if (creature.stats.health >= 70 && creature.stats.melee >= 70) {
-        badges.push({ icon: '🏆', class: 'epic' });
-    }
-    
-    if (creature.mutations >= 10) {
-        badges.push({ icon: '🧬', class: 'mutated' });
-    }
-    
-    return badges;
-}
-
-function setupTradingSearch() {
-    const searchInput = document.getElementById('tradeSearch');
-    if (searchInput) {
-        searchInput.addEventListener('input', function() {
-            filterTrades();
-        });
-    }
-}
-
-// Trading action functions
-function switchTradeTab(tabName) {
-    // Remove active class from all tabs
-    document.querySelectorAll('.trade-tab').forEach(tab => {
-        tab.classList.remove('active');
+async function tradeSubmitListing() {
+    const creature = window._selectedTradeNuggie;
+    if (!creature) return alert('Select a creature to list.');
+    const wanted = document.getElementById('tradeWanted')?.value.trim() || null;
+    const price = document.getElementById('tradePrice')?.value.trim() || null;
+    const { res, body } = await apiRequest('/api/trades', {
+        method: 'POST',
+        body: JSON.stringify({ creature_card_id: creature.id, creature_data: creature, wanted, price })
     });
-    
-    // Add active class to clicked tab
-    document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
-    
-    // Load content for tab
-    const container = document.getElementById('tradesContainer');
-    if (container) {
-        switch(tabName) {
-            case 'marketplace':
-                container.innerHTML = renderTradingMarketplace([]); // Empty for live site
-                break;
-            case 'my-trades':
-                container.innerHTML = '<div class="loading">Loading your trades...</div>';
-                break;
-            case 'pending':
-                container.innerHTML = '<div class="loading">Loading pending trades...</div>';
-                break;
-            case 'completed':
-                container.innerHTML = '<div class="loading">Loading trade history...</div>';
-                break;
-        }
-    }
+    if (res.ok) { document.querySelector('.modal.active')?.remove(); loadTradingPage(); }
+    else alert(body?.error || 'Failed to post listing.');
 }
+window.tradeSubmitListing = tradeSubmitListing;
 
-function searchTrades() {
-    filterTrades();
+// ── Make Offer modal ──────────────────────────────────────────────────────────
+function tradeShowOfferModal(tradeId, tradeName) {
+    const creatures = window.appState?.creatures || [];
+    if (!creatures.length) return alert('You have no creatures to offer. Add some in My Nuggies first!');
+    window._offerTradeId = tradeId;
+    window._selectedOfferNuggie = null;
+    const modal = document.createElement('div');
+    modal.className = 'modal active';
+    modal.innerHTML = `
+        <div class="modal-content" style="max-width:560px">
+            <div class="modal-header">
+                <h2 class="modal-title">🤝 Make an Offer</h2>
+                <button class="close-btn" onclick="this.closest('.modal').remove()">&times;</button>
+            </div>
+            <div class="modal-body" style="display:flex;flex-direction:column;gap:16px">
+                <div class="friends-empty" style="padding:0">Offering on: <strong>${tradeName}</strong></div>
+                <div class="plan-field">
+                    <label class="form-label">Choose a Nuggie to offer</label>
+                    <div class="nuggie-picker">
+                        ${creatures.map(c => `
+                        <div class="nuggie-pick-card" onclick="tradeSelectOffer('${c.id}',this)" data-cid="${c.id}">
+                            <div class="nuggie-pick-name">${c.name||'Unnamed'}</div>
+                            <div class="nuggie-pick-species">${c.species||'?'}</div>
+                            <div class="nuggie-pick-stats">HP ${c.baseStats?.Health||0} · Mel ${c.baseStats?.Melee||0}</div>
+                        </div>`).join('')}
+                    </div>
+                </div>
+                <div class="plan-field">
+                    <label class="form-label">Message (optional)</label>
+                    <input id="offerMessage" class="form-control" placeholder="Say something to the seller...">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="this.closest('.modal').remove()">Cancel</button>
+                <button class="btn btn-primary" onclick="tradeSubmitOffer()">Send Offer</button>
+            </div>
+        </div>`;
+    document.body.appendChild(modal);
 }
+window.tradeShowOfferModal = tradeShowOfferModal;
 
-function filterTrades() {
-    console.log('Filtering trades...');
+function tradeSelectOffer(id, el) {
+    document.querySelectorAll('.nuggie-pick-card').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    window._selectedOfferNuggie = (window.appState?.creatures||[]).find(c => c.id === id) || null;
 }
+window.tradeSelectOffer = tradeSelectOffer;
 
-function sortTrades() {
-    console.log('Sorting trades...');
+async function tradeSubmitOffer() {
+    const creature = window._selectedOfferNuggie;
+    if (!creature) return alert('Select a creature to offer.');
+    const message = document.getElementById('offerMessage')?.value.trim() || null;
+    const { res, body } = await apiRequest(`/api/trades/${window._offerTradeId}/offers`, {
+        method: 'POST',
+        body: JSON.stringify({ offered_creature_id: creature.id, offered_creature_data: creature, message })
+    });
+    if (res.ok) { document.querySelector('.modal.active')?.remove(); alert('Offer sent!'); }
+    else alert(body?.error || 'Failed to send offer.');
 }
+window.tradeSubmitOffer = tradeSubmitOffer;
 
-function clearTradeFilters() {
-    document.getElementById('tradeSearch').value = '';
-    document.getElementById('tradeTypeFilter').value = '';
-    document.getElementById('speciesWantedFilter').value = '';
-    document.getElementById('tradeSortFilter').value = 'recent';
-    filterTrades();
-}
-
-function createNewTrade() {
-    alert('Create trade form will be implemented soon!');
-}
-
-function viewMyTrades() {
-    switchTradeTab('my-trades');
-}
-
-function tradeHistory() {
-    switchTradeTab('completed');
-}
-
-function openTradeDetails(tradeId) {
-    alert(`Trade details for ${tradeId} will be implemented soon!`);
-}
-
-function makeOffer(tradeId) {
-    alert(`Make offer for trade ${tradeId} will be implemented soon!`);
-}
-
-function addToWatchlist(tradeId) {
-    alert(`Added trade ${tradeId} to watchlist!`);
-}
 
 async function loadTribesPage() {
     setActiveNavButton('tribe');
@@ -2805,18 +2771,7 @@ window.openCreatureDetails = openCreatureDetails;
 window.editCreature = editCreature;
 window.duplicateCreature = duplicateCreature;
 window.deleteCreature = deleteCreature;
-window.switchTradeTab = switchTradeTab;
-window.searchTrades = searchTrades;
-window.filterTrades = filterTrades;
-window.sortTrades = sortTrades;
-window.clearTradeFilters = clearTradeFilters;
-window.createNewTrade = createNewTrade;
-window.viewMyTrades = viewMyTrades;
-window.tradeHistory = tradeHistory;
-window.openTradeDetails = openTradeDetails;
-window.makeOffer = makeOffer;
-window.addToWatchlist = addToWatchlist;
-// Friends functions are exported by client/friends.js
+// Trading page functions exported inline above; Friends functions in client/friends.js
 
 // Boss Planner Implementation
 async function loadBossPlanner() {

@@ -4444,17 +4444,20 @@ function formatNotification(n) {
             return { icon: '💰', title: 'Trade Offer', message: `${actor} made an offer on your listing.`, navigate: () => { closeNotifications(); loadTradingPage(); } };
         case 'tribe_join_request':
             return { icon: '🏛️', title: 'Tribe Join Request', message: `${actor} wants to join your tribe.`, navigate: () => { closeNotifications(); loadTribesPage(); } };
-        case 'tribe_join_response':
+        case 'tribe_join_response': {
             const status = p.status === 'accepted' ? 'accepted ✓' : 'declined ✗';
             return { icon: '🏛️', title: 'Tribe Request Update', message: `Your tribe join request was ${status}.`, navigate: () => { closeNotifications(); loadTribesPage(); } };
+        }
         case 'friend_request':
             return { icon: '👥', title: 'Friend Request', message: `${actor} sent you a friend request.`, navigate: () => { closeNotifications(); loadFriendsPage(); } };
-        case 'announcement':
+        case 'announcement': {
             const cName = p.creatureName || 'a creature';
             return { icon: '💎', title: 'Diamond Bloodline!', message: `${actor} just raised ${cName} with Diamond Prized Bloodline!`, navigate: () => { closeNotifications(); } };
-        case 'boss_invite':
+        }
+        case 'boss_invite': {
             const boss = p.bossId || 'a boss';
             return { icon: '👑', title: 'Boss Fight Invite', message: `${actor} invited you to fight ${boss}.`, navigate: () => { closeNotifications(); loadBossPlanner(); } };
+        }
         default:
             return { icon: '🔔', title: 'Notification', message: p.message || 'You have a new notification.', navigate: () => closeNotifications() };
     }

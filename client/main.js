@@ -1722,6 +1722,39 @@ async function tradeSubmitOffer() {
 window.tradeSubmitOffer = tradeSubmitOffer;
 
 
+// ── Tribe color theme system ────────────────────────────────────────────────
+
+const ARK_MAPS = [
+    'The Island','The Center','Scorched Earth','Aberration','Extinction',
+    'Genesis Part 1','Genesis Part 2','Ragnarok','Crystal Isles','Fjordur',
+    'Valguero','Lost Island','Astraeos','Svartalfheim','Custom'
+];
+
+function applyTribeTheme(colors) {
+    if (!Array.isArray(colors) || !colors.length) return;
+    const root = document.documentElement;
+    if (colors[0]) root.style.setProperty('--tc-1', colors[0]);
+    if (colors[1]) root.style.setProperty('--tc-2', colors[1]);
+    if (colors[2]) root.style.setProperty('--tc-3', colors[2]);
+}
+
+function resetTribeTheme() {
+    const root = document.documentElement;
+    root.style.removeProperty('--tc-1');
+    root.style.removeProperty('--tc-2');
+    root.style.removeProperty('--tc-3');
+}
+
+function loadTribeThemeOnStartup() {
+    const useTribeColors = localStorage.getItem('useTribeColors') !== 'false'; // default on
+    if (!useTribeColors) return;
+    // Apply from cached tribe data if available
+    const cached = window.appState?.myTribeColors;
+    if (cached && Array.isArray(cached)) applyTribeTheme(cached);
+}
+window.applyTribeTheme = applyTribeTheme;
+window.resetTribeTheme = resetTribeTheme;
+
 async function loadTribesPage() {
     setActiveNavButton('tribe');
     const main = document.getElementById('appMainContent');
@@ -1804,51 +1837,125 @@ async function tribeRequestJoin(tribeId, tribeName) {
 }
 window.tribeRequestJoin = tribeRequestJoin;
 
-function tribeShowCreateModal() {
+function tribeShowCreateModal(existing) {
+    // existing = tribe object when editing, null when creating
+    const isEdit = !!existing;
+    const mapOpts = [{ v: '', l: 'Select a map...' }, ...ARK_MAPS.map(m => ({ v: m, l: m }))];
     const modal = document.createElement('div');
     modal.className = 'modal active';
     modal.innerHTML = `
-        <div class="modal-content" style="max-width:480px">
+        <div class="modal-content" style="max-width:520px">
             <div class="modal-header">
-                <h2 class="modal-title">➕ Create Tribe</h2>
+                <h2 class="modal-title">${isEdit ? '⚙️ Tribe Settings' : '➕ Create Tribe'}</h2>
                 <button class="close-btn" onclick="this.closest('.modal').remove()">&times;</button>
             </div>
             <div class="modal-body" style="display:flex;flex-direction:column;gap:16px">
                 <div class="plan-field">
                     <label class="form-label">Tribe Name *</label>
-                    <input id="tribeCreateName" class="form-control" placeholder="e.g. Alpha Hunters">
+                    <input id="tcName" class="form-control" placeholder="e.g. Alpha Hunters" value="${existing?.name || ''}">
                 </div>
                 <div class="plan-field">
                     <label class="form-label">Main Map</label>
-                    <input id="tribeCreateMap" class="form-control" placeholder="e.g. The Island, Ragnarok...">
+                    ${mkSelect('tcMap', mapOpts, existing?.main_map || '', 'Select a map...')}
                 </div>
                 <div class="plan-field">
                     <label class="form-label">Description</label>
-                    <textarea id="tribeCreateDesc" class="form-control" rows="3" placeholder="What's your tribe about?"></textarea>
+                    <textarea id="tcDesc" class="form-control" rows="3" placeholder="What's your tribe about?">${existing?.description || ''}</textarea>
                 </div>
+                <div class="plan-field">
+                    <label class="form-label">Tribe Flag <span style="color:#64748b;font-size:0.78rem">(image — shown as banner on tribe page)</span></label>
+                    ${existing?.flag_image
+                        ? `<img id="tcFlagPreview" class="tribe-flag-preview" src="${existing.flag_image}" alt="Flag">`
+                        : `<div class="tribe-flag-placeholder" id="tcFlagPreview">No flag uploaded</div>`
+                    }
+                    <input type="file" id="tcFlagInput" accept="image/*" style="margin-top:8px" onchange="tribePreviewFlag(this)">
+                </div>
+                <div class="plan-field">
+                    <label class="form-label">Tribe Colors <span style="color:#64748b;font-size:0.78rem">(changes site accent colors when active)</span></label>
+                    <div class="tribe-color-row">
+                        <div class="tribe-color-item">
+                            <label>Primary</label>
+                            <input type="color" id="tcColor1" value="${(Array.isArray(existing?.colors) ? existing.colors[0] : null) || '#3b82f6'}">
+                        </div>
+                        <div class="tribe-color-item">
+                            <label>Secondary</label>
+                            <input type="color" id="tcColor2" value="${(Array.isArray(existing?.colors) ? existing.colors[1] : null) || '#60a5fa'}">
+                        </div>
+                        <div class="tribe-color-item">
+                            <label>Accent</label>
+                            <input type="color" id="tcColor3" value="${(Array.isArray(existing?.colors) ? existing.colors[2] : null) || '#22c55e'}">
+                        </div>
+                        <div class="tribe-color-item" style="justify-content:flex-end;padding-bottom:4px">
+                            <button class="btn btn-secondary btn-sm" onclick="tribePreviewColors()">Preview</button>
+                        </div>
+                    </div>
+                </div>
+                <div id="tcError" style="color:#ef4444;font-size:0.85rem;display:none"></div>
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" onclick="this.closest('.modal').remove()">Cancel</button>
-                <button class="btn btn-primary" onclick="tribeDoCreate()">Create Tribe</button>
+                <button class="btn btn-primary" onclick="tribeDoCreate(${isEdit ? existing.id : 'null'})">${isEdit ? 'Save Settings' : 'Create Tribe'}</button>
             </div>
         </div>`;
     document.body.appendChild(modal);
+    window._tcFlagBase64 = null; // reset flag data
 }
 window.tribeShowCreateModal = tribeShowCreateModal;
 
-async function tribeDoCreate() {
-    const name = document.getElementById('tribeCreateName')?.value.trim();
-    if (!name) return alert('Tribe name is required.');
-    const main_map = document.getElementById('tribeCreateMap')?.value.trim() || null;
-    const description = document.getElementById('tribeCreateDesc')?.value.trim() || null;
-    const { res, body } = await apiRequest('/api/tribes', {
-        method: 'POST', body: JSON.stringify({ name, main_map, description })
-    });
+function tribePreviewFlag(input) {
+    const file = input.files?.[0];
+    if (!file) return;
+    if (file.size > 2 * 1024 * 1024) return alert('Flag image must be under 2MB.');
+    const reader = new FileReader();
+    reader.onload = e => {
+        window._tcFlagBase64 = e.target.result;
+        const preview = document.getElementById('tcFlagPreview');
+        if (preview) {
+            preview.outerHTML = `<img id="tcFlagPreview" class="tribe-flag-preview" src="${e.target.result}" alt="Flag">`;
+        }
+    };
+    reader.readAsDataURL(file);
+}
+window.tribePreviewFlag = tribePreviewFlag;
+
+function tribePreviewColors() {
+    const c1 = document.getElementById('tcColor1')?.value;
+    const c2 = document.getElementById('tcColor2')?.value;
+    const c3 = document.getElementById('tcColor3')?.value;
+    if (c1 || c2 || c3) applyTribeTheme([c1, c2, c3]);
+}
+window.tribePreviewColors = tribePreviewColors;
+
+async function tribeDoCreate(tribeId) {
+    const name = document.getElementById('tcName')?.value.trim();
+    const errEl = document.getElementById('tcError');
+    if (!name) { if (errEl) { errEl.textContent = 'Tribe name is required.'; errEl.style.display = 'block'; } return; }
+
+    const main_map = document.getElementById('csel_tcMap')?.dataset.val || null;
+    const description = document.getElementById('tcDesc')?.value.trim() || null;
+    const colors = [
+        document.getElementById('tcColor1')?.value || '#3b82f6',
+        document.getElementById('tcColor2')?.value || '#60a5fa',
+        document.getElementById('tcColor3')?.value || '#22c55e'
+    ];
+    const flag_image = window._tcFlagBase64 || (tribeId ? undefined : null);
+
+    const payload = { name, main_map, description, colors };
+    if (flag_image !== undefined) payload.flag_image = flag_image;
+
+    const method = tribeId ? 'PUT' : 'POST';
+    const url = tribeId ? `/api/tribes/${tribeId}` : '/api/tribes';
+    const { res, body } = await apiRequest(url, { method, body: JSON.stringify(payload) });
+
     if (res.ok) {
+        // Apply new colors immediately
+        applyTribeTheme(colors);
+        window.appState = window.appState || {};
+        window.appState.myTribeColors = colors;
         document.querySelector('.modal.active')?.remove();
         loadTribesPage();
     } else {
-        alert(body?.error || 'Failed to create tribe.');
+        if (errEl) { errEl.textContent = body?.error || 'Failed to save tribe.'; errEl.style.display = 'block'; }
     }
 }
 window.tribeDoCreate = tribeDoCreate;
@@ -1859,15 +1966,30 @@ function renderTribeMemberView(tribe, main) {
     const me = (tribe.members || []).find(m => m.user_id === myUserId);
     const myRole = me?.role || 'member';
     const isAdmin = myRole === 'owner' || myRole === 'admin';
+    const isOwner = myRole === 'owner';
+
+    // Apply tribe colors immediately on entering the tribe view
+    const colors = Array.isArray(tribe.colors) ? tribe.colors : null;
+    if (colors && localStorage.getItem('useTribeColors') !== 'false') {
+        applyTribeTheme(colors);
+        window.appState = window.appState || {};
+        window.appState.myTribeColors = colors;
+    }
+
+    const flagHtml = tribe.flag_image
+        ? `<img class="tribe-banner" src="${tribe.flag_image}" alt="${tribe.name} flag">`
+        : '';
 
     main.innerHTML = `
         <div class="std-page">
+            ${flagHtml}
             <div class="std-page-header">
                 <div class="page-title">
                     <h1>🏛️ ${tribe.name}</h1>
                     <div class="page-subtitle">
                         ${tribe.main_map ? `📍 ${tribe.main_map} · ` : ''}
-                        ${tribe.members?.length || 0} members · Your role: <strong style="color:#60a5fa;text-transform:capitalize">${myRole}</strong>
+                        ${tribe.members?.length || 0} members · Your role:
+                        <strong style="color:var(--tc-2,#60a5fa);text-transform:capitalize">${myRole}</strong>
                     </div>
                 </div>
                 <button class="btn btn-danger btn-sm" onclick="tribeLeaveTribe(${tribe.id})">Leave Tribe</button>
@@ -1877,7 +1999,8 @@ function renderTribeMemberView(tribe, main) {
                 <button class="tribe-tab active" data-tab="overview" onclick="tribeTab(this,'overview',${tribe.id})">🏠 Overview</button>
                 <button class="tribe-tab" data-tab="members" onclick="tribeTab(this,'members',${tribe.id})">👥 Members (${tribe.members?.length||0})</button>
                 <button class="tribe-tab" data-tab="vault" onclick="tribeTab(this,'vault',${tribe.id})">🗄️ Vault</button>
-                ${isAdmin ? `<button class="tribe-tab" data-tab="requests" onclick="tribeTab(this,'requests',${tribe.id})">📬 Join Requests</button>` : ''}
+                ${isAdmin ? `<button class="tribe-tab" data-tab="requests" onclick="tribeTab(this,'requests',${tribe.id})">📬 Requests</button>` : ''}
+                ${isOwner ? `<button class="tribe-tab" data-tab="settings" onclick="tribeTab(this,'settings',${tribe.id})">⚙️ Settings</button>` : ''}
             </div>
             <div id="tribeTabContent" class="tribe-tab-content">
                 ${renderTribeOverviewTab(tribe, myRole)}
@@ -1894,18 +2017,23 @@ async function tribeTab(btn, tab, tribeId) {
 
     if (tab === 'overview') {
         const { body } = await apiRequest(`/api/tribes/${tribeId}`).catch(() => ({ body: null }));
+        if (body?.colors && localStorage.getItem('useTribeColors') !== 'false') applyTribeTheme(body.colors);
         content.innerHTML = body ? renderTribeOverviewTab(body, null) : '<div class="tribe-empty">Failed to load.</div>';
     } else if (tab === 'members') {
         const { body } = await apiRequest(`/api/tribes/${tribeId}`).catch(() => ({ body: null }));
         const myUserId = parseInt(localStorage.getItem('userId') || '0');
         const me = (body?.members || []).find(m => m.user_id === myUserId);
-        const isAdmin = me?.role === 'owner' || me?.role === 'admin';
-        content.innerHTML = renderTribeMembersTab(body, tribeId, isAdmin);
+        const myRole = me?.role || 'member';
+        const isAdmin = myRole === 'owner' || myRole === 'admin';
+        content.innerHTML = renderTribeMembersTab(body, tribeId, isAdmin, myRole);
     } else if (tab === 'vault') {
         const { body } = await apiRequest(`/api/tribes/${tribeId}/creatures`).catch(() => ({ body: [] }));
         content.innerHTML = renderTribeVaultTab(Array.isArray(body) ? body : [], tribeId);
     } else if (tab === 'requests') {
         content.innerHTML = await loadJoinRequestsTab(tribeId);
+    } else if (tab === 'settings') {
+        const { body } = await apiRequest(`/api/tribes/${tribeId}`).catch(() => ({ body: null }));
+        if (body) { tribeShowCreateModal(body); content.innerHTML = '<div class="tribe-empty">Settings modal opened.</div>'; }
     }
 }
 window.tribeTab = tribeTab;
@@ -1931,24 +2059,59 @@ function renderTribeOverviewTab(tribe, myRole) {
         </div>`;
 }
 
-function renderTribeMembersTab(tribe, tribeId, isAdmin) {
+function renderTribeMembersTab(tribe, tribeId, isAdmin, callerRole) {
     const members = tribe?.members || [];
     const myUserId = parseInt(localStorage.getItem('userId') || '0');
+    const isOwner = callerRole === 'owner';
+    // Role order for display
+    const roleOrder = { owner: 0, admin: 1, member: 2, recruit: 3 };
+    const sorted = [...members].sort((a, b) => (roleOrder[a.role] ?? 9) - (roleOrder[b.role] ?? 9));
+
+    function roleButtons(m) {
+        if (!isAdmin || m.user_id === myUserId || m.role === 'owner') return '';
+        const btns = [];
+        // Promotion
+        const next = { recruit: 'member', member: 'admin' }[m.role];
+        if (next && (isOwner || next !== 'admin')) {
+            btns.push(`<button class="btn btn-secondary btn-sm" onclick="tribeSetRole(${tribeId},${m.user_id},'${next}')">▲ ${next}</button>`);
+        }
+        // Demotion
+        const prev = { admin: 'member', member: 'recruit' }[m.role];
+        if (prev) {
+            btns.push(`<button class="btn btn-secondary btn-sm" onclick="tribeSetRole(${tribeId},${m.user_id},'${prev}')">▼ ${prev}</button>`);
+        }
+        // Kick
+        btns.push(`<button class="btn btn-danger btn-sm" onclick="tribeKickMember(${tribeId},${m.user_id},'${(m.nickname||m.email||'this member').replace(/'/g,"\\'")}')">Kick</button>`);
+        return btns.join('');
+    }
+
     return `
         <div class="tribe-members-list">
-            ${members.map(m => `
+            ${sorted.map(m => `
                 <div class="tribe-member-row">
                     <div class="tribe-member-avatar">👤</div>
                     <div class="tribe-member-info">
                         <div class="tribe-member-name">${m.nickname || m.email || 'Unknown'}</div>
                         <div class="tribe-member-role ${m.role}">${m.role}</div>
                     </div>
-                    ${isAdmin && m.user_id !== myUserId && m.role !== 'owner'
-                        ? `<button class="btn btn-danger btn-sm" onclick="tribeKickMember(${tribeId},${m.user_id},'${(m.nickname||m.email||'this member').replace(/'/g,"\\'")}')">Kick</button>`
-                        : ''}
+                    <div style="display:flex;gap:6px;flex-wrap:wrap">${roleButtons(m)}</div>
                 </div>`).join('')}
         </div>`;
 }
+
+async function tribeSetRole(tribeId, userId, role) {
+    const { res, body } = await apiRequest(`/api/tribes/${tribeId}/members/${userId}/role`, {
+        method: 'PUT', body: JSON.stringify({ role })
+    });
+    if (res.ok) {
+        // Refresh the members tab
+        const btn = document.querySelector('.tribe-tab[data-tab="members"]');
+        if (btn) tribeTab(btn, 'members', tribeId);
+    } else {
+        alert(body?.error || 'Failed to change role.');
+    }
+}
+window.tribeSetRole = tribeSetRole;
 
 async function tribeKickMember(tribeId, userId, name) {
     if (!confirm(`Remove ${name} from the tribe?`)) return;
@@ -2428,6 +2591,9 @@ async function loadMyProfilePage() {
                         <button class="profile-setting-btn" onclick="profileChangePassword()">
                             <span>🔒 Change Password</span><span>→</span>
                         </button>
+                        <button class="profile-setting-btn" onclick="profileToggleTheme()" id="themeToggleBtn">
+                            <span>🎨 Site Theme: ${localStorage.getItem('useTribeColors') === 'false' ? 'Default' : 'Tribe Colors'}</span><span>→</span>
+                        </button>
                         <button class="profile-setting-btn danger" onclick="profileDeleteAccount()">
                             <span>🗑️ Delete Account</span><span>→</span>
                         </button>
@@ -2586,6 +2752,21 @@ async function profileSubmitDelete() {
     }
 }
 window.profileSubmitDelete = profileSubmitDelete;
+
+function profileToggleTheme() {
+    const current = localStorage.getItem('useTribeColors') !== 'false';
+    localStorage.setItem('useTribeColors', current ? 'false' : 'true');
+    if (!current) {
+        // Turning ON — apply tribe colors if available
+        const colors = window.appState?.myTribeColors;
+        if (colors) applyTribeTheme(colors);
+    } else {
+        // Turning OFF — reset to defaults
+        resetTribeTheme();
+    }
+    loadMyProfilePage();
+}
+window.profileToggleTheme = profileToggleTheme;
 
 // Legacy stubs kept to avoid ReferenceErrors from any old references
 function loadFriendsPreview() {}
@@ -3483,6 +3664,15 @@ async function handleLogin(event) {
 			try { await loadServerArenaCollections(); } catch (e) { console.warn('loadServerArenaCollections after login failed', e); }
 			// Start notification polling
 			try { startNotificationPolling(); } catch (e) {}
+			// Load tribe theme colors
+			try {
+				const { body: tribeMeta } = await apiRequest('/api/my-tribe').catch(() => ({ body: null }));
+				if (tribeMeta && Array.isArray(tribeMeta.colors)) {
+					window.appState = window.appState || {};
+					window.appState.myTribeColors = tribeMeta.colors;
+					if (localStorage.getItem('useTribeColors') !== 'false') applyTribeTheme(tribeMeta.colors);
+				}
+			} catch (e) {}
 			// Refresh stats and auth UI after login
 			try { updateStatsDashboard(); } catch (e) {}
 			try { updateAuthUI(); } catch (e) {}

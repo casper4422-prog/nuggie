@@ -514,14 +514,14 @@
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
+    background: var(--tc-1, #3b82f6);
     color: white;
-    box-shadow: 0 2px 8px rgba(255, 107, 53, 0.3);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
 }
 
 .btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(255, 107, 53, 0.4);
+    filter: brightness(1.12);
+    transform: translateY(-1px);
 }
 
 .btn-secondary {

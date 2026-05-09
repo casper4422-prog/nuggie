@@ -1,4 +1,11 @@
-/* Modern login/register form fixes */
+/* ── Tribe color theme variables (overridden via JS when user has a tribe) ── */
+:root {
+    --tc-1: #3b82f6;   /* primary   — buttons, active borders, highlights */
+    --tc-2: #60a5fa;   /* secondary — tags, section titles, metadata       */
+    --tc-3: #22c55e;   /* accent    — special callouts, collector badges   */
+}
+
+/* ── Modern login/register form fixes */
 .form-group {
     display: flex;
     flex-direction: column;
@@ -2935,3 +2942,43 @@ select option {
 .plan-save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: #0f172a; border-top: 1px solid #334155; padding: 14px 24px; display: flex; align-items: center; justify-content: flex-end; gap: 16px; z-index: 100; }
 .save-status { color: #64748b; font-size: 0.85rem; }
 .btn-lg { padding: 12px 28px; font-size: 1rem; }
+
+/* ── Tribe color theme overrides (use CSS vars so JS can swap them live) ── */
+.tribe-tab.active              { color: var(--tc-2, #60a5fa); border-bottom-color: var(--tc-1, #3b82f6); }
+.section-title                 { color: var(--tc-2, #60a5fa); }
+.click-hint                    { color: var(--tc-1, #3b82f6); }
+.template-map                  { color: var(--tc-2, #60a5fa); }
+.boss-map-tag                  { color: var(--tc-2, #60a5fa); }
+.tribe-browse-map              { color: var(--tc-2, #60a5fa); }
+.profile-hero-tribe            { color: var(--tc-2, #60a5fa); }
+.friends-badge                 { background: var(--tc-1, #3b82f6); }
+.csel-opt.sel                  { color: var(--tc-2, #60a5fa); background: rgba(var(--tc-1-rgb, 59 130 246) / 0.12); }
+.csel-btn:hover                { border-color: var(--tc-1, #3b82f6); }
+.friend-card:hover             { border-color: var(--tc-1, #3b82f6); }
+.tribe-browse-card:hover       { border-color: var(--tc-1, #3b82f6); }
+.boss-planning-card:hover      { border-color: var(--tc-1, #3b82f6); }
+.trade-card:hover              { border-color: var(--tc-1, #3b82f6); }
+.form-control:focus            { border-color: var(--tc-1, #3b82f6); box-shadow: 0 0 0 2px color-mix(in srgb, var(--tc-1, #3b82f6) 20%, transparent); }
+.notification-actions button:hover { background: var(--tc-1, #3b82f6); color: #fff; border-color: var(--tc-1, #3b82f6); }
+.profile-hstat-val             { color: var(--tc-2, #60a5fa); }
+.pb-name                       { color: var(--tc-2, #60a5fa); }
+.badge-diamond                 { color: var(--tc-3, #60c0ff); border-color: color-mix(in srgb, var(--tc-3, #60c0ff) 35%, transparent); background: color-mix(in srgb, var(--tc-3, #60c0ff) 12%, transparent); }
+.std-page-header               { border-color: rgba(var(--tc-1-rgb, 59 130 246) / 0.15); }
+
+/* Tribe flag / color picker UI */
+.tribe-flag-preview { width: 100%; height: 120px; border-radius: 10px; object-fit: cover; border: 2px solid #334155; }
+.tribe-flag-placeholder { width: 100%; height: 120px; border-radius: 10px; background: #0f172a; border: 2px dashed #334155; display: flex; align-items: center; justify-content: center; color: #475569; font-size: 0.9rem; }
+.tribe-color-row { display: flex; gap: 16px; flex-wrap: wrap; }
+.tribe-color-item { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.tribe-color-item label { color: #94a3b8; font-size: 0.8rem; }
+.tribe-color-item input[type="color"] { width: 52px; height: 52px; border: 2px solid #334155; border-radius: 8px; cursor: pointer; background: none; padding: 2px; }
+.tribe-banner { width: 100%; height: 140px; border-radius: 12px; object-fit: cover; margin-bottom: 20px; }
+.tribe-banner-placeholder { width: 100%; height: 80px; border-radius: 10px; margin-bottom: 16px; }
+
+/* Role badge colors */
+.tribe-member-role.recruit { color: #94a3b8; }
+
+/* Profile theme toggle */
+.theme-toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #1e293b; }
+.theme-toggle-label { color: #e2e8f0; font-size: 0.9rem; }
+.theme-toggle-status { color: #64748b; font-size: 0.8rem; }

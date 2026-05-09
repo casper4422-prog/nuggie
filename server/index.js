@@ -127,10 +127,15 @@ db.serialize(() => {
     name TEXT NOT NULL,
     main_map TEXT,
     description TEXT,
+    flag_image TEXT,
+    colors TEXT,
     owner_user_id INTEGER NOT NULL,
     created_at TEXT DEFAULT (datetime('now')),
     FOREIGN KEY(owner_user_id) REFERENCES users(id)
   )`);
+  // Add new columns to existing tribes tables
+  db.run(`ALTER TABLE tribes ADD COLUMN flag_image TEXT`, () => {});
+  db.run(`ALTER TABLE tribes ADD COLUMN colors TEXT`, () => {});
   db.run(`CREATE TABLE IF NOT EXISTS tribe_memberships (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     tribe_id INTEGER NOT NULL,
@@ -961,13 +966,14 @@ app.get('/api/users/search', authenticateToken, (req, res) => {
 // Get the authenticated user's current tribe (the first tribe they belong to)
 app.get('/api/my-tribe', authenticateToken, (req, res) => {
   db.get(
-    `SELECT t.id, t.name, t.main_map, t.description, t.owner_user_id, m.role
+    `SELECT t.id, t.name, t.main_map, t.description, t.flag_image, t.colors, t.owner_user_id, m.role
      FROM tribe_memberships m JOIN tribes t ON m.tribe_id = t.id
      WHERE m.user_id = ? LIMIT 1`,
     [req.user.userId],
     (err, row) => {
       if (err) return res.status(500).json({ error: 'Failed to load tribe' });
       if (!row) return res.json(null);
+      try { if (row.colors) row.colors = JSON.parse(row.colors); } catch (e) { row.colors = null; }
       res.json(row);
     }
   );
@@ -975,14 +981,31 @@ app.get('/api/my-tribe', authenticateToken, (req, res) => {
 
 // Create a tribe
 app.post('/api/tribes', authenticateToken, (req, res) => {
-  const { name, main_map, description } = req.body || {};
+  const { name, main_map, description, flag_image, colors } = req.body || {};
   if (!name) return res.status(400).json({ error: 'Missing tribe name' });
-  db.run('INSERT INTO tribes (name, main_map, description, owner_user_id) VALUES (?, ?, ?, ?)', [name, main_map || null, description || null, req.user.userId], function(err) {
+  const colorsStr = colors ? JSON.stringify(colors) : null;
+  db.run('INSERT INTO tribes (name, main_map, description, flag_image, colors, owner_user_id) VALUES (?, ?, ?, ?, ?, ?)',
+    [name, main_map || null, description || null, flag_image || null, colorsStr, req.user.userId], function(err) {
     if (err) return res.status(500).json({ error: 'Failed to create tribe' });
     const tribeId = this.lastID;
-    // Create membership as owner
     db.run('INSERT INTO tribe_memberships (tribe_id, user_id, role) VALUES (?, ?, ?)', [tribeId, req.user.userId, 'owner']);
     res.status(201).json({ success: true, id: tribeId });
+  });
+});
+
+// Update tribe settings (owner only)
+app.put('/api/tribes/:id', authenticateToken, (req, res) => {
+  const tribeId = req.params.id;
+  const { name, main_map, description, flag_image, colors } = req.body || {};
+  if (!name) return res.status(400).json({ error: 'Missing tribe name' });
+  db.get('SELECT role FROM tribe_memberships WHERE tribe_id = ? AND user_id = ?', [tribeId, req.user.userId], (err, me) => {
+    if (err || !me || me.role !== 'owner') return res.status(403).json({ error: 'Only owner can update tribe settings' });
+    const colorsStr = colors ? JSON.stringify(colors) : null;
+    db.run('UPDATE tribes SET name = ?, main_map = ?, description = ?, flag_image = ?, colors = ? WHERE id = ?',
+      [name, main_map || null, description || null, flag_image || null, colorsStr, tribeId], function(err) {
+      if (err) return res.status(500).json({ error: 'Failed to update tribe' });
+      res.json({ success: true });
+    });
   });
 });
 
@@ -1000,11 +1023,34 @@ app.get('/api/tribes', (req, res) => {
 // Get tribe details including members (requires auth to see member roles)
 app.get('/api/tribes/:id', authenticateToken, (req, res) => {
   const id = req.params.id;
-  db.get('SELECT id, name, main_map, description, owner_user_id, created_at FROM tribes WHERE id = ?', [id], (err, tribe) => {
+  db.get('SELECT id, name, main_map, description, flag_image, colors, owner_user_id, created_at FROM tribes WHERE id = ?', [id], (err, tribe) => {
     if (err || !tribe) return res.status(404).json({ error: 'Tribe not found' });
+    try { if (tribe.colors) tribe.colors = JSON.parse(tribe.colors); } catch (e) { tribe.colors = null; }
     db.all('SELECT m.id, m.user_id, m.role, u.nickname, u.email FROM tribe_memberships m LEFT JOIN users u ON m.user_id = u.id WHERE m.tribe_id = ?', [id], (err2, members) => {
       if (err2) return res.status(500).json({ error: 'Failed to load members' });
       res.json({ ...tribe, members: members || [] });
+    });
+  });
+});
+
+// Change a member's role (owner can set any; admin can set recruit/member only)
+app.put('/api/tribes/:id/members/:userId/role', authenticateToken, (req, res) => {
+  const tribeId = req.params.id;
+  const targetId = req.params.userId;
+  const { role } = req.body || {};
+  const valid = ['recruit', 'member', 'admin'];
+  if (!valid.includes(role)) return res.status(400).json({ error: 'Invalid role. Must be recruit, member, or admin.' });
+  db.get('SELECT role FROM tribe_memberships WHERE tribe_id = ? AND user_id = ?', [tribeId, req.user.userId], (err, me) => {
+    if (err || !me) return res.status(403).json({ error: 'Not a tribe member' });
+    if (!(me.role === 'owner' || me.role === 'admin')) return res.status(403).json({ error: 'Insufficient role' });
+    if (role === 'admin' && me.role !== 'owner') return res.status(403).json({ error: 'Only owner can promote to admin' });
+    db.get('SELECT role FROM tribe_memberships WHERE tribe_id = ? AND user_id = ?', [tribeId, targetId], (err2, target) => {
+      if (err2 || !target) return res.status(404).json({ error: 'Target member not found' });
+      if (target.role === 'owner') return res.status(400).json({ error: 'Cannot change owner role' });
+      db.run('UPDATE tribe_memberships SET role = ? WHERE tribe_id = ? AND user_id = ?', [role, tribeId, targetId], function(err3) {
+        if (err3) return res.status(500).json({ error: 'Failed to update role' });
+        res.json({ success: true });
+      });
     });
   });
 });
@@ -1103,7 +1149,7 @@ app.put('/api/tribes/join_requests/:id', authenticateToken, (req, res) => {
         if (err3) return res.status(500).json({ error: 'Failed to update request' });
         if (status === 'accepted') {
           // add membership
-          db.run('INSERT INTO tribe_memberships (tribe_id, user_id, role) VALUES (?, ?, ?)', [jr.tribe_id, jr.user_id, targetRole || 'member']);
+          db.run('INSERT INTO tribe_memberships (tribe_id, user_id, role) VALUES (?, ?, ?)', [jr.tribe_id, jr.user_id, targetRole || 'recruit']);
         }
         // notify requester
         const payload = JSON.stringify({ joinRequestId: id, status });

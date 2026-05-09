@@ -6,11 +6,13 @@ async function loadFriendsPage() {
     if (!main) return;
     main.innerHTML = `<div class="std-page"><div style="color:#94a3b8;padding:40px 0">Loading friends...</div></div>`;
 
-    const [friends, incoming, sent] = await Promise.all([
+    const [friends, incoming, sent, onlineData] = await Promise.all([
         apiRequest('/api/friends?status=accepted').then(r => Array.isArray(r.body) ? r.body : []).catch(() => []),
         apiRequest('/api/friends?status=pending').then(r => Array.isArray(r.body) ? r.body : []).catch(() => []),
-        apiRequest('/api/friends?status=sent').then(r => Array.isArray(r.body) ? r.body : []).catch(() => [])
+        apiRequest('/api/friends?status=sent').then(r => Array.isArray(r.body) ? r.body : []).catch(() => []),
+        apiRequest('/api/users/online').then(r => r.body || {}).catch(() => ({}))
     ]);
+    const onlineIds = new Set(Array.isArray(onlineData.online_ids) ? onlineData.online_ids : []);
 
     main.innerHTML = `
         <div class="std-page">
@@ -51,7 +53,7 @@ async function loadFriendsPage() {
                 <h2 class="friends-section-title">👥 Your Friends</h2>
                 <div class="friends-list" id="friendsList">
                     ${friends.length
-                        ? friends.map(f => friendCard(f)).join('')
+                        ? friends.map(f => friendCard(f, onlineIds)).join('')
                         : '<div class="friends-empty">No friends yet. Search for users above to add them.</div>'
                     }
                 </div>
@@ -63,15 +65,21 @@ async function loadFriendsPage() {
     });
 }
 
-function friendCard(f) {
+function friendCard(f, onlineIds) {
+    const isOnline = onlineIds instanceof Set ? onlineIds.has(f.friend_id) : false;
     return `
         <div class="friend-card" id="friend-${f.id}">
-            <div class="friend-avatar">👤</div>
+            <div class="friend-avatar-wrap" style="position:relative">
+                <div class="friend-avatar">👤</div>
+                <span class="online-dot ${isOnline ? 'online' : 'offline'}" title="${isOnline ? 'Online' : 'Offline'}"></span>
+            </div>
             <div class="friend-info">
                 <div class="friend-name">${f.friend_nickname || f.friend_email || 'Unknown'}</div>
                 ${f.friend_discord_name ? `<div class="friend-meta">Discord: ${f.friend_discord_name}</div>` : ''}
+                <div class="friend-status-label ${isOnline ? 'online' : ''}">${isOnline ? '● Online' : '○ Offline'}</div>
             </div>
             <div class="friend-actions">
+                <button class="btn btn-secondary btn-sm" onclick="openDMThread(${f.friend_id}, '${(f.friend_nickname || f.friend_email || 'Friend').replace(/'/g, "\\'")}')">💬 Message</button>
                 <button class="btn btn-secondary btn-sm" onclick="friendViewCreatures(${f.friend_id}, '${(f.friend_nickname || f.friend_email || 'Friend').replace(/'/g, "\\'")}')">🦖 Creatures</button>
                 <button class="btn btn-danger btn-sm" onclick="friendRemove(${f.id})">Remove</button>
             </div>

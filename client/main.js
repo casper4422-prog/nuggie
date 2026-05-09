@@ -329,6 +329,12 @@ function showMainApp() {
 		const appMain = document.getElementById('appMainContent');
 		if (appMain) appMain.style.display = '';
 		
+		// Apply dark mode preference
+		initDarkMode();
+		// Request browser notification permission
+		requestNotificationPermission();
+		// Handle hash-based routing (e.g. #creature/123 from shared links)
+		if (handleHashRoute()) return;
 		// Load default page (My Profile) if no specific page is already loaded
 		const mainContent = document.getElementById('mainContent');
 		if (mainContent && (!mainContent.innerHTML || mainContent.innerHTML.trim() === '')) {
@@ -1077,6 +1083,21 @@ function setupNavigationListeners() {
                 case 'friends':
                     loadFriendsPage();
                     break;
+                case 'leaderboards':
+                    loadLeaderboardsPage();
+                    break;
+                case 'tamecalc':
+                    loadTameCalcPage();
+                    break;
+                case 'wildfinds':
+                    loadWildFindsPage();
+                    break;
+                case 'messages':
+                    loadDMInboxPage();
+                    break;
+                case 'events':
+                    loadEventsPage();
+                    break;
                 case 'notifications':
                     toggleNotifications();
                     break;
@@ -1218,6 +1239,7 @@ function renderCreatureCard(creature, speciesData) {
             <div class="creature-actions">
                 <button class="btn btn-sm btn-secondary" onclick="editCreature('${creature.id}')">✏️ Edit</button>
                 <button class="btn btn-sm btn-primary" onclick="duplicateCreature('${creature.id}')">📋 Clone</button>
+                <button class="btn btn-sm btn-secondary" onclick="shareCreatureUrl(${creature.id})" title="Copy shareable link">🔗</button>
                 <button class="btn btn-sm btn-danger" onclick="deleteCreature('${creature.id}')">🗑️ Delete</button>
             </div>
         </div>
@@ -1374,10 +1396,12 @@ async function loadTradingPage() {
     main.innerHTML = `<div class="std-page"><div style="color:#94a3b8;padding:40px 0">Loading marketplace...</div></div>`;
 
     const myId = parseInt(localStorage.getItem('userId') || '0');
-    const [trades, myOffers] = await Promise.all([
+    const [trades, myOffers, myWishlist] = await Promise.all([
         apiRequest('/api/trades?status=open').then(r => Array.isArray(r.body) ? r.body : []).catch(() => []),
-        apiRequest('/api/offers').then(r => Array.isArray(r.body) ? r.body : []).catch(() => [])
+        apiRequest('/api/offers').then(r => Array.isArray(r.body) ? r.body : []).catch(() => []),
+        apiRequest('/api/wishlists').then(r => Array.isArray(r.body) ? r.body : []).catch(() => [])
     ]);
+    window._myWishlist = new Set(myWishlist);
 
     // Separate my listings from others
     const myListings = trades.filter(t => t.user_id === myId);
@@ -1390,7 +1414,10 @@ async function loadTradingPage() {
                     <h1>🔁 Trading Post</h1>
                     <div class="page-subtitle">${otherListings.length} listing${otherListings.length !== 1 ? 's' : ''} available</div>
                 </div>
-                <button class="btn btn-primary" onclick="tradeShowListModal()">➕ List a Creature</button>
+                <div style="display:flex;gap:8px">
+                    <button class="btn btn-secondary" onclick="tradeWishlistModal()">⭐ Wishlist (${window._myWishlist?.size || 0})</button>
+                    <button class="btn btn-primary" onclick="tradeShowListModal()">➕ List a Creature</button>
+                </div>
             </div>
 
             <div class="tribe-tabs">
@@ -1639,6 +1666,92 @@ function tradeShowListModal() {
 }
 window.tradeShowListModal = tradeShowListModal;
 
+// ── Wishlist Management ───────────────────────────────────────────────────────
+async function tradeWishlistModal() {
+    const db2 = window.SPECIES_DATABASE || {};
+    const speciesOptions = Object.keys(db2).sort().map(k => {
+        const onWl = window._myWishlist?.has(k);
+        return `<div class="wl-row" id="wlrow-${k.replace(/[^a-z0-9]/gi,'_')}">
+            <span style="flex:1;color:#f1f5f9;font-size:0.9rem">${k}</span>
+            <button class="btn btn-sm ${onWl ? 'btn-danger' : 'btn-secondary'}" onclick="wishlistToggle('${k.replace(/'/g,"\\'")}',this)">${onWl ? '✕ Remove' : '+ Watch'}</button>
+        </div>`;
+    }).join('');
+    const modal = document.createElement('div');
+    modal.className = 'modal active';
+    modal.innerHTML = `
+        <div class="modal-content" style="max-width:440px">
+            <div class="modal-header"><h2 class="modal-title">⭐ My Wishlist</h2><button class="close-btn" onclick="this.closest('.modal').remove()">&times;</button></div>
+            <div class="modal-body">
+                <div style="color:#94a3b8;font-size:0.85rem;margin-bottom:12px">Watch species and get notified when they're listed. <span style="color:var(--tc-1,#3b82f6)">${window._myWishlist?.size || 0} watching</span></div>
+                <input class="form-control" placeholder="🔍 Filter species..." oninput="wlFilter(this.value)" style="margin-bottom:10px">
+                <div id="wlList" style="max-height:360px;overflow-y:auto;display:flex;flex-direction:column;gap:4px">${speciesOptions}</div>
+            </div>
+        </div>`;
+    document.body.appendChild(modal);
+}
+window.tradeWishlistModal = tradeWishlistModal;
+
+function wlFilter(q) {
+    document.querySelectorAll('.wl-row').forEach(row => {
+        row.style.display = row.textContent.toLowerCase().includes(q.toLowerCase()) ? '' : 'none';
+    });
+}
+window.wlFilter = wlFilter;
+
+async function wishlistToggle(species, btn) {
+    const onWl = window._myWishlist?.has(species);
+    if (onWl) {
+        await apiRequest(`/api/wishlists/${encodeURIComponent(species)}`, { method: 'DELETE' });
+        window._myWishlist?.delete(species);
+        if (btn) { btn.textContent = '+ Watch'; btn.className = 'btn btn-sm btn-secondary'; }
+    } else {
+        await apiRequest('/api/wishlists', { method: 'POST', body: JSON.stringify({ species }) });
+        window._myWishlist?.add(species);
+        if (btn) { btn.textContent = '✕ Remove'; btn.className = 'btn btn-sm btn-danger'; }
+    }
+}
+window.wishlistToggle = wishlistToggle;
+
+// ── Seller Rating Modal ───────────────────────────────────────────────────────
+function tradeRateModal(ratedUserId, ratedName, tradeId) {
+    const modal = document.createElement('div');
+    modal.className = 'modal active';
+    modal.innerHTML = `
+        <div class="modal-content" style="max-width:380px">
+            <div class="modal-header"><h2 class="modal-title">⭐ Rate Trader</h2><button class="close-btn" onclick="this.closest('.modal').remove()">&times;</button></div>
+            <div class="modal-body" style="display:flex;flex-direction:column;gap:14px">
+                <div style="color:#94a3b8">Rate your trade with <strong style="color:#f1f5f9">${ratedName}</strong></div>
+                <div style="display:flex;gap:8px;justify-content:center">
+                    ${[1,2,3,4,5].map(n => `<button class="rating-star" data-val="${n}" onclick="ratingStarClick(${n})" style="font-size:2rem;background:none;border:none;cursor:pointer;opacity:0.4;transition:opacity 0.15s" title="${n} star${n>1?'s':''}">⭐</button>`).join('')}
+                </div>
+                <input id="ratingComment" class="form-control" placeholder="Optional comment...">
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="this.closest('.modal').remove()">Skip</button>
+                <button class="btn btn-primary" onclick="tradeSubmitRating(${ratedUserId},${tradeId})">Submit Rating</button>
+            </div>
+        </div>`;
+    document.body.appendChild(modal);
+}
+window.tradeRateModal = tradeRateModal;
+
+function ratingStarClick(val) {
+    document.querySelectorAll('.rating-star').forEach(s => {
+        s.style.opacity = parseInt(s.dataset.val) <= val ? '1' : '0.3';
+    });
+    window._selectedRating = val;
+}
+window.ratingStarClick = ratingStarClick;
+
+async function tradeSubmitRating(ratedUserId, tradeId) {
+    const rating = window._selectedRating;
+    if (!rating) { alert('Please select a star rating.'); return; }
+    const comment = document.getElementById('ratingComment')?.value?.trim() || null;
+    await apiRequest('/api/ratings', { method: 'POST', body: JSON.stringify({ rated_user_id: ratedUserId, trade_id: tradeId, rating, comment }) });
+    document.querySelector('.modal.active')?.remove();
+}
+window.tradeSubmitRating = tradeSubmitRating;
+
 function tradeSelectNuggie(id, el) {
     document.querySelectorAll('.nuggie-pick-card').forEach(c => c.classList.remove('selected'));
     el.classList.add('selected');
@@ -1754,6 +1867,23 @@ function loadTribeThemeOnStartup() {
 }
 window.applyTribeTheme = applyTribeTheme;
 window.resetTribeTheme = resetTribeTheme;
+
+function initDarkMode() {
+    const dark = localStorage.getItem('darkMode') === 'true';
+    document.documentElement.setAttribute('data-theme', dark ? 'dark' : '');
+    const btn = document.getElementById('darkModeBtn');
+    if (btn) btn.textContent = dark ? '☀️' : '🌙';
+}
+
+function toggleDarkMode() {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    const newDark = !isDark;
+    localStorage.setItem('darkMode', String(newDark));
+    document.documentElement.setAttribute('data-theme', newDark ? 'dark' : '');
+    const btn = document.getElementById('darkModeBtn');
+    if (btn) btn.textContent = newDark ? '☀️' : '🌙';
+}
+window.toggleDarkMode = toggleDarkMode;
 
 async function loadTribesPage() {
     setActiveNavButton('tribe');
@@ -1999,6 +2129,7 @@ function renderTribeMemberView(tribe, main) {
                 <button class="tribe-tab active" data-tab="overview" onclick="tribeTab(this,'overview',${tribe.id})">🏠 Overview</button>
                 <button class="tribe-tab" data-tab="members" onclick="tribeTab(this,'members',${tribe.id})">👥 Members (${tribe.members?.length||0})</button>
                 <button class="tribe-tab" data-tab="vault" onclick="tribeTab(this,'vault',${tribe.id})">🗄️ Vault</button>
+                <button class="tribe-tab" data-tab="alliances" onclick="tribeTab(this,'alliances',${tribe.id})">🤝 Alliances</button>
                 ${isAdmin ? `<button class="tribe-tab" data-tab="requests" onclick="tribeTab(this,'requests',${tribe.id})">📬 Requests</button>` : ''}
                 ${isOwner ? `<button class="tribe-tab" data-tab="settings" onclick="tribeTab(this,'settings',${tribe.id})">⚙️ Settings</button>` : ''}
             </div>
@@ -2029,6 +2160,8 @@ async function tribeTab(btn, tab, tribeId) {
     } else if (tab === 'vault') {
         const { body } = await apiRequest(`/api/tribes/${tribeId}/creatures`).catch(() => ({ body: [] }));
         content.innerHTML = renderTribeVaultTab(Array.isArray(body) ? body : [], tribeId);
+    } else if (tab === 'alliances') {
+        content.innerHTML = await loadAlliancesTab(tribeId);
     } else if (tab === 'requests') {
         content.innerHTML = await loadJoinRequestsTab(tribeId);
     } else if (tab === 'settings') {
@@ -2037,6 +2170,128 @@ async function tribeTab(btn, tab, tribeId) {
     }
 }
 window.tribeTab = tribeTab;
+
+// ── Alliance Tab ──────────────────────────────────────────────────────────────
+async function loadAlliancesTab(tribeId) {
+    const alliances = await apiRequest('/api/alliances').then(r => Array.isArray(r.body) ? r.body : []).catch(() => []);
+    const allTribes = await apiRequest('/api/tribes').then(r => Array.isArray(r.body) ? r.body : []).catch(() => []);
+    const myTribeId = parseInt(tribeId);
+
+    const active = alliances.filter(a => a.status === 'accepted');
+    const pending = alliances.filter(a => a.status === 'pending');
+
+    const allyName = a => a.tribe_id === myTribeId ? a.ally_name : a.tribe_name;
+    const allyId = a => a.tribe_id === myTribeId ? a.ally_tribe_id : a.tribe_id;
+
+    const otherTribes = allTribes.filter(t => t.id !== myTribeId && !alliances.some(a => allyId(a) === t.id));
+
+    return `
+        <div style="display:flex;flex-direction:column;gap:20px">
+            <div class="profile-card">
+                <div class="profile-card-header"><h3>🤝 Active Alliances</h3></div>
+                ${active.length === 0
+                    ? '<div class="friends-empty">No active alliances yet.</div>'
+                    : active.map(a => `
+                    <div style="display:flex;align-items:center;gap:12px;padding:12px;border-bottom:1px solid #0f172a">
+                        <div style="flex:1;font-weight:bold;color:#f1f5f9">🛡️ ${allyName(a)}</div>
+                        <button class="btn btn-sm btn-secondary" onclick="allianceOpenChat(${a.id},'${allyName(a).replace(/'/g,"\\'")}')">💬 Chat</button>
+                    </div>`).join('')
+                }
+            </div>
+
+            ${pending.length > 0 ? `
+            <div class="profile-card">
+                <div class="profile-card-header"><h3>📬 Pending Requests</h3></div>
+                ${pending.map(a => {
+                    const isSent = a.tribe_id === myTribeId;
+                    return `<div style="display:flex;align-items:center;gap:12px;padding:12px;border-bottom:1px solid #0f172a">
+                        <div style="flex:1;color:#94a3b8">${isSent ? '📤 Sent to' : '📥 From'} <strong style="color:#f1f5f9">${allyName(a)}</strong></div>
+                        ${!isSent ? `<button class="btn btn-sm btn-primary" onclick="allianceRespond(${a.id},'accepted')">Accept</button>
+                        <button class="btn btn-sm btn-danger" onclick="allianceRespond(${a.id},'declined')">Decline</button>` : '<span style="color:#64748b;font-size:0.8rem">Awaiting response</span>'}
+                    </div>`;
+                }).join('')}
+            </div>` : ''}
+
+            <div class="profile-card">
+                <div class="profile-card-header"><h3>➕ Request Alliance</h3></div>
+                ${otherTribes.length === 0
+                    ? '<div class="friends-empty">No tribes available to ally with.</div>'
+                    : `<div style="display:flex;flex-direction:column;gap:6px">
+                        ${otherTribes.slice(0, 10).map(t => `
+                        <div style="display:flex;align-items:center;gap:12px;padding:10px;border-radius:8px;background:rgba(255,255,255,0.02)">
+                            <div style="flex:1;color:#f1f5f9;font-size:0.9rem">🏛️ ${t.name}</div>
+                            <button class="btn btn-sm btn-secondary" onclick="allianceRequest(${t.id},'${t.name.replace(/'/g,"\\'")}')" >Request</button>
+                        </div>`).join('')}
+                    </div>`
+                }
+            </div>
+        </div>`;
+}
+window.loadAlliancesTab = loadAlliancesTab;
+
+async function allianceRequest(allyTribeId, allyName) {
+    if (!confirm(`Send alliance request to ${allyName}?`)) return;
+    const { res, body } = await apiRequest('/api/alliances', { method: 'POST', body: JSON.stringify({ ally_tribe_id: allyTribeId }) });
+    if (res.ok) { alert('Alliance request sent!'); loadTribesPage(); }
+    else alert(body?.error || 'Failed to send request.');
+}
+window.allianceRequest = allianceRequest;
+
+async function allianceRespond(allianceId, status) {
+    await apiRequest(`/api/alliances/${allianceId}`, { method: 'PUT', body: JSON.stringify({ status }) });
+    loadTribesPage();
+}
+window.allianceRespond = allianceRespond;
+
+async function allianceOpenChat(allianceId, allyName) {
+    const msgs = await apiRequest(`/api/alliances/${allianceId}/chat`).then(r => Array.isArray(r.body) ? r.body : []).catch(() => []);
+    const myNick = localStorage.getItem('userNickname') || 'You';
+    const myId = parseInt(localStorage.getItem('userId') || '0');
+
+    const modal = document.createElement('div');
+    modal.className = 'modal active';
+    modal.innerHTML = `
+        <div class="modal-content" style="max-width:520px;height:560px;display:flex;flex-direction:column">
+            <div class="modal-header"><h2 class="modal-title">🤝 Alliance Chat: ${allyName}</h2><button class="close-btn" onclick="this.closest('.modal').remove()">&times;</button></div>
+            <div class="dm-thread" id="allianceThread" style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:8px;padding:16px">
+                ${msgs.length === 0 ? '<div style="color:#475569;text-align:center;margin:auto">No messages yet.</div>' : ''}
+                ${msgs.map(m => {
+                    const isMe = m.user_id === myId;
+                    return `<div class="dm-bubble ${isMe ? 'dm-me' : 'dm-them'}">
+                        <div class="dm-sender">${m.sender || 'Unknown'}</div>
+                        <div class="dm-text">${m.message.replace(/</g,'&lt;')}</div>
+                    </div>`;
+                }).join('')}
+            </div>
+            <div class="dm-compose">
+                <input id="allianceChatInput" class="form-control" placeholder="Message alliance..." onkeydown="if(event.key==='Enter'){event.preventDefault();allianceSendMsg(${allianceId})}">
+                <button class="btn btn-primary" onclick="allianceSendMsg(${allianceId})">Send</button>
+            </div>
+        </div>`;
+    document.body.appendChild(modal);
+    setTimeout(() => { const t = document.getElementById('allianceThread'); if (t) t.scrollTop = t.scrollHeight; }, 50);
+    document.getElementById('allianceChatInput')?.focus();
+}
+window.allianceOpenChat = allianceOpenChat;
+
+async function allianceSendMsg(allianceId) {
+    const input = document.getElementById('allianceChatInput');
+    const msg = input?.value?.trim();
+    if (!msg) return;
+    input.value = '';
+    const myNick = localStorage.getItem('userNickname') || 'You';
+    const myId = parseInt(localStorage.getItem('userId') || '0');
+    const thread = document.getElementById('allianceThread');
+    if (thread) {
+        const bubble = document.createElement('div');
+        bubble.className = 'dm-bubble dm-me';
+        bubble.innerHTML = `<div class="dm-sender">${myNick}</div><div class="dm-text">${msg.replace(/</g,'&lt;')}</div>`;
+        thread.appendChild(bubble);
+        thread.scrollTop = thread.scrollHeight;
+    }
+    await apiRequest(`/api/alliances/${allianceId}/chat`, { method: 'POST', body: JSON.stringify({ message: msg }) });
+}
+window.allianceSendMsg = allianceSendMsg;
 
 function renderTribeOverviewTab(tribe, myRole) {
     const role = myRole || (() => {
@@ -2833,6 +3088,490 @@ function setActiveNavButton(pageId) {
     }
 }
 
+// ── Public Creature Pages (hash routing) ─────────────────────────────────────
+async function loadCreaturePublicPage(creatureId) {
+    const main = document.getElementById('appMainContent');
+    if (!main) return;
+    main.innerHTML = `<div class="std-page"><div style="color:#94a3b8;padding:40px 0">Loading creature...</div></div>`;
+
+    const { res, body } = await apiRequest(`/api/creatures/public/${creatureId}`).catch(() => ({ res: { ok: false }, body: null }));
+    if (!res.ok || !body) {
+        main.innerHTML = `<div class="std-page"><div class="friends-empty" style="padding:60px 0">Creature not found or has been removed.</div></div>`;
+        return;
+    }
+
+    const d = body.data || {};
+    const db2 = window.SPECIES_DATABASE || {};
+    const sp = db2[d.species] || {};
+    const emoji = sp.emoji || '🦕';
+    const badges = (window.BadgeSystem?.calculateAchievements?.(d) || []);
+    const myId = parseInt(localStorage.getItem('userId') || '0');
+    const isOwner = body.owner_id === myId;
+
+    const statRow = (label, val) => val !== undefined && val !== null
+        ? `<div class="tc-sum-row"><span>${label}</span><span class="tc-sum-val">${typeof val === 'number' ? val.toLocaleString() : val}</span></div>`
+        : '';
+
+    main.innerHTML = `
+        <div class="std-page">
+            <div class="std-page-header">
+                <div class="page-title"><h1>${emoji} ${d.name || 'Unnamed'}</h1><div class="page-subtitle">${d.species || ''} · Owner: ${body.owner_nickname || 'Unknown'}</div></div>
+                <div style="display:flex;gap:8px">
+                    <button class="btn btn-secondary" onclick="shareCreatureUrl(${body.id})">🔗 Copy Link</button>
+                    ${!isOwner ? `<button class="btn btn-primary" onclick="requestCreatureTrade(${body.owner_id},'${(body.owner_nickname||'').replace(/'/g,"\\'")}','${(d.name||'').replace(/'/g,"\\'")}')">🔁 Request Trade</button>` : ''}
+                </div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+                <div class="profile-card">
+                    <div class="profile-card-header"><h3>📊 Base Stats</h3></div>
+                    <div class="tc-summary">
+                        ${statRow('❤️ Health', d.baseStats?.Health)}
+                        ${statRow('🏃 Stamina', d.baseStats?.Stamina)}
+                        ${statRow('🫁 Oxygen', d.baseStats?.Oxygen)}
+                        ${statRow('🍖 Food', d.baseStats?.Food)}
+                        ${statRow('⚖️ Weight', d.baseStats?.Weight)}
+                        ${statRow('⚔️ Melee', d.baseStats?.Melee ? d.baseStats.Melee + '%' : undefined)}
+                        ${statRow('💨 Speed', d.baseStats?.Speed ? d.baseStats.Speed + '%' : undefined)}
+                    </div>
+                </div>
+                <div class="profile-card">
+                    <div class="profile-card-header"><h3>📋 Details</h3></div>
+                    <div class="tc-summary">
+                        ${statRow('Level', d.level)}
+                        ${statRow('Gender', d.gender)}
+                        ${statRow('Map', d.map)}
+                        ${statRow('Mutations', d.mutations)}
+                        ${d.notes ? `<div style="color:#94a3b8;font-size:0.85rem;margin-top:8px;font-style:italic">${d.notes.replace(/</g,'&lt;')}</div>` : ''}
+                    </div>
+                    ${badges.length > 0 ? `
+                    <div style="margin-top:14px">
+                        <div style="color:#64748b;font-size:0.75rem;text-transform:uppercase;margin-bottom:6px">Badges</div>
+                        <div style="display:flex;flex-wrap:wrap;gap:6px">
+                            ${badges.map(b => `<span class="badge-${b.tier}" style="font-size:0.8rem;padding:3px 10px;border-radius:10px">${b.name}</span>`).join('')}
+                        </div>
+                    </div>` : ''}
+                </div>
+            </div>
+            <div class="profile-card" style="margin-top:16px">
+                <div class="profile-card-header"><h3>💬 Community Reactions</h3></div>
+                <div class="reaction-bar-placeholder" data-type="creature" data-id="${body.id}"></div>
+            </div>
+        </div>`;
+
+    loadAndInjectReactions('creature', [body.id]);
+    // Update browser hash without triggering another load
+    if (window.location.hash !== `#creature/${body.id}`) {
+        history.pushState(null, '', `#creature/${body.id}`);
+    }
+}
+window.loadCreaturePublicPage = loadCreaturePublicPage;
+
+function shareCreatureUrl(creatureId) {
+    const url = `${window.location.origin}${window.location.pathname}#creature/${creatureId}`;
+    navigator.clipboard?.writeText(url).then(() => alert('Link copied to clipboard!')).catch(() => {
+        prompt('Copy this link:', url);
+    });
+}
+window.shareCreatureUrl = shareCreatureUrl;
+
+function requestCreatureTrade(ownerId, ownerName, creatureName) {
+    // Open DM thread with the owner with a pre-filled message
+    openDMThread(ownerId, ownerName).then(() => {
+        setTimeout(() => {
+            const input = document.getElementById('dmInput');
+            if (input) input.value = `Hi! I'm interested in trading for your ${creatureName}. Are you open to offers?`;
+        }, 100);
+    });
+}
+window.requestCreatureTrade = requestCreatureTrade;
+
+// Hash-based routing: handle #creature/ID on page load and hash change
+function handleHashRoute() {
+    const hash = window.location.hash;
+    const match = hash.match(/^#creature\/(\d+)$/);
+    if (match && localStorage.getItem('token')) {
+        loadCreaturePublicPage(parseInt(match[1]));
+        return true;
+    }
+    return false;
+}
+window.handleHashRoute = handleHashRoute;
+
+// ── Wild Find Reports Page ────────────────────────────────────────────────────
+async function loadWildFindsPage() {
+    setActiveNavButton('wildfinds');
+    const main = document.getElementById('appMainContent');
+    if (!main) return;
+    main.innerHTML = `<div class="std-page"><div style="color:#94a3b8;padding:40px 0">Loading wild finds...</div></div>`;
+
+    const finds = await apiRequest('/api/wild-finds').then(r => Array.isArray(r.body) ? r.body : []).catch(() => []);
+    const myId = parseInt(localStorage.getItem('userId') || '0');
+    const db2 = window.SPECIES_DATABASE || {};
+
+    const timeAgo = ts => {
+        const diff = Date.now() - new Date(ts).getTime();
+        const m = Math.floor(diff / 60000);
+        if (m < 60) return `${m}m ago`;
+        const h = Math.floor(m / 60);
+        return `${h}h ago`;
+    };
+
+    const findCard = f => {
+        const sp = db2[f.species] || {};
+        const emoji = sp.emoji || '🦕';
+        const isHigh = f.level >= 130;
+        const isOwn = f.user_id === myId;
+        return `<div class="wf-card${isHigh ? ' wf-card--high' : ''}">
+            <div class="wf-avatar">${emoji}</div>
+            <div class="wf-info">
+                <div class="wf-species">${f.species} <span class="wf-level${isHigh ? ' high' : ''}">Lv ${f.level}</span></div>
+                ${f.map_name ? `<div class="wf-map">📍 ${f.map_name}${f.coordinates ? ` · ${f.coordinates}` : ''}</div>` : ''}
+                ${f.notes ? `<div class="wf-notes">${f.notes.replace(/</g,'&lt;')}</div>` : ''}
+                <div class="wf-meta">👤 ${f.reporter_nickname || 'Unknown'} · ${timeAgo(f.created_at)}</div>
+            </div>
+            ${isOwn ? `<button class="btn btn-sm btn-danger" onclick="wildFindDelete(${f.id})">✕</button>` : ''}
+        </div>
+        <div class="reaction-bar-placeholder" data-type="wild_find" data-id="${f.id}"></div>`;
+    };
+
+    main.innerHTML = `
+        <div class="std-page">
+            <div class="std-page-header">
+                <div class="page-title"><h1>🗺️ Wild Finds</h1><div class="page-subtitle">Community creature sightings · Expire after 24h</div></div>
+                <button class="btn btn-primary" onclick="wildFindOpenModal()">+ Report Sighting</button>
+            </div>
+
+            ${finds.length === 0
+                ? `<div class="friends-empty" style="padding:60px 0">No active sightings. Be the first to report one!</div>`
+                : `<div class="wf-grid">${finds.map(findCard).join('')}</div>`
+            }
+        </div>`;
+    // Inject reactions
+    if (finds.length) loadAndInjectReactions('wild_find', finds.map(f => f.id));
+}
+window.loadWildFindsPage = loadWildFindsPage;
+
+function wildFindOpenModal() {
+    const db2 = window.SPECIES_DATABASE || {};
+    const speciesOptions = Object.keys(db2).sort().map(k => `<option value="${k}">${k}</option>`).join('');
+    const mapOptions = (window.ARK_MAPS || ['The Island','Scorched Earth','Aberration','Extinction','Genesis Part 1','Genesis Part 2','Crystal Isles','Fjordur','Lost Island','Ragnarok','Valguero','The Center','Caballus','Astraeos','Svartalfheim','Lost Colony'])
+        .map(m => `<option value="${m}">${m}</option>`).join('');
+    const modal = document.createElement('div');
+    modal.className = 'modal active';
+    modal.innerHTML = `
+        <div class="modal-content" style="max-width:460px">
+            <div class="modal-header"><h2 class="modal-title">🗺️ Report Wild Sighting</h2><button class="close-btn" onclick="this.closest('.modal').remove()">&times;</button></div>
+            <div class="modal-body" style="display:flex;flex-direction:column;gap:14px">
+                <div class="plan-field">
+                    <label class="form-label">Species</label>
+                    <select id="wfSpecies" class="form-control"><option value="">— Select species —</option>${speciesOptions}</select>
+                </div>
+                <div class="plan-field">
+                    <label class="form-label">Wild Level</label>
+                    <input id="wfLevel" class="form-control" type="number" min="1" max="9999" placeholder="e.g. 145">
+                </div>
+                <div class="plan-field">
+                    <label class="form-label">Map</label>
+                    <select id="wfMap" class="form-control"><option value="">— Select map —</option>${mapOptions}</select>
+                </div>
+                <div class="plan-field">
+                    <label class="form-label">Coordinates <span style="color:#64748b;font-size:0.8rem">(optional)</span></label>
+                    <input id="wfCoords" class="form-control" placeholder="e.g. 45.2 / 62.8">
+                </div>
+                <div class="plan-field">
+                    <label class="form-label">Notes <span style="color:#64748b;font-size:0.8rem">(optional)</span></label>
+                    <input id="wfNotes" class="form-control" placeholder="Color mutation, near a resource node, etc.">
+                </div>
+                <div id="wfError" style="color:#ef4444;font-size:0.85rem;display:none"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="this.closest('.modal').remove()">Cancel</button>
+                <button class="btn btn-primary" onclick="wildFindSubmit()">Report Sighting</button>
+            </div>
+        </div>`;
+    document.body.appendChild(modal);
+}
+window.wildFindOpenModal = wildFindOpenModal;
+
+async function wildFindSubmit() {
+    const species = document.getElementById('wfSpecies')?.value;
+    const level = parseInt(document.getElementById('wfLevel')?.value);
+    const map_name = document.getElementById('wfMap')?.value || null;
+    const coordinates = document.getElementById('wfCoords')?.value?.trim() || null;
+    const notes = document.getElementById('wfNotes')?.value?.trim() || null;
+    const errEl = document.getElementById('wfError');
+    if (!species) { if (errEl) { errEl.textContent = 'Select a species.'; errEl.style.display = 'block'; } return; }
+    if (!level || level < 1) { if (errEl) { errEl.textContent = 'Enter a valid level.'; errEl.style.display = 'block'; } return; }
+    const { res, body } = await apiRequest('/api/wild-finds', { method: 'POST', body: JSON.stringify({ species, level, map_name, coordinates, notes }) });
+    if (res.ok) { document.querySelector('.modal.active')?.remove(); loadWildFindsPage(); }
+    else if (errEl) { errEl.textContent = body?.error || 'Failed to submit.'; errEl.style.display = 'block'; }
+}
+window.wildFindSubmit = wildFindSubmit;
+
+async function wildFindDelete(id) {
+    if (!confirm('Remove this sighting?')) return;
+    await apiRequest(`/api/wild-finds/${id}`, { method: 'DELETE' });
+    loadWildFindsPage();
+}
+window.wildFindDelete = wildFindDelete;
+
+// ── Wild Tame Calculator ──────────────────────────────────────────────────────
+// Approximate per-stat wild increase rates (per wild level point allocated)
+const TAME_STAT_INCREASE = {
+    Health: 0.20, Stamina: 0.10, Oxygen: 0.10, Food: 0.10,
+    Weight: 0.04, Melee: 0.05, Speed: 0.00, Crafting: 0.05
+};
+const TAME_BONUS_MULT = 0.14; // taming bonus applied to all stats (most creatures)
+const TAME_FOOD_EFFECTIVENESS = {
+    'Kibble (Best)': 99.9,
+    'Preferred Kibble': 96,
+    'Preferred Food': 88,
+    'Raw Meat / Berries': 75,
+    'Raw Fish': 80,
+    'Cooked Meat': 50,
+    'Vegetables (Herbivore)': 82,
+    'Custom %': 0
+};
+
+function loadTameCalcPage() {
+    setActiveNavButton('tamecalc');
+    const main = document.getElementById('appMainContent');
+    if (!main) return;
+    const db2 = window.SPECIES_DATABASE || {};
+    const speciesOptions = Object.keys(db2).sort().map(k => `<option value="${k}">${k}</option>`).join('');
+    const foodOptions = Object.keys(TAME_FOOD_EFFECTIVENESS)
+        .map(f => `<option value="${f}">${f}</option>`).join('');
+
+    main.innerHTML = `
+        <div class="std-page">
+            <div class="std-page-header">
+                <div class="page-title"><h1>🧮 Wild Tame Calculator</h1><div class="page-subtitle">Estimate post-tame stats before you commit</div></div>
+            </div>
+            <div class="tamecalc-layout">
+                <!-- Inputs -->
+                <div class="tamecalc-inputs profile-card">
+                    <div class="profile-card-header"><h3>⚙️ Inputs</h3></div>
+                    <div class="tc-field">
+                        <label class="form-label">Species</label>
+                        <select id="tcSpecies" class="form-control" onchange="tameCalcRun()">
+                            <option value="">— Select species (optional) —</option>
+                            ${speciesOptions}
+                        </select>
+                    </div>
+                    <div class="tc-field">
+                        <label class="form-label">Wild Level</label>
+                        <input id="tcLevel" class="form-control" type="number" min="1" max="1500" value="150" oninput="tameCalcRun()">
+                    </div>
+                    <div class="tc-field">
+                        <label class="form-label">Taming Food</label>
+                        <select id="tcFood" class="form-control" onchange="tameCalcFoodChanged()">
+                            ${foodOptions}
+                        </select>
+                    </div>
+                    <div class="tc-field" id="tcCustomEffRow" style="display:none">
+                        <label class="form-label">Custom Effectiveness %</label>
+                        <input id="tcCustomEff" class="form-control" type="number" min="0" max="100" value="99" oninput="tameCalcRun()">
+                    </div>
+                    <button class="btn btn-primary" style="width:100%;margin-top:8px" onclick="tameCalcRun()">Calculate</button>
+                </div>
+
+                <!-- Results -->
+                <div class="tamecalc-results profile-card">
+                    <div class="profile-card-header"><h3>📊 Taming Results</h3></div>
+                    <div id="tcResults" style="color:#64748b;padding:20px 0;text-align:center">Enter a wild level and food type above.</div>
+                </div>
+
+                <!-- Reference Guide -->
+                <div class="tamecalc-guide profile-card">
+                    <div class="profile-card-header"><h3>📖 Effectiveness Guide</h3></div>
+                    <div class="tc-guide-list">
+                        ${Object.entries(TAME_FOOD_EFFECTIVENESS).filter(([k]) => k !== 'Custom %').map(([food, eff]) => `
+                        <div class="tc-guide-row">
+                            <span>${food}</span>
+                            <span class="tc-eff-val" style="color:${eff >= 95 ? '#22c55e' : eff >= 80 ? '#f59e0b' : '#ef4444'}">${eff}%</span>
+                        </div>`).join('')}
+                    </div>
+                    <div style="margin-top:16px;color:#64748b;font-size:0.8rem;line-height:1.5">
+                        <strong>Tip:</strong> Higher effectiveness = higher post-tame stats and more bonus levels. Always use the best food you can!<br><br>
+                        <strong>Bonus levels</strong> are "free" extra levels added after taming. At 99% effectiveness, a Lv 150 gets ~75 bonus levels.
+                    </div>
+                </div>
+            </div>
+        </div>`;
+    tameCalcRun();
+}
+window.loadTameCalcPage = loadTameCalcPage;
+
+function tameCalcFoodChanged() {
+    const food = document.getElementById('tcFood')?.value;
+    const customRow = document.getElementById('tcCustomEffRow');
+    if (customRow) customRow.style.display = food === 'Custom %' ? 'block' : 'none';
+    tameCalcRun();
+}
+window.tameCalcFoodChanged = tameCalcFoodChanged;
+
+function tameCalcRun() {
+    const resultsEl = document.getElementById('tcResults');
+    if (!resultsEl) return;
+
+    const wildLevel = parseInt(document.getElementById('tcLevel')?.value) || 150;
+    const food = document.getElementById('tcFood')?.value || 'Kibble (Best)';
+    const speciesKey = document.getElementById('tcSpecies')?.value || '';
+
+    let effectiveness = TAME_FOOD_EFFECTIVENESS[food] ?? 99.9;
+    if (food === 'Custom %') {
+        effectiveness = parseFloat(document.getElementById('tcCustomEff')?.value) || 99;
+    }
+    effectiveness = Math.max(0, Math.min(100, effectiveness));
+
+    // Bonus levels formula: floor(wildLevel * 0.5 * effectiveness/100)
+    const bonusLevels = Math.floor(wildLevel * 0.5 * (effectiveness / 100));
+    const totalLevel = wildLevel + bonusLevels;
+    const effDecimal = effectiveness / 100;
+
+    // Get species base stats if available
+    const db2 = window.SPECIES_DATABASE || {};
+    const sp = db2[speciesKey] || {};
+    const baseStats = sp.baseStats || sp.stats || null;
+
+    // Build stat estimates (wild level splits ~equally across 7 stats)
+    const avgPointsPerStat = wildLevel / 7;
+    const statResults = [];
+
+    const STAT_KEYS = ['Health', 'Stamina', 'Oxygen', 'Food', 'Weight', 'Melee'];
+    STAT_KEYS.forEach(stat => {
+        const wildIncrease = TAME_STAT_INCREASE[stat] || 0.1;
+        let baseStat = baseStats?.[stat] ?? null;
+        if (!baseStat) return;
+
+        const wildMult = 1 + avgPointsPerStat * wildIncrease;
+        const tamingMult = 1 + effDecimal * TAME_BONUS_MULT;
+        const estimated = Math.round(baseStat * wildMult * tamingMult);
+
+        const isMelee = stat === 'Melee';
+        const display = isMelee ? `${estimated}%` : estimated.toLocaleString();
+        statResults.push({ stat, estimated: display, base: isMelee ? `${baseStat}%` : baseStat.toLocaleString() });
+    });
+
+    const effColor = effectiveness >= 95 ? '#22c55e' : effectiveness >= 80 ? '#f59e0b' : '#ef4444';
+
+    resultsEl.innerHTML = `
+        <div class="tc-summary">
+            <div class="tc-sum-row"><span>Wild Level</span><span class="tc-sum-val">${wildLevel}</span></div>
+            <div class="tc-sum-row"><span>Taming Effectiveness</span><span class="tc-sum-val" style="color:${effColor}">${effectiveness.toFixed(1)}%</span></div>
+            <div class="tc-sum-row"><span>Bonus Levels</span><span class="tc-sum-val" style="color:#f59e0b">+${bonusLevels}</span></div>
+            <div class="tc-sum-row highlight"><span>Total Post-Tame Level</span><span class="tc-sum-val" style="color:var(--tc-1,#3b82f6);font-size:1.3rem">${totalLevel}</span></div>
+        </div>
+        ${statResults.length > 0 ? `
+        <div style="margin-top:16px">
+            <div style="color:#94a3b8;font-size:0.8rem;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px">Estimated Post-Tame Stats</div>
+            ${statResults.map(s => `
+            <div class="tc-stat-row">
+                <span class="tc-stat-name">${s.stat}</span>
+                <span class="tc-stat-base" title="Species base stat">Base: ${s.base}</span>
+                <span class="tc-stat-result">≈ ${s.estimated}</span>
+            </div>`).join('')}
+            <div style="color:#475569;font-size:0.75rem;margin-top:12px">* Estimates assume even wild stat distribution. Actual values vary based on random wild point allocation.</div>
+        </div>` : `<div style="color:#64748b;margin-top:12px;font-size:0.85rem">Select a species above to see estimated stats, or use the level and effectiveness summary.</div>`}`;
+}
+window.tameCalcRun = tameCalcRun;
+
+// ── Global Leaderboards Page ──────────────────────────────────────────────────
+async function loadLeaderboardsPage() {
+    setActiveNavButton('leaderboards');
+    const main = document.getElementById('appMainContent');
+    if (!main) return;
+    main.innerHTML = `<div class="std-page"><div style="color:#94a3b8;padding:40px 0">Loading leaderboards...</div></div>`;
+
+    // Fetch all leaderboard data in parallel
+    const [meleeTop, healthTop, playersCreatures, playersTraders, playersFriends, tribesTop] = await Promise.all([
+        apiRequest('/api/leaderboards/creatures?stat=Melee&limit=10').then(r => Array.isArray(r.body) ? r.body : []).catch(() => []),
+        apiRequest('/api/leaderboards/creatures?stat=Health&limit=10').then(r => Array.isArray(r.body) ? r.body : []).catch(() => []),
+        apiRequest('/api/leaderboards/players?type=creatures&limit=10').then(r => Array.isArray(r.body) ? r.body : []).catch(() => []),
+        apiRequest('/api/leaderboards/players?type=traders&limit=10').then(r => Array.isArray(r.body) ? r.body : []).catch(() => []),
+        apiRequest('/api/leaderboards/players?type=friends&limit=10').then(r => Array.isArray(r.body) ? r.body : []).catch(() => []),
+        apiRequest('/api/leaderboards/tribes?limit=10').then(r => Array.isArray(r.body) ? r.body : []).catch(() => [])
+    ]);
+
+    const myId = parseInt(localStorage.getItem('userId') || '0');
+
+    const rankMedal = r => r === 1 ? '🥇' : r === 2 ? '🥈' : r === 3 ? '🥉' : `#${r}`;
+    const isMe = id => id === myId ? ' style="background:rgba(59,130,246,0.12);font-weight:bold"' : '';
+
+    const creatureRow = (c, i) => `
+        <div class="lb-row" ${isMe(c.owner_id)}>
+            <span class="lb-rank">${rankMedal(i+1)}</span>
+            <span class="lb-name">${c.name || 'Unnamed'} <span class="lb-sub">${c.species || ''}</span></span>
+            <span class="lb-owner">${c.owner}</span>
+            <span class="lb-score">${typeof c.stat_val === 'number' ? Math.round(c.stat_val).toLocaleString() : '—'}</span>
+        </div>`;
+
+    const playerRow = (p, label) => `
+        <div class="lb-row" ${isMe(p.id)}>
+            <span class="lb-rank">${rankMedal(p.rank)}</span>
+            <span class="lb-name">${p.nickname || 'Unknown'}</span>
+            <span class="lb-score">${(p.score || 0).toLocaleString()} ${label}</span>
+        </div>`;
+
+    const tribeRow = (t) => `
+        <div class="lb-row">
+            <span class="lb-rank">${rankMedal(t.rank)}</span>
+            <span class="lb-name">${t.name || 'Unknown'}</span>
+            <span class="lb-score">${(t.member_count || 0).toLocaleString()} members</span>
+        </div>`;
+
+    main.innerHTML = `
+        <div class="std-page">
+            <div class="std-page-header">
+                <div class="page-title"><h1>🏆 Global Leaderboards</h1><div class="page-subtitle">Top trainers, creatures, and tribes</div></div>
+            </div>
+
+            <div class="lb-grid">
+
+                <!-- Top Melee -->
+                <div class="lb-card">
+                    <div class="lb-card-header">⚔️ Highest Melee</div>
+                    <div class="lb-col-labels"><span>Rank</span><span>Creature</span><span>Owner</span><span>Melee %</span></div>
+                    ${meleeTop.length ? meleeTop.map((c, i) => creatureRow(c, i)).join('') : '<div class="lb-empty">No data yet</div>'}
+                </div>
+
+                <!-- Top Health -->
+                <div class="lb-card">
+                    <div class="lb-card-header">❤️ Highest Health</div>
+                    <div class="lb-col-labels"><span>Rank</span><span>Creature</span><span>Owner</span><span>HP</span></div>
+                    ${healthTop.length ? healthTop.map((c, i) => creatureRow(c, i)).join('') : '<div class="lb-empty">No data yet</div>'}
+                </div>
+
+                <!-- Most Creatures -->
+                <div class="lb-card">
+                    <div class="lb-card-header">🦖 Biggest Army</div>
+                    ${playersCreatures.length ? playersCreatures.map(p => playerRow(p, 'nuggies')).join('') : '<div class="lb-empty">No data yet</div>'}
+                </div>
+
+                <!-- Most Trades -->
+                <div class="lb-card">
+                    <div class="lb-card-header">🔁 Top Traders</div>
+                    ${playersTraders.length ? playersTraders.map(p => playerRow(p, 'trades')).join('') : '<div class="lb-empty">No data yet</div>'}
+                </div>
+
+                <!-- Most Friends -->
+                <div class="lb-card">
+                    <div class="lb-card-header">👥 Most Connected</div>
+                    ${playersFriends.length ? playersFriends.map(p => playerRow(p, 'friends')).join('') : '<div class="lb-empty">No data yet</div>'}
+                </div>
+
+                <!-- Biggest Tribes -->
+                <div class="lb-card">
+                    <div class="lb-card-header">🏛️ Biggest Tribes</div>
+                    ${tribesTop.length ? tribesTop.map(t => tribeRow(t)).join('') : '<div class="lb-empty">No tribes yet</div>'}
+                </div>
+
+            </div>
+        </div>`;
+}
+window.loadLeaderboardsPage = loadLeaderboardsPage;
+
 // Load My Profile Page (Landing page after login)
 async function loadMyProfilePage() {
     setActiveNavButton('profile');
@@ -2840,12 +3579,13 @@ async function loadMyProfilePage() {
     if (!main) return;
     main.innerHTML = `<div class="std-page"><div style="color:#94a3b8;padding:40px 0">Loading profile...</div></div>`;
 
-    // Fetch real profile + friends + trades in parallel
-    const [profile, friends, trades, myOffers] = await Promise.all([
+    // Fetch real profile + friends + trades + activity feed in parallel
+    const [profile, friends, trades, myOffers, feedItems] = await Promise.all([
         apiRequest('/api/profile').then(r => r.body || {}).catch(() => ({})),
         apiRequest('/api/friends?status=accepted').then(r => Array.isArray(r.body) ? r.body : []).catch(() => []),
         apiRequest('/api/trades').then(r => Array.isArray(r.body) ? r.body : []).catch(() => []),
-        apiRequest('/api/offers').then(r => Array.isArray(r.body) ? r.body : []).catch(() => [])
+        apiRequest('/api/offers').then(r => Array.isArray(r.body) ? r.body : []).catch(() => []),
+        apiRequest('/api/feed').then(r => Array.isArray(r.body) ? r.body : []).catch(() => [])
     ]);
 
     const myId = parseInt(localStorage.getItem('userId') || '0');
@@ -2894,16 +3634,23 @@ async function loadMyProfilePage() {
         ? new Date(profile.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long' })
         : 'The Nursery';
 
+    // Resolve pinned creatures from local creature list
+    const pinnedIds = Array.isArray(profile.pinned_creatures) ? profile.pinned_creatures : [];
+    const pinnedCreatures = pinnedIds.map(id => creatures.find(c => c.id === id)).filter(Boolean);
+
     main.innerHTML = `
         <div class="std-page profile-page-wrap">
 
-            <!-- Hero header -->
-            <div class="profile-hero">
+            <!-- Hero header (with optional banner) -->
+            <div class="profile-hero${profile.banner_image ? ' profile-hero--banner' : ''}" ${profile.banner_image ? `style="background-image:url('${profile.banner_image}')"` : ''}>
+                ${profile.banner_image ? '<div class="profile-hero-overlay"></div>' : ''}
                 <div class="profile-hero-avatar">🦕</div>
                 <div class="profile-hero-info">
                     <h1 class="profile-hero-name">${profile.nickname || 'Trainer'}</h1>
                     <div class="profile-hero-sub">Dino Nuggie Trainer · Joined ${joinedDate}</div>
                     ${profile.tribe ? `<div class="profile-hero-tribe">🏛️ ${profile.tribe.name} <span style="color:#64748b;font-size:0.8rem">(${profile.tribe.role})</span></div>` : ''}
+                    ${profile.bio ? `<div class="profile-hero-bio">${profile.bio.replace(/</g,'&lt;')}</div>` : ''}
+                    ${profile.looking_for ? `<div class="profile-looking-for">👀 ${profile.looking_for}</div>` : ''}
                     <div class="profile-hero-stats">
                         <div class="profile-hstat"><span class="profile-hstat-val">${creatures.length}</span><span class="profile-hstat-lbl">Nuggies</span></div>
                         <div class="profile-hstat"><span class="profile-hstat-val">${speciesOwned}/${totalSpecies}</span><span class="profile-hstat-lbl">Species</span></div>
@@ -2911,9 +3658,51 @@ async function loadMyProfilePage() {
                         <div class="profile-hstat"><span class="profile-hstat-val">${badgeCount}</span><span class="profile-hstat-lbl">Badges</span></div>
                     </div>
                 </div>
+                <button class="profile-banner-edit-btn" onclick="profileEditBanner()" title="Change banner">🖼️ Banner</button>
             </div>
 
             <div class="profile-grid">
+
+                <!-- Activity Feed -->
+                <div class="profile-card" style="grid-column: 1 / -1">
+                    <div class="profile-card-header"><h3>📰 Activity Feed</h3></div>
+                    ${feedItems.length === 0
+                        ? `<div class="friends-empty">No recent activity. Add friends to see their updates here!</div>`
+                        : `<div class="feed-list">
+                            ${feedItems.slice(0, 15).map(item => {
+                                const ts = item.created_at ? new Date(item.created_at).toLocaleDateString('en-US', { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' }) : '';
+                                let icon = '📌', text = '';
+                                switch(item.type) {
+                                    case 'creature_added':
+                                        icon = '🦕'; text = `<strong>${item.actor}</strong> added <em>${item.data?.name || 'a creature'}</em>${item.data?.species ? ` (${item.data.species})` : ''}`; break;
+                                    case 'trade_completed':
+                                        icon = '🔁'; text = `<strong>${item.actor}</strong> completed a trade`; break;
+                                    case 'tribe_created':
+                                        icon = '🏛️'; text = `<strong>${item.actor}</strong> founded tribe <em>${item.data?.tribe_name || ''}</em>`; break;
+                                    case 'tribe_joined':
+                                        icon = '🛡️'; text = `<strong>${item.actor}</strong> joined a tribe`; break;
+                                    case 'boss_plan_created':
+                                        icon = '👑'; text = `<strong>${item.actor}</strong> created a boss plan: <em>${item.data?.boss_name || ''}</em>`; break;
+                                    case 'arena_created':
+                                        icon = '⚔️'; text = `<strong>${item.actor}</strong> opened an Arena session: <em>${item.data?.title || ''}</em>`; break;
+                                    case 'wild_find':
+                                        icon = '🗺️'; text = `<strong>${item.actor}</strong> spotted a <em>${item.data?.species || 'creature'}</em> (Lv ${item.data?.level || '?'}) on ${item.data?.map || 'a map'}`; break;
+                                    case 'event_created':
+                                        icon = '📅'; text = `<strong>${item.actor}</strong> created an event: <em>${item.data?.title || ''}</em>`; break;
+                                    default:
+                                        icon = '📌'; text = `<strong>${item.actor}</strong> did something`;
+                                }
+                                return `<div class="feed-item">
+                                    <span class="feed-icon">${icon}</span>
+                                    <div class="feed-body">
+                                        <div class="feed-text">${text}</div>
+                                        <div class="feed-time">${ts}</div>
+                                    </div>
+                                </div>`;
+                            }).join('')}
+                           </div>`
+                    }
+                </div>
 
                 <!-- Account Information -->
                 <div class="profile-card">
@@ -3027,6 +3816,35 @@ async function loadMyProfilePage() {
                     </div>
                 </div>
 
+                <!-- Pinned Nuggies -->
+                <div class="profile-card" style="grid-column: 1 / -1">
+                    <div class="profile-card-header">
+                        <h3>📌 Pinned Nuggies</h3>
+                        <button class="btn btn-sm btn-secondary" onclick="profileOpenPinModal()">Edit Pins</button>
+                    </div>
+                    ${pinnedCreatures.length === 0
+                        ? `<div class="friends-empty">No pinned creatures yet. Click "Edit Pins" to showcase up to 6 of your best.</div>`
+                        : `<div class="profile-pinned-grid">
+                            ${pinnedCreatures.map(c => {
+                                const db2 = window.SPECIES_DATABASE || {};
+                                const sp = db2[c.species] || {};
+                                const emoji = sp.emoji || '🦕';
+                                const topBadge = (window.BadgeSystem?.calculateAchievements?.(c) || [])[0];
+                                return `<div class="profile-pinned-card">
+                                    <div class="profile-pinned-avatar">${emoji}</div>
+                                    <div class="profile-pinned-name">${c.name || 'Unnamed'}</div>
+                                    <div class="profile-pinned-species">${c.species || ''}</div>
+                                    ${topBadge ? `<div class="profile-pinned-badge badge-${topBadge.tier}">${topBadge.name}</div>` : ''}
+                                    <div class="profile-pinned-stats">
+                                        ${c.baseStats?.Health ? `<span>❤️ ${c.baseStats.Health.toLocaleString()}</span>` : ''}
+                                        ${c.baseStats?.Melee ? `<span>⚔️ ${c.baseStats.Melee}%</span>` : ''}
+                                    </div>
+                                </div>`;
+                            }).join('')}
+                           </div>`
+                    }
+                </div>
+
                 <!-- Account Settings -->
                 <div class="profile-card">
                     <div class="profile-card-header"><h3>⚙️ Account Settings</h3></div>
@@ -3051,13 +3869,23 @@ async function loadMyProfilePage() {
 }
 
 // ── Edit Profile modal ────────────────────────────────────────────────────────
-function profileEditModal() {
+async function profileEditModal() {
     const modal = document.createElement('div');
     modal.className = 'modal active';
     const email = localStorage.getItem('userEmail') || '';
     const nick = localStorage.getItem('userNickname') || '';
+    // Fetch current profile to pre-fill bio/looking_for
+    const prof = await apiRequest('/api/profile').then(r => r.body || {}).catch(() => ({}));
+    const LOOKING_FOR_OPTIONS = [
+        'Open to everything',
+        'Looking for trade partners',
+        'Seeking tribe members',
+        'Looking for a tribe',
+        'Seeking breeding partners',
+        'Just browsing'
+    ];
     modal.innerHTML = `
-        <div class="modal-content" style="max-width:440px">
+        <div class="modal-content" style="max-width:480px">
             <div class="modal-header">
                 <h2 class="modal-title">✏️ Edit Profile</h2>
                 <button class="close-btn" onclick="this.closest('.modal').remove()">&times;</button>
@@ -3073,7 +3901,18 @@ function profileEditModal() {
                 </div>
                 <div class="plan-field">
                     <label class="form-label">Discord Username</label>
-                    <input id="editDiscord" class="form-control" placeholder="your_discord_name">
+                    <input id="editDiscord" class="form-control" value="${prof.discord_name || ''}" placeholder="your_discord_name">
+                </div>
+                <div class="plan-field">
+                    <label class="form-label">Bio <span style="color:#64748b;font-size:0.8rem">(max 280 chars)</span></label>
+                    <textarea id="editBio" class="form-control" rows="3" maxlength="280" placeholder="Tell the community about yourself...">${prof.bio || ''}</textarea>
+                </div>
+                <div class="plan-field">
+                    <label class="form-label">Looking For</label>
+                    <select id="editLookingFor" class="form-control">
+                        <option value="">— Not set —</option>
+                        ${LOOKING_FOR_OPTIONS.map(o => `<option value="${o}" ${prof.looking_for === o ? 'selected' : ''}>${o}</option>`).join('')}
+                    </select>
                 </div>
                 <div id="editProfileError" style="color:#ef4444;font-size:0.85rem;display:none"></div>
             </div>
@@ -3090,10 +3929,12 @@ async function profileSubmitEdit() {
     const nickname = document.getElementById('editNick')?.value.trim();
     const email = document.getElementById('editEmail')?.value.trim();
     const discord_name = document.getElementById('editDiscord')?.value.trim() || null;
+    const bio = document.getElementById('editBio')?.value.trim() || null;
+    const looking_for = document.getElementById('editLookingFor')?.value || null;
     const errEl = document.getElementById('editProfileError');
     if (!nickname) { if (errEl) { errEl.textContent = 'Nickname is required.'; errEl.style.display = 'block'; } return; }
     if (!email || !email.includes('@')) { if (errEl) { errEl.textContent = 'Valid email is required.'; errEl.style.display = 'block'; } return; }
-    const { res, body } = await apiRequest('/api/profile', { method: 'PUT', body: JSON.stringify({ nickname, email, discord_name }) });
+    const { res, body } = await apiRequest('/api/profile', { method: 'PUT', body: JSON.stringify({ nickname, email, discord_name, bio, looking_for }) });
     if (res.ok) {
         localStorage.setItem('userNickname', nickname);
         localStorage.setItem('userEmail', email);
@@ -3104,6 +3945,129 @@ async function profileSubmitEdit() {
     }
 }
 window.profileSubmitEdit = profileSubmitEdit;
+
+// ── Banner Image Upload ───────────────────────────────────────────────────────
+function profileEditBanner() {
+    const modal = document.createElement('div');
+    modal.className = 'modal active';
+    modal.innerHTML = `
+        <div class="modal-content" style="max-width:460px">
+            <div class="modal-header">
+                <h2 class="modal-title">🖼️ Profile Banner</h2>
+                <button class="close-btn" onclick="this.closest('.modal').remove()">&times;</button>
+            </div>
+            <div class="modal-body" style="display:flex;flex-direction:column;gap:16px">
+                <div style="color:#94a3b8;font-size:0.9rem">Upload an image to display as your profile banner. Recommended: 1200×300 px, max 2MB.</div>
+                <input type="file" id="bannerFileInput" accept="image/*" class="form-control" style="padding:8px">
+                <div id="bannerPreview" style="display:none;border-radius:10px;overflow:hidden;height:140px;background:#0f172a">
+                    <img id="bannerPreviewImg" style="width:100%;height:140px;object-fit:cover">
+                </div>
+                <div id="bannerError" style="color:#ef4444;font-size:0.85rem;display:none"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="profileRemoveBanner()">Remove Banner</button>
+                <button class="btn btn-secondary" onclick="this.closest('.modal').remove()">Cancel</button>
+                <button class="btn btn-primary" onclick="profileSaveBanner()">Save Banner</button>
+            </div>
+        </div>`;
+    document.body.appendChild(modal);
+    document.getElementById('bannerFileInput').addEventListener('change', function() {
+        const file = this.files[0];
+        if (!file) return;
+        if (file.size > 2 * 1024 * 1024) {
+            document.getElementById('bannerError').textContent = 'Image too large (max 2MB).';
+            document.getElementById('bannerError').style.display = 'block';
+            return;
+        }
+        const reader = new FileReader();
+        reader.onload = e => {
+            document.getElementById('bannerPreviewImg').src = e.target.result;
+            document.getElementById('bannerPreview').style.display = 'block';
+            document.getElementById('bannerError').style.display = 'none';
+        };
+        reader.readAsDataURL(file);
+    });
+}
+window.profileEditBanner = profileEditBanner;
+
+async function profileSaveBanner() {
+    const img = document.getElementById('bannerPreviewImg');
+    const errEl = document.getElementById('bannerError');
+    if (!img || !img.src || !img.src.startsWith('data:')) {
+        if (errEl) { errEl.textContent = 'Please select an image first.'; errEl.style.display = 'block'; }
+        return;
+    }
+    const { res, body } = await apiRequest('/api/profile', { method: 'PUT', body: JSON.stringify({ banner_image: img.src }) });
+    if (res.ok) { document.querySelector('.modal.active')?.remove(); loadMyProfilePage(); }
+    else if (errEl) { errEl.textContent = body?.error || 'Failed to save banner.'; errEl.style.display = 'block'; }
+}
+window.profileSaveBanner = profileSaveBanner;
+
+async function profileRemoveBanner() {
+    await apiRequest('/api/profile', { method: 'PUT', body: JSON.stringify({ banner_image: null }) });
+    document.querySelector('.modal.active')?.remove();
+    loadMyProfilePage();
+}
+window.profileRemoveBanner = profileRemoveBanner;
+
+// ── Pin Creatures Modal ───────────────────────────────────────────────────────
+async function profileOpenPinModal() {
+    const prof = await apiRequest('/api/profile').then(r => r.body || {}).catch(() => ({}));
+    const pinnedIds = new Set(Array.isArray(prof.pinned_creatures) ? prof.pinned_creatures : []);
+    const creatures = window.appState?.creatures || [];
+    if (creatures.length === 0) { alert('You have no creatures to pin yet. Add some first!'); return; }
+    const modal = document.createElement('div');
+    modal.className = 'modal active';
+    modal.innerHTML = `
+        <div class="modal-content" style="max-width:600px">
+            <div class="modal-header">
+                <h2 class="modal-title">📌 Pin Your Best Nuggies</h2>
+                <button class="close-btn" onclick="this.closest('.modal').remove()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div style="color:#94a3b8;font-size:0.9rem;margin-bottom:16px">Select up to 6 creatures to feature on your profile. <span id="pinCount" style="color:var(--tc-1,#3b82f6);font-weight:bold">${pinnedIds.size}/6 selected</span></div>
+                <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;max-height:400px;overflow-y:auto;padding:4px">
+                    ${creatures.map(c => {
+                        const sp = (window.SPECIES_DATABASE || {})[c.species] || {};
+                        const checked = pinnedIds.has(c.id);
+                        return `<label class="pin-creature-option${checked ? ' selected' : ''}" style="cursor:pointer;background:${checked?'rgba(59,130,246,0.15)':'rgba(255,255,255,0.03)'};border:2px solid ${checked?'var(--tc-1,#3b82f6)':'#334155'};border-radius:10px;padding:12px;display:flex;flex-direction:column;align-items:center;gap:6px;transition:all 0.2s">
+                            <input type="checkbox" style="display:none" value="${c.id}" ${checked ? 'checked' : ''} onchange="pinModalToggle(this)">
+                            <div style="font-size:2rem">${sp.emoji || '🦕'}</div>
+                            <div style="font-weight:bold;font-size:0.85rem;color:#f1f5f9;text-align:center">${c.name || 'Unnamed'}</div>
+                            <div style="font-size:0.75rem;color:#64748b">${c.species || ''}</div>
+                        </label>`;
+                    }).join('')}
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="this.closest('.modal').remove()">Cancel</button>
+                <button class="btn btn-primary" onclick="profileSavePins()">Save Pins</button>
+            </div>
+        </div>`;
+    document.body.appendChild(modal);
+}
+window.profileOpenPinModal = profileOpenPinModal;
+
+function pinModalToggle(cb) {
+    const checked = document.querySelectorAll('.pin-creature-option input:checked');
+    if (checked.length > 6 && cb.checked) { cb.checked = false; alert('Maximum 6 pinned creatures.'); return; }
+    const label = cb.closest('label');
+    if (label) {
+        label.style.background = cb.checked ? 'rgba(59,130,246,0.15)' : 'rgba(255,255,255,0.03)';
+        label.style.borderColor = cb.checked ? 'var(--tc-1,#3b82f6)' : '#334155';
+    }
+    const countEl = document.getElementById('pinCount');
+    if (countEl) countEl.textContent = `${document.querySelectorAll('.pin-creature-option input:checked').length}/6 selected`;
+}
+window.pinModalToggle = pinModalToggle;
+
+async function profileSavePins() {
+    const checked = [...document.querySelectorAll('.pin-creature-option input:checked')];
+    const creature_ids = checked.map(cb => parseInt(cb.value)).filter(Boolean);
+    const { res } = await apiRequest('/api/profile/pinned', { method: 'PUT', body: JSON.stringify({ creature_ids }) });
+    if (res.ok) { document.querySelector('.modal.active')?.remove(); loadMyProfilePage(); }
+}
+window.profileSavePins = profileSavePins;
 
 // ── Change Password modal ─────────────────────────────────────────────────────
 function profileChangePassword() {
@@ -3542,6 +4506,7 @@ async function loadBossPlanner() {
                     <div class="boss-card-desc">${t.description || t.strategy}</div>
                     <div class="boss-card-footer">
                         <span class="click-hint">${hasPlan ? '✏️ Edit plan' : '📋 Plan fight'}</span>
+                        ${hasPlan ? `<button class="btn btn-sm" style="padding:4px 10px;font-size:0.75rem;background:#22c55e;color:#fff;border:none;border-radius:6px" onclick="event.stopPropagation();bossLogKillModal('${t.id}','${t.name.replace(/'/g,"\\'")}')" title="Log a kill for this boss">☠️ Log Kill</button>` : ''}
                     </div>
                 </div>`;
             }).join('') || '<div class="no-results">No bosses match your filters.</div>';
@@ -3556,6 +4521,7 @@ async function loadBossPlanner() {
                     <h1>👑 Boss Planner</h1>
                     <div class="page-subtitle">${templates.length} bosses · ${plans.length} planned</div>
                 </div>
+                <button class="btn btn-secondary" onclick="loadBossRecordsPage()">☠️ Fight Records</button>
             </div>
             <div class="std-filters">
                 <input id="bossSearchInput" class="form-control search-input" placeholder="🔍 Search bosses or maps...">
@@ -3921,6 +4887,388 @@ function openBossModal(boss = null) {
 
 // Expose boss planner functions to window for debugging
 window.loadBossPlanner = loadBossPlanner;
+
+// ── Boss Fight Records ────────────────────────────────────────────────────────
+function bossLogKillModal(bossId, bossName) {
+    const modal = document.createElement('div');
+    modal.className = 'modal active';
+    const creatures = window.appState?.creatures || [];
+    modal.innerHTML = `
+        <div class="modal-content" style="max-width:480px">
+            <div class="modal-header"><h2 class="modal-title">☠️ Log Boss Kill: ${bossName}</h2><button class="close-btn" onclick="this.closest('.modal').remove()">&times;</button></div>
+            <div class="modal-body" style="display:flex;flex-direction:column;gap:14px">
+                <div class="plan-field">
+                    <label class="form-label">Difficulty</label>
+                    <select id="bfrDifficulty" class="form-control">
+                        <option value="gamma">Gamma</option>
+                        <option value="beta">Beta</option>
+                        <option value="alpha" selected>Alpha</option>
+                    </select>
+                </div>
+                <div class="plan-field">
+                    <label class="form-label">Outcome</label>
+                    <select id="bfrOutcome" class="form-control">
+                        <option value="success">✅ Success</option>
+                        <option value="failure">❌ Failed</option>
+                    </select>
+                </div>
+                <div class="plan-field">
+                    <label class="form-label">Creatures Used <span style="color:#64748b;font-size:0.8rem">(optional)</span></label>
+                    <div style="display:flex;flex-wrap:wrap;gap:6px;max-height:140px;overflow-y:auto;padding:4px">
+                        ${creatures.slice(0, 30).map(c => `
+                        <label style="display:flex;align-items:center;gap:4px;background:rgba(255,255,255,0.05);border:1px solid #334155;border-radius:6px;padding:4px 8px;cursor:pointer;font-size:0.8rem;color:#94a3b8">
+                            <input type="checkbox" value="${c.id}" name="bfrCreature" style="margin:0"> ${c.name || c.species || 'Unknown'}
+                        </label>`).join('')}
+                    </div>
+                </div>
+                <div class="plan-field">
+                    <label class="form-label">Notes <span style="color:#64748b;font-size:0.8rem">(optional)</span></label>
+                    <input id="bfrNotes" class="form-control" placeholder="Team comp, time taken, etc.">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="this.closest('.modal').remove()">Cancel</button>
+                <button class="btn btn-primary" onclick="bossSubmitKill('${bossId}','${bossName.replace(/'/g,"\\'")}')">Log Kill</button>
+            </div>
+        </div>`;
+    document.body.appendChild(modal);
+}
+window.bossLogKillModal = bossLogKillModal;
+
+async function bossSubmitKill(bossId, bossName) {
+    const difficulty = document.getElementById('bfrDifficulty')?.value || 'alpha';
+    const outcome = document.getElementById('bfrOutcome')?.value || 'success';
+    const notes = document.getElementById('bfrNotes')?.value?.trim() || null;
+    const creatures_used = [...document.querySelectorAll('input[name="bfrCreature"]:checked')].map(cb => parseInt(cb.value));
+    const templates = getBossTemplates();
+    const t = templates.find(b => b.id === bossId);
+    const map_name = t?.map || null;
+    const { res } = await apiRequest('/api/boss-records', { method: 'POST', body: JSON.stringify({ boss_name: bossName, map_name, difficulty, outcome, notes, creatures_used }) });
+    if (res.ok) { document.querySelector('.modal.active')?.remove(); }
+}
+window.bossSubmitKill = bossSubmitKill;
+
+async function loadBossRecordsPage() {
+    setActiveNavButton('boss');
+    const main = document.getElementById('appMainContent');
+    if (!main) return;
+    main.innerHTML = `<div class="std-page"><div style="color:#94a3b8;padding:40px 0">Loading records...</div></div>`;
+    const [records, summary] = await Promise.all([
+        apiRequest('/api/boss-records').then(r => Array.isArray(r.body) ? r.body : []).catch(() => []),
+        apiRequest('/api/boss-records/summary').then(r => Array.isArray(r.body) ? r.body : []).catch(() => [])
+    ]);
+
+    const outIcon = o => o === 'success' ? '✅' : '❌';
+    const diffColor = d => ({ gamma: '#22c55e', beta: '#3b82f6', alpha: '#ef4444' }[d] || '#94a3b8');
+    const timeAgo = ts => { const d = Date.now() - new Date(ts).getTime(), m = Math.floor(d/60000); if (m < 60) return `${m}m ago`; const h = Math.floor(m/60); if (h < 24) return `${h}h ago`; return `${Math.floor(h/24)}d ago`; };
+
+    // Group summary by boss
+    const byBoss = {};
+    summary.forEach(s => {
+        if (!byBoss[s.boss_name]) byBoss[s.boss_name] = { kills: 0, fails: 0 };
+        if (s.outcome === 'success') byBoss[s.boss_name].kills += s.count;
+        else byBoss[s.boss_name].fails += s.count;
+    });
+
+    main.innerHTML = `
+        <div class="std-page">
+            <div class="std-page-header">
+                <div class="page-title"><h1>☠️ Boss Fight Records</h1></div>
+                <button class="btn btn-secondary" onclick="loadBossPlanner()">← Back to Planner</button>
+            </div>
+            ${Object.keys(byBoss).length > 0 ? `
+            <div class="profile-card" style="margin-bottom:20px">
+                <div class="profile-card-header"><h3>🏆 Boss Kill Summary</h3></div>
+                <div style="display:flex;flex-wrap:wrap;gap:10px">
+                    ${Object.entries(byBoss).map(([boss, s]) => `
+                    <div style="background:rgba(255,255,255,0.03);border:1px solid #1e293b;border-radius:8px;padding:10px 16px;text-align:center">
+                        <div style="font-weight:bold;color:#f1f5f9;font-size:0.9rem">${boss}</div>
+                        <div style="color:#22c55e;font-size:0.85rem">✅ ${s.kills} kill${s.kills !== 1 ? 's' : ''}</div>
+                        ${s.fails ? `<div style="color:#ef4444;font-size:0.8rem">❌ ${s.fails} fail${s.fails !== 1 ? 's' : ''}</div>` : ''}
+                    </div>`).join('')}
+                </div>
+            </div>` : ''}
+            <div class="profile-card">
+                <div class="profile-card-header"><h3>📋 Fight Log</h3></div>
+                ${records.length === 0 ? '<div class="friends-empty">No boss fights logged yet. Click ☠️ Log Kill on any planned boss.</div>'
+                : records.map(r => `
+                <div class="bfr-row">
+                    <span class="bfr-outcome">${outIcon(r.outcome)}</span>
+                    <div class="bfr-info">
+                        <div class="bfr-boss">${r.boss_name} <span style="color:${diffColor(r.difficulty)};font-size:0.8rem">${r.difficulty || ''}</span></div>
+                        ${r.notes ? `<div class="bfr-notes">${r.notes}</div>` : ''}
+                    </div>
+                    <div class="bfr-time">${timeAgo(r.created_at)}</div>
+                </div>`).join('')}
+            </div>
+        </div>`;
+}
+window.loadBossRecordsPage = loadBossRecordsPage;
+
+// ── Direct Messages ───────────────────────────────────────────────────────────
+async function loadDMInboxPage() {
+    setActiveNavButton('messages');
+    const main = document.getElementById('appMainContent');
+    if (!main) return;
+    main.innerHTML = `<div class="std-page"><div style="color:#94a3b8;padding:40px 0">Loading messages...</div></div>`;
+    const convos = await apiRequest('/api/dms').then(r => Array.isArray(r.body) ? r.body : []).catch(() => []);
+    const timeAgo = ts => { const d = Date.now() - new Date(ts).getTime(), m = Math.floor(d/60000); if (m < 60) return `${m}m ago`; const h = Math.floor(m/60); if (h < 24) return `${h}h ago`; return `${Math.floor(h/24)}d ago`; };
+
+    main.innerHTML = `
+        <div class="std-page">
+            <div class="std-page-header">
+                <div class="page-title"><h1>💬 Messages</h1><div class="page-subtitle">${convos.length} conversation${convos.length !== 1 ? 's' : ''}</div></div>
+            </div>
+            ${convos.length === 0
+                ? '<div class="friends-empty" style="padding:60px 0">No messages yet. Go to Friends and click "Message" to start a conversation.</div>'
+                : `<div class="dm-convo-list">
+                    ${convos.map(c => `
+                    <div class="dm-convo-row" onclick="openDMThread(${c.partner_id}, '${(c.partner_nickname || 'User').replace(/'/g,"\\'")}')" >
+                        <div class="dm-avatar">💬</div>
+                        <div class="dm-convo-info">
+                            <div class="dm-convo-name">${c.partner_nickname || 'Unknown'} ${c.unread > 0 ? `<span class="dm-unread-badge">${c.unread}</span>` : ''}</div>
+                            <div class="dm-convo-preview">${c.last_message?.slice(0, 60) || ''}${c.last_message?.length > 60 ? '...' : ''}</div>
+                        </div>
+                        <div class="dm-convo-time">${timeAgo(c.last_at)}</div>
+                    </div>`).join('')}
+                   </div>`
+            }
+        </div>`;
+}
+window.loadDMInboxPage = loadDMInboxPage;
+
+async function openDMThread(partnerId, partnerName) {
+    // Fetch thread
+    const msgs = await apiRequest(`/api/dms/${partnerId}`).then(r => Array.isArray(r.body) ? r.body : []).catch(() => []);
+    const myId = parseInt(localStorage.getItem('userId') || '0');
+    const myNick = localStorage.getItem('userNickname') || 'You';
+
+    const modal = document.createElement('div');
+    modal.className = 'modal active';
+    modal.id = 'dmThreadModal';
+    modal.innerHTML = `
+        <div class="modal-content" style="max-width:520px;height:580px;display:flex;flex-direction:column">
+            <div class="modal-header">
+                <h2 class="modal-title">💬 ${partnerName}</h2>
+                <button class="close-btn" onclick="this.closest('.modal').remove()">&times;</button>
+            </div>
+            <div class="dm-thread" id="dmThread" style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:8px;padding:16px">
+                ${msgs.length === 0 ? '<div style="color:#475569;text-align:center;margin:auto">No messages yet. Say hi!</div>' : ''}
+                ${msgs.map(m => {
+                    const isMe = m.from_user_id === myId;
+                    return `<div class="dm-bubble ${isMe ? 'dm-me' : 'dm-them'}">
+                        <div class="dm-sender">${isMe ? myNick : m.sender_nickname || partnerName}</div>
+                        <div class="dm-text">${m.message.replace(/</g,'&lt;')}</div>
+                    </div>`;
+                }).join('')}
+            </div>
+            <div class="dm-compose">
+                <input id="dmInput" class="form-control" placeholder="Type a message..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();dmSend(${partnerId})}" style="flex:1">
+                <button class="btn btn-primary" onclick="dmSend(${partnerId})" style="flex-shrink:0">Send</button>
+            </div>
+        </div>`;
+    document.body.appendChild(modal);
+    // Scroll to bottom
+    setTimeout(() => { const t = document.getElementById('dmThread'); if (t) t.scrollTop = t.scrollHeight; }, 50);
+    document.getElementById('dmInput')?.focus();
+    // Store partner info for send function
+    modal._partnerId = partnerId;
+    modal._partnerName = partnerName;
+}
+window.openDMThread = openDMThread;
+
+async function dmSend(partnerId) {
+    const input = document.getElementById('dmInput');
+    const msg = input?.value?.trim();
+    if (!msg) return;
+    input.value = '';
+    const myNick = localStorage.getItem('userNickname') || 'You';
+    const myId = parseInt(localStorage.getItem('userId') || '0');
+    const thread = document.getElementById('dmThread');
+    // Optimistic append
+    if (thread) {
+        const bubble = document.createElement('div');
+        bubble.className = 'dm-bubble dm-me';
+        bubble.innerHTML = `<div class="dm-sender">${myNick}</div><div class="dm-text">${msg.replace(/</g,'&lt;')}</div>`;
+        thread.appendChild(bubble);
+        thread.scrollTop = thread.scrollHeight;
+    }
+    await apiRequest(`/api/dms/${partnerId}`, { method: 'POST', body: JSON.stringify({ message: msg }) });
+}
+window.dmSend = dmSend;
+
+// ── Events / Calendar ─────────────────────────────────────────────────────────
+async function loadEventsPage() {
+    setActiveNavButton('events');
+    const main = document.getElementById('appMainContent');
+    if (!main) return;
+    main.innerHTML = `<div class="std-page"><div style="color:#94a3b8;padding:40px 0">Loading events...</div></div>`;
+
+    const events = await apiRequest('/api/events').then(r => Array.isArray(r.body) ? r.body : []).catch(() => []);
+    const myId = parseInt(localStorage.getItem('userId') || '0');
+
+    const countdown = ts => {
+        const diff = new Date(ts).getTime() - Date.now();
+        if (diff <= 0) return 'Started';
+        const h = Math.floor(diff / 3600000);
+        const d = Math.floor(h / 24);
+        if (d > 0) return `in ${d}d ${h % 24}h`;
+        const m = Math.floor((diff % 3600000) / 60000);
+        return h > 0 ? `in ${h}h ${m}m` : `in ${m}m`;
+    };
+
+    const typeIcon = t => ({ boss: '👑', pvp: '⚔️', farming: '⛏️', social: '🎉', general: '📅' }[t] || '📅');
+    const rsvpColor = s => ({ going: '#22c55e', maybe: '#f59e0b', declined: '#ef4444' }[s] || '#475569');
+
+    const eventCard = e => {
+        const isOwn = e.creator_id === myId;
+        const cd = countdown(e.scheduled_at);
+        const scheduled = new Date(e.scheduled_at).toLocaleString('en-US', { weekday:'short', month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' });
+        return `<div class="event-card">
+            <div class="event-card-top">
+                <span class="event-type-badge">${typeIcon(e.event_type)} ${e.event_type}</span>
+                <span class="event-countdown ${new Date(e.scheduled_at).getTime() - Date.now() < 3600000 ? 'soon' : ''}">${cd}</span>
+            </div>
+            <div class="event-title">${e.title}</div>
+            ${e.description ? `<div class="event-desc">${e.description.replace(/</g,'&lt;')}</div>` : ''}
+            <div class="event-meta">
+                📅 ${scheduled}
+                ${e.map_name ? `· 📍 ${e.map_name}` : ''}
+                · 👥 ${e.rsvp_count || 0} going
+                · by ${e.creator_nickname || 'Unknown'}
+            </div>
+            <div class="event-actions">
+                ${['going','maybe','declined'].map(s => `
+                <button class="btn btn-sm event-rsvp-btn${e.my_rsvp === s ? ' active' : ''}" style="${e.my_rsvp === s ? `background:${rsvpColor(s)};color:#fff;border-color:${rsvpColor(s)}` : ''}" onclick="eventRSVP(${e.id},'${s}')">
+                    ${{ going:'✅ Going', maybe:'🤔 Maybe', declined:'❌ Decline' }[s]}
+                </button>`).join('')}
+                ${isOwn ? `<button class="btn btn-sm btn-danger" onclick="eventDelete(${e.id})">Delete</button>` : ''}
+            </div>
+        </div>`;
+    };
+
+    main.innerHTML = `
+        <div class="std-page">
+            <div class="std-page-header">
+                <div class="page-title"><h1>📅 Events</h1><div class="page-subtitle">${events.length} upcoming</div></div>
+                <button class="btn btn-primary" onclick="eventCreateModal()">+ Create Event</button>
+            </div>
+            ${events.length === 0
+                ? '<div class="friends-empty" style="padding:60px 0">No upcoming events. Create one to coordinate with your crew!</div>'
+                : `<div class="event-grid">${events.map(eventCard).join('')}</div>`
+            }
+        </div>`;
+}
+window.loadEventsPage = loadEventsPage;
+
+function eventCreateModal() {
+    const mapOptions = (window.ARK_MAPS || ['The Island','Scorched Earth','Aberration','Extinction','Genesis Part 1','Genesis Part 2','Crystal Isles','Fjordur','Lost Island','Ragnarok','Valguero','The Center','Caballus','Astraeos','Svartalfheim','Lost Colony'])
+        .map(m => `<option value="${m}">${m}</option>`).join('');
+    // Default to tomorrow
+    const tmr = new Date(Date.now() + 86400000);
+    tmr.setMinutes(0); tmr.setSeconds(0);
+    const dtLocal = new Date(tmr.getTime() - tmr.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+
+    const modal = document.createElement('div');
+    modal.className = 'modal active';
+    modal.innerHTML = `
+        <div class="modal-content" style="max-width:480px">
+            <div class="modal-header"><h2 class="modal-title">📅 Create Event</h2><button class="close-btn" onclick="this.closest('.modal').remove()">&times;</button></div>
+            <div class="modal-body" style="display:flex;flex-direction:column;gap:14px">
+                <div class="plan-field"><label class="form-label">Title</label><input id="evTitle" class="form-control" placeholder="e.g. Alpha Dragon Run"></div>
+                <div class="plan-field"><label class="form-label">Event Type</label>
+                    <select id="evType" class="form-control">
+                        <option value="boss">👑 Boss Fight</option>
+                        <option value="pvp">⚔️ PvP</option>
+                        <option value="farming">⛏️ Farming / Grinding</option>
+                        <option value="social">🎉 Social</option>
+                        <option value="general">📅 General</option>
+                    </select>
+                </div>
+                <div class="plan-field"><label class="form-label">Date & Time</label><input id="evTime" class="form-control" type="datetime-local" value="${dtLocal}"></div>
+                <div class="plan-field"><label class="form-label">Map <span style="color:#64748b;font-size:0.8rem">(optional)</span></label>
+                    <select id="evMap" class="form-control"><option value="">— No map —</option>${mapOptions}</select>
+                </div>
+                <div class="plan-field"><label class="form-label">Description <span style="color:#64748b;font-size:0.8rem">(optional)</span></label><textarea id="evDesc" class="form-control" rows="3" placeholder="Details, requirements, etc."></textarea></div>
+                <div id="evError" style="color:#ef4444;font-size:0.85rem;display:none"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="this.closest('.modal').remove()">Cancel</button>
+                <button class="btn btn-primary" onclick="eventSubmit()">Create Event</button>
+            </div>
+        </div>`;
+    document.body.appendChild(modal);
+}
+window.eventCreateModal = eventCreateModal;
+
+async function eventSubmit() {
+    const title = document.getElementById('evTitle')?.value.trim();
+    const event_type = document.getElementById('evType')?.value || 'general';
+    const scheduled_at = document.getElementById('evTime')?.value;
+    const map_name = document.getElementById('evMap')?.value || null;
+    const description = document.getElementById('evDesc')?.value.trim() || null;
+    const errEl = document.getElementById('evError');
+    if (!title) { if (errEl) { errEl.textContent = 'Title is required.'; errEl.style.display = 'block'; } return; }
+    if (!scheduled_at) { if (errEl) { errEl.textContent = 'Pick a date and time.'; errEl.style.display = 'block'; } return; }
+    const { res, body } = await apiRequest('/api/events', { method: 'POST', body: JSON.stringify({ title, event_type, scheduled_at: new Date(scheduled_at).toISOString(), map_name, description }) });
+    if (res.ok) { document.querySelector('.modal.active')?.remove(); loadEventsPage(); }
+    else if (errEl) { errEl.textContent = body?.error || 'Failed to create.'; errEl.style.display = 'block'; }
+}
+window.eventSubmit = eventSubmit;
+
+async function eventRSVP(eventId, status) {
+    await apiRequest(`/api/events/${eventId}/rsvp`, { method: 'PUT', body: JSON.stringify({ status }) });
+    loadEventsPage();
+}
+window.eventRSVP = eventRSVP;
+
+async function eventDelete(eventId) {
+    if (!confirm('Delete this event?')) return;
+    await apiRequest(`/api/events/${eventId}`, { method: 'DELETE' });
+    loadEventsPage();
+}
+window.eventDelete = eventDelete;
+
+// ── Reactions System ──────────────────────────────────────────────────────────
+const REACTION_EMOJIS = ['❤️','🔥','💪','😮','👑','🤣'];
+
+// Render a reaction bar for a given entity. reactions = [{emoji, count, my_react}]
+function renderReactionBar(entityType, entityId, reactions) {
+    const counts = {};
+    (reactions || []).forEach(r => { counts[r.emoji] = { count: r.count, my_react: r.my_react }; });
+    return `<div class="reaction-bar" data-type="${entityType}" data-id="${entityId}">
+        ${REACTION_EMOJIS.map(e => {
+            const info = counts[e] || { count: 0, my_react: false };
+            return `<button class="reaction-btn${info.my_react ? ' reacted' : ''}" onclick="toggleReaction('${entityType}',${entityId},'${e}',this)" title="${e}">
+                ${e}${info.count > 0 ? `<span class="reaction-count">${info.count}</span>` : ''}
+            </button>`;
+        }).join('')}
+    </div>`;
+}
+
+async function toggleReaction(entityType, entityId, emoji, btn) {
+    const { res, body } = await apiRequest('/api/reactions/toggle', { method: 'POST', body: JSON.stringify({ entity_type: entityType, entity_id: entityId, emoji }) });
+    if (!res.ok) return;
+    const added = body?.action === 'added';
+    const bar = btn.closest('.reaction-bar');
+    if (!bar) return;
+    // Refresh reactions for this entity
+    const newR = await apiRequest(`/api/reactions?type=${entityType}&ids=${entityId}`).then(r => r.body || {}).catch(() => ({}));
+    const entityReactions = newR[entityId] || [];
+    bar.outerHTML = renderReactionBar(entityType, entityId, entityReactions);
+}
+window.toggleReaction = toggleReaction;
+
+// Load reactions for a list of entity IDs, then inject them into the DOM
+async function loadAndInjectReactions(entityType, ids) {
+    if (!ids || !ids.length) return;
+    const data = await apiRequest(`/api/reactions?type=${entityType}&ids=${ids.join(',')}`).then(r => r.body || {}).catch(() => ({}));
+    // Find all reaction-bar placeholders and fill them
+    document.querySelectorAll(`.reaction-bar-placeholder[data-type="${entityType}"]`).forEach(el => {
+        const id = parseInt(el.dataset.id);
+        el.outerHTML = renderReactionBar(entityType, id, data[id] || []);
+    });
+}
 
 // Modal cleanup function to prevent UI bugs during navigation
 function cleanupModals() {
@@ -4914,11 +6262,55 @@ async function saveBossData(bosses) {
     }
 }
 
+// Hash change routing (for shared creature links)
+window.addEventListener('hashchange', () => { if (localStorage.getItem('token')) handleHashRoute(); });
+
+// ── PWA: Service Worker + Browser Notifications ────────────────────────────────
+(function initPWA() {
+    // Register service worker
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/sw.js').catch(() => {});
+        });
+    }
+})();
+
+// Request browser notification permission (called after login)
+async function requestNotificationPermission() {
+    if (!('Notification' in window)) return;
+    if (Notification.permission === 'granted') return;
+    if (Notification.permission === 'denied') return;
+    // Only ask once per session
+    if (sessionStorage.getItem('notifAsked')) return;
+    sessionStorage.setItem('notifAsked', '1');
+    // Small delay so it doesn't feel intrusive
+    setTimeout(async () => {
+        const perm = await Notification.requestPermission().catch(() => 'denied');
+        if (perm === 'granted') {
+            new Notification('Dino Nuggie Manager 🦕', {
+                body: 'Notifications enabled! You\'ll be alerted for DMs, trades, and events.',
+                icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><text y='52' font-size='52'>🦕</text></svg>"
+            });
+        }
+    }, 3000);
+}
+
+// Show a browser notification (called from notification poller)
+function showBrowserNotification(title, body, onClick) {
+    if (!('Notification' in window) || Notification.permission !== 'granted') return;
+    const n = new Notification(title, {
+        body,
+        icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><text y='52' font-size='52'>🦕</text></svg>"
+    });
+    if (onClick) n.addEventListener('click', onClick);
+}
+window.showBrowserNotification = showBrowserNotification;
+
 // Initialize the application when DOM is ready
 document.addEventListener('DOMContentLoaded', async () => {
     await initializeApp();
-    
-    // Set up navigation listeners  
+
+    // Set up navigation listeners
     setupNavigationListeners();
     
     // Set up initial event listeners
@@ -5102,6 +6494,13 @@ function formatNotification(n) {
             const bossI = p.bossName || 'a boss';
             return { icon: '⚔️', title: 'War Room Invite', message: `${actor} invited you to a ${bossI} war room. Code: ${p.join_code || ''}`, navigate: () => { closeNotifications(); loadArenaPage(); } };
         }
+        case 'direct_message': {
+            const from = p.fromNickname || actor;
+            return { icon: '💬', title: 'New Message', message: `${from} sent you a message.`, navigate: () => { closeNotifications(); loadDMInboxPage(); } };
+        }
+        case 'wishlist_listed': {
+            return { icon: '⭐', title: 'Wishlist Alert', message: `A ${p.species || 'creature'} you wishlisted is now listed on the Trading Post!`, navigate: () => { closeNotifications(); loadTradingPage(); } };
+        }
         default:
             return { icon: '🔔', title: 'Notification', message: p.message || 'You have a new notification.', navigate: () => closeNotifications() };
     }
@@ -5204,11 +6603,25 @@ window.closeNotifications = closeNotifications;
 
 function updateNotificationBadge() {
     const notifs = window.appState?.notifications || [];
-    const count = notifs.filter(n => !n.read).length;
+    const unread = notifs.filter(n => !n.read);
+    const count = unread.length;
     const badge = document.getElementById('notificationCount');
     if (badge) {
         badge.textContent = count > 0 ? count : '';
         badge.style.display = count > 0 ? 'inline-flex' : 'none';
+    }
+    // Show browser notification for new unread items since last check
+    const lastSeen = parseInt(localStorage.getItem('lastNotifId') || '0');
+    const newest = unread.filter(n => n.id > lastSeen);
+    if (newest.length > 0 && lastSeen > 0) {
+        newest.forEach(n => {
+            const f = formatNotification(n);
+            showBrowserNotification(f.title, f.message, () => { window.focus(); f.navigate?.(); });
+        });
+    }
+    if (unread.length > 0) {
+        const maxId = Math.max(...unread.map(n => n.id));
+        localStorage.setItem('lastNotifId', String(maxId));
     }
 }
 window.updateNotificationBadge = updateNotificationBadge;

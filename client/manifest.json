@@ -1,0 +1,24 @@
+{
+  "name": "Dino Nuggie Manager",
+  "short_name": "DinoNuggies",
+  "description": "ARK Survival Ascended tame tracker and social platform",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#3b82f6",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect width='192' height='192' rx='24' fill='%230f172a'/><text y='140' x='16' font-size='140'>🦕</text></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["games", "utilities", "social"],
+  "shortcuts": [
+    { "name": "My Nuggies", "url": "/#nuggies", "description": "View your creatures" },
+    { "name": "Trading Post", "url": "/#trading", "description": "Browse the marketplace" },
+    { "name": "Wild Finds", "url": "/#wildfinds", "description": "Creature sightings" }
+  ]
+}

@@ -78,10 +78,138 @@ db.serialize(() => {
 )`);
   // Add created_at to existing databases that pre-date this column
   db.run(`ALTER TABLE users ADD COLUMN created_at DATETIME DEFAULT CURRENT_TIMESTAMP`, () => {});
+  // Enhanced profile fields
+  db.run(`ALTER TABLE users ADD COLUMN bio TEXT`, () => {});
+  db.run(`ALTER TABLE users ADD COLUMN banner_image TEXT`, () => {});
+  db.run(`ALTER TABLE users ADD COLUMN looking_for TEXT`, () => {});
+  db.run(`ALTER TABLE users ADD COLUMN pinned_creatures TEXT DEFAULT '[]'`, () => {});
+  // Online status
+  db.run(`ALTER TABLE users ADD COLUMN last_seen DATETIME`, () => {});
   db.run(`CREATE TABLE IF NOT EXISTS creature_cards (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER NOT NULL,
     data TEXT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY(user_id) REFERENCES users(id)
+  )`);
+  db.run(`ALTER TABLE creature_cards ADD COLUMN created_at DATETIME DEFAULT CURRENT_TIMESTAMP`, () => {});
+  // Tribe Alliances
+  db.run(`CREATE TABLE IF NOT EXISTS tribe_alliances (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    tribe_id INTEGER NOT NULL,
+    ally_tribe_id INTEGER NOT NULL,
+    status TEXT DEFAULT 'pending',
+    requested_by INTEGER NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(tribe_id, ally_tribe_id),
+    FOREIGN KEY(tribe_id) REFERENCES tribes(id),
+    FOREIGN KEY(ally_tribe_id) REFERENCES tribes(id)
+  )`);
+  db.run(`CREATE TABLE IF NOT EXISTS alliance_chat (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    alliance_id INTEGER NOT NULL,
+    user_id INTEGER NOT NULL,
+    message TEXT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY(alliance_id) REFERENCES tribe_alliances(id),
+    FOREIGN KEY(user_id) REFERENCES users(id)
+  )`);
+  // Marketplace: Wishlists + Seller Ratings
+  db.run(`CREATE TABLE IF NOT EXISTS wishlists (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    species TEXT NOT NULL,
+    UNIQUE(user_id, species),
+    FOREIGN KEY(user_id) REFERENCES users(id)
+  )`);
+  db.run(`CREATE TABLE IF NOT EXISTS trade_ratings (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    rater_id INTEGER NOT NULL,
+    rated_user_id INTEGER NOT NULL,
+    trade_id INTEGER,
+    rating INTEGER NOT NULL CHECK(rating BETWEEN 1 AND 5),
+    comment TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(rater_id, trade_id),
+    FOREIGN KEY(rater_id) REFERENCES users(id),
+    FOREIGN KEY(rated_user_id) REFERENCES users(id)
+  )`);
+  // Reactions
+  db.run(`CREATE TABLE IF NOT EXISTS reactions (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    entity_type TEXT NOT NULL,
+    entity_id INTEGER NOT NULL,
+    emoji TEXT NOT NULL DEFAULT '❤️',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(user_id, entity_type, entity_id),
+    FOREIGN KEY(user_id) REFERENCES users(id)
+  )`);
+  // Events / Calendar
+  db.run(`CREATE TABLE IF NOT EXISTS events (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    creator_id INTEGER NOT NULL,
+    title TEXT NOT NULL,
+    description TEXT,
+    event_type TEXT DEFAULT 'general',
+    map_name TEXT,
+    scheduled_at DATETIME NOT NULL,
+    max_attendees INTEGER,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY(creator_id) REFERENCES users(id)
+  )`);
+  db.run(`CREATE TABLE IF NOT EXISTS event_rsvps (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    event_id INTEGER NOT NULL,
+    user_id INTEGER NOT NULL,
+    status TEXT DEFAULT 'going',
+    UNIQUE(event_id, user_id),
+    FOREIGN KEY(event_id) REFERENCES events(id),
+    FOREIGN KEY(user_id) REFERENCES users(id)
+  )`);
+  // Direct Messages
+  db.run(`CREATE TABLE IF NOT EXISTS direct_messages (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    from_user_id INTEGER NOT NULL,
+    to_user_id INTEGER NOT NULL,
+    message TEXT NOT NULL,
+    read INTEGER DEFAULT 0,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY(from_user_id) REFERENCES users(id),
+    FOREIGN KEY(to_user_id) REFERENCES users(id)
+  )`);
+  // Boss Fight Records
+  db.run(`CREATE TABLE IF NOT EXISTS boss_fight_records (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    boss_name TEXT NOT NULL,
+    map_name TEXT,
+    difficulty TEXT,
+    outcome TEXT NOT NULL DEFAULT 'success',
+    notes TEXT,
+    creatures_used TEXT DEFAULT '[]',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY(user_id) REFERENCES users(id)
+  )`);
+  // Wild Find Reports
+  db.run(`CREATE TABLE IF NOT EXISTS wild_finds (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    species TEXT NOT NULL,
+    level INTEGER NOT NULL,
+    map_name TEXT,
+    coordinates TEXT,
+    notes TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY(user_id) REFERENCES users(id)
+  )`);
+  // Activity feed events table
+  db.run(`CREATE TABLE IF NOT EXISTS activity_events (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    type TEXT NOT NULL,
+    data_json TEXT DEFAULT '{}',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY(user_id) REFERENCES users(id)
   )`);
   db.run(`CREATE TABLE IF NOT EXISTS trades (
@@ -407,7 +535,7 @@ app.post('/api/login', (req, res) => {
   });
 });
 
-// Auth middleware
+// Auth middleware — also updates last_seen timestamp on every authenticated call
 function authenticateToken(req, res, next) {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
@@ -415,6 +543,7 @@ function authenticateToken(req, res, next) {
   jwt.verify(token, SECRET, (err, user) => {
     if (err) return res.sendStatus(403);
     req.user = user;
+    db.run('UPDATE users SET last_seen = CURRENT_TIMESTAMP WHERE id = ?', [user.userId], () => {});
     next();
   });
 }
@@ -426,6 +555,7 @@ app.post('/api/creature', authenticateToken, (req, res) => {
   db.run('INSERT INTO creature_cards (user_id, data) VALUES (?, ?)', [req.user.userId, payloadStr], function(err) {
     if (err) return res.status(500).json({ error: 'Failed to save' });
     const newId = this.lastID;
+    logActivity(req.user.userId, 'creature_added', { name: (data||{}).name || 'Unnamed', species: (data||{}).species || '' });
     // If creature has achievements and any is prized diamond, create announcement and notifications
     try {
       const achievements = (data && data.achievements) || [];
@@ -523,8 +653,22 @@ app.post('/api/trades', authenticateToken, (req, res) => {
   db.run('INSERT INTO trades (user_id, creature_card_id, creature_data, wanted, price, status) VALUES (?, ?, ?, ?, ?, ?)',
     [req.user.userId, creature_card_id || null, JSON.stringify(creature_data), wanted || null, price || null, 'open'], function(err) {
       if (err) return res.status(500).json({ error: 'Failed to create trade' });
+    const tradeId = this.lastID;
+    // Notify users who wishlisted this species
+    const listedSpecies = (creature_data && creature_data.species) ? creature_data.species : null;
+    if (listedSpecies) {
+      db.all('SELECT user_id FROM wishlists WHERE species = ? AND user_id != ?', [listedSpecies, req.user.userId], (we, wishers) => {
+        if (!we && wishers && wishers.length > 0) {
+          const payload = JSON.stringify({ species: listedSpecies, tradeId });
+          wishers.forEach(w => {
+            db.run('INSERT INTO notifications (user_id, actor_user_id, type, payload, read) VALUES (?, ?, ?, ?, 0)',
+              [w.user_id, req.user.userId, 'wishlist_listed', payload], () => {});
+          });
+        }
+      });
+    }
     res.setHeader('Content-Type', 'application/json');
-    return res.status(201).json({ success: true, id: this.lastID });
+    return res.status(201).json({ success: true, id: tradeId });
     });
 });
 
@@ -635,6 +779,7 @@ app.put('/api/offers/:id', authenticateToken, (req, res) => {
               // close trade
               db.run('UPDATE trades SET status = ? WHERE id = ?', ['closed', offer.trade_id], function(err) {
                 if (err) return res.status(500).json({ error: 'Failed to close trade' });
+                logActivity(req.user.userId, 'trade_completed', { creature: tradeRow.creature_data });
                 return res.json({ success: true });
               });
             });
@@ -646,6 +791,7 @@ app.put('/api/offers/:id', authenticateToken, (req, res) => {
               // close trade
               db.run('UPDATE trades SET status = ? WHERE id = ?', ['closed', offer.trade_id], function(err) {
                 if (err) return res.status(500).json({ error: 'Failed to close trade' });
+                logActivity(req.user.userId, 'trade_completed', { creature: tradeRow.creature_data });
                 return res.json({ success: true });
               });
             });
@@ -684,7 +830,7 @@ app.get('/api/profile', authenticateToken, (req, res) => {
   const userId = req.user.userId;
   
   // Get user info
-  db.get('SELECT id, email, nickname, discord_name, created_at FROM users WHERE id = ?', [userId], (err, user) => {
+  db.get('SELECT id, email, nickname, discord_name, created_at, bio, banner_image, looking_for, pinned_creatures FROM users WHERE id = ?', [userId], (err, user) => {
     if (err) return res.status(500).json({ error: 'Failed to fetch profile' });
     if (!user) return res.status(404).json({ error: 'User not found' });
     
@@ -715,6 +861,10 @@ app.get('/api/profile', authenticateToken, (req, res) => {
             nickname: user.nickname,
             discord_name: user.discord_name,
             created_at: user.created_at,
+            bio: user.bio || '',
+            banner_image: user.banner_image || null,
+            looking_for: user.looking_for || null,
+            pinned_creatures: (() => { try { return JSON.parse(user.pinned_creatures || '[]'); } catch { return []; } })(),
             tribe: tribeInfo ? {
               name: tribeInfo.tribe_name,
               role: tribeInfo.tribe_role,
@@ -732,13 +882,16 @@ app.get('/api/profile', authenticateToken, (req, res) => {
 // Update user profile (nickname, email, discord_name)
 app.put('/api/profile', authenticateToken, (req, res) => {
   const userId = req.user.userId;
-  const { nickname, email, discord_name } = req.body || {};
+  const { nickname, email, discord_name, bio, banner_image, looking_for } = req.body || {};
   // Build update dynamically for only provided fields
   const fields = [];
   const values = [];
   if (discord_name !== undefined) { fields.push('discord_name = ?'); values.push(discord_name || null); }
   if (nickname !== undefined) { fields.push('nickname = ?'); values.push(nickname || null); }
   if (email !== undefined) { fields.push('email = ?'); values.push(email || null); }
+  if (bio !== undefined) { fields.push('bio = ?'); values.push(bio ? String(bio).slice(0, 280) : null); }
+  if (banner_image !== undefined) { fields.push('banner_image = ?'); values.push(banner_image || null); }
+  if (looking_for !== undefined) { fields.push('looking_for = ?'); values.push(looking_for || null); }
   if (!fields.length) return res.status(400).json({ error: 'No fields to update' });
   values.push(userId);
   db.run(`UPDATE users SET ${fields.join(', ')} WHERE id = ?`, values, function(err) {
@@ -747,6 +900,26 @@ app.put('/api/profile', authenticateToken, (req, res) => {
       return res.status(500).json({ error: 'Failed to update profile' });
     }
     res.json({ success: true });
+  });
+});
+
+// Get online user IDs (seen within last 5 minutes)
+app.get('/api/users/online', authenticateToken, (req, res) => {
+  db.all(`SELECT id FROM users WHERE last_seen > datetime('now', '-5 minutes')`, [], (err, rows) => {
+    if (err) return res.status(500).json({ error: 'Failed to fetch online users' });
+    res.json({ online_ids: (rows || []).map(r => r.id) });
+  });
+});
+
+// Update pinned creatures list (max 6)
+app.put('/api/profile/pinned', authenticateToken, (req, res) => {
+  const userId = req.user.userId;
+  const { creature_ids } = req.body || {};
+  if (!Array.isArray(creature_ids)) return res.status(400).json({ error: 'creature_ids must be an array' });
+  const pinned = JSON.stringify(creature_ids.slice(0, 6).map(Number).filter(Boolean));
+  db.run('UPDATE users SET pinned_creatures = ? WHERE id = ?', [pinned, userId], function(err) {
+    if (err) return res.status(500).json({ error: 'Failed to update pinned creatures' });
+    res.json({ success: true, pinned_creatures: JSON.parse(pinned) });
   });
 });
 
@@ -972,6 +1145,472 @@ app.get('/api/users/:id/creatures', authenticateToken, (req, res) => {
   });
 });
 
+// ── Tribe Alliances ───────────────────────────────────────────────────────────
+
+// Get alliances for user's tribe
+app.get('/api/alliances', authenticateToken, (req, res) => {
+  const userId = req.user.userId;
+  db.get('SELECT tribe_id FROM tribe_memberships WHERE user_id = ?', [userId], (err, mem) => {
+    if (err || !mem) return res.json([]);
+    const tribeId = mem.tribe_id;
+    db.all(`
+      SELECT ta.*,
+             t1.name as tribe_name, t2.name as ally_name
+      FROM tribe_alliances ta
+      JOIN tribes t1 ON ta.tribe_id = t1.id
+      JOIN tribes t2 ON ta.ally_tribe_id = t2.id
+      WHERE (ta.tribe_id = ? OR ta.ally_tribe_id = ?)`, [tribeId, tribeId], (e, rows) => {
+      res.json(rows || []);
+    });
+  });
+});
+
+// Request alliance
+app.post('/api/alliances', authenticateToken, (req, res) => {
+  const userId = req.user.userId;
+  const { ally_tribe_id } = req.body || {};
+  db.get('SELECT tribe_id, role FROM tribe_memberships WHERE user_id = ?', [userId], (err, mem) => {
+    if (err || !mem) return res.status(403).json({ error: 'Not in a tribe' });
+    if (!['owner','admin'].includes(mem.role)) return res.status(403).json({ error: 'Must be tribe owner or admin' });
+    db.run(`INSERT OR IGNORE INTO tribe_alliances (tribe_id, ally_tribe_id, status, requested_by) VALUES (?, ?, 'pending', ?)`,
+      [mem.tribe_id, ally_tribe_id, userId], function(err) {
+      if (err) return res.status(500).json({ error: 'Failed to request alliance' });
+      res.status(201).json({ success: true });
+    });
+  });
+});
+
+// Accept/decline alliance
+app.put('/api/alliances/:id', authenticateToken, (req, res) => {
+  const userId = req.user.userId;
+  const { status } = req.body || {};
+  if (!['accepted','declined'].includes(status)) return res.status(400).json({ error: 'Invalid status' });
+  db.get('SELECT ta.*, tm.role FROM tribe_alliances ta JOIN tribe_memberships tm ON tm.tribe_id = ta.ally_tribe_id WHERE ta.id = ? AND tm.user_id = ?',
+    [req.params.id, userId], (err, row) => {
+    if (err || !row) return res.status(403).json({ error: 'Not authorized' });
+    if (!['owner','admin'].includes(row.role)) return res.status(403).json({ error: 'Must be owner or admin' });
+    db.run('UPDATE tribe_alliances SET status = ? WHERE id = ?', [status, req.params.id], () => res.json({ success: true }));
+  });
+});
+
+// Alliance chat
+app.get('/api/alliances/:id/chat', authenticateToken, (req, res) => {
+  const userId = req.user.userId;
+  db.all(`SELECT ac.*, u.nickname as sender FROM alliance_chat ac JOIN users u ON ac.user_id = u.id
+    WHERE ac.alliance_id = ? ORDER BY ac.created_at ASC LIMIT 100`, [req.params.id], (err, rows) => {
+    res.json(rows || []);
+  });
+});
+
+app.post('/api/alliances/:id/chat', authenticateToken, (req, res) => {
+  const { message } = req.body || {};
+  if (!message) return res.status(400).json({ error: 'Message required' });
+  db.run('INSERT INTO alliance_chat (alliance_id, user_id, message) VALUES (?, ?, ?)',
+    [req.params.id, req.user.userId, message.trim().slice(0, 1000)], function(err) {
+    if (err) return res.status(500).json({ error: 'Failed to send' });
+    res.status(201).json({ success: true, id: this.lastID });
+  });
+});
+
+// ── Public Creature Page ──────────────────────────────────────────────────────
+
+// No auth required — returns creature + owner info for shareable URLs
+app.get('/api/creatures/public/:id', (req, res) => {
+  const id = parseInt(req.params.id);
+  db.get(`SELECT cc.id, cc.data, cc.created_at, u.id as owner_id, u.nickname as owner_nickname
+    FROM creature_cards cc JOIN users u ON cc.user_id = u.id WHERE cc.id = ?`, [id], (err, row) => {
+    if (err || !row) return res.status(404).json({ error: 'Creature not found' });
+    let data = {}; try { data = JSON.parse(row.data || '{}'); } catch {}
+    res.json({ id: row.id, data, owner_id: row.owner_id, owner_nickname: row.owner_nickname, created_at: row.created_at });
+  });
+});
+
+// ── Marketplace Upgrades: Wishlists + Ratings ─────────────────────────────────
+
+// Wishlists
+app.get('/api/wishlists', authenticateToken, (req, res) => {
+  db.all('SELECT species FROM wishlists WHERE user_id = ?', [req.user.userId], (err, rows) => {
+    res.json((rows || []).map(r => r.species));
+  });
+});
+
+app.post('/api/wishlists', authenticateToken, (req, res) => {
+  const { species } = req.body || {};
+  if (!species) return res.status(400).json({ error: 'species required' });
+  db.run('INSERT OR IGNORE INTO wishlists (user_id, species) VALUES (?, ?)', [req.user.userId, species], function(err) {
+    if (err) return res.status(500).json({ error: 'Failed' });
+    res.json({ success: true, added: this.changes > 0 });
+  });
+});
+
+app.delete('/api/wishlists/:species', authenticateToken, (req, res) => {
+  db.run('DELETE FROM wishlists WHERE user_id = ? AND species = ?', [req.user.userId, decodeURIComponent(req.params.species)], function(err) {
+    res.json({ success: true });
+  });
+});
+
+// When a trade is created, notify users who wishlisted that species
+// (injected into POST /api/trades after successful insert — handled in the trade route below via hook)
+
+// Seller Ratings
+app.get('/api/ratings/:userId', (req, res) => {
+  db.get('SELECT AVG(rating) as avg_rating, COUNT(*) as count FROM trade_ratings WHERE rated_user_id = ?', [req.params.userId], (err, row) => {
+    if (err) return res.status(500).json({ error: 'Failed' });
+    res.json({ avg_rating: row?.avg_rating ? Math.round(row.avg_rating * 10) / 10 : null, count: row?.count || 0 });
+  });
+});
+
+app.post('/api/ratings', authenticateToken, (req, res) => {
+  const { rated_user_id, trade_id, rating, comment } = req.body || {};
+  if (!rated_user_id || !rating || rating < 1 || rating > 5) return res.status(400).json({ error: 'rated_user_id and rating (1-5) required' });
+  if (rated_user_id === req.user.userId) return res.status(400).json({ error: 'Cannot rate yourself' });
+  db.run('INSERT OR IGNORE INTO trade_ratings (rater_id, rated_user_id, trade_id, rating, comment) VALUES (?, ?, ?, ?, ?)',
+    [req.user.userId, rated_user_id, trade_id || null, rating, comment || null], function(err) {
+    if (err) return res.status(500).json({ error: 'Failed to save rating' });
+    res.json({ success: true, inserted: this.changes > 0 });
+  });
+});
+
+// ── Reactions ─────────────────────────────────────────────────────────────────
+
+const ALLOWED_EMOJIS = ['❤️','🔥','💪','😮','👑','🤣'];
+
+// Get reactions for a batch of entities: ?type=X&ids=1,2,3
+app.get('/api/reactions', authenticateToken, (req, res) => {
+  const { type, ids } = req.query;
+  if (!type || !ids) return res.json({});
+  const idList = String(ids).split(',').map(Number).filter(Boolean).slice(0, 50);
+  if (!idList.length) return res.json({});
+  const placeholders = idList.map(() => '?').join(',');
+  db.all(`SELECT entity_id, emoji, COUNT(*) as count, MAX(CASE WHEN user_id = ? THEN 1 ELSE 0 END) as my_react
+    FROM reactions WHERE entity_type = ? AND entity_id IN (${placeholders}) GROUP BY entity_id, emoji`,
+    [req.user.userId, type, ...idList], (err, rows) => {
+    if (err) return res.status(500).json({ error: 'Failed' });
+    // Group by entity_id
+    const result = {};
+    (rows || []).forEach(r => {
+      if (!result[r.entity_id]) result[r.entity_id] = [];
+      result[r.entity_id].push({ emoji: r.emoji, count: r.count, my_react: !!r.my_react });
+    });
+    res.json(result);
+  });
+});
+
+// Toggle a reaction (add if not present, remove if present)
+app.post('/api/reactions/toggle', authenticateToken, (req, res) => {
+  const { entity_type, entity_id, emoji } = req.body || {};
+  if (!entity_type || !entity_id || !ALLOWED_EMOJIS.includes(emoji)) return res.status(400).json({ error: 'Invalid request' });
+  db.get('SELECT id FROM reactions WHERE user_id = ? AND entity_type = ? AND entity_id = ?',
+    [req.user.userId, entity_type, entity_id], (err, existing) => {
+    if (existing) {
+      db.run('DELETE FROM reactions WHERE id = ?', [existing.id], () => res.json({ action: 'removed' }));
+    } else {
+      db.run('INSERT INTO reactions (user_id, entity_type, entity_id, emoji) VALUES (?, ?, ?, ?)',
+        [req.user.userId, entity_type, entity_id, emoji], () => res.json({ action: 'added' }));
+    }
+  });
+});
+
+// ── Events / Calendar ─────────────────────────────────────────────────────────
+
+// List upcoming events for the user (own + friends/tribe events)
+app.get('/api/events', authenticateToken, (req, res) => {
+  const userId = req.user.userId;
+  db.all(`
+    SELECT e.*, u.nickname as creator_nickname,
+           COUNT(DISTINCT er.id) as rsvp_count,
+           MAX(CASE WHEN er.user_id = ? THEN er.status END) as my_rsvp
+    FROM events e
+    JOIN users u ON e.creator_id = u.id
+    LEFT JOIN event_rsvps er ON e.id = er.event_id
+    WHERE e.scheduled_at > datetime('now')
+       OR e.creator_id = ?
+    GROUP BY e.id
+    ORDER BY e.scheduled_at ASC LIMIT 50`, [userId, userId], (err, rows) => {
+    if (err) return res.status(500).json({ error: 'Failed to fetch events' });
+    res.json(rows || []);
+  });
+});
+
+app.get('/api/events/:id', authenticateToken, (req, res) => {
+  const userId = req.user.userId;
+  db.get(`SELECT e.*, u.nickname as creator_nickname FROM events e JOIN users u ON e.creator_id = u.id WHERE e.id = ?`, [req.params.id], (err, event) => {
+    if (err || !event) return res.status(404).json({ error: 'Event not found' });
+    db.all(`SELECT er.status, u.nickname FROM event_rsvps er JOIN users u ON er.user_id = u.id WHERE er.event_id = ?`, [req.params.id], (e2, rsvps) => {
+      res.json({ ...event, rsvps: rsvps || [], my_rsvp: (rsvps || []).find(r => r.user_id === userId)?.status || null });
+    });
+  });
+});
+
+app.post('/api/events', authenticateToken, (req, res) => {
+  const { title, description, event_type, map_name, scheduled_at, max_attendees } = req.body || {};
+  if (!title || !scheduled_at) return res.status(400).json({ error: 'title and scheduled_at required' });
+  db.run('INSERT INTO events (creator_id, title, description, event_type, map_name, scheduled_at, max_attendees) VALUES (?, ?, ?, ?, ?, ?, ?)',
+    [req.user.userId, title, description || null, event_type || 'general', map_name || null, scheduled_at, max_attendees || null], function(err) {
+    if (err) return res.status(500).json({ error: 'Failed to create event' });
+    // Auto-RSVP creator as going
+    db.run('INSERT OR REPLACE INTO event_rsvps (event_id, user_id, status) VALUES (?, ?, ?)', [this.lastID, req.user.userId, 'going'], () => {});
+    logActivity(req.user.userId, 'event_created', { title, event_type: event_type || 'general' });
+    res.status(201).json({ success: true, id: this.lastID });
+  });
+});
+
+app.put('/api/events/:id/rsvp', authenticateToken, (req, res) => {
+  const { status } = req.body || {};
+  if (!['going', 'maybe', 'declined'].includes(status)) return res.status(400).json({ error: 'Invalid status' });
+  db.run('INSERT OR REPLACE INTO event_rsvps (event_id, user_id, status) VALUES (?, ?, ?)',
+    [req.params.id, req.user.userId, status], function(err) {
+    if (err) return res.status(500).json({ error: 'Failed to RSVP' });
+    res.json({ success: true });
+  });
+});
+
+app.delete('/api/events/:id', authenticateToken, (req, res) => {
+  db.run('DELETE FROM events WHERE id = ? AND creator_id = ?', [req.params.id, req.user.userId], function(err) {
+    if (err) return res.status(500).json({ error: 'Failed to delete' });
+    if (this.changes === 0) return res.status(403).json({ error: 'Not authorized' });
+    res.json({ success: true });
+  });
+});
+
+// ── Direct Messages ───────────────────────────────────────────────────────────
+
+// List conversations (one entry per partner, with last message + unread count)
+app.get('/api/dms', authenticateToken, (req, res) => {
+  const userId = req.user.userId;
+  db.all(`
+    SELECT
+      CASE WHEN dm.from_user_id = ? THEN dm.to_user_id ELSE dm.from_user_id END as partner_id,
+      CASE WHEN dm.from_user_id = ? THEN tu.nickname ELSE fu.nickname END as partner_nickname,
+      dm.message as last_message, dm.created_at as last_at,
+      SUM(CASE WHEN dm.to_user_id = ? AND dm.read = 0 THEN 1 ELSE 0 END) as unread
+    FROM direct_messages dm
+    JOIN users fu ON dm.from_user_id = fu.id
+    JOIN users tu ON dm.to_user_id = tu.id
+    WHERE dm.from_user_id = ? OR dm.to_user_id = ?
+    GROUP BY partner_id
+    ORDER BY last_at DESC`, [userId, userId, userId, userId, userId], (err, rows) => {
+    if (err) return res.status(500).json({ error: 'Failed to fetch conversations' });
+    res.json(rows || []);
+  });
+});
+
+// Get thread with a specific user
+app.get('/api/dms/:userId', authenticateToken, (req, res) => {
+  const me = req.user.userId;
+  const other = parseInt(req.params.userId);
+  db.all(`
+    SELECT dm.*, u.nickname as sender_nickname
+    FROM direct_messages dm JOIN users u ON dm.from_user_id = u.id
+    WHERE (dm.from_user_id = ? AND dm.to_user_id = ?) OR (dm.from_user_id = ? AND dm.to_user_id = ?)
+    ORDER BY dm.created_at ASC LIMIT 100`, [me, other, other, me], (err, rows) => {
+    if (err) return res.status(500).json({ error: 'Failed to fetch messages' });
+    // mark as read
+    db.run('UPDATE direct_messages SET read = 1 WHERE to_user_id = ? AND from_user_id = ?', [me, other], () => {});
+    res.json(rows || []);
+  });
+});
+
+// Send a message
+app.post('/api/dms/:userId', authenticateToken, (req, res) => {
+  const me = req.user.userId;
+  const other = parseInt(req.params.userId);
+  const { message } = req.body || {};
+  if (!message || !message.trim()) return res.status(400).json({ error: 'Message is required' });
+  if (me === other) return res.status(400).json({ error: 'Cannot message yourself' });
+  db.run('INSERT INTO direct_messages (from_user_id, to_user_id, message) VALUES (?, ?, ?)',
+    [me, other, message.trim().slice(0, 1000)], function(err) {
+    if (err) return res.status(500).json({ error: 'Failed to send message' });
+    // Create notification for recipient
+    db.get('SELECT nickname FROM users WHERE id = ?', [me], (e, u) => {
+      const payload = JSON.stringify({ fromUserId: me, fromNickname: u?.nickname || 'Someone' });
+      db.run('INSERT INTO notifications (user_id, actor_user_id, type, payload, read) VALUES (?, ?, ?, ?, 0)',
+        [other, me, 'direct_message', payload], () => {});
+    });
+    res.status(201).json({ success: true, id: this.lastID });
+  });
+});
+
+// Unread DM count for header badge
+app.get('/api/dms/unread/count', authenticateToken, (req, res) => {
+  db.get('SELECT COUNT(*) as count FROM direct_messages WHERE to_user_id = ? AND read = 0', [req.user.userId], (err, row) => {
+    if (err) return res.status(500).json({ error: 'Failed' });
+    res.json({ count: row?.count || 0 });
+  });
+});
+
+// ── Boss Fight Records ────────────────────────────────────────────────────────
+
+app.get('/api/boss-records', authenticateToken, (req, res) => {
+  db.all('SELECT * FROM boss_fight_records WHERE user_id = ? ORDER BY created_at DESC LIMIT 100', [req.user.userId], (err, rows) => {
+    if (err) return res.status(500).json({ error: 'Failed to fetch boss records' });
+    res.json((rows || []).map(r => ({ ...r, creatures_used: (() => { try { return JSON.parse(r.creatures_used); } catch { return []; } })() })));
+  });
+});
+
+app.post('/api/boss-records', authenticateToken, (req, res) => {
+  const { boss_name, map_name, difficulty, outcome, notes, creatures_used } = req.body || {};
+  if (!boss_name) return res.status(400).json({ error: 'boss_name required' });
+  const creaturesStr = JSON.stringify(Array.isArray(creatures_used) ? creatures_used : []);
+  db.run('INSERT INTO boss_fight_records (user_id, boss_name, map_name, difficulty, outcome, notes, creatures_used) VALUES (?, ?, ?, ?, ?, ?, ?)',
+    [req.user.userId, boss_name, map_name || null, difficulty || null, outcome || 'success', notes || null, creaturesStr], function(err) {
+    if (err) return res.status(500).json({ error: 'Failed to save' });
+    logActivity(req.user.userId, 'boss_kill', { boss_name, difficulty, outcome });
+    res.status(201).json({ success: true, id: this.lastID });
+  });
+});
+
+// Summary: kills per boss for a user (achievements)
+app.get('/api/boss-records/summary', authenticateToken, (req, res) => {
+  db.all(`SELECT boss_name, difficulty, outcome, COUNT(*) as count FROM boss_fight_records WHERE user_id = ? GROUP BY boss_name, difficulty, outcome ORDER BY count DESC`,
+    [req.user.userId], (err, rows) => {
+    if (err) return res.status(500).json({ error: 'Failed to fetch summary' });
+    res.json(rows || []);
+  });
+});
+
+// ── Wild Find Reports ─────────────────────────────────────────────────────────
+
+app.get('/api/wild-finds', authenticateToken, (req, res) => {
+  db.all(`
+    SELECT wf.*, u.nickname as reporter_nickname
+    FROM wild_finds wf JOIN users u ON wf.user_id = u.id
+    WHERE wf.created_at > datetime('now', '-24 hours')
+    ORDER BY wf.level DESC, wf.created_at DESC
+    LIMIT 50`, [], (err, rows) => {
+    if (err) return res.status(500).json({ error: 'Failed to fetch wild finds' });
+    res.json(rows || []);
+  });
+});
+
+app.post('/api/wild-finds', authenticateToken, (req, res) => {
+  const { species, level, map_name, coordinates, notes } = req.body || {};
+  if (!species || !level) return res.status(400).json({ error: 'species and level are required' });
+  const lvl = Math.max(1, Math.min(9999, parseInt(level) || 1));
+  db.run('INSERT INTO wild_finds (user_id, species, level, map_name, coordinates, notes) VALUES (?, ?, ?, ?, ?, ?)',
+    [req.user.userId, species, lvl, map_name || null, coordinates || null, notes || null], function(err) {
+    if (err) return res.status(500).json({ error: 'Failed to save' });
+    logActivity(req.user.userId, 'wild_find', { species, level: lvl, map: map_name || '' });
+    res.status(201).json({ success: true, id: this.lastID });
+  });
+});
+
+app.delete('/api/wild-finds/:id', authenticateToken, (req, res) => {
+  db.run('DELETE FROM wild_finds WHERE id = ? AND user_id = ?', [req.params.id, req.user.userId], function(err) {
+    if (err) return res.status(500).json({ error: 'Failed to delete' });
+    res.json({ success: true });
+  });
+});
+
+// ── Activity Feed ─────────────────────────────────────────────────────────────
+// Helper: log an activity event for a user
+function logActivity(userId, type, data) {
+  db.run('INSERT INTO activity_events (user_id, type, data_json) VALUES (?, ?, ?)',
+    [userId, type, JSON.stringify(data || {})], () => {});
+}
+
+// GET /api/feed — events from friends + own tribe within the last 30 days, 40 most recent
+app.get('/api/feed', authenticateToken, (req, res) => {
+  const userId = req.user.userId;
+  db.all(`
+    SELECT DISTINCT f.friend_user_id as fid FROM friends f WHERE f.user_id = ? AND f.status = 'accepted'
+    UNION
+    SELECT DISTINCT f.user_id as fid FROM friends f WHERE f.friend_user_id = ? AND f.status = 'accepted'
+    UNION SELECT ?`, [userId, userId, userId], (err, rows) => {
+    if (err) return res.status(500).json({ error: 'Failed to fetch feed' });
+    const feedUserIds = (rows || []).map(r => r.fid);
+    const placeholders = feedUserIds.map(() => '?').join(',');
+
+    // Get explicit activity events
+    const eventsQ = `
+      SELECT ae.id, ae.user_id, ae.type, ae.data_json, ae.created_at,
+             u.nickname as actor_nickname
+      FROM activity_events ae JOIN users u ON ae.user_id = u.id
+      WHERE ae.user_id IN (${placeholders})
+        AND ae.created_at > datetime('now', '-30 days')
+      ORDER BY ae.created_at DESC LIMIT 30`;
+
+    // Get recent creature additions
+    const creaturesQ = `
+      SELECT cc.id, cc.user_id, cc.data, cc.created_at,
+             u.nickname as actor_nickname
+      FROM creature_cards cc JOIN users u ON cc.user_id = u.id
+      WHERE cc.user_id IN (${placeholders})
+        AND cc.created_at > datetime('now', '-7 days')
+      ORDER BY cc.created_at DESC LIMIT 20`;
+
+    Promise.all([
+      new Promise(resolve => db.all(eventsQ, feedUserIds, (e, r) => resolve(r || []))),
+      new Promise(resolve => db.all(creaturesQ, feedUserIds, (e, r) => resolve(r || [])))
+    ]).then(([events, creatures]) => {
+      const feed = [];
+      events.forEach(e => {
+        let data = {}; try { data = JSON.parse(e.data_json || '{}'); } catch {}
+        feed.push({ id: `ev_${e.id}`, type: e.type, actor: e.actor_nickname || 'Unknown', actor_id: e.user_id, data, created_at: e.created_at });
+      });
+      creatures.forEach(c => {
+        if (c.user_id === userId) return; // skip own creature adds in feed (too noisy)
+        let d = {}; try { d = JSON.parse(c.data || '{}'); } catch {}
+        feed.push({ id: `cc_${c.id}`, type: 'creature_added', actor: c.actor_nickname || 'Unknown', actor_id: c.user_id, data: { name: d.name || 'Unnamed', species: d.species || '', level: d.level || '' }, created_at: c.created_at });
+      });
+      feed.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+      res.json(feed.slice(0, 40));
+    });
+  });
+});
+
+// ── Leaderboard endpoints ────────────────────────────────────────────────────
+
+// Top creatures by a numeric base stat (Melee, Health, Stamina, Speed, Weight, Oxygen)
+app.get('/api/leaderboards/creatures', authenticateToken, (req, res) => {
+  const stat = ['Melee','Health','Stamina','Speed','Weight','Oxygen'].includes(req.query.stat) ? req.query.stat : 'Melee';
+  const limit = Math.min(parseInt(req.query.limit) || 10, 25);
+  db.all(`
+    SELECT cc.id, cc.data, u.nickname, u.id as owner_id,
+           CAST(json_extract(cc.data, '$.baseStats.${stat}') AS REAL) as stat_val
+    FROM creature_cards cc
+    JOIN users u ON cc.user_id = u.id
+    WHERE json_extract(cc.data, '$.baseStats.${stat}') IS NOT NULL
+    ORDER BY stat_val DESC
+    LIMIT ?`, [limit], (err, rows) => {
+    if (err) return res.status(500).json({ error: 'Failed to fetch creature leaderboard' });
+    res.json((rows || []).map(r => {
+      let d = {}; try { d = JSON.parse(r.data || '{}'); } catch {}
+      return { id: r.id, name: d.name || 'Unnamed', species: d.species || '', stat_val: r.stat_val, owner: r.nickname || 'Unknown', owner_id: r.owner_id };
+    }));
+  });
+});
+
+// Top players by creature count, trade count, or friend count
+app.get('/api/leaderboards/players', authenticateToken, (req, res) => {
+  const type = req.query.type || 'creatures';
+  const limit = Math.min(parseInt(req.query.limit) || 10, 25);
+  let query;
+  if (type === 'traders') {
+    query = `SELECT u.id, u.nickname, COUNT(t.id) as score FROM users u LEFT JOIN trades t ON t.user_id = u.id AND t.status = 'completed' GROUP BY u.id ORDER BY score DESC LIMIT ?`;
+  } else if (type === 'friends') {
+    query = `SELECT u.id, u.nickname, COUNT(f.id) as score FROM users u LEFT JOIN friends f ON (f.user_id = u.id OR f.friend_user_id = u.id) AND f.status = 'accepted' GROUP BY u.id ORDER BY score DESC LIMIT ?`;
+  } else {
+    query = `SELECT u.id, u.nickname, COUNT(cc.id) as score FROM users u LEFT JOIN creature_cards cc ON cc.user_id = u.id GROUP BY u.id ORDER BY score DESC LIMIT ?`;
+  }
+  db.all(query, [limit], (err, rows) => {
+    if (err) return res.status(500).json({ error: 'Failed to fetch player leaderboard' });
+    res.json((rows || []).map((r, i) => ({ rank: i + 1, id: r.id, nickname: r.nickname || 'Unknown', score: r.score || 0 })));
+  });
+});
+
+// Top tribes by member count
+app.get('/api/leaderboards/tribes', authenticateToken, (req, res) => {
+  const limit = Math.min(parseInt(req.query.limit) || 10, 25);
+  db.all(`
+    SELECT t.id, t.name, COUNT(tm.user_id) as member_count
+    FROM tribes t LEFT JOIN tribe_memberships tm ON t.id = tm.tribe_id
+    GROUP BY t.id ORDER BY member_count DESC LIMIT ?`, [limit], (err, rows) => {
+    if (err) return res.status(500).json({ error: 'Failed to fetch tribe leaderboard' });
+    res.json((rows || []).map((r, i) => ({ rank: i + 1, id: r.id, name: r.name || 'Unknown', member_count: r.member_count || 0 })));
+  });
+});
+
 // Enhanced user search with friend status
 app.get('/api/users/search', authenticateToken, (req, res) => {
   const userId = req.user.userId;
@@ -1029,6 +1668,7 @@ app.post('/api/tribes', authenticateToken, (req, res) => {
     if (err) return res.status(500).json({ error: 'Failed to create tribe' });
     const tribeId = this.lastID;
     db.run('INSERT INTO tribe_memberships (tribe_id, user_id, role) VALUES (?, ?, ?)', [tribeId, req.user.userId, 'owner']);
+    logActivity(req.user.userId, 'tribe_created', { tribe_id: tribeId, tribe_name: name });
     res.status(201).json({ success: true, id: tribeId });
   });
 });
@@ -1190,6 +1830,7 @@ app.put('/api/tribes/join_requests/:id', authenticateToken, (req, res) => {
         if (status === 'accepted') {
           // add membership
           db.run('INSERT INTO tribe_memberships (tribe_id, user_id, role) VALUES (?, ?, ?)', [jr.tribe_id, jr.user_id, targetRole || 'recruit']);
+          logActivity(jr.user_id, 'tribe_joined', { tribe_id: jr.tribe_id });
         }
         // notify requester
         const payload = JSON.stringify({ joinRequestId: id, status });

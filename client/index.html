@@ -8,6 +8,14 @@
         <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text y='14' font-size='16'>🦕</text></svg>">
         <!-- Hide document content until JS declares it's ready (prevents raw inline JS from flashing) -->
         <style>html:not([data-ready="true"]) { visibility: hidden !important; }</style>
+        <!-- Apply dark mode immediately from localStorage to prevent flash -->
+        <script>try { if (localStorage.getItem('darkMode') === 'true') document.documentElement.setAttribute('data-theme', 'dark'); } catch(e) {}</script>
+        <!-- PWA manifest -->
+        <link rel="manifest" href="manifest.json">
+        <meta name="theme-color" content="#3b82f6">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <meta name="apple-mobile-web-app-title" content="DinoNuggies">
     <link rel="stylesheet" href="main.css">
     <link rel="stylesheet" href="species-grid.css">
     <link rel="stylesheet" href="profile.css">
@@ -63,11 +71,17 @@
                             <button class="btn btn-secondary nav-btn" id="goToCreaturesBtn" data-page="creatures">🦖 Creatures</button>
                             <button class="btn btn-secondary nav-btn" id="goToMyNuggiesBtn" data-page="nuggies">🍗 My Nuggies</button>
                             <button class="btn btn-secondary nav-btn" id="goToFriendsBtn" data-page="friends">👥 Friends</button>
+                            <button class="btn btn-secondary nav-btn" id="goToMessagesBtn" data-page="messages">💬 Messages</button>
+                            <button class="btn btn-secondary nav-btn" id="goToEventsBtn" data-page="events">📅 Events</button>
                             <button class="btn btn-secondary nav-btn" id="openTribeManagerBtn" data-page="tribe">🛡️ Tribe Manager</button>
                             <button class="btn btn-secondary nav-btn" id="goToTradingBtn" data-page="trading">🔁 Trading</button>
                             <button class="btn btn-secondary nav-btn" id="goToBossPlannerBtn" data-page="boss">👑 Boss Planner</button>
                             <button class="btn btn-secondary nav-btn" id="goToArenaBtn" data-page="arena">⚔️ Arena</button>
+                            <button class="btn btn-secondary nav-btn" id="goToLeaderboardsBtn" data-page="leaderboards">🏆 Leaderboards</button>
+                            <button class="btn btn-secondary nav-btn" id="goToTameCalcBtn" data-page="tamecalc">🧮 Tame Calc</button>
+                            <button class="btn btn-secondary nav-btn" id="goToWildFindsBtn" data-page="wildfinds">🗺️ Wild Finds</button>
                             <button class="btn btn-secondary nav-btn" id="goToNotificationsBtn" data-page="notifications">🔔 Notifications <span class="notification-badge" id="notificationCount"></span></button>
+                            <button id="darkModeBtn" class="btn btn-secondary" onclick="toggleDarkMode()" title="Toggle dark mode">🌙</button>
                             <button id="authBtn" class="btn btn-primary">Sign Out</button>
                         </div>
                     </div>

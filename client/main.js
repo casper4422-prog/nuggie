@@ -1727,7 +1727,7 @@ window.tradeSubmitOffer = tradeSubmitOffer;
 const ARK_MAPS = [
     'The Island','The Center','Scorched Earth','Aberration','Extinction',
     'Genesis Part 1','Genesis Part 2','Ragnarok','Crystal Isles','Fjordur',
-    'Valguero','Lost Island','Astraeos','Svartalfheim','Custom'
+    'Valguero','Lost Island','Lost Colony','Astraeos','Svartalfheim','Custom'
 ];
 
 function applyTribeTheme(colors) {

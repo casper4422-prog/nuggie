@@ -190,6 +190,7 @@ function renderRegisterForm() {
                     try { await loadServerCreatures(); } catch (e) { console.warn('loadServerCreatures after registration failed', e); }
                     try { await loadServerBossData(); } catch (e) { console.warn('loadServerBossData after registration failed', e); }
                     try { await loadServerArenaCollections(); } catch (e) { console.warn('loadServerArenaCollections after registration failed', e); }
+                    try { startNotificationPolling(); } catch (e) {}
                     // Refresh stats and auth UI after registration
                     try { updateStatsDashboard(); } catch (e) {}
                     try { updateAuthUI(); } catch (e) {}
@@ -242,6 +243,7 @@ function renderRegisterForm() {
                     try { await loadServerCreatures(); } catch (e) { console.warn('loadServerCreatures after registration failed', e); }
                     try { await loadServerBossData(); } catch (e) { console.warn('loadServerBossData after registration failed', e); }
                     try { await loadServerArenaCollections(); } catch (e) { console.warn('loadServerArenaCollections after registration failed', e); }
+                    try { startNotificationPolling(); } catch (e) {}
                     // Refresh stats and auth UI after registration
                     try { updateStatsDashboard(); } catch (e) {}
                     try { updateAuthUI(); } catch (e) {}
@@ -3479,6 +3481,8 @@ async function handleLogin(event) {
 			try { await loadServerCreatures(); } catch (e) { console.warn('loadServerCreatures after login failed', e); }
 			try { await loadServerBossData(); } catch (e) { console.warn('loadServerBossData after login failed', e); }
 			try { await loadServerArenaCollections(); } catch (e) { console.warn('loadServerArenaCollections after login failed', e); }
+			// Start notification polling
+			try { startNotificationPolling(); } catch (e) {}
 			// Refresh stats and auth UI after login
 			try { updateStatsDashboard(); } catch (e) {}
 			try { updateAuthUI(); } catch (e) {}
@@ -4416,99 +4420,163 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 // === NOTIFICATION SYSTEM ===
-function toggleNotifications() {
-    console.log('[Navigation] Toggling notifications...');
-    
-    // Check if notification panel exists
-    let notificationPanel = document.getElementById('notificationPanel');
-    
-    if (notificationPanel) {
-        // Toggle visibility
-        notificationPanel.style.display = notificationPanel.style.display === 'none' ? 'block' : 'none';
-    } else {
-        // Create notification panel
-        createNotificationPanel();
+// ── Notification System ────────────────────────────────────────────────────
+
+// Load notifications from server and cache in appState
+async function loadNotifications() {
+    try {
+        const { res, body } = await apiRequest('/api/notifications');
+        if (res.ok && Array.isArray(body)) {
+            window.appState = window.appState || {};
+            window.appState.notifications = body;
+            updateNotificationBadge();
+        }
+    } catch (e) { /* silent */ }
+}
+window.loadNotifications = loadNotifications;
+
+// Format a notification into { icon, title, message, navigate }
+function formatNotification(n) {
+    const actor = n.actor_name || 'Someone';
+    const p = n.payload || {};
+    switch (n.type) {
+        case 'offer':
+            return { icon: '💰', title: 'Trade Offer', message: `${actor} made an offer on your listing.`, navigate: () => { closeNotifications(); loadTradingPage(); } };
+        case 'tribe_join_request':
+            return { icon: '🏛️', title: 'Tribe Join Request', message: `${actor} wants to join your tribe.`, navigate: () => { closeNotifications(); loadTribesPage(); } };
+        case 'tribe_join_response':
+            const status = p.status === 'accepted' ? 'accepted ✓' : 'declined ✗';
+            return { icon: '🏛️', title: 'Tribe Request Update', message: `Your tribe join request was ${status}.`, navigate: () => { closeNotifications(); loadTribesPage(); } };
+        case 'friend_request':
+            return { icon: '👥', title: 'Friend Request', message: `${actor} sent you a friend request.`, navigate: () => { closeNotifications(); loadFriendsPage(); } };
+        case 'announcement':
+            const cName = p.creatureName || 'a creature';
+            return { icon: '💎', title: 'Diamond Bloodline!', message: `${actor} just raised ${cName} with Diamond Prized Bloodline!`, navigate: () => { closeNotifications(); } };
+        case 'boss_invite':
+            const boss = p.bossId || 'a boss';
+            return { icon: '👑', title: 'Boss Fight Invite', message: `${actor} invited you to fight ${boss}.`, navigate: () => { closeNotifications(); loadBossPlanner(); } };
+        default:
+            return { icon: '🔔', title: 'Notification', message: p.message || 'You have a new notification.', navigate: () => closeNotifications() };
     }
 }
 
-function createNotificationPanel() {
-    const notifications = getNotifications();
-    
+function notifTimeAgo(dateStr) {
+    if (!dateStr) return '';
+    const diff = Date.now() - new Date(dateStr).getTime();
+    const mins = Math.floor(diff / 60000);
+    if (mins < 1)  return 'just now';
+    if (mins < 60) return `${mins}m ago`;
+    const hrs = Math.floor(mins / 60);
+    if (hrs < 24)  return `${hrs}h ago`;
+    return `${Math.floor(hrs / 24)}d ago`;
+}
+
+async function toggleNotifications() {
+    const existing = document.getElementById('notificationPanel');
+    if (existing) { existing.remove(); return; }
+    // Refresh from server then render
+    await loadNotifications();
+    renderNotificationPanel();
+}
+
+function renderNotificationPanel() {
+    document.getElementById('notificationPanel')?.remove();
+    const notifs = window.appState?.notifications || [];
+    const unread = notifs.filter(n => !n.read);
+
     const panel = document.createElement('div');
     panel.id = 'notificationPanel';
     panel.className = 'notification-panel';
     panel.innerHTML = `
         <div class="notification-header">
-            <h3>🔔 Notifications</h3>
+            <span>🔔 Notifications${unread.length ? ` <span class="notif-count">${unread.length}</span>` : ''}</span>
             <div class="notification-actions">
-                <button class="btn btn-sm" onclick="markAllAsRead()">✓ Mark All Read</button>
-                <button class="btn btn-sm" onclick="closeNotifications()">✖ Close</button>
+                ${unread.length ? `<button onclick="notifMarkAllRead()">✓ All read</button>` : ''}
+                <button onclick="closeNotifications()">✕</button>
             </div>
         </div>
         <div class="notification-content">
-            ${notifications.length > 0 ? notifications.map(notification => `
-                <div class="notification-item ${notification.read ? 'read' : 'unread'}" onclick="markAsRead('${notification.id}')">
-                    <div class="notification-icon">${notification.icon}</div>
-                    <div class="notification-details">
-                        <div class="notification-title">${notification.title}</div>
-                        <div class="notification-message">${notification.message}</div>
-                        <div class="notification-time">${notification.time}</div>
-                    </div>
-                    ${!notification.read ? '<div class="unread-indicator"></div>' : ''}
-                </div>
-            `).join('') : '<div class="no-notifications">No notifications yet!</div>'}
-        </div>
-    `;
-    
+            ${notifs.length === 0
+                ? '<div class="no-notifications">You\'re all caught up 🎉</div>'
+                : notifs.map(n => {
+                    const f = formatNotification(n);
+                    return `<div class="notification-item ${n.read ? 'read' : 'unread'}" data-nid="${n.id}" onclick="notifClick(${n.id})">
+                        <div class="notification-icon">${f.icon}</div>
+                        <div class="notification-details">
+                            <div class="notification-title">${f.title}</div>
+                            <div class="notification-message">${f.message}</div>
+                            <div class="notification-time">${notifTimeAgo(n.created_at)}</div>
+                        </div>
+                        ${!n.read ? '<div class="unread-indicator"></div>' : ''}
+                    </div>`;
+                }).join('')
+            }
+        </div>`;
     document.body.appendChild(panel);
-    updateNotificationBadge();
+
+    // Close when clicking outside
+    setTimeout(() => {
+        document.addEventListener('click', notifOutsideClick, { once: true, capture: true });
+    }, 50);
 }
 
-function getNotifications() {
-    return []; // Empty for live site - notifications will come from server
-}
-
-function markAsRead(notificationId) {
-    console.log(`Marking notification ${notificationId} as read`);
-    // Update notification badge count
-    updateNotificationBadge();
-    
-    // Re-render the panel to update read status
+function notifOutsideClick(e) {
     const panel = document.getElementById('notificationPanel');
-    if (panel) {
-        panel.remove();
-        createNotificationPanel();
-    }
+    if (panel && !panel.contains(e.target)) panel.remove();
+    else if (panel) document.addEventListener('click', notifOutsideClick, { once: true, capture: true });
 }
 
-function markAllAsRead() {
-    console.log('Marking all notifications as read');
+async function notifClick(id) {
+    const notifs = window.appState?.notifications || [];
+    const n = notifs.find(x => x.id === id);
+    if (!n) return;
+    // Mark read locally immediately
+    n.read = true;
+    updateNotificationBadge();
+    // Mark read on server (fire and forget)
+    apiRequest(`/api/notifications/${id}/read`, { method: 'PUT' }).catch(() => {});
+    // Navigate
+    const f = formatNotification(n);
+    if (f.navigate) f.navigate();
+}
+window.notifClick = notifClick;
+
+async function notifMarkAllRead() {
+    const notifs = window.appState?.notifications || [];
+    notifs.forEach(n => n.read = true);
     updateNotificationBadge();
     closeNotifications();
+    apiRequest('/api/notifications/read-all', { method: 'PUT' }).catch(() => {});
 }
+window.notifMarkAllRead = notifMarkAllRead;
 
 function closeNotifications() {
-    const panel = document.getElementById('notificationPanel');
-    if (panel) {
-        panel.remove();
-    }
+    document.getElementById('notificationPanel')?.remove();
 }
+window.closeNotifications = closeNotifications;
 
 function updateNotificationBadge() {
-    const unreadCount = getNotifications().filter(n => !n.read).length;
-    const badge = document.querySelector('.notification-badge');
+    const notifs = window.appState?.notifications || [];
+    const count = notifs.filter(n => !n.read).length;
+    const badge = document.getElementById('notificationCount');
     if (badge) {
-        if (unreadCount > 0) {
-            badge.textContent = unreadCount;
-            badge.style.display = 'block';
-        } else {
-            badge.style.display = 'none';
-        }
+        badge.textContent = count > 0 ? count : '';
+        badge.style.display = count > 0 ? 'inline-flex' : 'none';
     }
 }
+window.updateNotificationBadge = updateNotificationBadge;
 
-// Export notification functions
-window.markAsRead = markAsRead;
+// Poll every 60 seconds while logged in
+function startNotificationPolling() {
+    loadNotifications();
+    setInterval(() => {
+        if (localStorage.getItem('token')) loadNotifications();
+    }, 60000);
+}
+window.startNotificationPolling = startNotificationPolling;
+
+// Legacy alias
+window.markAsRead = notifClick;
 window.markAllAsRead = markAllAsRead;
 window.closeNotifications = closeNotifications;
 window.updateNotificationBadge = updateNotificationBadge;

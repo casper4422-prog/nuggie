@@ -813,12 +813,14 @@ app.post('/api/friends/request', authenticateToken, (req, res) => {
     if (err) return res.status(500).json({ error: 'Database error' });
     if (existing) return res.status(400).json({ error: 'Friend relationship already exists' });
 
-    // Create friend request
-    db.run(`
-      INSERT INTO friends (user_id, friend_user_id, status) 
-      VALUES (?, ?, 'pending')
-    `, [userId, friend_user_id], function(err) {
+    // Create friend request and notify recipient
+    db.run(`INSERT INTO friends (user_id, friend_user_id, status) VALUES (?, ?, 'pending')`,
+      [userId, friend_user_id], function(err) {
       if (err) return res.status(500).json({ error: 'Failed to send friend request' });
+      try {
+        db.run('INSERT INTO notifications (user_id, actor_user_id, type, payload, read) VALUES (?, ?, ?, ?, ?)',
+          [friend_user_id, userId, 'friend_request', JSON.stringify({ friendshipId: this.lastID }), 0]);
+      } catch (e) {}
       res.json({ success: true, id: this.lastID });
     });
   });
@@ -1141,24 +1143,48 @@ app.get('/api/tribes/:id/creatures', authenticateToken, (req, res) => {
   });
 });
 
-// Notifications: list notifications for authenticated user
+// Notifications: list for authenticated user, includes actor nickname
 app.get('/api/notifications', authenticateToken, (req, res) => {
-  db.all('SELECT id, actor_user_id, type, payload, read, created_at FROM notifications WHERE user_id = ? ORDER BY created_at DESC', [req.user.userId], (err, rows) => {
+  db.all(`
+    SELECT n.id, n.actor_user_id, n.type, n.payload, n.read, n.created_at,
+           u.nickname AS actor_nickname, u.email AS actor_email
+    FROM notifications n
+    LEFT JOIN users u ON n.actor_user_id = u.id
+    WHERE n.user_id = ?
+    ORDER BY n.created_at DESC
+    LIMIT 50
+  `, [req.user.userId], (err, rows) => {
     if (err) return res.status(500).json({ error: 'Failed to load notifications' });
     try {
-      const items = (rows || []).map(r => ({ id: r.id, actor_user_id: r.actor_user_id, type: r.type, payload: (r.payload ? JSON.parse(r.payload) : {}), read: !!r.read, created_at: r.created_at }));
+      const items = (rows || []).map(r => ({
+        id: r.id,
+        actor_user_id: r.actor_user_id,
+        actor_name: r.actor_nickname || r.actor_email || 'Someone',
+        type: r.type,
+        payload: r.payload ? JSON.parse(r.payload) : {},
+        read: !!r.read,
+        created_at: r.created_at
+      }));
       res.json(items);
     } catch (e) { res.status(500).json({ error: 'Failed to parse notifications' }); }
   });
 });
 
-// Mark a notification as read
+// Mark a single notification as read
 app.put('/api/notifications/:id/read', authenticateToken, (req, res) => {
   const id = req.params.id;
   db.run('UPDATE notifications SET read = 1 WHERE id = ? AND user_id = ?', [id, req.user.userId], function(err) {
     if (err) return res.status(500).json({ error: 'Failed to mark read' });
-    if (this.changes === 0) return res.status(404).json({ error: 'Notification not found or not owned' });
+    if (this.changes === 0) return res.status(404).json({ error: 'Not found or not owned' });
     res.json({ success: true });
+  });
+});
+
+// Mark all notifications as read
+app.put('/api/notifications/read-all', authenticateToken, (req, res) => {
+  db.run('UPDATE notifications SET read = 1 WHERE user_id = ?', [req.user.userId], function(err) {
+    if (err) return res.status(500).json({ error: 'Failed to mark all read' });
+    res.json({ success: true, updated: this.changes });
   });
 });
 

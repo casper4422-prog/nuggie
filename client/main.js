@@ -1,4 +1,13 @@
-﻿// Utility Functions
+﻿// Escape HTML to prevent XSS when injecting user content into innerHTML
+function esc(s) {
+    return String(s == null ? '' : s)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+}
+
+// Utility Functions
 function debounce(func, wait) {
     let timeout;
     return function executedFunction(...args) {
@@ -1186,8 +1195,8 @@ function renderCreatureCard(creature, speciesData) {
         <div class="creature-management-card">
             <div class="creature-card-header">
                 <div class="creature-info">
-                    <div class="creature-name">${creature.name || 'Unnamed'}</div>
-                    <div class="creature-species">${creature.species || 'Unknown'}</div>
+                    <div class="creature-name">${esc(creature.name) || 'Unnamed'}</div>
+                    <div class="creature-species">${esc(creature.species) || 'Unknown'}</div>
                 </div>
                 <div class="creature-level">Level ${creature.level || 1}</div>
             </div>
@@ -1522,8 +1531,8 @@ function renderMyListing(t) {
         <div class="friend-card" style="flex-direction:column;align-items:flex-start;gap:10px" id="listing-${t.id}">
             <div style="display:flex;align-items:center;justify-content:space-between;width:100%">
                 <div>
-                    <div class="friend-name">${c.name||'Unnamed'} <span style="color:#64748b;font-weight:400">${c.species||'?'}</span></div>
-                    <div class="friend-meta">Looking for: ${t.wanted||'Open to offers'}${t.price ? ` · 💰 ${t.price}` : ''}</div>
+                    <div class="friend-name">${esc(c.name)||'Unnamed'} <span style="color:#64748b;font-weight:400">${esc(c.species)||'?'}</span></div>
+                    <div class="friend-meta">Looking for: ${esc(t.wanted)||'Open to offers'}${t.price ? ` · 💰 ${esc(t.price)}` : ''}</div>
                 </div>
                 <button class="btn btn-danger btn-sm" onclick="tradeRemoveListing(${t.id})">Remove</button>
             </div>
@@ -1540,7 +1549,7 @@ function renderMyOffer(o) {
         <div class="friend-card" id="offer-${o.id}">
             <div class="friend-info">
                 <div class="friend-name">Offer on Trade #${o.trade_id}</div>
-                <div class="friend-meta">Offering: ${oc.name||'Unnamed'} (${oc.species||'?'})${o.message ? ` · "${o.message}"` : ''}</div>
+                <div class="friend-meta">Offering: ${esc(oc.name)||'Unnamed'} (${esc(oc.species)||'?'})${o.message ? ` · "${esc(o.message)}"` : ''}</div>
             </div>
             <div style="display:flex;align-items:center;gap:10px;flex-shrink:0">
                 <span style="font-size:0.82rem;color:${statusColor};text-transform:capitalize">${o.status}</span>
@@ -1564,9 +1573,9 @@ async function tradeLoadOffers(tradeId) {
         const statusColor = { pending:'#60a5fa', accepted:'#22c55e', rejected:'#ef4444' }[o.status] || '#94a3b8';
         return `<div class="trade-offer-row">
             <div>
-                <span style="color:#f1f5f9;font-weight:500">${o.from_nickname || 'User #'+o.from_user_id}</span>
-                offers <strong>${oc.name||'Unnamed'}</strong> (${oc.species||'?'})
-                ${o.message ? `<em style="color:#64748b"> — "${o.message}"</em>` : ''}
+                <span style="color:#f1f5f9;font-weight:500">${esc(o.from_nickname) || 'User #'+o.from_user_id}</span>
+                offers <strong>${esc(oc.name)||'Unnamed'}</strong> (${esc(oc.species)||'?'})
+                ${o.message ? `<em style="color:#64748b"> — "${esc(o.message)}"</em>` : ''}
             </div>
             <div style="display:flex;gap:8px;align-items:center;flex-shrink:0">
                 <span style="font-size:0.8rem;color:${statusColor};text-transform:capitalize">${o.status}</span>
@@ -1933,7 +1942,7 @@ function renderTribeBrowseCards(tribes) {
         <div class="tribe-browse-card">
             <div class="tribe-browse-icon">🏛️</div>
             <div class="tribe-browse-info">
-                <div class="tribe-browse-name">${t.name}</div>
+                <div class="tribe-browse-name">${esc(t.name)}</div>
                 ${t.main_map ? `<div class="tribe-browse-map">📍 ${t.main_map}</div>` : ''}
                 ${t.description ? `<div class="tribe-browse-desc">${t.description}</div>` : ''}
             </div>
@@ -2103,7 +2112,7 @@ function renderTribeMemberView(tribe, main) {
             ${flagHtml}
             <div class="std-page-header">
                 <div class="page-title">
-                    <h1>🏛️ ${tribe.name}</h1>
+                    <h1>🏛️ ${esc(tribe.name)}</h1>
                     <div class="page-subtitle">
                         ${tribe.main_map ? `📍 ${tribe.main_map} · ` : ''}
                         ${tribe.members?.length || 0} members · Your role:
@@ -2207,7 +2216,7 @@ async function loadAlliancesTab(tribeId) {
                     : `<div style="display:flex;flex-direction:column;gap:6px">
                         ${otherTribes.slice(0, 10).map(t => `
                         <div style="display:flex;align-items:center;gap:12px;padding:10px;border-radius:8px;background:rgba(255,255,255,0.02)">
-                            <div style="flex:1;color:#f1f5f9;font-size:0.9rem">🏛️ ${t.name}</div>
+                            <div style="flex:1;color:#f1f5f9;font-size:0.9rem">🏛️ ${esc(t.name)}</div>
                             <button class="btn btn-sm btn-secondary" onclick="allianceRequest(${t.id},'${t.name.replace(/'/g,"\\'")}')" >Request</button>
                         </div>`).join('')}
                     </div>`
@@ -3490,22 +3499,22 @@ async function loadLeaderboardsPage() {
     const creatureRow = (c, i) => `
         <div class="lb-row" ${isMe(c.owner_id)}>
             <span class="lb-rank">${rankMedal(i+1)}</span>
-            <span class="lb-name">${c.name || 'Unnamed'} <span class="lb-sub">${c.species || ''}</span></span>
-            <span class="lb-owner">${c.owner}</span>
+            <span class="lb-name">${esc(c.name) || 'Unnamed'} <span class="lb-sub">${esc(c.species)}</span></span>
+            <span class="lb-owner">${esc(c.owner)}</span>
             <span class="lb-score">${typeof c.stat_val === 'number' ? Math.round(c.stat_val).toLocaleString() : '—'}</span>
         </div>`;
 
     const playerRow = (p, label) => `
         <div class="lb-row" ${isMe(p.id)}>
             <span class="lb-rank">${rankMedal(p.rank)}</span>
-            <span class="lb-name">${p.nickname || 'Unknown'}</span>
+            <span class="lb-name">${esc(p.nickname) || 'Unknown'}</span>
             <span class="lb-score">${(p.score || 0).toLocaleString()} ${label}</span>
         </div>`;
 
     const tribeRow = (t) => `
         <div class="lb-row">
             <span class="lb-rank">${rankMedal(t.rank)}</span>
-            <span class="lb-name">${t.name || 'Unknown'}</span>
+            <span class="lb-name">${esc(t.name) || 'Unknown'}</span>
             <span class="lb-score">${(t.member_count || 0).toLocaleString()} members</span>
         </div>`;
 
@@ -3634,11 +3643,11 @@ async function loadMyProfilePage() {
                 ${profile.banner_image ? '<div class="profile-hero-overlay"></div>' : ''}
                 <div class="profile-hero-avatar">🦕</div>
                 <div class="profile-hero-info">
-                    <h1 class="profile-hero-name">${profile.nickname || 'Trainer'}</h1>
-                    <div class="profile-hero-sub">Dino Nuggie Trainer · Joined ${joinedDate}</div>
-                    ${profile.tribe ? `<div class="profile-hero-tribe">🏛️ ${profile.tribe.name} <span style="color:#64748b;font-size:0.8rem">(${profile.tribe.role})</span></div>` : ''}
-                    ${profile.bio ? `<div class="profile-hero-bio">${profile.bio.replace(/</g,'&lt;')}</div>` : ''}
-                    ${profile.looking_for ? `<div class="profile-looking-for">👀 ${profile.looking_for}</div>` : ''}
+                    <h1 class="profile-hero-name">${esc(profile.nickname) || 'Trainer'}</h1>
+                    <div class="profile-hero-sub">Dino Nuggie Trainer · Joined ${esc(joinedDate)}</div>
+                    ${profile.tribe ? `<div class="profile-hero-tribe">🏛️ ${esc(profile.tribe.name)} <span style="color:#64748b;font-size:0.8rem">(${esc(profile.tribe.role)})</span></div>` : ''}
+                    ${profile.bio ? `<div class="profile-hero-bio">${esc(profile.bio)}</div>` : ''}
+                    ${profile.looking_for ? `<div class="profile-looking-for">👀 ${esc(profile.looking_for)}</div>` : ''}
                     <div class="profile-hero-stats">
                         <div class="profile-hstat"><span class="profile-hstat-val">${creatures.length}</span><span class="profile-hstat-lbl">Nuggies</span></div>
                         <div class="profile-hstat"><span class="profile-hstat-val">${speciesOwned}/${totalSpecies}</span><span class="profile-hstat-lbl">Species</span></div>
@@ -3660,25 +3669,24 @@ async function loadMyProfilePage() {
                             ${feedItems.slice(0, 15).map(item => {
                                 const ts = item.created_at ? new Date(item.created_at).toLocaleDateString('en-US', { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' }) : '';
                                 let icon = '📌', text = '';
+                                const a = esc(item.actor);
                                 switch(item.type) {
                                     case 'creature_added':
-                                        icon = '🦕'; text = `<strong>${item.actor}</strong> added <em>${item.data?.name || 'a creature'}</em>${item.data?.species ? ` (${item.data.species})` : ''}`; break;
+                                        icon = '🦕'; text = `<strong>${a}</strong> added <em>${esc(item.data?.name) || 'a creature'}</em>${item.data?.species ? ` (${esc(item.data.species)})` : ''}`; break;
                                     case 'trade_completed':
-                                        icon = '🔁'; text = `<strong>${item.actor}</strong> completed a trade`; break;
+                                        icon = '🔁'; text = `<strong>${a}</strong> completed a trade`; break;
                                     case 'tribe_created':
-                                        icon = '🏛️'; text = `<strong>${item.actor}</strong> founded tribe <em>${item.data?.tribe_name || ''}</em>`; break;
+                                        icon = '🏛️'; text = `<strong>${a}</strong> founded tribe <em>${esc(item.data?.tribe_name)}</em>`; break;
                                     case 'tribe_joined':
-                                        icon = '🛡️'; text = `<strong>${item.actor}</strong> joined a tribe`; break;
+                                        icon = '🛡️'; text = `<strong>${a}</strong> joined a tribe`; break;
                                     case 'boss_plan_created':
-                                        icon = '👑'; text = `<strong>${item.actor}</strong> created a boss plan: <em>${item.data?.boss_name || ''}</em>`; break;
+                                        icon = '👑'; text = `<strong>${a}</strong> created a boss plan: <em>${esc(item.data?.boss_name)}</em>`; break;
                                     case 'arena_created':
-                                        icon = '⚔️'; text = `<strong>${item.actor}</strong> opened an Arena session: <em>${item.data?.title || ''}</em>`; break;
-                                    case 'wild_find':
-                                        icon = '🗺️'; text = `<strong>${item.actor}</strong> spotted a <em>${item.data?.species || 'creature'}</em> (Lv ${item.data?.level || '?'}) on ${item.data?.map || 'a map'}`; break;
-                                    case 'event_created':
-                                        icon = '📅'; text = `<strong>${item.actor}</strong> created an event: <em>${item.data?.title || ''}</em>`; break;
+                                        icon = '⚔️'; text = `<strong>${a}</strong> opened an Arena session: <em>${esc(item.data?.title)}</em>`; break;
+                                    case 'boss_kill':
+                                        icon = '☠️'; text = `<strong>${a}</strong> defeated <em>${esc(item.data?.boss_name)}</em> (${esc(item.data?.difficulty) || 'unknown'} difficulty)`; break;
                                     default:
-                                        icon = '📌'; text = `<strong>${item.actor}</strong> did something`;
+                                        icon = '📌'; text = `<strong>${a}</strong> did something`;
                                 }
                                 return `<div class="feed-item">
                                     <span class="feed-icon">${icon}</span>
@@ -3699,9 +3707,9 @@ async function loadMyProfilePage() {
                         <button class="btn btn-sm btn-secondary" onclick="profileEditModal()">Edit</button>
                     </div>
                     <div class="profile-info-list">
-                        <div class="profile-info-row"><span class="pil-label">Email</span><span class="pil-val">${profile.email || '—'}</span></div>
-                        <div class="profile-info-row"><span class="pil-label">Nickname</span><span class="pil-val">${profile.nickname || '—'}</span></div>
-                        <div class="profile-info-row"><span class="pil-label">Discord</span><span class="pil-val">${profile.discord_name || 'Not set'}</span></div>
+                        <div class="profile-info-row"><span class="pil-label">Email</span><span class="pil-val">${esc(profile.email) || '—'}</span></div>
+                        <div class="profile-info-row"><span class="pil-label">Nickname</span><span class="pil-val">${esc(profile.nickname) || '—'}</span></div>
+                        <div class="profile-info-row"><span class="pil-label">Discord</span><span class="pil-val">${esc(profile.discord_name) || 'Not set'}</span></div>
                         <div class="profile-info-row"><span class="pil-label">Joined</span><span class="pil-val">${joinedDate}</span></div>
                     </div>
                 </div>
@@ -5014,8 +5022,8 @@ async function loadDMInboxPage() {
                     <div class="dm-convo-row" onclick="openDMThread(${c.partner_id}, '${(c.partner_nickname || 'User').replace(/'/g,"\\'")}')" >
                         <div class="dm-avatar">💬</div>
                         <div class="dm-convo-info">
-                            <div class="dm-convo-name">${c.partner_nickname || 'Unknown'} ${c.unread > 0 ? `<span class="dm-unread-badge">${c.unread}</span>` : ''}</div>
-                            <div class="dm-convo-preview">${c.last_message?.slice(0, 60) || ''}${c.last_message?.length > 60 ? '...' : ''}</div>
+                            <div class="dm-convo-name">${esc(c.partner_nickname) || 'Unknown'} ${c.unread > 0 ? `<span class="dm-unread-badge">${c.unread}</span>` : ''}</div>
+                            <div class="dm-convo-preview">${esc(c.last_message?.slice(0, 60) || '')}${c.last_message?.length > 60 ? '...' : ''}</div>
                         </div>
                         <div class="dm-convo-time">${timeAgo(c.last_at)}</div>
                     </div>`).join('')}

@@ -1,4 +1,5 @@
 // Friends page — all API calls use apiRequest() so they hit the correct backend
+function esc(s) { return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
 async function loadFriendsPage() {
     setActiveNavButton('friends');
@@ -74,8 +75,8 @@ function friendCard(f, onlineIds) {
                 <span class="online-dot ${isOnline ? 'online' : 'offline'}" title="${isOnline ? 'Online' : 'Offline'}"></span>
             </div>
             <div class="friend-info">
-                <div class="friend-name">${f.friend_nickname || f.friend_email || 'Unknown'}</div>
-                ${f.friend_discord_name ? `<div class="friend-meta">Discord: ${f.friend_discord_name}</div>` : ''}
+                <div class="friend-name">${esc(f.friend_nickname || f.friend_email) || 'Unknown'}</div>
+                ${f.friend_discord_name ? `<div class="friend-meta">Discord: ${esc(f.friend_discord_name)}</div>` : ''}
                 <div class="friend-status-label ${isOnline ? 'online' : ''}">${isOnline ? '● Online' : '○ Offline'}</div>
             </div>
             <div class="friend-actions">
@@ -92,8 +93,8 @@ function friendRequestCard(r, type) {
         <div class="friend-card" id="freq-${r.id}">
             <div class="friend-avatar">👤</div>
             <div class="friend-info">
-                <div class="friend-name">${r.friend_nickname || r.friend_email || 'Unknown'}</div>
-                ${r.friend_discord_name ? `<div class="friend-meta">Discord: ${r.friend_discord_name}</div>` : ''}
+                <div class="friend-name">${esc(r.friend_nickname || r.friend_email) || 'Unknown'}</div>
+                ${r.friend_discord_name ? `<div class="friend-meta">Discord: ${esc(r.friend_discord_name)}</div>` : ''}
             </div>
             <div class="friend-actions">
                 <button class="btn btn-primary btn-sm" onclick="friendRespond(${r.id}, 'accept')">Accept</button>
@@ -105,7 +106,7 @@ function friendRequestCard(r, type) {
         <div class="friend-card" id="freq-${r.id}">
             <div class="friend-avatar">👤</div>
             <div class="friend-info">
-                <div class="friend-name">${r.friend_nickname || r.friend_email || 'Unknown'}</div>
+                <div class="friend-name">${esc(r.friend_nickname || r.friend_email) || 'Unknown'}</div>
                 <div class="friend-meta">Waiting for response...</div>
             </div>
             <div class="friend-actions">
@@ -137,8 +138,8 @@ async function friendsDoSearch() {
                 <div class="friend-card">
                     <div class="friend-avatar">👤</div>
                     <div class="friend-info">
-                        <div class="friend-name">${u.nickname || u.email}</div>
-                        ${u.discord_name ? `<div class="friend-meta">Discord: ${u.discord_name}</div>` : ''}
+                        <div class="friend-name">${esc(u.nickname || u.email)}</div>
+                        ${u.discord_name ? `<div class="friend-meta">Discord: ${esc(u.discord_name)}</div>` : ''}
                     </div>
                     <div class="friend-actions">
                         ${u.friend_status === 'accepted'

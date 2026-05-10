@@ -3452,6 +3452,16 @@ select option {
 .profile-hstat-val, .pb-name, .creature-hstat-val { color: var(--tek-blue) !important; }
 .std-page-header .page-subtitle { color: var(--tek-blue) !important; }
 
+/* ── Marketplace own listing ─────────────────────────────────────────────── */
+.trade-card-own { border-color: var(--tek-purple-border, rgba(139,92,246,0.25)) !important; }
+.trade-own-badge {
+    display: inline-block; padding: 1px 8px; border-radius: 10px; font-size: 0.68rem;
+    font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase;
+    background: var(--tek-purple-dim, rgba(139,92,246,0.12));
+    color: #c4b5fd; border: 1px solid var(--tek-purple-border, rgba(139,92,246,0.25));
+    margin-left: 6px; vertical-align: middle;
+}
+
 /* ── Dark Mode Overrides ─────────────────────────────────────────────────── */
 /* Activated via html[data-theme="dark"] — toggled by the 🌙/☀️ header button  */
 

@@ -639,8 +639,8 @@ app.get('/api/creature', authenticateToken, (req, res) => {
       return res.status(500).json({ error: 'Failed to load' });
     }
     try {
-      const parsedRows = rows.map(row => ({ id: row.id, ...JSON.parse(row.data) }));
-      console.log('Fetched creature cards:', parsedRows);
+      // DB id must win — data JSON may contain a stale client-generated string id
+      const parsedRows = rows.map(row => ({ ...JSON.parse(row.data), id: row.id }));
       res.json(parsedRows);
     } catch (parseError) {
       console.error('JSON parse error:', parseError);

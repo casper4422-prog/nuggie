@@ -1256,19 +1256,20 @@ async function loadTradingPage() {
     ]);
     window._myWishlist = new Set(myWishlist);
 
-    // Separate my listings from others
+    // Separate my listings from others (but show all in marketplace tab)
     const myListings = trades.filter(t => t.user_id === myId);
     const otherListings = trades.filter(t => t.user_id !== myId);
+    const allListings = trades; // Marketplace shows everything including own
 
     main.innerHTML = `
         <div class="std-page">
             <div class="std-page-header">
                 <div class="page-title">
                     <h1>🔁 Marketplace</h1>
-                    <div class="page-subtitle">${otherListings.length} listing${otherListings.length !== 1 ? 's' : ''} available</div>
+                    <div class="page-subtitle">${allListings.length} listing${allListings.length !== 1 ? 's' : ''} active</div>
                 </div>
                 <div style="display:flex;gap:8px">
-                    <button class="btn btn-secondary" onclick="tradeWishlistModal()">⭐ Wishlist (${window._myWishlist?.size || 0})</button>
+                    <button class="btn btn-secondary" onclick="tradeWishlistModal()">⭐ Watchlist (${window._myWishlist?.size || 0})</button>
                     <button class="btn btn-primary" onclick="tradeShowListModal()">➕ List a Creature</button>
                 </div>
             </div>
@@ -1279,7 +1280,7 @@ async function loadTradingPage() {
             </div>
 
             <div id="tradeTabContent">
-                ${renderTradeMarket(otherListings, myId)}
+                ${renderTradeMarket(allListings, myId)}
             </div>
         </div>`;
 
@@ -1294,7 +1295,7 @@ function tradeTab(btn, tab) {
     const content = document.getElementById('tradeTabContent');
     if (!content) return;
     if (tab === 'market') {
-        const others = (trades||[]).filter(t => t.user_id !== myId);
+        const others = (trades||[]);  // Show all listings including own
         content.innerHTML = renderTradeMarket(others, myId);
         tradeMarketSearch();
     } else {
@@ -1314,37 +1315,42 @@ function renderTradeMarket(listings, myId) {
         </div>`;
 }
 
-function renderTradeCards(listings) {
-    if (!listings.length) return '<div class="friends-empty" style="padding:32px 0;text-align:center">No listings yet — be the first to post one!</div>';
+function renderTradeCards(listings, myId) {
+    const uid = myId || parseInt(localStorage.getItem('userId') || '0');
+    if (!listings.length) return '<div class="friends-empty" style="padding:32px 0;text-align:center">No active listings. Be the first to post one!</div>';
     return listings.map(t => {
         const c = t.creature || {};
         const bs = c.baseStats || {};
         const db = window.SPECIES_DATABASE || {};
         const icon = (db[c.species] || {}).icon || '🦖';
+        const isOwn = t.user_id === uid;
         const badges = (window.BadgeSystem && typeof window.BadgeSystem.generateBadgeHTML === 'function')
             ? window.BadgeSystem.generateBadgeHTML(c) : '';
         return `
-        <div class="trade-card">
+        <div class="trade-card${isOwn ? ' trade-card-own' : ''}">
             <div class="trade-card-header">
                 <div class="trade-card-icon">${icon}</div>
                 <div class="trade-card-title">
-                    <div class="trade-card-name">${c.name || 'Unnamed'}</div>
-                    <div class="trade-card-species">${c.species || '?'} · Lvl ${c.level || 1} · ${c.gender || '?'}</div>
+                    <div class="trade-card-name">${esc(c.name) || 'Unnamed'}${isOwn ? ' <span class="trade-own-badge">Your Listing</span>' : ''}</div>
+                    <div class="trade-card-species">${esc(c.species) || '?'} · Lvl ${c.level || 1} · ${esc(c.gender) || '?'}</div>
                 </div>
             </div>
             <div class="trade-card-stats">
                 <span>❤️ ${bs.Health||0}</span>
                 <span>⚔️ ${bs.Melee||0}</span>
                 <span>⚡ ${bs.Stamina||0}</span>
-                <span>🏋️ ${bs.Weight||0}</span>
+                <span>⚖️ ${bs.Weight||0}</span>
             </div>
             ${badges ? `<div class="trade-card-badges">${badges}</div>` : ''}
             <div class="trade-card-want">
                 <span class="trade-want-label">Looking for:</span>
-                <span class="trade-want-val">${t.wanted || 'Open to offers'}</span>
+                <span class="trade-want-val">${esc(t.wanted) || 'Open to offers'}</span>
             </div>
-            ${t.price ? `<div class="trade-card-price">💰 ${t.price}</div>` : ''}
-            <button class="btn btn-primary btn-sm trade-offer-btn" onclick="tradeShowOfferModal(${t.id},'${(c.name||'Unnamed').replace(/'/g,"\\'")}')">Make Offer</button>
+            ${t.price ? `<div class="trade-card-price">💰 ${esc(t.price)}</div>` : ''}
+            ${isOwn
+                ? `<button class="btn btn-secondary btn-sm" onclick="tradeRemoveListing(${t.id})">Remove Listing</button>`
+                : `<button class="btn btn-primary btn-sm trade-offer-btn" onclick="tradeShowOfferModal(${t.id},'${(c.name||'Unnamed').replace(/'/g,"\\'")}')">Make Offer</button>`
+            }
         </div>`;
     }).join('');
 }
@@ -1355,13 +1361,13 @@ function tradeMarketSearch() {
     input.addEventListener('input', () => {
         const q = input.value.toLowerCase();
         const { trades, myId } = window._tradeData || {};
-        const filtered = (trades||[]).filter(t => t.user_id !== myId && (
+        const filtered = (trades||[]).filter(t =>
             !q ||
             (t.creature?.species||'').toLowerCase().includes(q) ||
             (t.creature?.name||'').toLowerCase().includes(q) ||
             (t.wanted||'').toLowerCase().includes(q)
-        ));
-        document.getElementById('tradeGrid').innerHTML = renderTradeCards(filtered);
+        );
+        document.getElementById('tradeGrid').innerHTML = renderTradeCards(filtered, myId);
     });
 }
 
@@ -1479,7 +1485,7 @@ window.tradeRemoveListing = tradeRemoveListing;
 // ── List a Creature modal ─────────────────────────────────────────────────────
 function tradeShowListModal() {
     const creatures = window.appState?.creatures || [];
-    if (!creatures.length) return alert('You have no creatures in My Nuggies yet. Add some first!');
+    if (!creatures.length) return alert('You have no specimens in your vault yet. Add some from the Dex!');
     const modal = document.createElement('div');
     modal.className = 'modal active';
     modal.innerHTML = `
@@ -1490,7 +1496,7 @@ function tradeShowListModal() {
             </div>
             <div class="modal-body" style="display:flex;flex-direction:column;gap:16px">
                 <div class="plan-field">
-                    <label class="form-label">Choose a Nuggie to list</label>
+                    <label class="form-label">Choose a Specimen to list</label>
                     <div class="nuggie-picker">
                         ${creatures.map(c => `
                         <div class="nuggie-pick-card" onclick="tradeSelectNuggie('${c.id}',this)" data-cid="${c.id}">
@@ -1629,7 +1635,7 @@ window.tradeSubmitListing = tradeSubmitListing;
 // ── Make Offer modal ──────────────────────────────────────────────────────────
 function tradeShowOfferModal(tradeId, tradeName) {
     const creatures = window.appState?.creatures || [];
-    if (!creatures.length) return alert('You have no creatures to offer. Add some in My Nuggies first!');
+    if (!creatures.length) return alert('You have no specimens to offer. Add some from the Dex first!');
     window._offerTradeId = tradeId;
     window._selectedOfferNuggie = null;
     const modal = document.createElement('div');
@@ -1643,7 +1649,7 @@ function tradeShowOfferModal(tradeId, tradeName) {
             <div class="modal-body" style="display:flex;flex-direction:column;gap:16px">
                 <div class="friends-empty" style="padding:0">Offering on: <strong>${tradeName}</strong></div>
                 <div class="plan-field">
-                    <label class="form-label">Choose a Nuggie to offer</label>
+                    <label class="form-label">Choose a Specimen to offer</label>
                     <div class="nuggie-picker">
                         ${creatures.map(c => `
                         <div class="nuggie-pick-card" onclick="tradeSelectOffer('${c.id}',this)" data-cid="${c.id}">
@@ -2238,10 +2244,10 @@ function renderTribeVaultTab(creatures, tribeId) {
         <div class="tribe-vault">
             <div class="tribe-vault-header">
                 <span style="color:#94a3b8;font-size:0.9rem">${creatures.length} creature${creatures.length!==1?'s':''} in vault</span>
-                ${myNuggies.length ? `<button class="btn btn-primary btn-sm" onclick="tribeShareNuggieModal(${tribeId})">+ Share a Nuggie</button>` : ''}
+                ${myNuggies.length ? `<button class="btn btn-primary btn-sm" onclick="tribeShareNuggieModal(${tribeId})">+ Share a Specimen</button>` : ''}
             </div>
             ${creatures.length === 0
-                ? `<div class="tribe-empty">Vault is empty. Members can share their Nuggies here.</div>`
+                ? `<div class="tribe-empty">Vault is empty. Members can share specimens here.</div>`
                 : `<div class="tribe-vault-grid">
                     ${creatures.map(c => {
                         const d = c.data || c;
@@ -2258,13 +2264,13 @@ function renderTribeVaultTab(creatures, tribeId) {
 
 function tribeShareNuggieModal(tribeId) {
     const creatures = window.appState?.creatures || [];
-    if (!creatures.length) return alert('No creatures in My Nuggies to share.');
+    if (!creatures.length) return alert('No specimens in your vault to share.');
     const modal = document.createElement('div');
     modal.className = 'modal active';
     modal.innerHTML = `
         <div class="modal-content" style="max-width:500px">
             <div class="modal-header">
-                <h2 class="modal-title">🗄️ Share a Nuggie to Vault</h2>
+                <h2 class="modal-title">🗄️ Share Specimen to Vault</h2>
                 <button class="close-btn" onclick="this.closest('.modal').remove()">&times;</button>
             </div>
             <div class="modal-body">
@@ -2710,12 +2716,12 @@ async function arenaRenderSession(sessionId, main) {
                     <div class="arena-panel-header">
                         <span>🦖 Roster (${session.creatures?.length || 0})</span>
                         ${session.status === 'open'
-                            ? `<button class="btn btn-primary btn-sm" onclick="arenaAddNuggieModal(${sessionId})">+ Add Nuggie</button>`
+                            ? `<button class="btn btn-primary btn-sm" onclick="arenaAddNuggieModal(${sessionId})">+ Add Specimen</button>`
                             : ''}
                     </div>
                     <div class="arena-roster-list" id="arenaRoster">
                         ${Object.keys(byOwner).length === 0
-                            ? `<div class="friends-empty" style="padding:20px 0">No creatures added yet. Add your Nuggies to the roster!</div>`
+                            ? `<div class="friends-empty" style="padding:20px 0">No creatures added yet. Add your specimens to the roster!</div>`
                             : Object.entries(byOwner).map(([owner, data]) => `
                                 <div class="arena-roster-group">
                                     <div class="arena-roster-owner">👤 ${owner}</div>
@@ -2791,7 +2797,7 @@ async function arenaPollChat(sessionId, initial) {
             const bs = cr.baseStats || {};
             div.innerHTML = `
                 <div class="arena-chat-bubble ${isMe ? 'mine' : ''}">
-                    <div class="arena-chat-sender">${isMe ? 'You' : msg.sender} shared a Nuggie</div>
+                    <div class="arena-chat-sender">${isMe ? 'You' : msg.sender} shared a specimen</div>
                     <div class="arena-nuggie-share">
                         <div class="arena-roster-name">${cr.name || 'Unnamed'}</div>
                         <div class="arena-roster-species">${cr.species || '?'} · Lvl ${cr.level || 1}</div>
@@ -3562,7 +3568,7 @@ async function loadMyProfilePage() {
                 <div class="profile-hero-avatar">🦕</div>
                 <div class="profile-hero-info">
                     <h1 class="profile-hero-name">${esc(profile.nickname) || 'Trainer'}</h1>
-                    <div class="profile-hero-sub">Dino Nuggie Trainer · Joined ${esc(joinedDate)}</div>
+                    <div class="profile-hero-sub">ARK Operator · Joined ${esc(joinedDate)}</div>
                     ${profile.tribe ? `<div class="profile-hero-tribe">🏛️ ${esc(profile.tribe.name)} <span style="color:#64748b;font-size:0.8rem">(${esc(profile.tribe.role)})</span></div>` : ''}
                     ${profile.bio ? `<div class="profile-hero-bio">${esc(profile.bio)}</div>` : ''}
                     ${profile.looking_for ? `<div class="profile-looking-for">👀 ${esc(profile.looking_for)}</div>` : ''}
@@ -3977,7 +3983,7 @@ window.pinModalToggle = pinModalToggle;
 
 async function profileSavePins() {
     const checked = [...document.querySelectorAll('.pin-creature-option input:checked')];
-    const creature_ids = checked.map(cb => parseInt(cb.value)).filter(Boolean);
+    const creature_ids = checked.map(cb => parseInt(cb.value, 10)).filter(id => !isNaN(id) && id > 0);
     const { res } = await apiRequest('/api/profile/pinned', { method: 'PUT', body: JSON.stringify({ creature_ids }) });
     if (res.ok) { document.querySelector('.modal.active')?.remove(); loadMyProfilePage(); }
 }
@@ -4324,12 +4330,134 @@ function importCreatures() {
 }
 
 function openCreatureDetails(creatureId) {
-    alert(`Creature details for ${creatureId} will be implemented soon!`);
+    editCreature(creatureId);
 }
 
 function editCreature(creatureId) {
-    alert(`Edit creature ${creatureId} will be implemented soon!`);
+    const creature = (window.appState?.creatures || []).find(c => c.id === creatureId || c.id === parseInt(creatureId));
+    if (!creature) { alert('Specimen not found.'); return; }
+
+    const maps = (window.ARK_MAPS || ['The Island','Scorched Earth','Aberration','Extinction','Genesis Part 1','Genesis Part 2','Crystal Isles','Fjordur','Lost Island','Ragnarok','Valguero','The Center','Caballus','Astraeos','Svartalfheim','Lost Colony']);
+    const bs = creature.baseStats || {};
+    const ml = creature.mutations || {};
+    const dl = creature.domesticLevels || {};
+
+    const statField = (label, bsKey, prefix) => `
+        <div class="plan-field" style="min-width:120px">
+            <label class="form-label">${label}</label>
+            <input id="ec_bs_${bsKey}" class="form-control" type="number" min="0" placeholder="0" value="${bs[bsKey] || ''}">
+            <input id="ec_ml_${bsKey}" class="form-control" type="number" min="0" placeholder="Muts" value="${ml[bsKey] || ''}" style="margin-top:4px">
+            <input id="ec_dl_${bsKey}" class="form-control" type="number" min="0" placeholder="Dom lvls" value="${dl[bsKey] || ''}" style="margin-top:4px">
+        </div>`;
+
+    const modal = document.createElement('div');
+    modal.className = 'modal active';
+    modal.innerHTML = `
+        <div class="modal-content" style="max-width:680px;max-height:90vh;overflow-y:auto">
+            <div class="modal-header">
+                <h2 class="modal-title">✏️ Edit Specimen: ${esc(creature.name || 'Unnamed')}</h2>
+                <button class="close-btn" onclick="this.closest('.modal').remove()">&times;</button>
+            </div>
+            <div class="modal-body" style="display:flex;flex-direction:column;gap:16px">
+
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                    <div class="plan-field">
+                        <label class="form-label">Name</label>
+                        <input id="ec_name" class="form-control" value="${esc(creature.name || '')}" placeholder="Specimen name">
+                    </div>
+                    <div class="plan-field">
+                        <label class="form-label">Level</label>
+                        <input id="ec_level" class="form-control" type="number" min="1" value="${creature.level || 1}">
+                    </div>
+                    <div class="plan-field">
+                        <label class="form-label">Gender</label>
+                        <select id="ec_gender" class="form-control">
+                            <option value="">Unknown</option>
+                            <option value="Male" ${creature.gender === 'Male' ? 'selected' : ''}>Male</option>
+                            <option value="Female" ${creature.gender === 'Female' ? 'selected' : ''}>Female</option>
+                        </select>
+                    </div>
+                    <div class="plan-field">
+                        <label class="form-label">Map</label>
+                        <select id="ec_map" class="form-control">
+                            <option value="">Unknown</option>
+                            ${maps.map(m => `<option value="${esc(m)}" ${creature.map === m ? 'selected' : ''}>${esc(m)}</option>`).join('')}
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="form-label" style="margin-bottom:8px;display:block">Stats — Base · Mutations · Domestic Levels</label>
+                    <div style="display:flex;flex-wrap:wrap;gap:10px">
+                        ${statField('❤️ Health',   'Health')}
+                        ${statField('⚡ Stamina',  'Stamina')}
+                        ${statField('💧 Oxygen',   'Oxygen')}
+                        ${statField('🍖 Food',     'Food')}
+                        ${statField('⚖️ Weight',   'Weight')}
+                        ${statField('⚔️ Melee',    'Melee')}
+                        ${statField('🔧 Crafting', 'Crafting')}
+                    </div>
+                </div>
+
+                <div class="plan-field">
+                    <label class="form-label">Notes</label>
+                    <textarea id="ec_notes" class="form-control" rows="2" placeholder="Personal notes...">${esc(creature.notes || '')}</textarea>
+                </div>
+
+                <div id="ec_error" style="color:#ef4444;font-size:0.85rem;display:none"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="this.closest('.modal').remove()">Cancel</button>
+                <button class="btn btn-primary" onclick="submitEditCreature(${creature.id})">Save Changes</button>
+            </div>
+        </div>`;
+    document.body.appendChild(modal);
+    document.getElementById('ec_name')?.focus();
 }
+window.editCreature = editCreature;
+
+async function submitEditCreature(creatureId) {
+    const errEl = document.getElementById('ec_error');
+    const name = document.getElementById('ec_name')?.value.trim();
+    if (!name) { if (errEl) { errEl.textContent = 'Name is required.'; errEl.style.display = 'block'; } return; }
+
+    const getStat = (key) => parseInt(document.getElementById(`ec_bs_${key}`)?.value) || 0;
+    const getMut  = (key) => parseInt(document.getElementById(`ec_ml_${key}`)?.value) || 0;
+    const getDom  = (key) => parseInt(document.getElementById(`ec_dl_${key}`)?.value) || 0;
+    const KEYS = ['Health','Stamina','Oxygen','Food','Weight','Melee','Crafting'];
+
+    const existing = (window.appState?.creatures || []).find(c => c.id === creatureId);
+    if (!existing) { if (errEl) { errEl.textContent = 'Specimen not found.'; errEl.style.display = 'block'; } return; }
+
+    const updated = {
+        ...existing,
+        name,
+        level:   parseInt(document.getElementById('ec_level')?.value) || 1,
+        gender:  document.getElementById('ec_gender')?.value || '',
+        map:     document.getElementById('ec_map')?.value || '',
+        notes:   document.getElementById('ec_notes')?.value.trim() || '',
+        baseStats:      Object.fromEntries(KEYS.map(k => [k, getStat(k)])),
+        mutations:      Object.fromEntries(KEYS.map(k => [k, getMut(k)])),
+        domesticLevels: Object.fromEntries(KEYS.map(k => [k, getDom(k)])),
+        updatedAt: new Date().toISOString()
+    };
+
+    const { res, body } = await apiRequest(`/api/creature/${creatureId}`, {
+        method: 'PUT',
+        body: JSON.stringify({ data: updated })
+    });
+
+    if (res.ok) {
+        // Update in local state
+        const idx = window.appState.creatures.findIndex(c => c.id === creatureId);
+        if (idx !== -1) window.appState.creatures[idx] = updated;
+        document.querySelector('.modal.active')?.remove();
+        loadMyNuggiesPage();
+    } else {
+        if (errEl) { errEl.textContent = body?.error || 'Failed to save.'; errEl.style.display = 'block'; }
+    }
+}
+window.submitEditCreature = submitEditCreature;
 
 function duplicateCreature(creatureId) {
     const creature = window.appState?.creatures?.find(c => c.id === creatureId);
@@ -4345,11 +4473,11 @@ function duplicateCreature(creatureId) {
     }
 }
 
-function deleteCreature(creatureId) {
-    if (confirm('Are you sure you want to delete this creature?')) {
-        window.appState.creatures = window.appState.creatures.filter(c => c.id !== creatureId);
-        loadMyNuggiesPage(); // Refresh page
-    }
+async function deleteCreature(creatureId) {
+    if (!confirm('Delete this specimen permanently?')) return;
+    window.appState.creatures = window.appState.creatures.filter(c => c.id !== creatureId);
+    await apiRequest(`/api/creature/${creatureId}`, { method: 'DELETE' }).catch(() => {});
+    loadMyNuggiesPage();
 }
 
 // Make functions globally available
@@ -6377,7 +6505,7 @@ async function requestNotificationPermission() {
     setTimeout(async () => {
         const perm = await Notification.requestPermission().catch(() => 'denied');
         if (perm === 'granted') {
-            new Notification('Dino Nuggie Manager 🦕', {
+            new Notification('TekOS 🦕', {
                 body: 'Notifications enabled! You\'ll be alerted for DMs, trades, and events.',
                 icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><text y='52' font-size='52'>🦕</text></svg>"
             });

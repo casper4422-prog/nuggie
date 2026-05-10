@@ -74,13 +74,19 @@ body::before {
     z-index: 0;
 }
 
-/* Hex grid canvas sits just above atmospheric layer */
+/* Hex grid canvas — above atmospheric gradient, below all UI */
 #tekHexCanvas {
     position: fixed;
     inset: 0;
-    z-index: 0;
+    z-index: 1;
     pointer-events: none;
     opacity: 1;
+}
+
+/* Ensure app content sits above the hex canvas */
+#tekLoginWrap, #tekApp {
+    position: relative;
+    z-index: 2;
 }
 
 /* ── App layout: sidebar + main ─────────────────────────────────────────── */

@@ -2396,7 +2396,7 @@ function loadBossPage() {
         <div class="boss-page">
             <div class="boss-header">
                 <div class="page-title">
-                    <h1>👑 Operations</h1>
+                    <h1>👑 Overseer</h1>
                     <div class="boss-count">${bossData.length} bosses available</div>
                 </div>
                 <div class="header-actions">
@@ -2497,9 +2497,10 @@ async function loadArenaPage() {
                     <h1>⚔️ War Rooms</h1>
                     <div class="page-subtitle">Boss fight war rooms — coordinate with allies across tribes</div>
                 </div>
-                <div style="display:flex;gap:10px">
+                <div style="display:flex;gap:8px">
+                    <button class="btn btn-secondary" onclick="loadBossPlanner()">← Overseer</button>
                     <button class="btn btn-secondary" onclick="arenaJoinModal()">🔑 Join with Code</button>
-                    <button class="btn btn-primary" onclick="arenaCreateModal()">➕ Create War Room</button>
+                    <button class="btn btn-primary" onclick="loadBossPlanner()">⚔️ Create War Room</button>
                 </div>
             </div>
 
@@ -2546,7 +2547,7 @@ async function loadArenaForBoss(bossId) {
                 <div style="display:flex;gap:8px">
                     <button class="btn btn-secondary" onclick="loadBossPlanner()">← Boss List</button>
                     <button class="btn btn-secondary" onclick="arenaJoinModal()">🔑 Join with Code</button>
-                    <button class="btn btn-primary" onclick="arenaCreateModal('${bossId}')">⚔️ Start War Room</button>
+                    <button class="btn btn-primary" onclick="bossQuickStart('${bossId}','${template.name.replace(/'/g,"\'")}')">⚔️ Start War Room</button>
                 </div>
             </div>
 
@@ -2565,7 +2566,7 @@ function bossessions_html(bossId, bossName, bossSessionList) {
             <div style="font-size:2.5rem;margin-bottom:12px">⚔️</div>
             <div style="color:#94a3b8;font-size:1rem;margin-bottom:6px">No active war rooms for this boss yet.</div>
             <div style="color:#64748b;font-size:0.85rem;margin-bottom:20px">Start one and invite your allies — they can join with a code.</div>
-            <button class="btn btn-primary" onclick="arenaCreateModal('${bossId}')">⚔️ Start War Room</button>
+            <button class="btn btn-primary" onclick="bossQuickStart('${bossId}','${template.name.replace(/'/g,"\'")}')">⚔️ Start War Room</button>
         </div>`;
     }
     return `
@@ -2654,6 +2655,43 @@ async function arenaDoCreate(preBossId) {
     }
 }
 window.arenaDoCreate = arenaDoCreate;
+
+// ── Boss Quick Start (difficulty picker, no modal for boss selection) ─────────
+function bossQuickStart(bossId, bossName) {
+    const modal = document.createElement('div');
+    modal.className = 'modal active';
+    modal.innerHTML = `
+        <div class="modal-content" style="max-width:400px">
+            <div class="modal-header">
+                <h2 class="modal-title">⚔️ Start War Room</h2>
+                <button class="close-btn" onclick="this.closest('.modal').remove()">&times;</button>
+            </div>
+            <div class="modal-body" style="text-align:center;padding:20px 0">
+                <div style="font-size:0.85rem;color:#64748b;margin-bottom:20px;letter-spacing:0.5px;text-transform:uppercase">Select difficulty for ${esc(bossName)}</div>
+                <div style="display:flex;gap:10px;justify-content:center">
+                    <button class="btn" style="background:rgba(34,197,94,0.12);color:#22c55e;border:1px solid rgba(34,197,94,0.3);flex:1;font-weight:700" onclick="bossCreateAndEnter('${bossId}','${bossName.replace(/'/g,"\\'")}','gamma')">🟢 Gamma</button>
+                    <button class="btn" style="background:rgba(59,130,246,0.12);color:#60a5fa;border:1px solid rgba(59,130,246,0.3);flex:1;font-weight:700" onclick="bossCreateAndEnter('${bossId}','${bossName.replace(/'/g,"\\'")}','beta')">🔵 Beta</button>
+                    <button class="btn" style="background:rgba(239,68,68,0.12);color:#ef4444;border:1px solid rgba(239,68,68,0.3);flex:1;font-weight:700" onclick="bossCreateAndEnter('${bossId}','${bossName.replace(/'/g,"\\'")}','alpha')">🔴 Alpha</button>
+                </div>
+            </div>
+        </div>`;
+    document.body.appendChild(modal);
+}
+window.bossQuickStart = bossQuickStart;
+
+async function bossCreateAndEnter(bossId, bossName, difficulty) {
+    document.querySelector('.modal.active')?.remove();
+    const { res, body } = await apiRequest('/api/arena/sessions', {
+        method: 'POST',
+        body: JSON.stringify({ boss_id: bossId, boss_name: bossName, difficulty })
+    });
+    if (res.ok && body?.id) {
+        arenaOpenSession(body.id);
+    } else {
+        alert(body?.error || 'Failed to create war room. Please try again.');
+    }
+}
+window.bossCreateAndEnter = bossCreateAndEnter;
 
 // ── Join modal ────────────────────────────────────────────────────────────────
 function arenaJoinModal() {
@@ -4556,7 +4594,7 @@ async function loadBossDetailPage(bossId) {
     const template = getBossTemplates().find(t => t.id === bossId);
     if (!template) { loadBossPlanner(); return; }
 
-    main.innerHTML = `<div class="std-page">${tekLoader('Analyzing threat data...')}</div>`;
+    main.innerHTML = `<div class="std-page">${tekLoader('Analyzing overseer data...')}</div>`;
 
     // Fetch active war rooms for this boss in parallel with plans
     const sessions = await apiRequest('/api/arena/sessions').then(r => Array.isArray(r.body) ? r.body : []).catch(() => []);
@@ -4714,7 +4752,7 @@ async function loadBossPlanner() {
         <div class="std-page">
             <div class="std-page-header">
                 <div class="page-title">
-                    <h1>👑 Operations</h1>
+                    <h1>👑 Overseer</h1>
                     <div class="page-subtitle">${templates.length} bosses · ${plans.length} planned</div>
                 </div>
                 <div style="display:flex;gap:8px">
@@ -6101,40 +6139,31 @@ async function loadSpeciesPage() {
 
         console.log('[SPA] Rendering species page...');
         
-        // Show loading state
-        main.innerHTML = '<div class="loading">Loading species data...</div>';
-        
+        main.innerHTML = `<div class="std-page">${tekLoader('Loading Dex...')}</div>`;
+
         // Get species data
         const speciesData = window.SPECIES_DATABASE || {};
         if (!Object.keys(speciesData).length) {
-            main.innerHTML = '<div class="error">No species data available.</div>';
+            main.innerHTML = `<div class="std-page"><div class="friends-empty" style="padding:60px 0">Species database unavailable. Please refresh.</div></div>`;
             return;
         }
 
-        // Render the modern species page with the same structure as boss planner
         main.innerHTML = `
-            <div class="species-page">
-                <div class="species-header">
+            <div class="std-page">
+                <div class="std-page-header">
                     <div class="page-title">
-                        <h1>🦖 Creature Database</h1>
-                        <div class="species-count">Browse ${Object.keys(speciesData).length} available species</div>
-                    </div>
-                    <div class="header-actions">
-                        <button class="btn btn-secondary" onclick="exportSpeciesData()">📤 Export Data</button>
-                        <button class="btn btn-secondary" onclick="speciesCalculator()">🧮 Stats Calculator</button>
+                        <h1>🦖 Dex</h1>
+                        <div class="page-subtitle">${Object.keys(speciesData).length} species in the database</div>
                     </div>
                 </div>
-                
-                <div class="species-filters-section">
-                    <div class="filter-group">
-                        <input id="searchInput" class="form-control search-input" placeholder="🔍 Search species by name, category, or diet...">
-                    </div>
-                    <div class="filter-group" id="speciesFilterSelects">
-                        <span class="filter-placeholder">Loading filters...</span>
-                        <button id="clearFiltersBtn" class="btn btn-secondary">Clear</button>
+
+                <div class="std-filters" style="margin-bottom:20px">
+                    <input id="searchInput" class="form-control search-input" placeholder="🔍 Search species by name, category, or diet..." style="flex:1;min-width:180px">
+                    <div id="speciesFilterSelects" style="display:flex;gap:8px;align-items:center">
+                        <span style="color:#64748b;font-size:0.8rem">Loading filters...</span>
                     </div>
                 </div>
-                
+
                 <div id="speciesGrid" class="species-template-grid" aria-live="polite"></div>
             </div>
         `;
@@ -6299,7 +6328,8 @@ async function loadSpeciesPage() {
 
         // Initial render
         filterSpecies();
-        
+        tekAnimate(main);
+
     } catch (e) {
         console.error('[SPA] Error rendering species page:', e);
     }

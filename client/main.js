@@ -1123,6 +1123,7 @@ function loadMyNuggiesPage() {
         return acc;
     }, {});
     
+    const _ncView = localStorage.getItem('nuggiesView') || 'expanded';
     main.innerHTML = `
         <div class="std-page">
             <div class="std-page-header">
@@ -1131,24 +1132,21 @@ function loadMyNuggiesPage() {
                     <div class="page-subtitle">${creatures.length} creature${creatures.length !== 1 ? 's' : ''} across ${Object.keys(creaturesBySpecies).length} species</div>
                 </div>
                 <div style="display:flex;gap:8px;align-items:center">
-                    <button class="nc-view-toggle" id="nuggieViewToggle" onclick="toggleNuggieView()"></button>
+                    <button class="nc-view-toggle" id="nuggieViewToggle" onclick="toggleNuggieView()">${_ncView === 'expanded' ? '☰ Compact View' : '⊞ Expanded View'}</button>
                     <button class="btn btn-secondary" onclick="exportCreatures()">📤 Export</button>
                     <button class="btn btn-secondary" onclick="importCreatures()">📥 Import</button>
                 </div>
             </div>
 
             <div class="nuggies-controls">
-                <div class="search-section">
-                    <input type="text" id="creatureSearch" placeholder="🔍 Search your creatures..." class="search-input">
-                </div>
                 <div class="filter-section">
+                    <input type="text" id="creatureSearch" placeholder="🔍 Search creatures..." class="search-input" style="max-width:220px">
                     ${mkSelect('speciesFilter',
                         [{ v: '', l: 'All Species' }, ...Object.keys(creaturesBySpecies).sort().map(s => ({ v: s, l: `${s} (${creaturesBySpecies[s].length})` }))],
                         '', 'All Species')}
                     ${mkSelect('sortFilter',
                         [{ v: 'species', l: 'Group by Species' }, { v: 'level', l: 'Sort by Level' }, { v: 'name', l: 'Sort by Name' }, { v: 'recent', l: 'Recently Added' }],
                         'species', 'Group by Species')}
-                    <button class="btn btn-sm btn-secondary" onclick="clearCollectionFilters()">Clear</button>
                 </div>
             </div>
 
@@ -1166,7 +1164,7 @@ function loadMyNuggiesPage() {
 const NC_STATS = [
     { key: 'Health',   icon: '❤️',  pct: false },
     { key: 'Stamina',  icon: '⚡',  pct: false },
-    { key: 'Oxygen',   icon: '🫁',  pct: false },
+    { key: 'Oxygen',   icon: '💧',  pct: false },
     { key: 'Food',     icon: '🍖',  pct: false },
     { key: 'Weight',   icon: '⚖️',  pct: false },
     { key: 'Melee',    icon: '⚔️',  pct: true  },
@@ -1200,7 +1198,7 @@ function ncBadgeIcons(creature) {
                    : b.id?.startsWith('util_')        ? '⛏️'
                    : b.id?.startsWith('collector_')   ? '🗺️'
                    : '🏆';
-        return `<span class="nc-badge-icon" title="${esc(b.name)} · ${esc(b.tier)}">${cat}${tier}</span>`;
+        return `<span class="nc-badge-icon" data-tip="${esc(b.name)} — ${esc(b.tier)}">${cat}${tier}</span>`;
     }).join('');
 }
 
@@ -1284,9 +1282,6 @@ function renderCreatureCard(creature, speciesData) {
 
 function renderCreatureCollection(creaturesBySpecies, database) {
     const view = localStorage.getItem('nuggiesView') || 'expanded';
-    // Update toggle button label
-    const btn = document.getElementById('nuggieViewToggle');
-    if (btn) btn.textContent = view === 'expanded' ? '☰ Compact View' : '⊞ Expanded View';
 
     return Object.keys(creaturesBySpecies).sort().map(speciesName => {
         const speciesCreatures = creaturesBySpecies[speciesName];

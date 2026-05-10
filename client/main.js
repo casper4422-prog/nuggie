@@ -427,27 +427,12 @@ function createSpeciesCard(species, creatureCount) {
         // Get creatures for this species to calculate badges and stats
         const speciesCreatures = window.appState?.creatures?.filter(c => c.species === species.name) || [];
         
-        // Generate basic stats display
-        let statsHTML = `
-            <div class="species-stats">
-                <div class="species-stat">
-                    <span class="species-stat-label">Combat</span>
-                    <span class="species-stat-value">${species.ratings?.combat || 'N/A'}</span>
-                </div>
-                <div class="species-stat">
-                    <span class="species-stat-label">Transport</span>
-                    <span class="species-stat-value">${species.ratings?.transport || 'N/A'}</span>
-                </div>
-                <div class="species-stat">
-                    <span class="species-stat-label">Speed</span>
-                    <span class="species-stat-value">${species.ratings?.speed || 'N/A'}</span>
-                </div>
-                <div class="species-stat">
-                    <span class="species-stat-label">Utility</span>
-                    <span class="species-stat-value">${species.ratings?.survivability || 'N/A'}</span>
-                </div>
-            </div>
-        `;
+        // Dossier snippet — real database text, no fabrication
+        const rawDossier = species.dossierText || species.description || '';
+        const snippet = rawDossier.slice(0, 140) + (rawDossier.length > 140 ? '…' : '');
+        let statsHTML = snippet
+            ? `<div class="species-dossier-snippet">${esc(snippet)}</div>`
+            : (species.primaryRole ? `<div class="species-dossier-snippet" style="color:#64748b;font-style:italic">${esc(species.primaryRole)}</div>` : '');
 
         // Generate badges
         let badgesHTML = '';
@@ -463,18 +448,16 @@ function createSpeciesCard(species, creatureCount) {
 
         card.innerHTML = `
             <div class="species-card-header">
-                <div class="species-icon">${species.icon}</div>
-                <div>
-                    <div class="species-name">${species.name}</div>
-                    <div class="species-category">${species.category} • ${species.rarity}</div>
+                <div class="species-icon">${esc(species.icon) || '🦖'}</div>
+                <div style="flex:1;min-width:0">
+                    <div class="species-name">${esc(species.name)}</div>
+                    <div class="species-category">${esc(species.category)}${species.diet ? ' · ' + esc(species.diet) : ''}</div>
                 </div>
+                ${creatureCount > 0 ? `<div class="species-vault-count" title="${creatureCount} in your vault">✓ ${creatureCount}</div>` : ''}
             </div>
             <div class="species-card-body">
                 ${statsHTML}
                 ${badgesHTML}
-                <div style="color: #94a3b8; font-size: 0.875rem; margin-top: 12px;">
-                    ${creatureCount} creatures owned
-                </div>
             </div>
         `;
 
@@ -555,159 +538,18 @@ function filterSpecies() {
     }
 }
 
-// Open species detail page (modernized to match boss planning style)
+// Open species detail page — delegates to the full openCreaturePage in creatures.js
 function openSpeciesDetail(speciesName) {
-    const database = window.SPECIES_DATABASE || window.EXPANDED_SPECIES_DATABASE;
-    const species = database[speciesName];
-    
-    if (!species) {
-        console.error('Species not found:', speciesName);
+    if (typeof window.openCreaturePage === 'function') {
+        window.openCreaturePage(speciesName);
         return;
     }
-    
-    const main = document.getElementById('appMainContent');
-    if (!main) return;
-    
-    // Get creatures for this species (for count display only)
-    const speciesCreatures = window.appState?.creatures?.filter(c => c.species === speciesName) || [];
-    
-    // Generate taming information
-    const tamingInfo = species.taming ? `
-        <div class="info-section">
-            <div class="info-title">🎯 Taming Information</div>
-            <div class="taming-details">
-                <div class="taming-item">
-                    <span class="taming-label">Method:</span>
-                    <span class="taming-value">${species.taming.method || 'Standard KO Taming'}</span>
-                </div>
-                <div class="taming-item">
-                    <span class="taming-label">Preferred Food:</span>
-                    <span class="taming-value">${species.taming.preferredFood || 'Raw Meat/Berries'}</span>
-                </div>
-                <div class="taming-item">
-                    <span class="taming-label">Difficulty:</span>
-                    <span class="taming-value">${species.taming.difficulty || 'Medium'}</span>
-                </div>
-            </div>
-        </div>
-    ` : '';
-    
-    main.innerHTML = `
-        <div class="species-detail-page">
-            <div class="species-detail-header">
-                <button class="btn btn-secondary back-btn" onclick="loadSpeciesPage()">← Back to Species Database</button>
-                <div class="species-info">
-                    <div class="species-title-section">
-                        <div class="species-detail-icon">${species.icon}</div>
-                        <div>
-                            <h1>${species.name}</h1>
-                            <div class="species-meta">
-                                <span class="species-category">${species.category || 'Unknown'}</span>
-                                <span class="species-rarity">${species.rarity || 'Common'}</span>
-                                <span class="species-diet">${species.diet || 'Unknown Diet'}</span>
-                            </div>
-                        </div>
-                    </div>
-                    <p class="species-description">${species.description || 'A remarkable creature with unique characteristics and abilities that make it valuable in various situations.'}</p>
-                </div>
-            </div>
-            
-            <div class="planning-sections">
-                <div class="planning-section">
-                    <div class="section-header">
-                        <h3>📊 Statistics & Performance</h3>
-                        <button class="btn btn-primary" onclick="addNewCreature('${speciesName}')">➕ Add Your ${species.name}</button>
-                    </div>
-                    <div class="stats-grid">
-                        <div class="stat-card combat">
-                            <div class="stat-label">⚔️ Combat Rating</div>
-                            <div class="stat-value">${species.ratings?.combat || 'N/A'}<span class="stat-max">/10</span></div>
-                            <div class="stat-desc">${getStatDescription('combat', species.ratings?.combat)}</div>
-                        </div>
-                        <div class="stat-card transport">
-                            <div class="stat-label">🚚 Transport Rating</div>
-                            <div class="stat-value">${species.ratings?.transport || 'N/A'}<span class="stat-max">/10</span></div>
-                            <div class="stat-desc">${getStatDescription('transport', species.ratings?.transport)}</div>
-                        </div>
-                        <div class="stat-card speed">
-                            <div class="stat-label">⚡ Speed Rating</div>
-                            <div class="stat-value">${species.ratings?.speed || 'N/A'}<span class="stat-max">/10</span></div>
-                            <div class="stat-desc">${getStatDescription('speed', species.ratings?.speed)}</div>
-                        </div>
-                        <div class="stat-card survivability">
-                            <div class="stat-label">🛡️ Survivability</div>
-                            <div class="stat-value">${species.ratings?.survivability || 'N/A'}<span class="stat-max">/10</span></div>
-                            <div class="stat-desc">${getStatDescription('survivability', species.ratings?.survivability)}</div>
-                        </div>
-                    </div>
-                </div>
-                
-                ${tamingInfo}
-                
-                <div class="planning-section">
-                    <div class="section-header">
-                        <h3>🎯 Usage & Strategies</h3>
-                        <button class="btn btn-secondary" onclick="goToMyNuggies()">Manage Collection →</button>
-                    </div>
-                    <div class="usage-info">
-                        <div class="usage-grid">
-                            <div class="usage-card">
-                                <div class="usage-title">🏆 Primary Role</div>
-                                <div class="usage-content">${species.primaryRole || 'Multi-purpose creature suitable for various tasks'}</div>
-                            </div>
-                            
-                            <div class="usage-card">
-                                <div class="usage-title">📦 Your Collection</div>
-                                <div class="usage-content">
-                                    <div class="collection-stat">${speciesCreatures.length} ${species.name}${speciesCreatures.length !== 1 ? 's' : ''} owned</div>
-                                    ${speciesCreatures.length > 0 ? `
-                                        <div class="collection-details">
-                                            <div>Highest Level: ${Math.max(...speciesCreatures.map(c => c.level || 1))}</div>
-                                            <div>Average Level: ${Math.round(speciesCreatures.reduce((sum, c) => sum + (c.level || 1), 0) / speciesCreatures.length)}</div>
-                                        </div>
-                                    ` : '<div class="collection-empty">Add your first one!</div>'}
-                                </div>
-                            </div>
-                            
-                            ${species.specialAbilities ? `
-                                <div class="usage-card special">
-                                    <div class="usage-title">✨ Special Abilities</div>
-                                    <div class="usage-content">${species.specialAbilities}</div>
-                                </div>
-                            ` : ''}
-                        </div>
-                        
-                        <div class="strategy-tips">
-                            <div class="tips-title">💡 Pro Tips & Strategies</div>
-                            <div class="tips-content">
-                                ${species.tips || generateSpeciesTips(species)}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    `;
+    // Fallback body (creatures.js not loaded) — just show a message
+    main.innerHTML = `<div class="std-page"><div class="friends-empty">Species data unavailable. Please refresh the page.</div></div>`;
 }
 
-function goBackToSpecies() {
-    loadSpeciesPage();
-}
-
-// Add placeholder functions for species page actions
-function exportSpeciesData() {
-    console.log('Export species data functionality coming soon...');
-    // Placeholder for export functionality
-}
-
-function speciesCalculator() {
-    console.log('Species stats calculator coming soon...');
-    // Placeholder for calculator functionality
-}
-
-function addNewCreature(speciesName = null) {
-    openAddCreatureModal(speciesName);
-}
+function goBackToSpecies() { loadSpeciesPage(); }
+function addNewCreature(speciesName = null) { openAddCreatureModal(speciesName); }
 
 // Comprehensive creature addition modal
 function openAddCreatureModal(preSelectedSpecies = null) {
@@ -1392,79 +1234,6 @@ function addSpeciesCreature(speciesName) {
     openAddCreatureModal(speciesName);
 }
 
-// Helper function to get stat descriptions
-function getStatDescription(statType, value) {
-    if (!value || value === 'N/A') return 'Not rated';
-    
-    const descriptions = {
-        combat: {
-            1: 'Poor fighter', 2: 'Weak in combat', 3: 'Below average fighter',
-            4: 'Fair combat ability', 5: 'Average fighter', 6: 'Good in combat',
-            7: 'Strong fighter', 8: 'Excellent combatant', 9: 'Elite warrior',
-            10: 'Legendary fighter'
-        },
-        transport: {
-            1: 'Very limited carrying', 2: 'Poor weight capacity', 3: 'Below average carrying',
-            4: 'Fair transport ability', 5: 'Average carrier', 6: 'Good pack animal',
-            7: 'Strong transport', 8: 'Excellent carrier', 9: 'Heavy hauler',
-            10: 'Ultimate pack beast'
-        },
-        speed: {
-            1: 'Very slow', 2: 'Slow moving', 3: 'Below average speed',
-            4: 'Fair speed', 5: 'Average pace', 6: 'Good speed',
-            7: 'Fast moving', 8: 'Very fast', 9: 'Extremely fast',
-            10: 'Lightning fast'
-        },
-        survivability: {
-            1: 'Very fragile', 2: 'Fragile', 3: 'Below average durability',
-            4: 'Fair survivability', 5: 'Average toughness', 6: 'Good survivability',
-            7: 'Tough creature', 8: 'Very durable', 9: 'Extremely tough',
-            10: 'Nearly indestructible'
-        }
-    };
-    
-    return descriptions[statType]?.[value] || 'Unknown rating';
-}
-
-// Helper function to generate species tips
-function generateSpeciesTips(species) {
-    const tips = [];
-    
-    // Combat tips
-    if (species.ratings?.combat >= 7) {
-        tips.push("💪 Excellent for boss fights and PvP combat");
-    } else if (species.ratings?.combat <= 3) {
-        tips.push("🛡️ Focus on support roles rather than direct combat");
-    }
-    
-    // Transport tips
-    if (species.ratings?.transport >= 7) {
-        tips.push("📦 Perfect for resource gathering and long expeditions");
-    }
-    
-    // Speed tips  
-    if (species.ratings?.speed >= 7) {
-        tips.push("⚡ Great for scouting, escaping danger, and quick travel");
-    }
-    
-    // Diet-based tips
-    if (species.diet === 'Carnivore') {
-        tips.push("🥩 Feed raw meat for faster taming and better health");
-    } else if (species.diet === 'Herbivore') {
-        tips.push("🌱 Berries and vegetables are your best friend for taming");
-    }
-    
-    // Rarity tips
-    if (species.rarity === 'Rare' || species.rarity === 'Very Rare') {
-        tips.push("⭐ Rare species - invest time in perfect taming for best results");
-    }
-    
-    if (tips.length === 0) {
-        tips.push(`Experiment with different strategies to maximize your ${species.name}'s potential!`);
-    }
-    
-    return tips.join(' • ');
-}
 
 // ── Trading Post ────────────────────────────────────────────────────────────
 async function loadTradingPage() {

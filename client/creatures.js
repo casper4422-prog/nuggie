@@ -316,6 +316,21 @@
     return Object.entries(statsObj).map(([k,v]) => `<div class="stat-item"><div class="stat-name">${k}</div><div class="stat-value">${v}</div></div>`).join('');
   }
 
+  // Local XSS-safe escape (creatures.js loads before main.js)
+  function escS(s) { return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+  // Helper: render a tag chip list, returns '' if array is empty
+  function tagList(arr) {
+    if (!arr || !arr.length) return '';
+    return arr.map(t => `<span class="sdp-tag">${escS(t)}</span>`).join('');
+  }
+
+  // Helper: render a key/value row — only shown when value exists
+  function infoRow(label, value) {
+    if (!value || value === '-') return '';
+    return `<div class="sdp-row"><span class="sdp-label">${escS(label)}</span><span class="sdp-value">${escS(value)}</span></div>`;
+  }
+
   function openCreaturePage(speciesName) {
     if (!speciesName) return;
     if (!window.appState) window.appState = { creatures: [] };
@@ -324,146 +339,128 @@
     const mainContent = document.getElementById('appMainContent');
     if (!mainContent) return;
 
-    // Resolve species data from available DB helper or global
     const db = (typeof window.getSpeciesDB === 'function') ? window.getSpeciesDB() : (window.SPECIES_DATABASE || {});
-    const species = db && db[speciesName] ? db[speciesName] : Object.values(db).find(s => s && s.name === speciesName) || null;
+    const sp = (db && db[speciesName]) ? db[speciesName] : Object.values(db).find(s => s && s.name === speciesName) || null;
 
-    // Render full species page layout (tabs, stats, actions)
+    const owned = (window.appState.creatures || []).filter(c => c.species === speciesName);
+
+    // ── Base stats block ──────────────────────────────────────────────────────
+    const bs = sp?.baseStats || {};
+    const STAT_ROWS = [
+      { key: 'Health',   icon: '❤️' }, { key: 'Stamina', icon: '⚡' },
+      { key: 'Oxygen',   icon: '💧' }, { key: 'Food',    icon: '🍖' },
+      { key: 'Weight',   icon: '⚖️' }, { key: 'Melee',   icon: '⚔️' },
+      { key: 'Crafting', icon: '🔧' },
+    ];
+    const statsBlock = STAT_ROWS.filter(s => bs[s.key] != null).length > 0
+      ? `<div class="sdp-section">
+          <div class="sdp-section-title">📊 Base Stats</div>
+          <div class="sdp-stats-grid">
+            ${STAT_ROWS.filter(s => bs[s.key] != null).map(s =>
+              `<div class="sdp-stat-cell"><div class="sdp-stat-icon">${s.icon}</div><div class="sdp-stat-val">${bs[s.key].toLocaleString()}</div><div class="sdp-stat-key">${s.key}</div></div>`
+            ).join('')}
+          </div>
+        </div>` : '';
+
+    // ── Taming block — only shown when DB has real taming data ────────────────
+    const tamingRows = [
+      infoRow('Method',      sp?.tamingMethod),
+      infoRow('Favorite Food', sp?.favoriteFood),
+      infoRow('Kibble',      sp?.preferredKibble),
+      infoRow('Torpor',      sp?.torpor?.baseValue != null ? String(sp.torpor.baseValue) : null),
+      infoRow('Speed',       sp?.tamingSpeed),
+      infoRow('Requirements', sp?.specialRequirements),
+    ].filter(Boolean).join('');
+    const tamingBlock = tamingRows
+      ? `<div class="sdp-section"><div class="sdp-section-title">🏆 Taming</div>${tamingRows}</div>` : '';
+
+    // ── Spawn maps ────────────────────────────────────────────────────────────
+    const maps = sp?.spawnMaps || [];
+    const mapsBlock = maps.length
+      ? `<div class="sdp-section"><div class="sdp-section-title">📍 Spawn Maps</div><div class="sdp-tags">${tagList(maps)}</div></div>` : '';
+
+    // ── Roles & abilities ─────────────────────────────────────────────────────
+    const rolesContent = [
+      infoRow('Primary Role', sp?.primaryRole),
+      sp?.secondaryRoles?.length ? `<div class="sdp-row"><span class="sdp-label">Roles</span><span class="sdp-value">${tagList(sp.secondaryRoles)}</span></div>` : '',
+      sp?.gatheringResources?.length ? `<div class="sdp-row"><span class="sdp-label">Harvests</span><span class="sdp-value">${tagList(sp.gatheringResources)}</span></div>` : '',
+      sp?.specialAbilities?.length ? `<div class="sdp-row"><span class="sdp-label">Abilities</span><span class="sdp-value">${tagList(sp.specialAbilities)}</span></div>` : '',
+      sp?.uniqueMechanics?.filter(m => m && m !== 'None').length ? `<div class="sdp-row"><span class="sdp-label">Mechanics</span><span class="sdp-value">${tagList(sp.uniqueMechanics.filter(m => m && m !== 'None'))}</span></div>` : '',
+      sp?.attackTypes?.length ? `<div class="sdp-row"><span class="sdp-label">Attacks</span><span class="sdp-value">${tagList(sp.attackTypes)}</span></div>` : '',
+    ].filter(Boolean).join('');
+    const rolesBlock = rolesContent
+      ? `<div class="sdp-section"><div class="sdp-section-title">🎯 Roles & Abilities</div>${rolesContent}</div>` : '';
+
+    // ── Facts block ───────────────────────────────────────────────────────────
+    const factsRows = [
+      infoRow('Diet',          sp?.diet),
+      infoRow('Temperament',   sp?.temperament),
+      infoRow('Habitat',       sp?.habitat || sp?.preferredBiome),
+      infoRow('Source',        sp?.source),
+      infoRow('Real World',    sp?.realWorldBasis),
+      sp?.bossFightCapable ? `<div class="sdp-row"><span class="sdp-label">Boss Fighter</span><span class="sdp-value sdp-yes">✓ Yes</span></div>` : '',
+      sp?.beginnerFriendly  ? `<div class="sdp-row"><span class="sdp-label">Beginner Friendly</span><span class="sdp-value sdp-yes">✓ Yes</span></div>` : '',
+    ].filter(Boolean).join('');
+    const factsBlock = factsRows
+      ? `<div class="sdp-section"><div class="sdp-section-title">📋 Profile</div>${factsRows}</div>` : '';
+
+    // ── Your collection ───────────────────────────────────────────────────────
+    const collectionBlock = `<div class="sdp-section">
+      <div class="sdp-section-title">🗄️ Your Specimens</div>
+      ${owned.length === 0
+        ? `<div class="sdp-empty">You don't have any ${escS(sp?.name || speciesName)} yet.</div>`
+        : `<div class="sdp-owned-count">${owned.length} owned · Highest Lv ${Math.max(...owned.map(c => c.level || 1))}</div>`
+      }
+      <button class="btn btn-primary" style="width:100%;margin-top:12px" id="sdpAddBtn">➕ Add Your ${escS(sp?.name || speciesName)}</button>
+    </div>`;
+
     mainContent.innerHTML = `
-      <div class="creature-page">
-        <div class="creature-page-header">
-          <div class="creature-page-icon" id="creaturePageIcon">${species?.icon || '🦖'}</div>
-          <div class="creature-page-info">
-            <h1 id="creaturePageTitle">${species?.name || speciesName}</h1>
-            <div class="creature-page-meta" id="creaturePageMeta">${(window.appState.creatures || []).filter(c=>c.species===speciesName).length} creatures</div>
+      <div class="std-page">
+        <!-- Hero -->
+        <div class="sdp-hero">
+          <div class="sdp-hero-icon">${sp?.icon || '🦖'}</div>
+          <div class="sdp-hero-info">
+            <h1 class="sdp-hero-name">${escS(sp?.name || speciesName)}</h1>
+            <div class="sdp-hero-tags">
+              ${sp?.category ? `<span class="sdp-tag">${escS(sp.category)}</span>` : ''}
+              ${sp?.rarity   ? `<span class="sdp-tag sdp-tag-rarity">${escS(sp.rarity)}</span>` : ''}
+              ${sp?.diet     ? `<span class="sdp-tag">${escS(sp.diet)}</span>` : ''}
+              ${sp?.bossFightCapable ? `<span class="sdp-tag sdp-tag-boss">👑 Boss Capable</span>` : ''}
+            </div>
           </div>
-          <div class="creature-page-actions">
-            <button class="btn btn-primary" id="openAddCreatureBtn">➕ Add Creature</button>
-            <button class="btn btn-secondary" id="backToSpeciesBtn">← Back to Species</button>
+          <div style="display:flex;gap:8px;flex-shrink:0;align-items:flex-start">
+            <button class="btn btn-secondary" id="sdpBackBtn">← Back to Dex</button>
+            <button class="btn btn-primary" id="sdpAddBtn2">➕ Add to Specimens</button>
           </div>
         </div>
 
-        <div class="species-info-container">
-          <div class="tab-navigation">
-            <button class="tab-button active" data-target="basic-info">📖 Basic Info</button>
-            <button class="tab-button" data-target="stats-combat">📊 Stats & Combat</button>
-            <button class="tab-button" data-target="taming-info">🏆 Taming Info</button>
-            <button class="tab-button" data-target="utility-roles">⚙️ Utility & Roles</button>
-            <button class="tab-button" data-target="environment">🌍 Environment</button>
-            <button class="tab-button" data-target="management">🏕️ Management</button>
+        <!-- Body: left info + right dossier -->
+        <div class="sdp-body">
+          <div class="sdp-left">
+            ${factsBlock}
+            ${statsBlock}
+            ${tamingBlock}
+            ${mapsBlock}
+            ${rolesBlock}
+            ${collectionBlock}
           </div>
-
-          <div id="basic-info" class="tab-content active">
-            <div class="info-section">
-              <div class="dossier-text" id="species-dossier">${species?.dossierText || 'Loading species information...'}</div>
-            </div>
-            <div class="info-section">
-              <div class="info-grid">
-                <div class="info-item"><div class="info-label">Temperament</div><div class="info-value" id="species-temperament">${species?.temperament || '-'}</div></div>
-                <div class="info-item"><div class="info-label">Diet</div><div class="info-value" id="species-diet">${species?.diet || '-'}</div></div>
-                <div class="info-item"><div class="info-label">Habitat</div><div class="info-value" id="species-habitat">${species?.habitat || '-'}</div></div>
-                <div class="info-item"><div class="info-label">Real World Basis</div><div class="info-value" id="species-basis">${species?.realWorldBasis || '-'}</div></div>
-                <div class="info-item"><div class="info-label">Rarity</div><div class="info-value" id="species-rarity">${species?.rarity || '-'}</div></div>
-                <div class="info-item"><div class="info-label">Source</div><div class="info-value" id="species-source">${species?.source || '-'}</div></div>
-              </div>
-            </div>
-          </div>
-
-          <div id="stats-combat" class="tab-content">
-            <div class="info-section">
-              <div class="info-title">📊 Base Statistics</div>
-              <div class="stats-table" id="species-base-stats">${renderBaseStatsTable(species?.baseStats)}</div>
-            </div>
-            <div class="info-section">
-              <div class="info-title">⚔️ Combat & Movement</div>
-              <div class="info-grid">
-                <div class="info-item"><div class="info-label">Attack Types</div><div class="info-value" id="species-attacks">${(species?.attackTypes||[]).join(', ')||'-'}</div></div>
-                <div class="info-item"><div class="info-label">Special Abilities</div><div class="info-value" id="species-abilities">${(species?.specialAbilities||[]).join(', ')||'-'}</div></div>
-                <div class="info-item"><div class="info-label">Land Speed</div><div class="info-value" id="species-land-speed">${species?.speeds?.land||'-'}</div></div>
-                <div class="info-item"><div class="info-label">Flying Speed</div><div class="info-value" id="species-flying-speed">${species?.speeds?.flying||'-'}</div></div>
-                <div class="info-item"><div class="info-label">Swimming Speed</div><div class="info-value" id="species-swimming-speed">${species?.speeds?.swimming||'-'}</div></div>
-              </div>
-            </div>
-          </div>
-
-          <div id="taming-info" class="tab-content">
-            <div class="info-section">
-              <div class="info-grid">
-                <div class="info-item"><div class="info-label">Taming Method</div><div class="info-value" id="species-taming-method">${species?.tamingMethod||'-'}</div></div>
-                <div class="info-item"><div class="info-label">Preferred Kibble</div><div class="info-value" id="species-kibble">${species?.preferredKibble||'-'}</div></div>
-                <div class="info-item"><div class="info-label">Favorite Food</div><div class="info-value" id="species-food">${species?.favoriteFood||'-'}</div></div>
-                <div class="info-item"><div class="info-label">Taming Speed</div><div class="info-value" id="species-taming-speed">${species?.tamingSpeed||'-'}</div></div>
-                <div class="info-item"><div class="info-label">Base Torpor</div><div class="info-value" id="species-torpor">${species?.torpor?.baseValue||'-'}</div></div>
-              </div>
-            </div>
-            <div class="info-section"><div class="info-title">⚠️ Special Requirements</div><div class="info-value" id="species-requirements">${species?.specialRequirements||'-'}</div></div>
-          </div>
-
-          <div id="utility-roles" class="tab-content">
-            <div class="info-section">
-              <div class="info-grid">
-                <div class="info-item"><div class="info-label">Primary Role</div><div class="info-value" id="species-primary-role">${species?.primaryRole||'-'}</div></div>
-                <div class="info-item"><div class="info-label">Secondary Roles</div><div class="info-value" id="species-secondary-roles">${(species?.secondaryRoles||[]).join(', ')||'-'}</div></div>
-              </div>
-            </div>
-            <div class="info-section"><div class="info-title">📦 Resource Gathering</div><div class="resource-list" id="species-resources">${(species?.gatheringResources||[]).map(r=>`<span class="resource-tag">${r}</span>`).join('')||'<span>-</span>'}</div></div>
-            <div class="info-section"><div class="info-title">🔧 Special Abilities</div><div class="ability-list" id="species-special-abilities">${(species?.specialAbilities||[]).map(a=>`<span class="ability-tag">${a}</span>`).join('')||'<span>-</span>'}</div></div>
-          </div>
-
-          <div id="environment" class="tab-content">
-            <div class="info-section"><div class="info-grid">
-              <div class="info-item"><div class="info-label">Preferred Biomes</div><div class="info-value" id="species-biomes">${species?.preferredBiome||'-'}</div></div>
-              <div class="info-item"><div class="info-label">Temperature Range</div><div class="info-value" id="species-temperature">${species?.temperatureRange?`${species.temperatureRange.min} - ${species.temperatureRange.max}`:'-'}</div></div>
-              <div class="info-item"><div class="info-label">Environmental Resistances</div><div class="info-value" id="species-resistances">${(species?.environmentalResistances||[]).join(', ')||'-'}</div></div>
-            </div></div>
-          </div>
-
-          <div id="management" class="tab-content">
-            <div class="info-section"><div class="info-grid">
-              <div class="info-item"><div class="info-label">Difficulty Rating</div><div class="info-value" id="species-difficulty">${species?.difficultyRating||'-'}</div></div>
-              <div class="info-item"><div class="info-label">Beginner Friendly</div><div class="info-value" id="species-beginner">${species?.beginnerFriendly? 'Yes' : 'No'}</div></div>
-              <div class="info-item"><div class="info-label">Resource Investment</div><div class="info-value" id="species-investment">${species?.resourceInvestment||'-'}</div></div>
-              <div class="info-item"><div class="info-label">Boss Fight Capable</div><div class="info-value" id="species-boss-capable">${species?.bossFightCapable? 'Yes' : 'No'}</div></div>
-            </div></div>
+          <div class="sdp-right">
+            ${sp?.dossierText ? `
+            <div class="sdp-section">
+              <div class="sdp-section-title">📖 Dossier</div>
+              <div class="sdp-dossier">${escS(sp.dossierText)}</div>
+            </div>` : '<div class="sdp-empty" style="padding:40px;text-align:center">No dossier available for this species.</div>'}
           </div>
         </div>
+      </div>`;
 
-        <div class="creatures-section-header">
-          <h2 class="creatures-section-title">Your Creatures</h2>
-          <div class="view-toggle">
-            <button class="view-toggle-btn active" id="cardViewBtn">📊 Cards</button>
-            <button class="view-toggle-btn" id="listViewBtn">📋 List</button>
-          </div>
-        </div>
-
-        <div class="creatures-grid" id="creaturesGrid"></div>
-      </div>
-    `;
-
-    // Wire actions
-  const addBtn = document.getElementById('openAddCreatureBtn');
-  if (addBtn) addBtn.onclick = () => { try { window.appState.currentSpecies = speciesName; } catch (e) {} ; openCreatureModal(null); };
-    const backBtn = document.getElementById('backToSpeciesBtn');
-    if (backBtn) backBtn.onclick = () => { if (typeof window.loadSpeciesPage === 'function') window.loadSpeciesPage(); };
-
-    // Wire tabs (use event.currentTarget for robustness and prevent default)
-    const tabButtons = document.querySelectorAll('.tab-button');
-    tabButtons.forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        try { e.preventDefault(); } catch (ex) {}
-        const target = (e.currentTarget && e.currentTarget.getAttribute('data-target')) || btn.getAttribute('data-target');
-        if (target) switchTab(target);
-      });
+    // Wire buttons
+    document.getElementById('sdpBackBtn')?.addEventListener('click', () => {
+      if (typeof window.loadSpeciesPage === 'function') window.loadSpeciesPage();
     });
-
-  // Wire view toggle buttons
-  const cardViewBtn = document.getElementById('cardViewBtn');
-  const listViewBtn = document.getElementById('listViewBtn');
-  if (cardViewBtn) cardViewBtn.addEventListener('click', (e) => { e.preventDefault(); setCreatureView('card'); cardViewBtn.classList.add('active'); listViewBtn?.classList.remove('active'); });
-  if (listViewBtn) listViewBtn.addEventListener('click', (e) => { e.preventDefault(); setCreatureView('list'); listViewBtn.classList.add('active'); cardViewBtn?.classList.remove('active'); });
-
-  // Populate creatures grid using the full renderer
-  try { loadCreaturesGrid(speciesName); } catch (e) { console.warn('loadCreaturesGrid failed', e); }
+    const addCreature = () => { try { window.appState.currentSpecies = speciesName; } catch(e){} openCreatureModal(null); };
+    document.getElementById('sdpAddBtn')?.addEventListener('click', addCreature);
+    document.getElementById('sdpAddBtn2')?.addEventListener('click', addCreature);
   }
 
   // Listen for creature:save events and forward to main saving logic

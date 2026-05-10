@@ -382,6 +382,67 @@
     color: #cbd5e1;
 }
 
+/* Species card: dossier snippet + vault count */
+.species-dossier-snippet {
+    color: #94a3b8; font-size: 0.8rem; line-height: 1.5;
+    margin-bottom: 8px; display: -webkit-box;
+    -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+}
+.species-vault-count {
+    background: rgba(34,197,94,0.15); color: #22c55e;
+    border: 1px solid rgba(34,197,94,0.3); border-radius: 12px;
+    padding: 2px 8px; font-size: 0.75rem; font-weight: bold; flex-shrink: 0; white-space: nowrap;
+}
+
+/* ── Species Detail Page (sdp) ──────────────────────────────────────────────── */
+.sdp-hero {
+    display: flex; align-items: flex-start; gap: 20px; flex-wrap: wrap;
+    background: linear-gradient(135deg, #1e293b 0%, #243044 100%);
+    border: 1px solid #334155; border-radius: 14px; padding: 24px; margin-bottom: 20px;
+}
+.sdp-hero-icon { font-size: 4rem; flex-shrink: 0; line-height: 1; }
+.sdp-hero-info { flex: 1; min-width: 0; }
+.sdp-hero-name { color: #f1f5f9; font-size: 2rem; font-weight: 700; margin: 0 0 10px; }
+.sdp-hero-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+
+.sdp-body { display: grid; grid-template-columns: 340px 1fr; gap: 20px; align-items: start; }
+.sdp-left { display: flex; flex-direction: column; gap: 14px; }
+.sdp-right { display: flex; flex-direction: column; gap: 14px; }
+
+.sdp-section {
+    background: rgba(255,255,255,0.03); border: 1px solid #1e293b;
+    border-radius: 12px; padding: 16px;
+}
+.sdp-section-title {
+    color: #64748b; font-size: 0.72rem; text-transform: uppercase;
+    letter-spacing: 0.8px; font-weight: 600; margin-bottom: 12px;
+}
+.sdp-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; padding: 5px 0; border-bottom: 1px solid #0f172a; }
+.sdp-row:last-child { border-bottom: none; }
+.sdp-label { color: #64748b; font-size: 0.82rem; flex-shrink: 0; }
+.sdp-value { color: #e2e8f0; font-size: 0.82rem; text-align: right; }
+.sdp-yes { color: #22c55e !important; }
+
+.sdp-stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(70px,1fr)); gap: 6px; }
+.sdp-stat-cell { background: rgba(0,0,0,0.25); border-radius: 8px; padding: 8px 4px; text-align: center; }
+.sdp-stat-icon { font-size: 1rem; margin-bottom: 3px; }
+.sdp-stat-val { color: #f1f5f9; font-weight: 600; font-size: 0.82rem; }
+.sdp-stat-key { color: #475569; font-size: 0.65rem; margin-top: 2px; }
+
+.sdp-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+.sdp-tag { background: rgba(59,130,246,0.1); color: #93c5fd; border: 1px solid rgba(59,130,246,0.2); padding: 2px 10px; border-radius: 12px; font-size: 0.78rem; }
+.sdp-tag-rarity { background: rgba(139,92,246,0.1); color: #c4b5fd; border-color: rgba(139,92,246,0.2); }
+.sdp-tag-boss { background: rgba(245,158,11,0.1); color: #fbbf24; border-color: rgba(245,158,11,0.2); }
+
+.sdp-dossier { color: #cbd5e1; font-size: 0.9rem; line-height: 1.75; white-space: pre-wrap; }
+.sdp-owned-count { color: #22c55e; font-size: 0.88rem; font-weight: bold; }
+.sdp-empty { color: #475569; font-size: 0.85rem; }
+
+@media (max-width: 900px) {
+    .sdp-body { grid-template-columns: 1fr; }
+    .sdp-hero-icon { font-size: 2.5rem; }
+}
+
 /* Utility */
 .no-species-found {
     text-align: center;

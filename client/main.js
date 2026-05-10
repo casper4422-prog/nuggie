@@ -1,4 +1,40 @@
-﻿// Escape HTML to prevent XSS when injecting user content into innerHTML
+﻿// ── TekOS UI System ───────────────────────────────────────────────────────────
+
+// Page entrance animation — call after setting main.innerHTML
+function tekAnimate(el) {
+    if (!el) return;
+    el.classList.remove('tek-page-enter');
+    void el.offsetWidth; // force reflow so animation restarts cleanly
+    el.classList.add('tek-page-enter');
+}
+window.tekAnimate = tekAnimate;
+
+// Scanner loading HTML — replaces all plain "Syncing..." text
+function tekLoader(msg) {
+    return `<div class="tek-scanner">
+        <div class="tek-scanner-icon">⬡</div>
+        <div class="tek-scanner-bar-wrap"><div class="tek-scanner-bar-fill"></div></div>
+        <div class="tek-scanner-text">${msg || 'Syncing data...'}</div>
+    </div>`;
+}
+window.tekLoader = tekLoader;
+
+// Click ripple — installed once, works on all buttons globally
+(function installRipple() {
+    document.addEventListener('click', function(e) {
+        const target = e.target.closest('.btn, .tek-btn, .tek-nav-item, .nc-btn, .tek-connect-btn, .tek-discord-btn');
+        if (!target) return;
+        const rect = target.getBoundingClientRect();
+        const dot = document.createElement('span');
+        dot.className = 'tek-ripple-dot';
+        dot.style.left = (e.clientX - rect.left - 3) + 'px';
+        dot.style.top  = (e.clientY - rect.top  - 3) + 'px';
+        target.appendChild(dot);
+        setTimeout(() => dot.remove(), 580);
+    }, true);
+})();
+
+// Escape HTML to prevent XSS when injecting user content into innerHTML
 function esc(s) {
     return String(s == null ? '' : s)
         .replace(/&/g, '&amp;')
@@ -1005,6 +1041,7 @@ function loadMyNuggiesPage() {
     `;
 
     setupCollectionFilters();
+    tekAnimate(main);
 }
 
 // ── Nuggie card system ────────────────────────────────────────────────────────
@@ -1246,7 +1283,7 @@ async function loadTradingPage() {
     setActiveNavButton('trading');
     const main = document.getElementById('appMainContent');
     if (!main) return;
-    main.innerHTML = `<div class="std-page"><div style="color:#94a3b8;padding:40px 0">Syncing marketplace data...</div></div>`;
+    main.innerHTML = `<div class="std-page">${tekLoader('Syncing marketplace data...')}</div>`;
 
     const myId = parseInt(localStorage.getItem('userId') || '0');
     const [trades, myOffers, myWishlist] = await Promise.all([
@@ -1286,6 +1323,7 @@ async function loadTradingPage() {
 
     // store for tab switching
     window._tradeData = { trades, myListings, myOffers, myId };
+    tekAnimate(main);
 }
 
 function tradeTab(btn, tab) {
@@ -1748,7 +1786,7 @@ async function loadTribesPage() {
     setActiveNavButton('tribe');
     const main = document.getElementById('appMainContent');
     if (!main) return;
-    main.innerHTML = `<div class="std-page"><div style="color:#94a3b8;padding:40px 0">Syncing tribe data...</div></div>`;
+    main.innerHTML = `<div class="std-page">${tekLoader('Syncing tribe data...')}</div>`;
 
     // Fetch user's tribe and all available tribes in parallel
     const [myTribe, allTribes] = await Promise.all([
@@ -2447,7 +2485,7 @@ async function loadArenaPage() {
     const main = document.getElementById('appMainContent');
     if (!main) return;
     arenaClearPoll();
-    main.innerHTML = `<div class="std-page"><div style="color:#94a3b8;padding:40px">Loading war rooms...</div></div>`;
+    main.innerHTML = `<div class="std-page">${tekLoader('Loading war rooms...')}</div>`;
 
     const { res, body: sessions } = await apiRequest('/api/arena/sessions').catch(() => ({ res:{ok:false}, body:[] }));
     const list = res.ok && Array.isArray(sessions) ? sessions : [];
@@ -2476,6 +2514,7 @@ async function loadArenaPage() {
                    </div>`
             }
         </div>`;
+    tekAnimate(main);
 }
 window.loadArenaPage = loadArenaPage;
 
@@ -2489,7 +2528,7 @@ async function loadArenaForBoss(bossId) {
     const template = getBossTemplates().find(t => t.id === bossId);
     if (!template) { loadArenaPage(); return; }
 
-    main.innerHTML = `<div class="std-page"><div style="color:#94a3b8;padding:40px">Analyzing war rooms for ${esc(template.name)}...</div></div>`;
+    main.innerHTML = `<div class="std-page"><div style="color:#94a3b8;padding:40px" class="tek-scanner-text">Analyzing war rooms for ${esc(template.name)}...</div></div>`;
 
     const { res, body: sessions } = await apiRequest('/api/arena/sessions').catch(() => ({ res:{ok:false}, body:[] }));
     const all = res.ok && Array.isArray(sessions) ? sessions : [];
@@ -2666,7 +2705,7 @@ async function arenaOpenSession(sessionId) {
     _arenaLastChatId = 0;
     const main = document.getElementById('appMainContent');
     if (!main) return;
-    main.innerHTML = `<div class="std-page"><div style="color:#94a3b8;padding:40px">Loading war room...</div></div>`;
+    main.innerHTML = `<div class="std-page"><div>${tekLoader('Loading war room...')}</div></div>`;
     await arenaRenderSession(sessionId, main);
     _arenaChatPollTimer = setInterval(() => arenaPollChat(sessionId), 5000);
 }
@@ -3013,7 +3052,7 @@ function setActiveNavButton(pageId) {
 async function loadCreaturePublicPage(creatureId) {
     const main = document.getElementById('appMainContent');
     if (!main) return;
-    main.innerHTML = `<div class="std-page"><div style="color:#94a3b8;padding:40px 0">Loading creature...</div></div>`;
+    main.innerHTML = `<div class="std-page"><div>${tekLoader('Loading specimen data...')}</div></div>`;
 
     const { res, body } = await apiRequest(`/api/creatures/public/${creatureId}`).catch(() => ({ res: { ok: false }, body: null }));
     if (!res.ok || !body) {
@@ -3124,7 +3163,7 @@ async function loadWildFindsPage() {
     setActiveNavButton('wildfinds');
     const main = document.getElementById('appMainContent');
     if (!main) return;
-    main.innerHTML = `<div class="std-page"><div style="color:#94a3b8;padding:40px 0">Syncing field reports...</div></div>`;
+    main.innerHTML = `<div class="std-page">${tekLoader('Syncing field reports...')}</div>`;
 
     const finds = await apiRequest('/api/wild-finds').then(r => Array.isArray(r.body) ? r.body : []).catch(() => []);
     const myId = parseInt(localStorage.getItem('userId') || '0');
@@ -3170,6 +3209,7 @@ async function loadWildFindsPage() {
         </div>`;
     // Inject reactions
     if (finds.length) loadAndInjectReactions('wild_find', finds.map(f => f.id));
+    tekAnimate(main);
 }
 window.loadWildFindsPage = loadWildFindsPage;
 
@@ -3403,7 +3443,7 @@ async function loadLeaderboardsPage() {
     setActiveNavButton('leaderboards');
     const main = document.getElementById('appMainContent');
     if (!main) return;
-    main.innerHTML = `<div class="std-page"><div style="color:#94a3b8;padding:40px 0">Compiling rankings...</div></div>`;
+    main.innerHTML = `<div class="std-page">${tekLoader('Compiling rankings...')}</div>`;
 
     // Fetch all leaderboard data in parallel
     const [meleeTop, healthTop, playersCreatures, playersTraders, playersFriends, tribesTop] = await Promise.all([
@@ -3490,6 +3530,7 @@ async function loadLeaderboardsPage() {
 
             </div>
         </div>`;
+    tekAnimate(main);
 }
 window.loadLeaderboardsPage = loadLeaderboardsPage;
 
@@ -3498,7 +3539,7 @@ async function loadMyProfilePage() {
     setActiveNavButton('profile');
     const main = document.getElementById('appMainContent');
     if (!main) return;
-    main.innerHTML = `<div class="std-page"><div style="color:#94a3b8;padding:40px 0">Loading dossier...</div></div>`;
+    main.innerHTML = `<div class="std-page">${tekLoader('Loading dossier...')}</div>`;
 
     // Fetch real profile + friends + trades + activity feed in parallel
     const [profile, friends, trades, myOffers, feedItems] = await Promise.all([
@@ -3786,6 +3827,7 @@ async function loadMyProfilePage() {
 
             </div>
         </div>`;
+    tekAnimate(main);
 }
 
 // ── Edit Profile modal ────────────────────────────────────────────────────────
@@ -4514,7 +4556,7 @@ async function loadBossDetailPage(bossId) {
     const template = getBossTemplates().find(t => t.id === bossId);
     if (!template) { loadBossPlanner(); return; }
 
-    main.innerHTML = `<div class="std-page"><div style="color:#94a3b8;padding:40px">Analyzing threat data...</div></div>`;
+    main.innerHTML = `<div class="std-page">${tekLoader('Analyzing threat data...')}</div>`;
 
     // Fetch active war rooms for this boss in parallel with plans
     const sessions = await apiRequest('/api/arena/sessions').then(r => Array.isArray(r.body) ? r.body : []).catch(() => []);
@@ -5040,6 +5082,7 @@ function openBossModal(boss = null) {
         closeModal();
         renderBossGrid(bosses);
     });
+    tekAnimate(main);
 }
 
 // Expose boss planner functions to window for debugging
@@ -5109,7 +5152,7 @@ async function loadBossRecordsPage() {
     setActiveNavButton('boss');
     const main = document.getElementById('appMainContent');
     if (!main) return;
-    main.innerHTML = `<div class="std-page"><div style="color:#94a3b8;padding:40px 0">Retrieving combat logs...</div></div>`;
+    main.innerHTML = `<div class="std-page">${tekLoader('Retrieving combat logs...')}</div>`;
     const [records, summary] = await Promise.all([
         apiRequest('/api/boss-records').then(r => Array.isArray(r.body) ? r.body : []).catch(() => []),
         apiRequest('/api/boss-records/summary').then(r => Array.isArray(r.body) ? r.body : []).catch(() => [])
@@ -5167,7 +5210,7 @@ async function loadDMInboxPage() {
     setActiveNavButton('messages');
     const main = document.getElementById('appMainContent');
     if (!main) return;
-    main.innerHTML = `<div class="std-page"><div style="color:#94a3b8;padding:40px 0">Establishing comms link...</div></div>`;
+    main.innerHTML = `<div class="std-page">${tekLoader('Establishing comms link...')}</div>`;
     const convos = await apiRequest('/api/dms').then(r => Array.isArray(r.body) ? r.body : []).catch(() => []);
     const timeAgo = ts => { const d = Date.now() - new Date(ts).getTime(), m = Math.floor(d/60000); if (m < 60) return `${m}m ago`; const h = Math.floor(m/60); if (h < 24) return `${h}h ago`; return `${Math.floor(h/24)}d ago`; };
 
@@ -5191,6 +5234,7 @@ async function loadDMInboxPage() {
                    </div>`
             }
         </div>`;
+    tekAnimate(main);
 }
 window.loadDMInboxPage = loadDMInboxPage;
 
@@ -5259,7 +5303,7 @@ async function loadEventsPage() {
     setActiveNavButton('events');
     const main = document.getElementById('appMainContent');
     if (!main) return;
-    main.innerHTML = `<div class="std-page"><div style="color:#94a3b8;padding:40px 0">Syncing operations schedule...</div></div>`;
+    main.innerHTML = `<div class="std-page">${tekLoader('Syncing operations schedule...')}</div>`;
 
     const events = await apiRequest('/api/events').then(r => Array.isArray(r.body) ? r.body : []).catch(() => []);
     const myId = parseInt(localStorage.getItem('userId') || '0');
@@ -5315,6 +5359,7 @@ async function loadEventsPage() {
                 : `<div class="event-grid">${events.map(eventCard).join('')}</div>`
             }
         </div>`;
+    tekAnimate(main);
 }
 window.loadEventsPage = loadEventsPage;
 

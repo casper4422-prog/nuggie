@@ -39,11 +39,16 @@
     /* Sidebar dimensions */
     --sidebar-w:        220px;
 
-    /* Typography */
-    --tek-font:         'Segoe UI', 'Inter', 'Arial', sans-serif;
-    --tek-mono:         'Consolas', 'Fira Code', 'Courier New', monospace;
+    /* Typography — Inter loaded via Google Fonts in index.html */
+    --tek-font:         'Inter', 'Segoe UI', system-ui, sans-serif;
+    --tek-mono:         'Fira Code', 'Consolas', 'Courier New', monospace;
     --tek-radius:       12px;
-    --tek-radius-sm:    7px;
+    --tek-radius-sm:    8px;
+
+    /* Card depth */
+    --tek-card-bg:      linear-gradient(160deg, rgba(14,26,54,0.88) 0%, rgba(5,10,24,0.94) 100%);
+    --tek-card-shadow:  inset 0 1px 0 rgba(0,180,255,0.09), inset 0 -1px 0 rgba(0,0,0,0.35), 0 4px 32px rgba(0,0,0,0.45);
+    --tek-card-shadow-hover: inset 0 1px 0 rgba(0,180,255,0.14), inset 0 -1px 0 rgba(0,0,0,0.35), 0 8px 40px rgba(0,0,0,0.5), 0 0 20px rgba(0,180,255,0.1);
 }
 
 /* ── Reset / Base ───────────────────────────────────────────────────────── */
@@ -57,16 +62,25 @@ html, body {
     overflow-x: hidden;
 }
 
-/* Subtle hex-grid background pattern */
+/* Atmospheric radial glows — layer under hex canvas */
 body::before {
     content: '';
     position: fixed;
     inset: 0;
     background-image:
-        radial-gradient(ellipse 80% 60% at 20% 10%, rgba(0,180,255,0.04) 0%, transparent 60%),
-        radial-gradient(ellipse 60% 40% at 80% 80%, rgba(139,92,246,0.04) 0%, transparent 50%);
+        radial-gradient(ellipse 70% 50% at 15% 8%,  rgba(0,180,255,0.055) 0%, transparent 55%),
+        radial-gradient(ellipse 55% 45% at 85% 85%, rgba(139,92,246,0.05) 0%, transparent 50%);
     pointer-events: none;
     z-index: 0;
+}
+
+/* Hex grid canvas sits just above atmospheric layer */
+#tekHexCanvas {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 1;
 }
 
 /* ── App layout: sidebar + main ─────────────────────────────────────────── */
@@ -539,3 +553,294 @@ body::before {
     }
 }
 @media (min-width: 769px) { .tek-mobile-menu { display: none; } }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   TekOS POLISH — Animations · Depth · Typography · Interactions
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Inter font utilities ────────────────────────────────────────────────── */
+h1, h2, h3, h4, h5, h6,
+.tek-page-title, .std-page-header .page-title h1,
+.profile-hero-name, .sdp-hero-name, .boss-detail-name {
+    font-family: 'Inter', var(--tek-font);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+}
+
+body, input, button, select, textarea {
+    font-family: 'Inter', var(--tek-font);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Page entrance animation ─────────────────────────────────────────────── */
+@keyframes tek-card-enter {
+    from {
+        opacity: 0;
+        transform: translateY(14px) scale(0.97);
+        filter: blur(1px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0);
+    }
+}
+
+@keyframes tek-fade-in {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes tek-scan-in {
+    0%   { clip-path: inset(0 0 100% 0); opacity: 0.6; }
+    40%  { opacity: 1; }
+    100% { clip-path: inset(0 0 0% 0); }
+}
+
+.tek-page-enter {
+    animation: tek-fade-in 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Staggered card entrance — applied by JS adding tek-page-enter to main */
+.tek-page-enter .profile-card,
+.tek-page-enter .lb-card,
+.tek-page-enter .friend-card,
+.tek-page-enter .trade-card,
+.tek-page-enter .nc-card,
+.tek-page-enter .wf-card,
+.tek-page-enter .event-card,
+.tek-page-enter .arena-session-card,
+.tek-page-enter .sdp-section,
+.tek-page-enter .boss-detail-section,
+.tek-page-enter .std-page-header {
+    animation: tek-card-enter 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Progressive stagger delays up to 8 children */
+.tek-page-enter > *:nth-child(1)  { animation-delay: 0ms; }
+.tek-page-enter > *:nth-child(2)  { animation-delay: 40ms; }
+.tek-page-enter > *:nth-child(3)  { animation-delay: 80ms; }
+.tek-page-enter > *:nth-child(4)  { animation-delay: 120ms; }
+.tek-page-enter > *:nth-child(5)  { animation-delay: 160ms; }
+.tek-page-enter > *:nth-child(6)  { animation-delay: 200ms; }
+.tek-page-enter > *:nth-child(7)  { animation-delay: 240ms; }
+.tek-page-enter > *:nth-child(8)  { animation-delay: 280ms; }
+
+/* ── Card depth treatment ─────────────────────────────────────────────────── */
+.profile-card, .lb-card, .friend-card, .dm-convo-row,
+.trade-card, .nc-card, .nc-card-exp, .nc-card-cmp,
+.wf-card, .event-card, .arena-session-card,
+.boss-detail-section, .sdp-section,
+.std-page-header, .tek-card,
+.species-card, .sdp-hero,
+.nuggies-controls, .species-info-container {
+    background: var(--tek-card-bg) !important;
+    box-shadow: var(--tek-card-shadow) !important;
+    border-color: var(--tek-border) !important;
+    backdrop-filter: blur(14px) !important;
+    -webkit-backdrop-filter: blur(14px) !important;
+    transition: border-color 0.22s ease, box-shadow 0.22s ease, transform 0.18s ease !important;
+}
+
+.profile-card:hover, .lb-card:hover, .friend-card:hover,
+.trade-card:hover, .nc-card:hover, .wf-card:hover,
+.event-card:hover, .arena-session-card:hover, .species-card:hover {
+    border-color: var(--tek-border-active) !important;
+    box-shadow: var(--tek-card-shadow-hover) !important;
+    transform: translateY(-2px) !important;
+}
+
+/* Section headers inside cards stay borderless */
+.profile-card-header {
+    border-bottom: 1px solid rgba(0,180,255,0.1) !important;
+    padding-bottom: 12px !important;
+    margin-bottom: 14px !important;
+}
+.profile-card-header h3 {
+    font-size: 0.82rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 1.2px !important;
+    text-transform: uppercase !important;
+    color: var(--tek-blue) !important;
+}
+
+/* ── Button polish ────────────────────────────────────────────────────────── */
+/* All buttons get overflow:hidden and relative positioning for ripple */
+.btn, .tek-btn, .tek-nav-item, .nc-btn,
+.tek-connect-btn, .tek-discord-btn {
+    position: relative !important;
+    overflow: hidden !important;
+    cursor: pointer;
+    transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.3px !important;
+}
+
+/* Primary button — Tek blue with inner glow */
+.btn.btn-primary, .btn-primary {
+    background: linear-gradient(135deg, #00c4ff, #0090e0) !important;
+    color: #000 !important;
+    border: none !important;
+    box-shadow: 0 0 16px rgba(0,180,255,0.35), inset 0 1px 0 rgba(255,255,255,0.2) !important;
+    font-weight: 700 !important;
+}
+.btn.btn-primary:hover, .btn-primary:hover {
+    background: linear-gradient(135deg, #33d0ff, #00aaff) !important;
+    box-shadow: 0 0 28px rgba(0,180,255,0.55), inset 0 1px 0 rgba(255,255,255,0.2) !important;
+    transform: translateY(-2px) !important;
+}
+.btn.btn-primary:active, .btn-primary:active {
+    transform: translateY(0) !important;
+    box-shadow: 0 0 10px rgba(0,180,255,0.3) !important;
+}
+
+/* Secondary button — glass */
+.btn.btn-secondary, .btn-secondary {
+    background: rgba(0,180,255,0.08) !important;
+    color: var(--tek-blue) !important;
+    border: 1px solid rgba(0,180,255,0.22) !important;
+}
+.btn.btn-secondary:hover, .btn-secondary:hover {
+    background: rgba(0,180,255,0.16) !important;
+    border-color: rgba(0,180,255,0.4) !important;
+    box-shadow: 0 0 12px rgba(0,180,255,0.15) !important;
+}
+
+/* Danger button */
+.btn.btn-danger, .btn-danger {
+    background: rgba(239,68,68,0.1) !important;
+    color: var(--tek-red) !important;
+    border: 1px solid rgba(239,68,68,0.22) !important;
+}
+.btn.btn-danger:hover, .btn-danger:hover {
+    background: rgba(239,68,68,0.2) !important;
+    border-color: rgba(239,68,68,0.45) !important;
+}
+
+/* ── Click ripple ─────────────────────────────────────────────────────────── */
+@keyframes tek-ripple-expand {
+    from { transform: scale(0); opacity: 0.5; }
+    to   { transform: scale(60); opacity: 0; }
+}
+
+.tek-ripple-dot {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(0, 180, 255, 0.35);
+    transform: scale(0);
+    animation: tek-ripple-expand 0.55s cubic-bezier(0, 0, 0.2, 1) forwards;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* ── Scanner loading component ───────────────────────────────────────────── */
+@keyframes tek-scan-bar {
+    0%   { left: -100%; }
+    100% { left: 100%; }
+}
+@keyframes tek-text-pulse {
+    0%, 100% { opacity: 0.5; }
+    50%       { opacity: 1; }
+}
+
+.tek-scanner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 80px 20px;
+    min-height: 200px;
+}
+.tek-scanner-icon {
+    font-size: 2.2rem;
+    opacity: 0.6;
+    filter: drop-shadow(0 0 10px var(--tek-blue-glow));
+    animation: tek-text-pulse 2s ease-in-out infinite;
+}
+.tek-scanner-bar-wrap {
+    width: 220px;
+    height: 2px;
+    background: rgba(0,180,255,0.12);
+    border-radius: 2px;
+    overflow: hidden;
+    position: relative;
+}
+.tek-scanner-bar-fill {
+    position: absolute;
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent 0%, var(--tek-blue) 50%, transparent 100%);
+    animation: tek-scan-bar 1.6s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+.tek-scanner-text {
+    color: var(--tek-blue);
+    font-size: 0.72rem;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    font-weight: 600;
+    animation: tek-text-pulse 1.6s ease-in-out infinite;
+    font-family: var(--tek-mono);
+}
+
+/* ── Sidebar active state polish ─────────────────────────────────────────── */
+.tek-logo-hex {
+    filter: drop-shadow(0 0 10px rgba(0,180,255,0.7)) !important;
+    animation: tek-text-pulse 3s ease-in-out infinite;
+}
+
+.tek-nav-item.active {
+    background: linear-gradient(90deg, rgba(0,180,255,0.12) 0%, rgba(0,180,255,0.04) 100%) !important;
+}
+
+/* ── Form input polish ───────────────────────────────────────────────────── */
+.form-control, .search-input, .tek-form-input {
+    font-family: 'Inter', var(--tek-font) !important;
+    font-size: 0.88rem !important;
+    transition: border-color 0.2s, box-shadow 0.2s !important;
+}
+
+/* ── Scrollbar polish ────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+    background: rgba(0,180,255,0.2);
+    border-radius: 3px;
+    transition: background 0.2s;
+}
+::-webkit-scrollbar-thumb:hover { background: rgba(0,180,255,0.5); }
+
+/* ── Login page polish ───────────────────────────────────────────────────── */
+.tek-login-panel {
+    box-shadow:
+        0 0 0 1px rgba(0,180,255,0.12),
+        0 0 60px rgba(0,180,255,0.08),
+        0 0 120px rgba(139,92,246,0.04),
+        0 32px 100px rgba(0,0,0,0.6) !important;
+    animation: tek-fade-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.tek-login-title {
+    background: linear-gradient(135deg, #00c4ff, #8b5cf6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: none !important;
+}
+
+/* ── Notification badge on sidebar ──────────────────────────────────────── */
+.tek-nav-badge:not([style*="display:none"]):not(:empty) {
+    animation: tek-text-pulse 2s ease-in-out infinite;
+}
+
+/* ── Selection highlight ─────────────────────────────────────────────────── */
+::selection {
+    background: rgba(0,180,255,0.25);
+    color: #fff;
+}

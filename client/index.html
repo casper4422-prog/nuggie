@@ -6,6 +6,10 @@
         <title>⬡ TekOS — Specimen Management Network</title>
         <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text y='14' font-size='14'>⬡</text></svg>">
         <style>html:not([data-ready="true"]) { visibility: hidden !important; }</style>
+        <!-- Inter font — loaded with display=swap for zero layout shift -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
         <link rel="manifest" href="manifest.json">
         <meta name="theme-color" content="#00b4ff">
         <meta name="apple-mobile-web-app-capable" content="yes">
@@ -164,6 +168,72 @@
         <!-- Modals -->
         <div class="modal" id="creatureModal" aria-hidden="true"></div>
         <div class="modal" id="creatureDetailModal" aria-hidden="true"></div>
+
+        <!-- Animated hex grid background canvas -->
+        <canvas id="tekHexCanvas"></canvas>
+        <script>
+        (function() {
+            const canvas = document.getElementById('tekHexCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const R = 28; // hex circumradius
+            const W = R * Math.sqrt(3); // hex width (pointy-top)
+            const H = R * 2;            // hex height
+            let phase = 0;
+            let raf;
+
+            function drawHex(x, y, opacity) {
+                ctx.beginPath();
+                for (let i = 0; i < 6; i++) {
+                    const a = Math.PI / 3 * i - Math.PI / 6; // pointy-top
+                    const px = x + (R - 1) * Math.cos(a);
+                    const py = y + (R - 1) * Math.sin(a);
+                    i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+                }
+                ctx.closePath();
+                ctx.strokeStyle = `rgba(0,180,255,${opacity})`;
+                ctx.lineWidth = 0.7;
+                ctx.stroke();
+            }
+
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                const cw = canvas.width, ch = canvas.height;
+                const cols = Math.ceil(cw / W) + 3;
+                const rows = Math.ceil(ch / (H * 0.75)) + 3;
+
+                for (let row = -1; row < rows; row++) {
+                    for (let col = -1; col < cols; col++) {
+                        const x = col * W + (row % 2 !== 0 ? W / 2 : 0);
+                        const y = row * H * 0.75;
+                        // Wave based on distance from centre
+                        const dx = x - cw * 0.5, dy = y - ch * 0.5;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        const wave = Math.sin(phase - dist * 0.012) * 0.5 + 0.5;
+                        const opacity = 0.025 + wave * 0.04;
+                        drawHex(x, y, opacity);
+                    }
+                }
+                phase += 0.006;
+                raf = requestAnimationFrame(draw);
+            }
+
+            function resize() {
+                canvas.width  = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+
+            window.addEventListener('resize', resize);
+            resize();
+            draw();
+
+            // Pause when tab is hidden (saves battery)
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) { cancelAnimationFrame(raf); }
+                else { draw(); }
+            });
+        })();
+        </script>
 
         <!-- Scripts -->
         <script src="species-database.js"></script>

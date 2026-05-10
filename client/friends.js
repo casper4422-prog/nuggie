@@ -64,6 +64,7 @@ async function loadFriendsPage() {
     document.getElementById('friendSearchInput')?.addEventListener('keydown', e => {
         if (e.key === 'Enter') friendsDoSearch();
     });
+    if (typeof tekAnimate === 'function') tekAnimate(main);
 }
 
 function friendCard(f, onlineIds) {

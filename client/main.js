@@ -2617,6 +2617,61 @@ async function loadArenaPage() {
 }
 window.loadArenaPage = loadArenaPage;
 
+// Called from Boss Planner — go to Arena filtered to that boss, auto-open create if no sessions
+async function loadArenaForBoss(bossId) {
+    setActiveNavButton('arena');
+    const main = document.getElementById('appMainContent');
+    if (!main) return;
+    arenaClearPoll();
+
+    const template = getBossTemplates().find(t => t.id === bossId);
+    if (!template) { loadArenaPage(); return; }
+
+    main.innerHTML = `<div class="std-page"><div style="color:#94a3b8;padding:40px">Loading war rooms for ${esc(template.name)}...</div></div>`;
+
+    const { res, body: sessions } = await apiRequest('/api/arena/sessions').catch(() => ({ res:{ok:false}, body:[] }));
+    const all = res.ok && Array.isArray(sessions) ? sessions : [];
+    // Show sessions for this boss first, then the rest
+    const bossSessions = all.filter(s => s.boss_id === bossId || s.boss_name === template.name);
+    const otherSessions = all.filter(s => s.boss_id !== bossId && s.boss_name !== template.name);
+
+    main.innerHTML = `
+        <div class="std-page">
+            <div class="std-page-header">
+                <div class="page-title">
+                    <h1>${template.icon} ${esc(template.name)}</h1>
+                    <div class="page-subtitle">📍 ${esc(template.map)} · ${esc(template.type)} — Arena war rooms</div>
+                </div>
+                <div style="display:flex;gap:8px">
+                    <button class="btn btn-secondary" onclick="loadBossPlanner()">← Boss List</button>
+                    <button class="btn btn-secondary" onclick="arenaJoinModal()">🔑 Join with Code</button>
+                    <button class="btn btn-primary" onclick="arenaCreateModal('${bossId}')">⚔️ Start War Room</button>
+                </div>
+            </div>
+
+            ${bossessions_html(bossId, template.name, bossSessions)}
+
+            ${otherSessions.length > 0 ? `
+            <div style="color:#64748b;font-size:0.85rem;margin:24px 0 10px;text-transform:uppercase;letter-spacing:0.5px">Other Active War Rooms</div>
+            <div class="arena-session-list">${otherSessions.map(s => arenaSessionCard(s)).join('')}</div>` : ''}
+        </div>`;
+}
+window.loadArenaForBoss = loadArenaForBoss;
+
+function bossessions_html(bossId, bossName, bossSessionList) {
+    if (bossSessionList.length === 0) {
+        return `<div style="background:rgba(255,255,255,0.03);border:2px dashed #334155;border-radius:12px;padding:40px;text-align:center">
+            <div style="font-size:2.5rem;margin-bottom:12px">⚔️</div>
+            <div style="color:#94a3b8;font-size:1rem;margin-bottom:6px">No active war rooms for this boss yet.</div>
+            <div style="color:#64748b;font-size:0.85rem;margin-bottom:20px">Start one and invite your allies — they can join with a code.</div>
+            <button class="btn btn-primary" onclick="arenaCreateModal('${bossId}')">⚔️ Start War Room</button>
+        </div>`;
+    }
+    return `
+        <div style="color:#64748b;font-size:0.85rem;margin-bottom:10px;text-transform:uppercase;letter-spacing:0.5px">${bossSessionList.length} War Room${bossSessionList.length!==1?'s':''} for ${esc(bossName)}</div>
+        <div class="arena-session-list">${bossSessionList.map(s => arenaSessionCard(s)).join('')}</div>`;
+}
+
 function arenaSessionCard(s) {
     const diffColor = { alpha:'#ef4444', beta:'#3b82f6', gamma:'#22c55e' }[s.difficulty] || '#94a3b8';
     const diffLabel = { alpha:'🔴 Alpha', beta:'🔵 Beta', gamma:'🟢 Gamma' }[s.difficulty] || s.difficulty;
@@ -2640,23 +2695,30 @@ function arenaSessionCard(s) {
 }
 
 // ── Create modal ──────────────────────────────────────────────────────────────
-function arenaCreateModal() {
+function arenaCreateModal(preBossId) {
     const bosses = getBossTemplates();
+    const pre = preBossId ? bosses.find(b => b.id === preBossId) : null;
     const modal = document.createElement('div');
     modal.className = 'modal active';
     modal.innerHTML = `
         <div class="modal-content" style="max-width:460px">
             <div class="modal-header">
-                <h2 class="modal-title">➕ Create War Room</h2>
+                <h2 class="modal-title">${pre ? `⚔️ War Room: ${esc(pre.name)}` : '➕ Create War Room'}</h2>
                 <button class="close-btn" onclick="this.closest('.modal').remove()">&times;</button>
             </div>
             <div class="modal-body" style="display:flex;flex-direction:column;gap:14px">
-                <div class="plan-field">
-                    <label class="form-label">Boss Fight *</label>
-                    ${mkSelect('arenaCreateBoss',
-                        [{ v:'', l:'Select a boss...' }, ...bosses.map(b => ({ v: b.id, l: `${b.name} — ${b.map}` }))],
-                        '', 'Select a boss...')}
-                </div>
+                ${pre
+                    ? `<div style="background:rgba(255,255,255,0.04);border:1px solid #334155;border-radius:8px;padding:12px;color:#94a3b8;font-size:0.9rem">
+                           <div style="color:#f1f5f9;font-weight:bold;margin-bottom:4px">${esc(pre.icon)} ${esc(pre.name)}</div>
+                           <div>📍 ${esc(pre.map)} · ${esc(pre.type)}</div>
+                       </div>`
+                    : `<div class="plan-field">
+                           <label class="form-label">Boss Fight *</label>
+                           ${mkSelect('arenaCreateBoss',
+                               [{ v:'', l:'Select a boss...' }, ...bosses.map(b => ({ v: b.id, l: `${b.name} — ${b.map}` }))],
+                               '', 'Select a boss...')}
+                       </div>`
+                }
                 <div class="plan-field">
                     <label class="form-label">Difficulty</label>
                     ${mkSelect('arenaCreateDiff',
@@ -2667,15 +2729,15 @@ function arenaCreateModal() {
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" onclick="this.closest('.modal').remove()">Cancel</button>
-                <button class="btn btn-primary" onclick="arenaDoCreate()">Create Room</button>
+                <button class="btn btn-primary" onclick="arenaDoCreate('${preBossId || ''}')">Create Room</button>
             </div>
         </div>`;
     document.body.appendChild(modal);
 }
 window.arenaCreateModal = arenaCreateModal;
 
-async function arenaDoCreate() {
-    const bossId = document.getElementById('csel_arenaCreateBoss')?.dataset.val;
+async function arenaDoCreate(preBossId) {
+    const bossId = preBossId || document.getElementById('csel_arenaCreateBoss')?.dataset.val;
     const difficulty = document.getElementById('csel_arenaCreateDiff')?.dataset.val || 'alpha';
     const errEl = document.getElementById('arenaCreateErr');
     if (!bossId) { if (errEl) { errEl.textContent = 'Select a boss.'; errEl.style.display='block'; } return; }
@@ -4486,7 +4548,7 @@ async function loadBossPlanner() {
                 const diffColor = { gamma: '#22c55e', beta: '#3b82f6', alpha: '#ef4444' }[diff] || '';
                 const diffLabel = { gamma: 'Gamma', beta: 'Beta', alpha: 'Alpha' }[diff] || '';
                 return `
-                <div class="boss-planning-card" onclick="openBossPlanning('${t.id}')">
+                <div class="boss-planning-card" onclick="loadArenaForBoss('${t.id}')">
                     <div class="boss-card-header">
                         <div class="boss-card-icon">${t.icon}</div>
                         <div class="boss-card-title">
@@ -4501,7 +4563,7 @@ async function loadBossPlanner() {
                     </div>
                     <div class="boss-card-desc">${t.description || t.strategy}</div>
                     <div class="boss-card-footer">
-                        <span class="click-hint">${hasPlan ? '✏️ Edit plan' : '📋 Plan fight'}</span>
+                        <span class="click-hint">⚔️ Open War Room</span>
                         ${hasPlan ? `<button class="btn btn-sm" style="padding:4px 10px;font-size:0.75rem;background:#22c55e;color:#fff;border:none;border-radius:6px" onclick="event.stopPropagation();bossLogKillModal('${t.id}','${t.name.replace(/'/g,"\\'")}')" title="Log a kill for this boss">☠️ Log Kill</button>` : ''}
                     </div>
                 </div>`;

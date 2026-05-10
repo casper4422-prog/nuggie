@@ -2831,7 +2831,7 @@ async function arenaRenderSession(sessionId, main) {
                     <div class="arena-chat-input-row">
                         <input id="arenaChatInput" class="form-control" placeholder="Type a message... (Enter to send)"
                             onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();arenaSendChat(${sessionId},'text')}">
-                        <button class="btn btn-secondary btn-sm" onclick="arenaShareNuggieModal(${sessionId})" title="Share a Nuggie">🦖</button>
+                        <button class="btn btn-secondary btn-sm" onclick="arenaShareNuggieModal(${sessionId})" title="Share a Specimen">🦖</button>
                         <button class="btn btn-primary btn-sm" onclick="arenaSendChat(${sessionId},'text')">Send</button>
                     </div>` : `<div style="color:#64748b;font-size:0.85rem;padding:10px;text-align:center">This war room is closed.</div>`}
                 </div>
@@ -2912,7 +2912,7 @@ window.arenaSendChat = arenaSendChat;
 // Add Nuggie to roster modal
 function arenaAddNuggieModal(sessionId) {
     const creatures = window.appState?.creatures || [];
-    if (!creatures.length) return alert('No Nuggies in My Nuggies yet!');
+    if (!creatures.length) return alert('No Specimens yet!');
     const modal = document.createElement('div');
     modal.className = 'modal active';
     modal.innerHTML = `
@@ -2957,13 +2957,13 @@ window.arenaRemoveCreature = arenaRemoveCreature;
 // Share Nuggie into chat
 function arenaShareNuggieModal(sessionId) {
     const creatures = window.appState?.creatures || [];
-    if (!creatures.length) return alert('No Nuggies to share!');
+    if (!creatures.length) return alert('No Specimens to share!');
     const modal = document.createElement('div');
     modal.className = 'modal active';
     modal.innerHTML = `
         <div class="modal-content" style="max-width:500px">
             <div class="modal-header">
-                <h2 class="modal-title">🦖 Share Nuggie to Chat</h2>
+                <h2 class="modal-title">🦖 Share Specimen to Chat</h2>
                 <button class="close-btn" onclick="this.closest('.modal').remove()">&times;</button>
             </div>
             <div class="modal-body"><div class="nuggie-picker">
@@ -3652,7 +3652,7 @@ async function loadMyProfilePage() {
                     ${profile.bio ? `<div class="profile-hero-bio">${esc(profile.bio)}</div>` : ''}
                     ${profile.looking_for ? `<div class="profile-looking-for">👀 ${esc(profile.looking_for)}</div>` : ''}
                     <div class="profile-hero-stats">
-                        <div class="profile-hstat"><span class="profile-hstat-val">${creatures.length}</span><span class="profile-hstat-lbl">Nuggies</span></div>
+                        <div class="profile-hstat"><span class="profile-hstat-val">${creatures.length}</span><span class="profile-hstat-lbl">Specimens</span></div>
                         <div class="profile-hstat"><span class="profile-hstat-val">${speciesOwned}/${totalSpecies}</span><span class="profile-hstat-lbl">Species</span></div>
                         <div class="profile-hstat"><span class="profile-hstat-val">${friends.length}</span><span class="profile-hstat-lbl">Friends</span></div>
                         <div class="profile-hstat"><span class="profile-hstat-val">${badgeCount}</span><span class="profile-hstat-lbl">Badges</span></div>
@@ -4021,7 +4021,7 @@ async function profileOpenPinModal() {
     modal.innerHTML = `
         <div class="modal-content" style="max-width:600px">
             <div class="modal-header">
-                <h2 class="modal-title">📌 Pin Your Best Nuggies</h2>
+                <h2 class="modal-title">📌 Pin Your Best Specimens</h2>
                 <button class="close-btn" onclick="this.closest('.modal').remove()">&times;</button>
             </div>
             <div class="modal-body">
@@ -4130,7 +4130,7 @@ function profileDeleteAccount() {
             </div>
             <div class="modal-body" style="display:flex;flex-direction:column;gap:14px">
                 <div style="background:#1a0a0a;border:1px solid #7f1d1d;border-radius:8px;padding:14px;color:#fca5a5;font-size:0.9rem;line-height:1.5">
-                    ⚠️ This will <strong>permanently delete</strong> your account, all your Nuggies, trade listings, tribe memberships, and friend connections. This cannot be undone.
+                    ⚠️ This will <strong>permanently delete</strong> your account, all your Specimens, trade listings, tribe memberships, and friend connections. This cannot be undone.
                 </div>
                 <div class="plan-field">
                     <label class="form-label">Enter your password to confirm</label>
@@ -4868,7 +4868,7 @@ function openBossPlanning(bossId) {
                         <span class="lineup-count" id="bp-lineup-count">${selectedIds.size} selected</span>
                     </div>
                     ${creatures.length === 0
-                        ? `<div class="empty-lineup-msg">You have no saved Nuggies yet. Add specimens from the Dex first.</div>`
+                        ? `<div class="empty-lineup-msg">You have no saved Specimens yet. Add creatures from the Dex first.</div>`
                         : `<div class="nuggie-picker" id="bp-nuggie-picker">
                             ${creatures.map(c => {
                                 const sel = selectedIds.has(c.id);

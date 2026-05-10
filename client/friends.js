@@ -213,7 +213,7 @@ async function friendViewCreatures(userId, name) {
     modal.innerHTML = `
         <div class="modal-content" style="max-width:680px">
             <div class="modal-header">
-                <h2 class="modal-title">🦖 ${name}'s Nuggies</h2>
+                <h2 class="modal-title">🦖 ${name}'s Specimens</h2>
                 <button class="close-btn" onclick="this.closest('.modal').remove()">&times;</button>
             </div>
             <div class="modal-body" id="friendCreaturesBody">

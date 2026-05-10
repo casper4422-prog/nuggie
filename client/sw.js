@@ -1,4 +1,4 @@
-// Dino Nuggie Manager — Service Worker
+// TekOS — Service Worker
 // Caches core static assets for faster load and basic offline support
 
 const CACHE_NAME = 'nuggie-v1';
@@ -64,7 +64,7 @@ self.addEventListener('fetch', event => {
 // Push notification handler (for future server-push support)
 self.addEventListener('push', event => {
     const data = event.data ? event.data.json() : {};
-    const title = data.title || 'Dino Nuggie Manager';
+    const title = data.title || 'TekOS';
     const body = data.body || 'You have a new notification';
     event.waitUntil(
         self.registration.showNotification(title, {

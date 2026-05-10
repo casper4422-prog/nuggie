@@ -1,6 +1,6 @@
 {
-  "name": "Dino Nuggie Manager",
-  "short_name": "DinoNuggies",
+  "name": "TekOS",
+  "short_name": "TekOS",
   "description": "ARK Survival Ascended tame tracker and social platform",
   "start_url": "/",
   "display": "standalone",
@@ -17,7 +17,7 @@
   ],
   "categories": ["games", "utilities", "social"],
   "shortcuts": [
-    { "name": "My Nuggies", "url": "/#nuggies", "description": "View your creatures" },
+    { "name": "My Specimens", "url": "/#nuggies", "description": "View your specimens" },
     { "name": "Trading Post", "url": "/#trading", "description": "Browse the marketplace" },
     { "name": "Wild Finds", "url": "/#wildfinds", "description": "Creature sightings" }
   ]

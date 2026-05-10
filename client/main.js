@@ -5677,8 +5677,11 @@ function canonicalRarityForSpecies(species) {
 		const count = Object.keys(getSpeciesDB() || {}).length;
 		console.log(`[SPA] species DB resolved: ${count} species`);
 		if (count === 0) console.warn('[SPA] species database appears empty or failed to load before timeout');
-		// If the app is already showing the main app, refresh the species list
-		try { if (document.readyState === 'complete' || document.readyState === 'interactive') { if (typeof loadSpeciesPage === 'function') loadSpeciesPage(); } } catch (e) {}
+		// Only refresh the species page if the user is actively on it (don't hijack other pages)
+		try {
+			const isOnSpeciesPage = document.querySelector('.species-grid-page, .creatures-page, #speciesGridContainer');
+			if (isOnSpeciesPage && typeof loadSpeciesPage === 'function') loadSpeciesPage();
+		} catch (e) {}
 	} catch (err) {
 		console.error('[SPA] Error while waiting for SPECIES_DATABASE:', err);
 	}
@@ -6622,12 +6625,13 @@ window.showBrowserNotification = showBrowserNotification;
 document.addEventListener('DOMContentLoaded', async () => {
     // Handle Discord OAuth callback (?code=...) before anything else
     const handledDiscord = await handleDiscordCallback();
+
+    // Always wire up navigation regardless of how the user logged in
+    setupNavigationListeners();
+
     if (handledDiscord) return;
 
     await initializeApp();
-
-    // Set up navigation listeners
-    setupNavigationListeners();
     
     // Set up initial event listeners
     const loginForm = document.getElementById('loginForm');

@@ -3146,6 +3146,89 @@ select option {
 .lb-empty { padding: 20px; text-align: center; color: #475569; font-size: 0.9rem; }
 @media (max-width: 768px) { .lb-grid { grid-template-columns: 1fr; } }
 
+/* ── Nuggie Cards ─────────────────────────────────────────────────────────── */
+
+/* Base card */
+.nc-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid #1e293b;
+    border-radius: 12px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+.nc-card:hover { border-color: #334155; }
+
+/* Glow tiers — applied to the whole card */
+.nc-glow-diamond { border-color: rgba(96,192,255,0.45) !important; box-shadow: 0 0 0 1px rgba(96,192,255,0.2), 0 0 24px rgba(96,192,255,0.2); }
+.nc-glow-gold    { border-color: rgba(255,215,0,0.5)   !important; box-shadow: 0 0 0 1px rgba(255,215,0,0.2),   0 0 18px rgba(255,215,0,0.18); }
+.nc-glow-silver  { border-color: rgba(192,192,192,0.4) !important; box-shadow: 0 0 0 1px rgba(192,192,192,0.15),0 0 14px rgba(192,192,192,0.12); }
+.nc-glow-bronze  { border-color: rgba(205,127,50,0.4)  !important; box-shadow: 0 0 0 1px rgba(205,127,50,0.15), 0 0 12px rgba(205,127,50,0.1); }
+
+/* ── EXPANDED card ── */
+.nc-card-exp { padding: 16px; }
+.creatures-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+
+.nc-header { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+.nc-avatar { font-size: 2rem; flex-shrink: 0; width: 40px; text-align: center; line-height: 1; }
+.nc-identity { flex: 1; min-width: 0; }
+.nc-name { font-weight: bold; color: #f1f5f9; font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.nc-meta { color: #64748b; font-size: 0.75rem; margin-top: 2px; }
+.nc-level-badge { background: rgba(59,130,246,0.12); color: #93c5fd; border: 1px solid rgba(59,130,246,0.2); padding: 3px 10px; border-radius: 20px; font-size: 0.78rem; font-weight: bold; flex-shrink: 0; white-space: nowrap; }
+
+.nc-stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(68px, 1fr)); gap: 5px; margin-bottom: 10px; }
+.nc-stat-cell { background: rgba(0,0,0,0.25); border-radius: 7px; padding: 7px 4px; text-align: center; }
+.nc-stat-icon { font-size: 0.85rem; line-height: 1; margin-bottom: 3px; }
+.nc-stat-val { color: #e2e8f0; font-weight: 600; font-size: 0.8rem; line-height: 1; }
+.nc-stat-dom { color: #22c55e; font-size: 0.65rem; margin-top: 2px; }
+.nc-stat-mut { color: #a78bfa; font-size: 0.65rem; margin-top: 1px; }
+
+.nc-footer-info { display: flex; gap: 10px; align-items: center; margin-bottom: 8px; font-size: 0.78rem; min-height: 18px; }
+.nc-muts-total { color: #a78bfa; }
+.nc-note-icon { color: #64748b; cursor: default; }
+
+/* Badges */
+.nc-badges { display: flex; flex-wrap: wrap; gap: 3px; margin-bottom: 10px; }
+.nc-badge-icon { font-size: 1rem; cursor: default; line-height: 1; }
+.nc-badges-cmp { flex-shrink: 0; }
+
+/* ── COMPACT row ── */
+.creatures-grid-compact { display: flex; flex-direction: column; gap: 3px; }
+.nc-card-cmp { display: flex; align-items: center; gap: 10px; padding: 9px 14px; flex-wrap: nowrap; }
+.nc-cmp-avatar { font-size: 1.3rem; flex-shrink: 0; width: 26px; text-align: center; line-height: 1; }
+.nc-cmp-name { width: 160px; flex-shrink: 0; }
+.nc-cmp-stats { display: flex; gap: 10px; flex: 1; flex-wrap: wrap; align-items: center; }
+.nc-cmp-stat { color: #94a3b8; font-size: 0.76rem; white-space: nowrap; }
+
+/* ── Icon-only action buttons ── */
+.nc-actions { display: flex; gap: 5px; flex-shrink: 0; }
+.nc-btn {
+    width: 30px; height: 30px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid #1e293b;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+    padding: 0;
+    flex-shrink: 0;
+}
+.nc-btn:hover { background: rgba(255,255,255,0.1); border-color: #334155; }
+.nc-btn-danger:hover { background: rgba(239,68,68,0.15); border-color: #ef4444; }
+
+/* View toggle button */
+.nc-view-toggle { padding: 7px 14px; background: rgba(255,255,255,0.05); border: 1px solid #334155; border-radius: 8px; color: #94a3b8; cursor: pointer; font-size: 0.82rem; transition: all 0.15s; white-space: nowrap; }
+.nc-view-toggle:hover { border-color: var(--tc-1,#3b82f6); color: #f1f5f9; }
+
+@media (max-width: 768px) {
+    .creatures-grid { grid-template-columns: 1fr; }
+    .nc-stats-grid { grid-template-columns: repeat(auto-fill, minmax(68px, 1fr)); }
+    .nc-card-cmp { flex-wrap: wrap; }
+    .nc-cmp-name { width: 100%; }
+    .nc-cmp-stats { flex-wrap: wrap; }
+}
+
 /* ── Online Status Dots ───────────────────────────────────────────────────── */
 .friend-avatar-wrap { display: inline-block; position: relative; }
 .online-dot { position: absolute; bottom: 2px; right: 2px; width: 11px; height: 11px; border-radius: 50%; border: 2px solid #0f172a; }

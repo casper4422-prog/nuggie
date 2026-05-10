@@ -1130,7 +1130,8 @@ function loadMyNuggiesPage() {
                     <h1>🍗 My Nuggies</h1>
                     <div class="page-subtitle">${creatures.length} creature${creatures.length !== 1 ? 's' : ''} across ${Object.keys(creaturesBySpecies).length} species</div>
                 </div>
-                <div style="display:flex;gap:8px">
+                <div style="display:flex;gap:8px;align-items:center">
+                    <button class="nc-view-toggle" id="nuggieViewToggle" onclick="toggleNuggieView()"></button>
                     <button class="btn btn-secondary" onclick="exportCreatures()">📤 Export</button>
                     <button class="btn btn-secondary" onclick="importCreatures()">📥 Import</button>
                 </div>
@@ -1156,92 +1157,177 @@ function loadMyNuggiesPage() {
             </div>
         </div>
     `;
-    
-    // Set up event listeners for search and filters
+
     setupCollectionFilters();
 }
 
+// ── Nuggie card system ────────────────────────────────────────────────────────
+
+const NC_STATS = [
+    { key: 'Health',   icon: '❤️',  pct: false },
+    { key: 'Stamina',  icon: '⚡',  pct: false },
+    { key: 'Oxygen',   icon: '🫁',  pct: false },
+    { key: 'Food',     icon: '🍖',  pct: false },
+    { key: 'Weight',   icon: '⚖️',  pct: false },
+    { key: 'Melee',    icon: '⚔️',  pct: true  },
+    { key: 'Crafting', icon: '🔧',  pct: true  },
+];
+
+function ncFmt(val, pct) {
+    if (val == null || val === '') return '—';
+    const n = parseFloat(val);
+    if (isNaN(n)) return '—';
+    if (pct) return `${Math.round(n)}%`;
+    return n >= 10000 ? `${(n / 1000).toFixed(1)}k` : String(Math.round(n));
+}
+
+function ncGlowClass(creature) {
+    const badges = window.BadgeSystem?.calculateAchievements?.(creature) || [];
+    if (badges.some(b => ['diamond','titan'].includes(b.tier))) return 'nc-glow-diamond';
+    if (badges.some(b => ['gold','alpha'].includes(b.tier)))    return 'nc-glow-gold';
+    if (badges.some(b => ['silver','beta'].includes(b.tier)))   return 'nc-glow-silver';
+    if (badges.some(b => ['bronze','gamma'].includes(b.tier)))  return 'nc-glow-bronze';
+    return '';
+}
+
+function ncBadgeIcons(creature) {
+    const badges = window.BadgeSystem?.calculateAchievements?.(creature) || [];
+    if (!badges.length) return '';
+    return badges.map(b => {
+        const tier = { diamond:'💎', titan:'💎', gold:'🥇', alpha:'🥇', silver:'🥈', beta:'🥈', bronze:'🥉', gamma:'🥉' }[b.tier] || '';
+        const cat  = b.id?.startsWith('boss_')      ? '👑'
+                   : b.id?.startsWith('underdog_')   ? '🥊'
+                   : b.id?.startsWith('util_')        ? '⛏️'
+                   : b.id?.startsWith('collector_')   ? '🗺️'
+                   : '🏆';
+        return `<span class="nc-badge-icon" title="${esc(b.name)} · ${esc(b.tier)}">${cat}${tier}</span>`;
+    }).join('');
+}
+
+function ncActions(creature) {
+    const id = creature.id;
+    const name = (creature.name || 'this creature').replace(/'/g,"\\'");
+    return `<div class="nc-actions">
+        <button class="nc-btn" title="Edit"                onclick="editCreature('${id}')">✏️</button>
+        <button class="nc-btn" title="Clone"               onclick="duplicateCreature('${id}')">📋</button>
+        <button class="nc-btn" title="Copy shareable link" onclick="shareCreatureUrl(${id})">🔗</button>
+        <button class="nc-btn" title="List for trade"      onclick="nuggieListForTrade(${id})">🔁</button>
+        <button class="nc-btn nc-btn-danger" title="Delete" onclick="deleteCreature('${id}')">🗑️</button>
+    </div>`;
+}
+
+function renderCreatureCardExpanded(creature, speciesData) {
+    const glow  = ncGlowClass(creature);
+    const emoji = speciesData?.emoji || speciesData?.icon || '🦖';
+    const totalMuts = Object.values(creature.mutations || {}).reduce((a, b) => a + (b || 0), 0);
+    const badges = ncBadgeIcons(creature);
+
+    return `<div class="nc-card nc-card-exp${glow ? ' ' + glow : ''}">
+        <div class="nc-header">
+            <div class="nc-avatar">${emoji}</div>
+            <div class="nc-identity">
+                <div class="nc-name">${esc(creature.name) || 'Unnamed'}</div>
+                <div class="nc-meta">${esc(creature.species) || 'Unknown'}${creature.gender ? ' · ' + esc(creature.gender) : ''}${creature.map ? ' · ' + esc(creature.map) : ''}</div>
+            </div>
+            <div class="nc-level-badge">Lv ${creature.level || '?'}</div>
+        </div>
+
+        <div class="nc-stats-grid">
+            ${NC_STATS.map(s => {
+                const base = creature.baseStats?.[s.key];
+                const dom  = creature.domesticLevels?.[s.key];
+                const mut  = creature.mutations?.[s.key];
+                return `<div class="nc-stat-cell" title="${s.key}">
+                    <div class="nc-stat-icon">${s.icon}</div>
+                    <div class="nc-stat-val">${ncFmt(base, s.pct)}</div>
+                    ${dom > 0 ? `<div class="nc-stat-dom">+${dom}</div>` : ''}
+                    ${mut > 0 ? `<div class="nc-stat-mut">M${mut}</div>` : ''}
+                </div>`;
+            }).join('')}
+        </div>
+
+        <div class="nc-footer-info">
+            ${totalMuts > 0 ? `<span class="nc-muts-total" title="Total mutations">🧬 ${totalMuts}</span>` : ''}
+            ${creature.notes ? `<span class="nc-note-icon" title="${esc(creature.notes)}">📝 Note</span>` : ''}
+        </div>
+
+        ${badges ? `<div class="nc-badges">${badges}</div>` : ''}
+        ${ncActions(creature)}
+    </div>`;
+}
+
+function renderCreatureCardCompact(creature, speciesData) {
+    const glow  = ncGlowClass(creature);
+    const emoji = speciesData?.emoji || speciesData?.icon || '🦖';
+    const badges = ncBadgeIcons(creature);
+
+    return `<div class="nc-card nc-card-cmp${glow ? ' ' + glow : ''}">
+        <div class="nc-cmp-avatar">${emoji}</div>
+        <div class="nc-cmp-name">
+            <div class="nc-name">${esc(creature.name) || 'Unnamed'}</div>
+            <div class="nc-meta">${esc(creature.gender) || ''}${creature.level ? ' · Lv ' + creature.level : ''}</div>
+        </div>
+        <div class="nc-cmp-stats">
+            ${NC_STATS.map(s => `<span class="nc-cmp-stat" title="${s.key}">${s.icon} ${ncFmt(creature.baseStats?.[s.key], s.pct)}</span>`).join('')}
+        </div>
+        ${badges ? `<div class="nc-badges nc-badges-cmp">${badges}</div>` : ''}
+        ${ncActions(creature)}
+    </div>`;
+}
+
+function renderCreatureCard(creature, speciesData) {
+    const view = localStorage.getItem('nuggiesView') || 'expanded';
+    return view === 'compact'
+        ? renderCreatureCardCompact(creature, speciesData)
+        : renderCreatureCardExpanded(creature, speciesData);
+}
+
 function renderCreatureCollection(creaturesBySpecies, database) {
+    const view = localStorage.getItem('nuggiesView') || 'expanded';
+    // Update toggle button label
+    const btn = document.getElementById('nuggieViewToggle');
+    if (btn) btn.textContent = view === 'expanded' ? '☰ Compact View' : '⊞ Expanded View';
+
     return Object.keys(creaturesBySpecies).sort().map(speciesName => {
         const speciesCreatures = creaturesBySpecies[speciesName];
         const speciesData = database?.[speciesName];
-        
         return `
             <div class="species-collection-section">
                 <div class="species-section-header">
                     <div class="species-info">
-                        <div class="species-icon">${speciesData?.icon || '🦖'}</div>
+                        <div class="species-icon">${speciesData?.emoji || speciesData?.icon || '🦖'}</div>
                         <div>
-                            <h3>${speciesName}</h3>
+                            <h3>${esc(speciesName)}</h3>
                             <div class="species-meta">${speciesCreatures.length} creature${speciesCreatures.length !== 1 ? 's' : ''}</div>
                         </div>
                     </div>
                     <div class="species-actions">
-                        <button class="btn btn-sm btn-primary" onclick="addSpeciesCreature('${speciesName}')">+ Add ${speciesName}</button>
-                        <button class="btn btn-sm btn-secondary" onclick="openSpeciesDetail('${speciesName}')">View Species Info</button>
+                        <button class="btn btn-sm btn-primary" onclick="addSpeciesCreature('${speciesName.replace(/'/g,"\\'") }')">+ Add ${esc(speciesName)}</button>
+                        <button class="btn btn-sm btn-secondary" onclick="openSpeciesDetail('${speciesName.replace(/'/g,"\\'") }')">Species Info</button>
                     </div>
                 </div>
-                
-                <div class="creatures-grid">
-                    ${speciesCreatures.map(creature => renderCreatureCard(creature, speciesData)).join('')}
+                <div class="${view === 'compact' ? 'creatures-grid-compact' : 'creatures-grid'}">
+                    ${speciesCreatures.map(c => renderCreatureCard(c, speciesData)).join('')}
                 </div>
-            </div>
-        `;
+            </div>`;
     }).join('');
 }
 
-function renderCreatureCard(creature, speciesData) {
-    return `
-        <div class="creature-management-card">
-            <div class="creature-card-header">
-                <div class="creature-info">
-                    <div class="creature-name">${esc(creature.name) || 'Unnamed'}</div>
-                    <div class="creature-species">${esc(creature.species) || 'Unknown'}</div>
-                </div>
-                <div class="creature-level">Level ${creature.level || 1}</div>
-            </div>
-            
-            <div class="creature-details">
-                <div class="creature-stats">
-                    <div class="stat-item">
-                        <span class="stat-label">❤️ Health</span>
-                        <span class="stat-value">${creature.baseStats?.Health ?? 'N/A'}</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-label">⚔️ Melee</span>
-                        <span class="stat-value">${creature.baseStats?.Melee ?? 'N/A'}</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-label">🏋️ Weight</span>
-                        <span class="stat-value">${creature.baseStats?.Weight ?? 'N/A'}</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-label">⚡ Stamina</span>
-                        <span class="stat-value">${creature.baseStats?.Stamina ?? 'N/A'}</span>
-                    </div>
-                </div>
-
-                <div class="creature-meta">
-                    <div class="meta-item">
-                        <span class="meta-label">Gender:</span>
-                        <span class="meta-value">${creature.gender || 'Unknown'}</span>
-                    </div>
-                    <div class="meta-item">
-                        <span class="meta-label">Mutations:</span>
-                        <span class="meta-value">${Object.values(creature.mutations || {}).reduce((a, b) => a + b, 0) || 0}</span>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="creature-actions">
-                <button class="btn btn-sm btn-secondary" onclick="editCreature('${creature.id}')">✏️ Edit</button>
-                <button class="btn btn-sm btn-primary" onclick="duplicateCreature('${creature.id}')">📋 Clone</button>
-                <button class="btn btn-sm btn-secondary" onclick="shareCreatureUrl(${creature.id})" title="Copy shareable link">🔗</button>
-                <button class="btn btn-sm btn-danger" onclick="deleteCreature('${creature.id}')">🗑️ Delete</button>
-            </div>
-        </div>
-    `;
+function toggleNuggieView() {
+    const current = localStorage.getItem('nuggiesView') || 'expanded';
+    localStorage.setItem('nuggiesView', current === 'expanded' ? 'compact' : 'expanded');
+    loadMyNuggiesPage();
 }
+window.toggleNuggieView = toggleNuggieView;
+
+function nuggieListForTrade(creatureId) {
+    loadTradingPage().then(() => {
+        setTimeout(() => tradeShowListModal(creatureId), 300);
+    }).catch(() => {
+        loadTradingPage();
+    });
+}
+window.nuggieListForTrade = nuggieListForTrade;
 
 function renderEmptyCollection() {
     return `

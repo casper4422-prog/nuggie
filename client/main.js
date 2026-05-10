@@ -6951,9 +6951,9 @@ function startNotificationPolling() {
 }
 window.startNotificationPolling = startNotificationPolling;
 
-// Legacy alias
+// Legacy aliases
 window.markAsRead = notifClick;
-window.markAllAsRead = markAllAsRead;
+window.markAllAsRead = notifMarkAllRead;
 window.closeNotifications = closeNotifications;
 window.updateNotificationBadge = updateNotificationBadge;
 

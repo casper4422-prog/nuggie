@@ -901,20 +901,28 @@ app.post('/api/auth/discord/callback', async (req, res) => {
       // 2. Existing user matched by email — link their Discord
       db.get('SELECT * FROM users WHERE email = ?', [discordEmail], (err2, existing) => {
         if (existing) {
+          // Link Discord ID — silently ignored if column not yet in schema
           db.run('UPDATE users SET discord_id = ?, discord_name = ? WHERE id = ?', [discordId, discordName, existing.id], () => {});
           return issueJWT(existing.id, existing.email, existing.nickname);
         }
 
-        // 3. Brand new user — create account (no password, Discord-only)
+        // 3. Brand new user — insert without discord_id first (column may not exist yet on old DBs)
         db.run(
-          'INSERT INTO users (email, nickname, discord_id, discord_name, password) VALUES (?, ?, ?, ?, ?)',
-          [discordEmail, discordName, discordId, discordName, ''],
+          'INSERT INTO users (email, nickname, discord_name, password) VALUES (?, ?, ?, ?)',
+          [discordEmail, discordName, discordName, ''],
           function(err3) {
             if (err3) {
               console.error('Discord user creation error:', err3);
-              return res.status(500).json({ error: 'Failed to create account' });
+              // If email uniqueness failed it means the account exists but under a different discord id
+              if (err3.message && err3.message.includes('UNIQUE')) {
+                return res.status(400).json({ error: 'An account with this email already exists. Please log in with your email and password instead.' });
+              }
+              return res.status(500).json({ error: 'Failed to create account. Please try again.' });
             }
-            issueJWT(this.lastID, discordEmail, discordName);
+            const newId = this.lastID;
+            // Store discord_id via UPDATE — silently ignored if column doesn't exist yet
+            db.run('UPDATE users SET discord_id = ? WHERE id = ?', [discordId, newId], () => {});
+            issueJWT(newId, discordEmail, discordName);
           }
         );
       });

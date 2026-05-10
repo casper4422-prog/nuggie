@@ -328,15 +328,21 @@ function isLoggedIn() {
 // Show main application UI (called after successful login)
 function showMainApp() {
 	try {
-		const landing = document.getElementById('landingPage');
-		const register = document.getElementById('registerPage');
-		const mainApp = document.getElementById('mainApp');
-		if (landing) { landing.classList.add('hidden'); landing.style.display = 'none'; landing.setAttribute('aria-hidden', 'true'); }
-		if (register) { register.classList.add('hidden'); register.style.display = 'none'; register.setAttribute('aria-hidden', 'true'); }
-		if (mainApp) { mainApp.classList.remove('hidden'); mainApp.style.display = ''; mainApp.setAttribute('aria-hidden', 'false'); }
-		// Ensure the app main content exists
+		// TekOS layout
+		const loginWrap = document.getElementById('tekLoginWrap');
+		const tekApp    = document.getElementById('tekApp');
+		if (loginWrap) loginWrap.classList.add('hidden');
+		if (tekApp)    { tekApp.classList.remove('hidden'); tekApp.setAttribute('aria-hidden', 'false'); }
+		// Legacy fallbacks (no-ops if elements don't exist)
+		document.getElementById('landingPage')?.classList.add('hidden');
+		document.getElementById('registerPage')?.classList.add('hidden');
+		document.getElementById('mainApp')?.classList.remove('hidden');
 		const appMain = document.getElementById('appMainContent');
 		if (appMain) appMain.style.display = '';
+		// Update sidebar username
+		const nick = localStorage.getItem('userNickname') || localStorage.getItem('userEmail') || 'Operator';
+		const nameEl = document.getElementById('tekUserName');
+		if (nameEl) nameEl.textContent = nick;
 		
 		// Request browser notification permission
 		requestNotificationPermission();
@@ -970,7 +976,7 @@ function loadMyNuggiesPage() {
         <div class="std-page">
             <div class="std-page-header">
                 <div class="page-title">
-                    <h1>🍗 My Nuggies</h1>
+                    <h1>🧬 Specimen Vault</h1>
                     <div class="page-subtitle">${creatures.length} creature${creatures.length !== 1 ? 's' : ''} across ${Object.keys(creaturesBySpecies).length} species</div>
                 </div>
                 <div style="display:flex;gap:8px;align-items:center">
@@ -1240,7 +1246,7 @@ async function loadTradingPage() {
     setActiveNavButton('trading');
     const main = document.getElementById('appMainContent');
     if (!main) return;
-    main.innerHTML = `<div class="std-page"><div style="color:#94a3b8;padding:40px 0">Loading marketplace...</div></div>`;
+    main.innerHTML = `<div class="std-page"><div style="color:#94a3b8;padding:40px 0">Syncing marketplace data...</div></div>`;
 
     const myId = parseInt(localStorage.getItem('userId') || '0');
     const [trades, myOffers, myWishlist] = await Promise.all([
@@ -1258,7 +1264,7 @@ async function loadTradingPage() {
         <div class="std-page">
             <div class="std-page-header">
                 <div class="page-title">
-                    <h1>🔁 Trading Post</h1>
+                    <h1>🔁 Marketplace</h1>
                     <div class="page-subtitle">${otherListings.length} listing${otherListings.length !== 1 ? 's' : ''} available</div>
                 </div>
                 <div style="display:flex;gap:8px">
@@ -1736,7 +1742,7 @@ async function loadTribesPage() {
     setActiveNavButton('tribe');
     const main = document.getElementById('appMainContent');
     if (!main) return;
-    main.innerHTML = `<div class="std-page"><div style="color:#94a3b8;padding:40px 0">Loading tribes...</div></div>`;
+    main.innerHTML = `<div class="std-page"><div style="color:#94a3b8;padding:40px 0">Syncing tribe data...</div></div>`;
 
     // Fetch user's tribe and all available tribes in parallel
     const [myTribe, allTribes] = await Promise.all([
@@ -2346,7 +2352,7 @@ function loadBossPage() {
         <div class="boss-page">
             <div class="boss-header">
                 <div class="page-title">
-                    <h1>👑 Boss Planner</h1>
+                    <h1>👑 Operations</h1>
                     <div class="boss-count">${bossData.length} bosses available</div>
                 </div>
                 <div class="header-actions">
@@ -2444,7 +2450,7 @@ async function loadArenaPage() {
         <div class="std-page">
             <div class="std-page-header">
                 <div class="page-title">
-                    <h1>⚔️ Arena</h1>
+                    <h1>⚔️ War Rooms</h1>
                     <div class="page-subtitle">Boss fight war rooms — coordinate with allies across tribes</div>
                 </div>
                 <div style="display:flex;gap:10px">
@@ -2456,8 +2462,8 @@ async function loadArenaPage() {
             ${list.length === 0
                 ? `<div class="friends-empty" style="text-align:center;padding:60px 0">
                      <div style="font-size:3rem;margin-bottom:12px">⚔️</div>
-                     <div style="color:#94a3b8;font-size:1rem">No active war rooms yet.</div>
-                     <div style="color:#64748b;font-size:0.85rem;margin-top:6px">Create one to plan a boss fight with allies.</div>
+                     <div style="color:#94a3b8;font-size:1rem">No active war rooms.</div>
+                     <div style="color:#64748b;font-size:0.85rem;margin-top:6px">Open one to coordinate with allied operators.</div>
                    </div>`
                 : `<div class="arena-session-list">
                     ${list.map(s => arenaSessionCard(s)).join('')}
@@ -2477,7 +2483,7 @@ async function loadArenaForBoss(bossId) {
     const template = getBossTemplates().find(t => t.id === bossId);
     if (!template) { loadArenaPage(); return; }
 
-    main.innerHTML = `<div class="std-page"><div style="color:#94a3b8;padding:40px">Loading war rooms for ${esc(template.name)}...</div></div>`;
+    main.innerHTML = `<div class="std-page"><div style="color:#94a3b8;padding:40px">Analyzing war rooms for ${esc(template.name)}...</div></div>`;
 
     const { res, body: sessions } = await apiRequest('/api/arena/sessions').catch(() => ({ res:{ok:false}, body:[] }));
     const all = res.ok && Array.isArray(sessions) ? sessions : [];
@@ -3112,7 +3118,7 @@ async function loadWildFindsPage() {
     setActiveNavButton('wildfinds');
     const main = document.getElementById('appMainContent');
     if (!main) return;
-    main.innerHTML = `<div class="std-page"><div style="color:#94a3b8;padding:40px 0">Loading wild finds...</div></div>`;
+    main.innerHTML = `<div class="std-page"><div style="color:#94a3b8;padding:40px 0">Syncing field reports...</div></div>`;
 
     const finds = await apiRequest('/api/wild-finds').then(r => Array.isArray(r.body) ? r.body : []).catch(() => []);
     const myId = parseInt(localStorage.getItem('userId') || '0');
@@ -3147,7 +3153,7 @@ async function loadWildFindsPage() {
     main.innerHTML = `
         <div class="std-page">
             <div class="std-page-header">
-                <div class="page-title"><h1>🗺️ Wild Finds</h1><div class="page-subtitle">Community creature sightings · Expire after 24h</div></div>
+                <div class="page-title"><h1>🗺️ Field Reports</h1><div class="page-subtitle">Community creature sightings · Expire after 24h</div></div>
                 <button class="btn btn-primary" onclick="wildFindOpenModal()">+ Report Sighting</button>
             </div>
 
@@ -3391,7 +3397,7 @@ async function loadLeaderboardsPage() {
     setActiveNavButton('leaderboards');
     const main = document.getElementById('appMainContent');
     if (!main) return;
-    main.innerHTML = `<div class="std-page"><div style="color:#94a3b8;padding:40px 0">Loading leaderboards...</div></div>`;
+    main.innerHTML = `<div class="std-page"><div style="color:#94a3b8;padding:40px 0">Compiling rankings...</div></div>`;
 
     // Fetch all leaderboard data in parallel
     const [meleeTop, healthTop, playersCreatures, playersTraders, playersFriends, tribesTop] = await Promise.all([
@@ -3433,7 +3439,7 @@ async function loadLeaderboardsPage() {
     main.innerHTML = `
         <div class="std-page">
             <div class="std-page-header">
-                <div class="page-title"><h1>🏆 Global Leaderboards</h1><div class="page-subtitle">Top trainers, creatures, and tribes</div></div>
+                <div class="page-title"><h1>🏆 Rankings</h1><div class="page-subtitle">Top trainers, creatures, and tribes</div></div>
             </div>
 
             <div class="lb-grid">
@@ -3486,7 +3492,7 @@ async function loadMyProfilePage() {
     setActiveNavButton('profile');
     const main = document.getElementById('appMainContent');
     if (!main) return;
-    main.innerHTML = `<div class="std-page"><div style="color:#94a3b8;padding:40px 0">Loading profile...</div></div>`;
+    main.innerHTML = `<div class="std-page"><div style="color:#94a3b8;padding:40px 0">Loading dossier...</div></div>`;
 
     // Fetch real profile + friends + trades + activity feed in parallel
     const [profile, friends, trades, myOffers, feedItems] = await Promise.all([
@@ -3681,7 +3687,7 @@ async function loadMyProfilePage() {
                         <button class="btn btn-sm btn-secondary" onclick="loadFriendsPage()">Manage</button>
                     </div>
                     ${friends.length === 0
-                        ? `<div class="friends-empty">No friends yet.</div>`
+                        ? `<div class="friends-empty">No operators in network.</div>`
                         : `<div class="profile-friends-list">
                             ${friends.slice(0, 5).map(f => `
                             <div class="profile-friend-row">
@@ -4380,7 +4386,7 @@ async function loadBossDetailPage(bossId) {
     const template = getBossTemplates().find(t => t.id === bossId);
     if (!template) { loadBossPlanner(); return; }
 
-    main.innerHTML = `<div class="std-page"><div style="color:#94a3b8;padding:40px">Loading boss details...</div></div>`;
+    main.innerHTML = `<div class="std-page"><div style="color:#94a3b8;padding:40px">Analyzing threat data...</div></div>`;
 
     // Fetch active war rooms for this boss in parallel with plans
     const sessions = await apiRequest('/api/arena/sessions').then(r => Array.isArray(r.body) ? r.body : []).catch(() => []);
@@ -4538,7 +4544,7 @@ async function loadBossPlanner() {
         <div class="std-page">
             <div class="std-page-header">
                 <div class="page-title">
-                    <h1>👑 Boss Planner</h1>
+                    <h1>👑 Operations</h1>
                     <div class="page-subtitle">${templates.length} bosses · ${plans.length} planned</div>
                 </div>
                 <div style="display:flex;gap:8px">
@@ -4975,7 +4981,7 @@ async function loadBossRecordsPage() {
     setActiveNavButton('boss');
     const main = document.getElementById('appMainContent');
     if (!main) return;
-    main.innerHTML = `<div class="std-page"><div style="color:#94a3b8;padding:40px 0">Loading records...</div></div>`;
+    main.innerHTML = `<div class="std-page"><div style="color:#94a3b8;padding:40px 0">Retrieving combat logs...</div></div>`;
     const [records, summary] = await Promise.all([
         apiRequest('/api/boss-records').then(r => Array.isArray(r.body) ? r.body : []).catch(() => []),
         apiRequest('/api/boss-records/summary').then(r => Array.isArray(r.body) ? r.body : []).catch(() => [])
@@ -4996,7 +5002,7 @@ async function loadBossRecordsPage() {
     main.innerHTML = `
         <div class="std-page">
             <div class="std-page-header">
-                <div class="page-title"><h1>☠️ Boss Fight Records</h1></div>
+                <div class="page-title"><h1>☠️ Combat Logs</h1></div>
                 <button class="btn btn-secondary" onclick="loadBossPlanner()">← Back to Planner</button>
             </div>
             ${Object.keys(byBoss).length > 0 ? `
@@ -5033,14 +5039,14 @@ async function loadDMInboxPage() {
     setActiveNavButton('messages');
     const main = document.getElementById('appMainContent');
     if (!main) return;
-    main.innerHTML = `<div class="std-page"><div style="color:#94a3b8;padding:40px 0">Loading messages...</div></div>`;
+    main.innerHTML = `<div class="std-page"><div style="color:#94a3b8;padding:40px 0">Establishing comms link...</div></div>`;
     const convos = await apiRequest('/api/dms').then(r => Array.isArray(r.body) ? r.body : []).catch(() => []);
     const timeAgo = ts => { const d = Date.now() - new Date(ts).getTime(), m = Math.floor(d/60000); if (m < 60) return `${m}m ago`; const h = Math.floor(m/60); if (h < 24) return `${h}h ago`; return `${Math.floor(h/24)}d ago`; };
 
     main.innerHTML = `
         <div class="std-page">
             <div class="std-page-header">
-                <div class="page-title"><h1>💬 Messages</h1><div class="page-subtitle">${convos.length} conversation${convos.length !== 1 ? 's' : ''}</div></div>
+                <div class="page-title"><h1>💬 Comms</h1><div class="page-subtitle">${convos.length} conversation${convos.length !== 1 ? 's' : ''}</div></div>
             </div>
             ${convos.length === 0
                 ? '<div class="friends-empty" style="padding:60px 0">No messages yet. Go to Friends and click "Message" to start a conversation.</div>'
@@ -5125,7 +5131,7 @@ async function loadEventsPage() {
     setActiveNavButton('events');
     const main = document.getElementById('appMainContent');
     if (!main) return;
-    main.innerHTML = `<div class="std-page"><div style="color:#94a3b8;padding:40px 0">Loading events...</div></div>`;
+    main.innerHTML = `<div class="std-page"><div style="color:#94a3b8;padding:40px 0">Syncing operations schedule...</div></div>`;
 
     const events = await apiRequest('/api/events').then(r => Array.isArray(r.body) ? r.body : []).catch(() => []);
     const myId = parseInt(localStorage.getItem('userId') || '0');
@@ -5173,7 +5179,7 @@ async function loadEventsPage() {
     main.innerHTML = `
         <div class="std-page">
             <div class="std-page-header">
-                <div class="page-title"><h1>📅 Events</h1><div class="page-subtitle">${events.length} upcoming</div></div>
+                <div class="page-title"><h1>📅 Operations Schedule</h1><div class="page-subtitle">${events.length} upcoming</div></div>
                 <button class="btn btn-primary" onclick="eventCreateModal()">+ Create Event</button>
             </div>
             ${events.length === 0

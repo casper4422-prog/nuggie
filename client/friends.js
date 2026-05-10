@@ -5,7 +5,7 @@ async function loadFriendsPage() {
     setActiveNavButton('friends');
     const main = document.getElementById('appMainContent');
     if (!main) return;
-    main.innerHTML = `<div class="std-page"><div style="color:#94a3b8;padding:40px 0">Loading friends...</div></div>`;
+    main.innerHTML = `<div class="std-page"><div style="color:#94a3b8;padding:40px 0">Establishing network link...</div></div>`;
 
     const [friends, incoming, sent, onlineData] = await Promise.all([
         apiRequest('/api/friends?status=accepted').then(r => Array.isArray(r.body) ? r.body : []).catch(() => []),
@@ -19,8 +19,8 @@ async function loadFriendsPage() {
         <div class="std-page">
             <div class="std-page-header">
                 <div class="page-title">
-                    <h1>👥 Friends</h1>
-                    <div class="page-subtitle">${friends.length} friend${friends.length !== 1 ? 's' : ''}</div>
+                    <h1>👥 Network</h1>
+                    <div class="page-subtitle">${friends.length} operator${friends.length !== 1 ? 's' : ''} connected</div>
                 </div>
             </div>
 
@@ -34,7 +34,7 @@ async function loadFriendsPage() {
             <!-- Incoming requests -->
             ${incoming.length ? `
             <div class="friends-section">
-                <h2 class="friends-section-title">📬 Friend Requests <span class="friends-badge">${incoming.length}</span></h2>
+                <h2 class="friends-section-title">📬 Incoming Link Requests <span class="friends-badge">${incoming.length}</span></h2>
                 <div class="friends-list" id="incomingList">
                     ${incoming.map(r => friendRequestCard(r, 'incoming')).join('')}
                 </div>
@@ -43,7 +43,7 @@ async function loadFriendsPage() {
             <!-- Sent requests -->
             ${sent.length ? `
             <div class="friends-section">
-                <h2 class="friends-section-title">📤 Sent Requests</h2>
+                <h2 class="friends-section-title">📤 Pending Outbound</h2>
                 <div class="friends-list">
                     ${sent.map(r => friendRequestCard(r, 'sent')).join('')}
                 </div>
@@ -51,11 +51,11 @@ async function loadFriendsPage() {
 
             <!-- Friends list -->
             <div class="friends-section">
-                <h2 class="friends-section-title">👥 Your Friends</h2>
+                <h2 class="friends-section-title">👥 Your Network</h2>
                 <div class="friends-list" id="friendsList">
                     ${friends.length
                         ? friends.map(f => friendCard(f, onlineIds)).join('')
-                        : '<div class="friends-empty">No friends yet. Search for users above to add them.</div>'
+                        : '<div class="friends-empty">No network connections. Search for operators above to connect.</div>'
                     }
                 </div>
             </div>

@@ -36,11 +36,36 @@
     box-shadow: 0 0 0 2px rgba(59,130,246,0.15);
 }
 body {
-    background: #0f172a;
-    color: #f1f5f9;
+    background: var(--tek-bg, #050812);
+    color: var(--tek-text, #e2e8f0);
     min-height: 100vh;
     margin: 0;
-    font-family: 'Segoe UI', 'Arial', sans-serif;
+    font-family: var(--tek-font, 'Segoe UI', 'Arial', sans-serif);
+}
+
+/* ── TekOS main content wrapper ── */
+#appMainContent {
+    padding: 0;
+    max-width: 100%;
+}
+
+/* ── Override old header (hidden in TekOS) ── */
+.header { display: none !important; }
+
+/* ── std-page uses new TekOS spacing ── */
+.std-page {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 0;
+}
+
+/* ── std-page-header gets TekOS treatment ── */
+.std-page-header {
+    background: var(--tek-surface, rgba(10,18,44,0.75)) !important;
+    border: 1px solid var(--tek-border, rgba(0,180,255,0.14)) !important;
+    border-radius: 12px !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
 }
 /* Creature Detail Modal & Stat Table Styles (extracted) */
 .creature-detail-header {
@@ -3306,6 +3331,130 @@ select option {
 .profile-pinned-badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 0.7rem; margin-bottom: 6px; }
 .profile-pinned-stats { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
 .profile-pinned-stats span { font-size: 0.75rem; color: #94a3b8; }
+
+/* ── TekOS Glassmorphic card overrides ───────────────────────────────────── */
+/* Apply to all the white/legacy card classes across all page CSS files      */
+
+.profile-card, .lb-card, .dm-convo-row:hover,
+.boss-detail-section, .sdp-section, .arena-session-card,
+.wf-card, .event-card, .bfr-row,
+.nc-card, .friend-card, .profile-pinned-card {
+    background: var(--tek-surface) !important;
+    border-color: var(--tek-border) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+.profile-card:hover, .lb-card:hover, .arena-session-card:hover,
+.wf-card:hover, .event-card:hover, .nc-card:hover, .friend-card:hover {
+    border-color: var(--tek-border-active) !important;
+    box-shadow: var(--tek-glow-sm) !important;
+}
+
+.profile-card-header { border-color: var(--tek-border) !important; }
+.lb-card-header { background: linear-gradient(135deg, var(--tek-blue) 0%, var(--tek-purple) 100%) !important; }
+
+/* Feed items */
+.feed-item:hover { background: var(--tek-blue-dim) !important; }
+
+/* Nuggies controls */
+.nuggies-controls {
+    background: var(--tek-surface) !important;
+    border: 1px solid var(--tek-border) !important;
+}
+
+/* Species cards */
+.species-card {
+    background: var(--tek-surface) !important;
+    border-color: var(--tek-border) !important;
+}
+.species-card:hover {
+    border-color: var(--tek-blue) !important;
+    box-shadow: var(--tek-glow-sm) !important;
+}
+
+/* Tribe & Arena cards (the ones that used to be white) */
+[data-theme="dark"] .tribe-overview,
+[data-theme="dark"] .members-list,
+[data-theme="dark"] .recruitment-section,
+[data-theme="dark"] .no-tribe-message,
+[data-theme="dark"] .tribes-browser,
+[data-theme="dark"] .player-stats,
+[data-theme="dark"] .quick-match-section,
+[data-theme="dark"] .battle-history,
+[data-theme="dark"] .leaderboards {
+    background: var(--tek-surface) !important;
+    border: 1px solid var(--tek-border) !important;
+    box-shadow: none !important;
+}
+
+[data-theme="dark"] .tribe-stat-card,
+[data-theme="dark"] .tribe-card,
+[data-theme="dark"] .recruitment-form,
+[data-theme="dark"] .stat-card,
+[data-theme="dark"] .match-item,
+[data-theme="dark"] .leaderboard-item,
+[data-theme="dark"] .match-type-card,
+[data-theme="dark"] .creature-selection {
+    background: var(--tek-surface-alt) !important;
+    border-color: var(--tek-border) !important;
+}
+
+/* ── TekOS button overrides ── */
+.btn-primary, .btn.btn-primary {
+    background: var(--tek-blue) !important;
+    color: #000 !important;
+    border: none !important;
+    box-shadow: 0 0 14px rgba(0,180,255,0.3) !important;
+    font-weight: 700 !important;
+}
+.btn-primary:hover, .btn.btn-primary:hover {
+    background: #33c6ff !important;
+    box-shadow: 0 0 22px rgba(0,180,255,0.5) !important;
+    transform: translateY(-1px);
+}
+.btn-secondary, .btn.btn-secondary {
+    background: var(--tek-blue-dim) !important;
+    color: var(--tek-blue) !important;
+    border: 1px solid var(--tek-blue-border) !important;
+}
+.btn-secondary:hover, .btn.btn-secondary:hover {
+    background: rgba(0,180,255,0.18) !important;
+}
+
+/* ── TekOS form overrides ── */
+.form-control, .search-input {
+    background: rgba(0,180,255,0.04) !important;
+    border-color: var(--tek-blue-border) !important;
+    color: var(--tek-text) !important;
+}
+.form-control:focus, .search-input:focus {
+    border-color: var(--tek-blue) !important;
+    box-shadow: 0 0 0 2px var(--tek-blue-dim), var(--tek-glow-sm) !important;
+}
+
+/* ── Notification panel ── */
+.notification-panel {
+    background: var(--tek-surface) !important;
+    border: 1px solid var(--tek-border) !important;
+    backdrop-filter: blur(16px) !important;
+    box-shadow: var(--tek-glow-md) !important;
+}
+
+/* ── Modals ── */
+.modal-content {
+    background: var(--tek-surface-alt) !important;
+    border: 1px solid var(--tek-border-active) !important;
+    box-shadow: var(--tek-glow-lg), 0 24px 80px rgba(0,0,0,0.7) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+}
+.modal-header { border-color: var(--tek-border) !important; }
+.modal-footer { border-color: var(--tek-border) !important; }
+
+/* ── Accent colors on text ── */
+.profile-hstat-val, .pb-name, .creature-hstat-val { color: var(--tek-blue) !important; }
+.std-page-header .page-subtitle { color: var(--tek-blue) !important; }
 
 /* ── Dark Mode Overrides ─────────────────────────────────────────────────── */
 /* Activated via html[data-theme="dark"] — toggled by the 🌙/☀️ header button  */

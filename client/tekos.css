@@ -1,0 +1,539 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   TekOS — Design System
+   Inspired by ARK's Tek tier: holographic panels, electric blue glow,
+   Element purple, glassmorphic surfaces on deep-space backgrounds.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+:root {
+    /* Core backgrounds */
+    --tek-bg:           #050812;   /* deep space black — page background    */
+    --tek-sidebar:      #070c1a;   /* sidebar surface                        */
+    --tek-surface:      rgba(10, 18, 44, 0.75); /* glassmorphic card bg      */
+    --tek-surface-alt:  rgba(6, 12, 30, 0.85);  /* darker card variant       */
+    --tek-surface-hover:rgba(16, 28, 60, 0.9);  /* hovered card              */
+
+    /* Accent colors */
+    --tek-blue:         #00b4ff;   /* primary — Tek holographic blue         */
+    --tek-blue-dim:     rgba(0, 180, 255, 0.12);
+    --tek-blue-border:  rgba(0, 180, 255, 0.18);
+    --tek-blue-glow:    rgba(0, 180, 255, 0.25);
+    --tek-purple:       #8b5cf6;   /* secondary — Element purple             */
+    --tek-purple-dim:   rgba(139, 92, 246, 0.12);
+    --tek-purple-border:rgba(139, 92, 246, 0.25);
+    --tek-amber:        #f59e0b;   /* tribe / warning accent                 */
+    --tek-green:        #10b981;   /* success / online                       */
+    --tek-red:          #ef4444;   /* danger / error                         */
+
+    /* Text */
+    --tek-text:         #e2e8f0;   /* primary text                           */
+    --tek-text-dim:     #64748b;   /* secondary / muted                      */
+    --tek-text-faint:   #334155;   /* very muted / dividers                  */
+
+    /* Borders & glows */
+    --tek-border:       rgba(0, 180, 255, 0.14);
+    --tek-border-active:rgba(0, 180, 255, 0.45);
+    --tek-glow-sm:      0 0 12px rgba(0, 180, 255, 0.18);
+    --tek-glow-md:      0 0 24px rgba(0, 180, 255, 0.22), 0 0 6px rgba(0, 180, 255, 0.1);
+    --tek-glow-lg:      0 0 40px rgba(0, 180, 255, 0.18), 0 0 80px rgba(0, 180, 255, 0.06);
+
+    /* Sidebar dimensions */
+    --sidebar-w:        220px;
+
+    /* Typography */
+    --tek-font:         'Segoe UI', 'Inter', 'Arial', sans-serif;
+    --tek-mono:         'Consolas', 'Fira Code', 'Courier New', monospace;
+    --tek-radius:       12px;
+    --tek-radius-sm:    7px;
+}
+
+/* ── Reset / Base ───────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+    background: var(--tek-bg);
+    color: var(--tek-text);
+    font-family: var(--tek-font);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* Subtle hex-grid background pattern */
+body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+        radial-gradient(ellipse 80% 60% at 20% 10%, rgba(0,180,255,0.04) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 80% 80%, rgba(139,92,246,0.04) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* ── App layout: sidebar + main ─────────────────────────────────────────── */
+#tekApp {
+    display: flex;
+    min-height: 100vh;
+    position: relative;
+    z-index: 1;
+}
+
+/* ── Sidebar ────────────────────────────────────────────────────────────── */
+#tekSidebar {
+    width: var(--sidebar-w);
+    min-height: 100vh;
+    background: var(--tek-sidebar);
+    border-right: 1px solid var(--tek-border);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    z-index: 200;
+    overflow-y: auto;
+    scrollbar-width: none;
+    transition: transform 0.3s ease;
+}
+#tekSidebar::-webkit-scrollbar { display: none; }
+
+/* Logo */
+.tek-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 20px 18px 16px;
+    border-bottom: 1px solid var(--tek-border);
+    text-decoration: none;
+}
+.tek-logo-hex {
+    font-size: 1.6rem;
+    line-height: 1;
+    filter: drop-shadow(0 0 8px var(--tek-blue-glow));
+}
+.tek-logo-name {
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--tek-blue);
+    text-shadow: 0 0 12px var(--tek-blue-glow);
+    font-family: var(--tek-font);
+}
+.tek-logo-ver {
+    font-size: 0.6rem;
+    color: var(--tek-text-dim);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    display: block;
+    margin-top: 1px;
+}
+
+/* Nav section label */
+.tek-nav-label {
+    padding: 14px 18px 4px;
+    font-size: 0.62rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--tek-text-faint);
+    font-weight: 600;
+}
+
+/* Nav items */
+.tek-nav { flex: 1; padding: 6px 0; }
+
+.tek-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 18px;
+    margin: 1px 8px;
+    border-radius: var(--tek-radius-sm);
+    color: var(--tek-text-dim);
+    cursor: pointer;
+    transition: all 0.18s ease;
+    border: 1px solid transparent;
+    text-decoration: none;
+    font-size: 0.88rem;
+    font-weight: 500;
+    position: relative;
+    background: none;
+    width: calc(100% - 16px);
+    text-align: left;
+}
+.tek-nav-item:hover {
+    color: var(--tek-text);
+    background: var(--tek-blue-dim);
+    border-color: var(--tek-blue-border);
+}
+.tek-nav-item.active {
+    color: var(--tek-blue);
+    background: var(--tek-blue-dim);
+    border-color: var(--tek-blue-border);
+    box-shadow: var(--tek-glow-sm);
+}
+.tek-nav-item.active::before {
+    content: '';
+    position: absolute;
+    left: -8px; top: 20%; bottom: 20%;
+    width: 3px;
+    background: var(--tek-blue);
+    border-radius: 2px;
+    box-shadow: 0 0 8px var(--tek-blue);
+}
+.tek-nav-icon { font-size: 1rem; width: 20px; text-align: center; flex-shrink: 0; }
+.tek-nav-label-text { flex: 1; }
+.tek-nav-badge {
+    background: var(--tek-blue);
+    color: #fff;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 10px;
+    min-width: 18px;
+    text-align: center;
+    box-shadow: 0 0 6px var(--tek-blue-glow);
+}
+
+.tek-nav-divider {
+    height: 1px;
+    background: var(--tek-border);
+    margin: 8px 18px;
+}
+
+/* Sidebar footer — user info */
+.tek-sidebar-footer {
+    padding: 12px 8px;
+    border-top: 1px solid var(--tek-border);
+}
+.tek-user-card {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    border-radius: var(--tek-radius-sm);
+    background: var(--tek-blue-dim);
+    border: 1px solid var(--tek-blue-border);
+    margin-bottom: 6px;
+}
+.tek-user-avatar {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--tek-blue), var(--tek-purple));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem; flex-shrink: 0;
+}
+.tek-user-name { font-size: 0.82rem; font-weight: 600; color: var(--tek-text); }
+.tek-user-status { font-size: 0.68rem; color: var(--tek-green); }
+.tek-disconnect-btn {
+    width: 100%; padding: 8px;
+    background: transparent;
+    border: 1px solid var(--tek-text-faint);
+    border-radius: var(--tek-radius-sm);
+    color: var(--tek-text-dim);
+    font-size: 0.78rem;
+    cursor: pointer;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: all 0.18s;
+}
+.tek-disconnect-btn:hover {
+    border-color: var(--tek-red);
+    color: var(--tek-red);
+    background: rgba(239,68,68,0.08);
+}
+
+/* ── Main content area ──────────────────────────────────────────────────── */
+#tekMain {
+    margin-left: var(--sidebar-w);
+    flex: 1;
+    min-height: 100vh;
+    padding: 28px 32px;
+    max-width: 1400px;
+}
+
+/* ── Glassmorphic cards ─────────────────────────────────────────────────── */
+.tek-card {
+    background: var(--tek-surface);
+    border: 1px solid var(--tek-border);
+    border-radius: var(--tek-radius);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+.tek-card:hover {
+    border-color: var(--tek-border-active);
+    box-shadow: var(--tek-glow-sm);
+}
+
+/* ── Page header ────────────────────────────────────────────────────────── */
+.tek-page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--tek-border);
+    flex-wrap: wrap;
+}
+.tek-page-title {
+    font-size: 1.7rem;
+    font-weight: 700;
+    color: var(--tek-text);
+    letter-spacing: 0.5px;
+}
+.tek-page-subtitle {
+    font-size: 0.82rem;
+    color: var(--tek-blue);
+    margin-top: 3px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+/* ── TekOS Buttons ──────────────────────────────────────────────────────── */
+.tek-btn {
+    padding: 9px 20px;
+    border-radius: var(--tek-radius-sm);
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.18s;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    letter-spacing: 0.3px;
+}
+.tek-btn-primary {
+    background: var(--tek-blue);
+    color: #000;
+    box-shadow: 0 0 16px rgba(0,180,255,0.3);
+}
+.tek-btn-primary:hover {
+    background: #33c6ff;
+    box-shadow: 0 0 24px rgba(0,180,255,0.5);
+    transform: translateY(-1px);
+}
+.tek-btn-secondary {
+    background: var(--tek-blue-dim);
+    color: var(--tek-blue);
+    border-color: var(--tek-blue-border);
+}
+.tek-btn-secondary:hover {
+    background: rgba(0,180,255,0.2);
+    box-shadow: var(--tek-glow-sm);
+}
+.tek-btn-ghost {
+    background: transparent;
+    color: var(--tek-text-dim);
+    border-color: var(--tek-text-faint);
+}
+.tek-btn-ghost:hover { color: var(--tek-text); border-color: var(--tek-text-dim); }
+.tek-btn-danger {
+    background: rgba(239,68,68,0.12);
+    color: var(--tek-red);
+    border-color: rgba(239,68,68,0.25);
+}
+.tek-btn-danger:hover { background: rgba(239,68,68,0.22); }
+
+/* ── Login / Auth page ──────────────────────────────────────────────────── */
+#tekLoginWrap {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    position: relative;
+    z-index: 1;
+}
+.tek-login-panel {
+    background: var(--tek-surface);
+    border: 1px solid var(--tek-border);
+    border-radius: 18px;
+    padding: 44px 40px;
+    max-width: 420px;
+    width: 100%;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow: 0 0 60px rgba(0,180,255,0.08), 0 24px 80px rgba(0,0,0,0.5);
+}
+.tek-login-logo {
+    text-align: center;
+    margin-bottom: 28px;
+}
+.tek-login-hex { font-size: 3rem; filter: drop-shadow(0 0 16px var(--tek-blue-glow)); }
+.tek-login-title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: var(--tek-blue);
+    text-shadow: 0 0 16px var(--tek-blue-glow);
+    margin: 6px 0 4px;
+}
+.tek-login-sub {
+    font-size: 0.72rem;
+    color: var(--tek-text-dim);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+.tek-form-group { margin-bottom: 16px; }
+.tek-form-label {
+    display: block;
+    font-size: 0.72rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--tek-text-dim);
+    margin-bottom: 6px;
+    font-weight: 600;
+}
+.tek-form-input {
+    width: 100%;
+    padding: 11px 14px;
+    background: rgba(0,180,255,0.04);
+    border: 1px solid var(--tek-blue-border);
+    border-radius: var(--tek-radius-sm);
+    color: var(--tek-text);
+    font-size: 0.92rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    font-family: var(--tek-font);
+}
+.tek-form-input:focus {
+    outline: none;
+    border-color: var(--tek-blue);
+    box-shadow: 0 0 0 2px var(--tek-blue-dim), var(--tek-glow-sm);
+}
+.tek-form-input::placeholder { color: var(--tek-text-faint); }
+.tek-login-divider {
+    display: flex; align-items: center; gap: 12px;
+    margin: 18px 0;
+    color: var(--tek-text-faint);
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+}
+.tek-login-divider::before, .tek-login-divider::after {
+    content: ''; flex: 1; height: 1px;
+    background: var(--tek-border);
+}
+.tek-discord-btn {
+    width: 100%;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    padding: 11px;
+    background: rgba(88, 101, 242, 0.15);
+    border: 1px solid rgba(88, 101, 242, 0.35);
+    border-radius: var(--tek-radius-sm);
+    color: #8ea1f5;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.18s;
+    margin-bottom: 4px;
+    letter-spacing: 0.3px;
+}
+.tek-discord-btn:hover {
+    background: rgba(88, 101, 242, 0.28);
+    box-shadow: 0 0 16px rgba(88, 101, 242, 0.2);
+}
+.tek-connect-btn {
+    width: 100%;
+    padding: 12px;
+    background: var(--tek-blue);
+    color: #000;
+    border: none;
+    border-radius: var(--tek-radius-sm);
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 0 20px rgba(0,180,255,0.35);
+    margin-top: 4px;
+}
+.tek-connect-btn:hover {
+    background: #33c6ff;
+    box-shadow: 0 0 32px rgba(0,180,255,0.55);
+    transform: translateY(-1px);
+}
+.tek-login-footer {
+    margin-top: 18px;
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--tek-text-dim);
+}
+.tek-login-footer a { color: var(--tek-blue); text-decoration: none; }
+.tek-login-footer a:hover { text-shadow: 0 0 8px var(--tek-blue-glow); }
+.tek-login-error {
+    color: var(--tek-red);
+    font-size: 0.82rem;
+    text-align: center;
+    margin-top: 10px;
+    min-height: 16px;
+}
+
+/* ── Tag chips ──────────────────────────────────────────────────────────── */
+.tek-tag {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.73rem;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    border: 1px solid var(--tek-blue-border);
+    background: var(--tek-blue-dim);
+    color: var(--tek-blue);
+}
+.tek-tag-purple {
+    border-color: var(--tek-purple-border);
+    background: var(--tek-purple-dim);
+    color: #c4b5fd;
+}
+.tek-tag-amber {
+    border-color: rgba(245,158,11,0.3);
+    background: rgba(245,158,11,0.1);
+    color: var(--tek-amber);
+}
+.tek-tag-green {
+    border-color: rgba(16,185,129,0.3);
+    background: rgba(16,185,129,0.1);
+    color: var(--tek-green);
+}
+
+/* ── Scanning / loading animation ───────────────────────────────────────── */
+@keyframes tek-scan {
+    0%   { opacity: 0.4; }
+    50%  { opacity: 1; }
+    100% { opacity: 0.4; }
+}
+.tek-loading {
+    color: var(--tek-blue);
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    padding: 40px 0;
+    text-align: center;
+    animation: tek-scan 1.8s ease-in-out infinite;
+}
+
+/* ── Scrollbar ──────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--tek-border-active); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--tek-blue); }
+
+/* ── Mobile: collapse sidebar ───────────────────────────────────────────── */
+@media (max-width: 768px) {
+    :root { --sidebar-w: 0px; }
+    #tekSidebar {
+        transform: translateX(-220px);
+        width: 220px;
+    }
+    #tekSidebar.open { transform: translateX(0); }
+    #tekMain { margin-left: 0; padding: 16px; }
+    .tek-mobile-menu {
+        display: flex;
+        position: fixed; top: 12px; left: 12px; z-index: 300;
+        width: 36px; height: 36px;
+        background: var(--tek-surface);
+        border: 1px solid var(--tek-border);
+        border-radius: var(--tek-radius-sm);
+        align-items: center; justify-content: center;
+        cursor: pointer; font-size: 1rem;
+    }
+}
+@media (min-width: 769px) { .tek-mobile-menu { display: none; } }

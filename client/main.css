@@ -1277,6 +1277,38 @@ body {
     font-weight: 500;
 }
 
+/* ── Boss Detail Page ──────────────────────────────────────────────────────── */
+.boss-detail-hero {
+    display: flex; align-items: flex-start; gap: 20px; flex-wrap: wrap;
+    background: linear-gradient(135deg, #1e293b 0%, #243044 100%);
+    border: 1px solid #334155; border-radius: 14px; padding: 24px; margin-bottom: 24px;
+}
+.boss-detail-icon { font-size: 4rem; flex-shrink: 0; line-height: 1; }
+.boss-detail-header-info { flex: 1; min-width: 0; }
+.boss-detail-name { color: #f1f5f9; font-size: 2rem; font-weight: 700; margin: 0 0 10px; }
+.boss-detail-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+.boss-detail-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: flex-start; flex-shrink: 0; }
+
+.boss-detail-body { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.boss-detail-left, .boss-detail-right { display: flex; flex-direction: column; gap: 16px; }
+
+.boss-detail-section {
+    background: rgba(255,255,255,0.03); border: 1px solid #1e293b;
+    border-radius: 12px; padding: 18px;
+}
+.boss-detail-section-title {
+    color: #94a3b8; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.8px;
+    font-weight: 600; margin-bottom: 12px;
+}
+.boss-detail-description { color: #cbd5e1; font-size: 0.9rem; line-height: 1.7; margin: 0; }
+.boss-detail-list { color: #94a3b8; font-size: 0.88rem; line-height: 1.6; margin: 0; padding-left: 18px; }
+.boss-detail-list li { margin-bottom: 6px; }
+
+@media (max-width: 900px) {
+    .boss-detail-body { grid-template-columns: 1fr; }
+    .boss-detail-icon { font-size: 2.5rem; }
+}
+
 /* Boss Planning Page Styles */
 .boss-planning-page {
     max-width: 1200px;

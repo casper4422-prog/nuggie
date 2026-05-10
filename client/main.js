@@ -4601,6 +4601,119 @@ window.duplicateCreature = duplicateCreature;
 window.deleteCreature = deleteCreature;
 // Trading page functions exported inline above; Friends functions in client/friends.js
 
+// ── Boss Detail Page ──────────────────────────────────────────────────────────
+async function loadBossDetailPage(bossId) {
+    setActiveNavButton('boss');
+    const main = document.getElementById('appMainContent');
+    if (!main) return;
+    arenaClearPoll();
+
+    const template = getBossTemplates().find(t => t.id === bossId);
+    if (!template) { loadBossPlanner(); return; }
+
+    main.innerHTML = `<div class="std-page"><div style="color:#94a3b8;padding:40px">Loading boss details...</div></div>`;
+
+    // Fetch active war rooms for this boss in parallel with plans
+    const sessions = await apiRequest('/api/arena/sessions').then(r => Array.isArray(r.body) ? r.body : []).catch(() => []);
+    const bossSessions = sessions.filter(s => s.boss_id === bossId || s.boss_name === template.name);
+    const plans = window.appState?.bossPlans || [];
+    const existingPlan = plans.find(p => p.bossId === bossId);
+
+    const diffColor = { gamma: '#22c55e', beta: '#3b82f6', alpha: '#ef4444' };
+    const diffLabel = { gamma: 'Gamma', beta: 'Beta', alpha: 'Alpha' };
+
+    const mechanicsHtml = template.mechanics.length > 0
+        ? `<div class="boss-detail-section">
+            <div class="boss-detail-section-title">⚙️ Key Mechanics</div>
+            <ul class="boss-detail-list">
+                ${template.mechanics.map(m => `<li>${esc(m)}</li>`).join('')}
+            </ul>
+           </div>` : '';
+
+    const debuffsHtml = template.debuffs.length > 0
+        ? `<div class="boss-detail-section">
+            <div class="boss-detail-section-title">⚠️ Debuffs &amp; Abilities</div>
+            <ul class="boss-detail-list">
+                ${template.debuffs.map(d => `<li>${esc(d)}</li>`).join('')}
+            </ul>
+           </div>` : '';
+
+    const rolesHtml = template.secondaryRoles.length > 0
+        ? `<div class="boss-detail-section">
+            <div class="boss-detail-section-title">🎯 Roles &amp; Behaviour</div>
+            <div style="display:flex;flex-wrap:wrap;gap:6px">
+                ${template.secondaryRoles.map(r => `<span class="boss-tag">${esc(r)}</span>`).join('')}
+            </div>
+           </div>` : '';
+
+    const mapsHtml = template.spawnMaps.length > 1
+        ? `<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px">
+            ${template.spawnMaps.map(m => `<span class="boss-tag map">${esc(m)}</span>`).join('')}
+           </div>` : '';
+
+    const warRoomsHtml = bossSessions.length > 0
+        ? `<div class="boss-detail-section">
+            <div class="boss-detail-section-title">⚔️ Active War Rooms</div>
+            <div class="arena-session-list">
+                ${bossSessions.map(s => arenaSessionCard(s)).join('')}
+            </div>
+           </div>`
+        : `<div class="boss-detail-section">
+            <div class="boss-detail-section-title">⚔️ War Rooms</div>
+            <div style="background:rgba(255,255,255,0.03);border:2px dashed #334155;border-radius:10px;padding:28px;text-align:center;color:#64748b;font-size:0.9rem">
+                No active war rooms for this boss yet.<br>
+                <span style="color:#94a3b8">Start one and share the code with your allies.</span>
+            </div>
+           </div>`;
+
+    main.innerHTML = `
+        <div class="std-page">
+            <!-- Header -->
+            <div class="boss-detail-hero">
+                <div class="boss-detail-icon">${template.icon}</div>
+                <div class="boss-detail-header-info">
+                    <h1 class="boss-detail-name">${esc(template.name)}</h1>
+                    <div class="boss-detail-tags">
+                        <span class="boss-tag map">📍 ${esc(template.map)}</span>
+                        <span class="boss-tag">${esc(template.type)}</span>
+                        ${existingPlan?.difficulty ? `<span class="boss-tag diff" style="border-color:${diffColor[existingPlan.difficulty]};color:${diffColor[existingPlan.difficulty]}">✓ ${diffLabel[existingPlan.difficulty]} planned</span>` : ''}
+                    </div>
+                    ${mapsHtml}
+                </div>
+                <div class="boss-detail-actions">
+                    <button class="btn btn-secondary" onclick="loadBossPlanner()">← Boss List</button>
+                    <button class="btn btn-secondary" onclick="bossLogKillModal('${bossId}','${template.name.replace(/'/g,"\\'")}')">☠️ Log Kill</button>
+                    <button class="btn btn-primary" onclick="arenaCreateModal('${bossId}')">⚔️ Create War Room</button>
+                </div>
+            </div>
+
+            <div class="boss-detail-body">
+                <div class="boss-detail-left">
+                    ${template.description ? `
+                    <div class="boss-detail-section">
+                        <div class="boss-detail-section-title">📖 About</div>
+                        <p class="boss-detail-description">${esc(template.description)}</p>
+                    </div>` : ''}
+
+                    ${mechanicsHtml}
+                    ${debuffsHtml}
+                    ${rolesHtml}
+
+                    ${!template.description && !template.mechanics.length && !template.debuffs.length ? `
+                    <div class="boss-detail-section">
+                        <div class="boss-detail-section-title">💡 Strategy</div>
+                        <p class="boss-detail-description">${esc(template.strategy)}</p>
+                    </div>` : ''}
+                </div>
+
+                <div class="boss-detail-right">
+                    ${warRoomsHtml}
+                </div>
+            </div>
+        </div>`;
+}
+window.loadBossDetailPage = loadBossDetailPage;
+
 // Boss Planner Implementation
 async function loadBossPlanner() {
     setActiveNavButton('boss');
@@ -4629,23 +4742,22 @@ async function loadBossPlanner() {
                 const diffColor = { gamma: '#22c55e', beta: '#3b82f6', alpha: '#ef4444' }[diff] || '';
                 const diffLabel = { gamma: 'Gamma', beta: 'Beta', alpha: 'Alpha' }[diff] || '';
                 return `
-                <div class="boss-planning-card" onclick="loadArenaForBoss('${t.id}')">
+                <div class="boss-planning-card" onclick="loadBossDetailPage('${t.id}')">
                     <div class="boss-card-header">
                         <div class="boss-card-icon">${t.icon}</div>
                         <div class="boss-card-title">
-                            <div class="boss-card-name">${t.name}</div>
-                            <div class="boss-card-sub">${t.type}</div>
+                            <div class="boss-card-name">${esc(t.name)}</div>
+                            <div class="boss-card-sub">${esc(t.type)}</div>
                         </div>
                         ${hasPlan ? `<div class="boss-planned-dot" title="${diffLabel} planned">✓</div>` : ''}
                     </div>
                     <div class="boss-card-tags">
-                        <span class="boss-tag map">${t.map}</span>
+                        <span class="boss-tag map">${esc(t.map)}</span>
                         ${hasPlan && diffLabel ? `<span class="boss-tag diff" style="border-color:${diffColor};color:${diffColor}">${diffLabel}</span>` : ''}
                     </div>
-                    <div class="boss-card-desc">${t.description || t.strategy}</div>
+                    <div class="boss-card-desc">${esc((t.description || t.strategy || '').slice(0, 100))}${(t.description || '').length > 100 ? '…' : ''}</div>
                     <div class="boss-card-footer">
-                        <span class="click-hint">⚔️ Open War Room</span>
-                        ${hasPlan ? `<button class="btn btn-sm" style="padding:4px 10px;font-size:0.75rem;background:#22c55e;color:#fff;border:none;border-radius:6px" onclick="event.stopPropagation();bossLogKillModal('${t.id}','${t.name.replace(/'/g,"\\'")}')" title="Log a kill for this boss">☠️ Log Kill</button>` : ''}
+                        <span class="click-hint">👁️ View Details</span>
                     </div>
                 </div>`;
             }).join('') || '<div class="no-results">No bosses match your filters.</div>';
@@ -4660,7 +4772,10 @@ async function loadBossPlanner() {
                     <h1>👑 Boss Planner</h1>
                     <div class="page-subtitle">${templates.length} bosses · ${plans.length} planned</div>
                 </div>
-                <button class="btn btn-secondary" onclick="loadBossRecordsPage()">☠️ Fight Records</button>
+                <div style="display:flex;gap:8px">
+                    <button class="btn btn-secondary" onclick="loadBossRecordsPage()">☠️ Fight Records</button>
+                    <button class="btn btn-primary" onclick="loadArenaPage()">⚔️ View Active War Rooms</button>
+                </div>
             </div>
             <div class="std-filters">
                 <input id="bossSearchInput" class="form-control search-input" placeholder="🔍 Search bosses or maps...">
@@ -5453,21 +5568,31 @@ function _deriveBossStrategy(species) {
     return 'See species detail for full encounter info.';
 }
 
+// Creatures wrongly marked category='boss' in the species DB — excluded from the planner
+const BOSS_EXCLUSIONS = new Set(['Forest Wyvern', 'Forest Wyvern (Variant)']);
+
 function getBossTemplates() {
     const db = (typeof window !== 'undefined' && window.SPECIES_DATABASE) || {};
     const templates = [];
     for (const [name, species] of Object.entries(db)) {
         if (species.category !== 'boss') continue;
+        const displayName = species.name || name;
+        if (BOSS_EXCLUSIONS.has(displayName)) continue;
         const map = (species.spawnMaps && species.spawnMaps[0]) || 'Unknown';
         templates.push({
             id: (species.id || name).toString().toLowerCase().replace(/[^a-z0-9]+/g, '_'),
-            name: species.name || name,
+            name: displayName,
             map: map,
             type: _deriveBossType(species),
             icon: species.icon || '💀',
             rarity: species.rarity || 'Legendary',
-            description: (species.dossierText || '').slice(0, 120) + ((species.dossierText || '').length > 120 ? '…' : ''),
-            strategy: _deriveBossStrategy(species)
+            description: species.dossierText || '',
+            strategy: _deriveBossStrategy(species),
+            // Full species record preserved for the detail page
+            mechanics: (species.uniqueMechanics || []).filter(m => m && m !== 'None' && m.length > 3),
+            debuffs: (species.debuffAbilities || []).filter(d => d && d !== 'None' && d !== 'none'),
+            secondaryRoles: species.secondaryRoles || [],
+            spawnMaps: species.spawnMaps || [map],
         });
     }
     templates.sort((a, b) => {

@@ -3377,3 +3377,16 @@ select option {
 
 /* Dark mode button in header */
 #darkModeBtn { padding: 8px 12px !important; font-size: 1.1rem; line-height: 1; }
+
+/* ── Discord OAuth ────────────────────────────────────────────────────────── */
+.btn-discord {
+    width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px;
+    padding: 12px; background: #5865F2; color: #fff; border: none; border-radius: 10px;
+    font-size: 1rem; font-weight: 600; cursor: pointer; transition: background 0.2s; margin-bottom: 4px;
+}
+.btn-discord:hover { background: #4752c4; }
+.login-divider {
+    text-align: center; color: #475569; font-size: 0.85rem;
+    display: flex; align-items: center; gap: 12px; margin: 14px 0;
+}
+.login-divider::before, .login-divider::after { content: ''; flex: 1; height: 1px; background: #1e293b; }

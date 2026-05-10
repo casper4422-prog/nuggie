@@ -6529,6 +6529,54 @@ async function saveBossData(bosses) {
 // Hash change routing (for shared creature links)
 window.addEventListener('hashchange', () => { if (localStorage.getItem('token')) handleHashRoute(); });
 
+// ── Discord OAuth ──────────────────────────────────────────────────────────────
+function discordLogin() {
+    window.location.href = window.__API_BASE + '/api/auth/discord/start';
+}
+window.discordLogin = discordLogin;
+
+async function handleDiscordCallback() {
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get('code');
+    if (!code) return false;
+
+    // Remove the code from the URL immediately so refreshing doesn't re-trigger
+    window.history.replaceState({}, '', window.location.pathname);
+
+    // Show a loading message on the login page
+    const errEl = document.getElementById('loginError');
+    if (errEl) { errEl.textContent = '🔵 Completing Discord login…'; errEl.style.color = '#93c5fd'; errEl.style.display = 'block'; }
+
+    try {
+        const res = await fetch(window.__API_BASE + '/api/auth/discord/callback', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ code })
+        });
+        const data = await res.json();
+
+        if (data.token) {
+            localStorage.setItem('token', data.token);
+            if (data.user) {
+                localStorage.setItem('userEmail',    data.user.email    || '');
+                localStorage.setItem('userNickname', data.user.nickname || '');
+                localStorage.setItem('userId',       String(data.user.id || ''));
+            }
+            showMainApp();
+            updateTribeHeader();
+            loadMyProfilePage();
+            try { await loadServerCreatures(); } catch {}
+            try { await loadServerBossData(); } catch {}
+            try { startNotificationPolling(); } catch {}
+        } else {
+            if (errEl) { errEl.textContent = data.error || 'Discord login failed. Please try again.'; errEl.style.color = '#ef4444'; errEl.style.display = 'block'; }
+        }
+    } catch (e) {
+        if (errEl) { errEl.textContent = 'Network error during Discord login. Please try again.'; errEl.style.color = '#ef4444'; errEl.style.display = 'block'; }
+    }
+    return true;
+}
+
 // ── PWA: Service Worker + Browser Notifications ────────────────────────────────
 (function initPWA() {
     // Register service worker
@@ -6572,6 +6620,10 @@ window.showBrowserNotification = showBrowserNotification;
 
 // Initialize the application when DOM is ready
 document.addEventListener('DOMContentLoaded', async () => {
+    // Handle Discord OAuth callback (?code=...) before anything else
+    const handledDiscord = await handleDiscordCallback();
+    if (handledDiscord) return;
+
     await initializeApp();
 
     // Set up navigation listeners

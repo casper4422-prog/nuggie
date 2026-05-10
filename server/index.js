@@ -1,11 +1,12 @@
 // Entry point for the backend server
 const express = require('express');
-// use express.json() instead of body-parser
 const cors = require('cors');
 const compression = require('compression');
 const sqlite3 = require('sqlite3').verbose();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const https = require('https');
+const querystring = require('querystring');
 
 const app = express();
 // Port configuration: Render sets PORT=10000, local development defaults to 3001
@@ -85,6 +86,8 @@ db.serialize(() => {
   db.run(`ALTER TABLE users ADD COLUMN pinned_creatures TEXT DEFAULT '[]'`, () => {});
   // Online status
   db.run(`ALTER TABLE users ADD COLUMN last_seen DATETIME`, () => {});
+  // Discord OAuth
+  db.run(`ALTER TABLE users ADD COLUMN discord_id TEXT UNIQUE`, () => {});
   db.run(`CREATE TABLE IF NOT EXISTS creature_cards (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER NOT NULL,
@@ -822,6 +825,104 @@ app.get('/api/offers', authenticateToken, (req, res) => {
     if (err) return res.status(500).json({ error: 'Failed to load offers' });
     res.json(rows.map(r => ({ id: r.id, trade_id: r.trade_id, offered_creature_id: r.offered_creature_id, offered_creature_data: JSON.parse(r.offered_creature_data || '{}'), offered_price: r.offered_price, message: r.message, status: r.status, created_at: r.created_at })));
   });
+});
+
+// ── Discord OAuth ─────────────────────────────────────────────────────────────
+
+function discordPost(path, data) {
+  const body = querystring.stringify(data);
+  return new Promise((resolve, reject) => {
+    const req = https.request({
+      hostname: 'discord.com', path, method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'Content-Length': Buffer.byteLength(body) }
+    }, res => { let d = ''; res.on('data', c => d += c); res.on('end', () => { try { resolve(JSON.parse(d)); } catch { resolve(d); } }); });
+    req.on('error', reject);
+    req.write(body); req.end();
+  });
+}
+
+function discordGet(path, token) {
+  return new Promise((resolve, reject) => {
+    const req = https.request({
+      hostname: 'discord.com', path, method: 'GET',
+      headers: { Authorization: `Bearer ${token}` }
+    }, res => { let d = ''; res.on('data', c => d += c); res.on('end', () => { try { resolve(JSON.parse(d)); } catch { resolve(d); } }); });
+    req.on('error', reject);
+    req.end();
+  });
+}
+
+// Step 1 — redirect user to Discord to authorise
+app.get('/api/auth/discord/start', (req, res) => {
+  const clientId = process.env.DISCORD_CLIENT_ID;
+  if (!clientId) return res.status(500).json({ error: 'Discord not configured' });
+  const redirectUri = process.env.DISCORD_REDIRECT_URI || 'https://nuggie-1.onrender.com/';
+  const url = `https://discord.com/api/oauth2/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=identify%20email`;
+  res.redirect(url);
+});
+
+// Step 2 — frontend sends the code here; we exchange it for a JWT
+app.post('/api/auth/discord/callback', async (req, res) => {
+  const { code } = req.body || {};
+  if (!code) return res.status(400).json({ error: 'Missing code' });
+
+  const clientId     = process.env.DISCORD_CLIENT_ID;
+  const clientSecret = process.env.DISCORD_CLIENT_SECRET;
+  const redirectUri  = process.env.DISCORD_REDIRECT_URI || 'https://nuggie-1.onrender.com/';
+
+  if (!clientId || !clientSecret) return res.status(500).json({ error: 'Discord not configured on server' });
+
+  try {
+    // Exchange code for access token
+    const tokenData = await discordPost('/api/oauth2/token', {
+      client_id: clientId, client_secret: clientSecret,
+      grant_type: 'authorization_code', code, redirect_uri: redirectUri
+    });
+    if (!tokenData.access_token) {
+      console.error('Discord token exchange failed:', tokenData);
+      return res.status(400).json({ error: 'Discord authorisation failed. The login link may have expired — please try again.' });
+    }
+
+    // Get Discord user profile
+    const profile = await discordGet('/api/users/@me', tokenData.access_token);
+    const discordId    = profile.id;
+    const discordEmail = profile.email || `discord_${profile.id}@discord.local`;
+    const discordName  = profile.username || profile.global_name || 'DiscordUser';
+
+    const issueJWT = (userId, email, nickname) => {
+      const token = jwt.sign({ userId, email }, SECRET, { expiresIn: '7d' });
+      return res.json({ token, user: { id: userId, email, nickname: nickname || discordName, discord_name: discordName } });
+    };
+
+    // 1. Existing user linked by Discord ID
+    db.get('SELECT * FROM users WHERE discord_id = ?', [discordId], (err, user) => {
+      if (user) return issueJWT(user.id, user.email, user.nickname);
+
+      // 2. Existing user matched by email — link their Discord
+      db.get('SELECT * FROM users WHERE email = ?', [discordEmail], (err2, existing) => {
+        if (existing) {
+          db.run('UPDATE users SET discord_id = ?, discord_name = ? WHERE id = ?', [discordId, discordName, existing.id], () => {});
+          return issueJWT(existing.id, existing.email, existing.nickname);
+        }
+
+        // 3. Brand new user — create account (no password, Discord-only)
+        db.run(
+          'INSERT INTO users (email, nickname, discord_id, discord_name, password) VALUES (?, ?, ?, ?, ?)',
+          [discordEmail, discordName, discordId, discordName, ''],
+          function(err3) {
+            if (err3) {
+              console.error('Discord user creation error:', err3);
+              return res.status(500).json({ error: 'Failed to create account' });
+            }
+            issueJWT(this.lastID, discordEmail, discordName);
+          }
+        );
+      });
+    });
+  } catch (e) {
+    console.error('Discord auth error:', e);
+    res.status(500).json({ error: 'Discord authentication error' });
+  }
 });
 
 // --- Profile endpoints ---

@@ -1177,7 +1177,7 @@ function renderEmptyCollection() {
         <div class="empty-collection-state">
             <div class="empty-icon">🦕</div>
             <div class="empty-title">No Creatures Yet</div>
-            <div class="empty-description">Head to the <strong>Creatures</strong> page, find a species, and click <strong>Add Your [Species]</strong> to start your collection.</div>
+            <div class="empty-description">Head to the <strong>Dex</strong>, find a species, and click <strong>Add Your [Species]</strong> to start your vault.</div>
         </div>
     `;
 }
@@ -2469,7 +2469,7 @@ async function loadArenaPage() {
                 ? `<div class="friends-empty" style="text-align:center;padding:60px 0">
                      <div style="font-size:3rem;margin-bottom:12px">⚔️</div>
                      <div style="color:#94a3b8;font-size:1rem">No active war rooms.</div>
-                     <div style="color:#64748b;font-size:0.85rem;margin-top:6px">Open one to coordinate with allied operators.</div>
+                     <div style="color:#64748b;font-size:0.85rem;margin-top:6px">Open one to coordinate with allied survivors.</div>
                    </div>`
                 : `<div class="arena-session-list">
                     ${list.map(s => arenaSessionCard(s)).join('')}
@@ -3568,7 +3568,7 @@ async function loadMyProfilePage() {
                 <div class="profile-hero-avatar">🦕</div>
                 <div class="profile-hero-info">
                     <h1 class="profile-hero-name">${esc(profile.nickname) || 'Trainer'}</h1>
-                    <div class="profile-hero-sub">ARK Operator · Joined ${esc(joinedDate)}</div>
+                    <div class="profile-hero-sub">ARK Survivor · Joined ${esc(joinedDate)}</div>
                     ${profile.tribe ? `<div class="profile-hero-tribe">🏛️ ${esc(profile.tribe.name)} <span style="color:#64748b;font-size:0.8rem">(${esc(profile.tribe.role)})</span></div>` : ''}
                     ${profile.bio ? `<div class="profile-hero-bio">${esc(profile.bio)}</div>` : ''}
                     ${profile.looking_for ? `<div class="profile-looking-for">👀 ${esc(profile.looking_for)}</div>` : ''}
@@ -3693,7 +3693,7 @@ async function loadMyProfilePage() {
                         <button class="btn btn-sm btn-secondary" onclick="loadFriendsPage()">Manage</button>
                     </div>
                     ${friends.length === 0
-                        ? `<div class="friends-empty">No operators in network.</div>`
+                        ? `<div class="friends-empty">No survivors in network.</div>`
                         : `<div class="profile-friends-list">
                             ${friends.slice(0, 5).map(f => `
                             <div class="profile-friend-row">
@@ -3726,7 +3726,7 @@ async function loadMyProfilePage() {
                 <div class="profile-card">
                     <div class="profile-card-header"><h3>📊 Statistics</h3></div>
                     <div class="profile-stats-grid">
-                        <div class="profile-stat-block"><div class="psb-val">${creatures.length}</div><div class="psb-lbl">🦖 Total Nuggies</div></div>
+                        <div class="profile-stat-block"><div class="psb-val">${creatures.length}</div><div class="psb-lbl">🦖 Specimens</div></div>
                         <div class="profile-stat-block"><div class="psb-val">${speciesOwned}</div><div class="psb-lbl">🌿 Species Owned</div></div>
                         <div class="profile-stat-block"><div class="psb-val">${badgeCount}</div><div class="psb-lbl">🏆 Prized Bloodlines</div></div>
                         <div class="profile-stat-block"><div class="psb-val">${bossReadyCount}</div><div class="psb-lbl">👑 Boss Ready</div></div>
@@ -3736,10 +3736,10 @@ async function loadMyProfilePage() {
                     </div>
                 </div>
 
-                <!-- Pinned Nuggies -->
+                <!-- Pinned Specimens -->
                 <div class="profile-card" style="grid-column: 1 / -1">
                     <div class="profile-card-header">
-                        <h3>📌 Pinned Nuggies</h3>
+                        <h3>📌 Pinned Specimens</h3>
                         <button class="btn btn-sm btn-secondary" onclick="profileOpenPinModal()">Edit Pins</button>
                     </div>
                     ${pinnedCreatures.length === 0
@@ -4788,7 +4788,7 @@ function openBossPlanning(bossId) {
                         <span class="lineup-count" id="bp-lineup-count">${selectedIds.size} selected</span>
                     </div>
                     ${creatures.length === 0
-                        ? `<div class="empty-lineup-msg">You have no saved Nuggies yet. Add creatures from the Creatures page first.</div>`
+                        ? `<div class="empty-lineup-msg">You have no saved Nuggies yet. Add specimens from the Dex first.</div>`
                         : `<div class="nuggie-picker" id="bp-nuggie-picker">
                             ${creatures.map(c => {
                                 const sel = selectedIds.has(c.id);

@@ -20,7 +20,7 @@ async function loadFriendsPage() {
             <div class="std-page-header">
                 <div class="page-title">
                     <h1>👥 Network</h1>
-                    <div class="page-subtitle">${friends.length} operator${friends.length !== 1 ? 's' : ''} connected</div>
+                    <div class="page-subtitle">${friends.length} survivor${friends.length !== 1 ? "s" : ""} connected</div>
                 </div>
             </div>
 
@@ -55,7 +55,7 @@ async function loadFriendsPage() {
                 <div class="friends-list" id="friendsList">
                     ${friends.length
                         ? friends.map(f => friendCard(f, onlineIds)).join('')
-                        : '<div class="friends-empty">No network connections. Search for operators above to connect.</div>'
+                        : '<div class="friends-empty">No network connections. Search for survivors above to connect.</div>'
                     }
                 </div>
             </div>

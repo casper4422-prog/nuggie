@@ -1,18 +1,20 @@
 /* Notification Panel — dark theme matching the app */
 .notification-panel {
     position: fixed;
-    top: 64px;
-    right: 16px;
-    width: 360px;
-    max-height: 520px;
-    background: #1e293b;
-    border: 1px solid #334155;
-    border-radius: 12px;
-    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6);
+    bottom: 80px;
+    left: calc(var(--sidebar-w, 220px) + 12px);
+    width: 380px;
+    max-height: 540px;
+    background: var(--tek-surface-alt, #080d1c);
+    border: 1px solid var(--tek-border-active, rgba(0,180,255,0.4));
+    border-radius: 14px;
+    box-shadow: var(--tek-glow-md, 0 0 24px rgba(0,180,255,0.22)), 0 24px 60px rgba(0,0,0,0.7);
     z-index: 9500;
     overflow: hidden;
     display: flex;
     flex-direction: column;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
 }
 
 .notification-header {

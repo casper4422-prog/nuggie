@@ -427,8 +427,8 @@ function createSpeciesCard(species, creatureCount) {
         // Get creatures for this species to calculate badges and stats
         const speciesCreatures = window.appState?.creatures?.filter(c => c.species === species.name) || [];
         
-        // Dossier snippet — real database text, no fabrication
-        const rawDossier = species.dossierText || species.description || '';
+        // Only use dossierText — species.description is a generic DB fallback phrase for most species
+        const rawDossier = species.dossierText || '';
         const snippet = rawDossier.slice(0, 140) + (rawDossier.length > 140 ? '…' : '');
         let statsHTML = snippet
             ? `<div class="species-dossier-snippet">${esc(snippet)}</div>`

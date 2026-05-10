@@ -43,11 +43,7 @@ body {
     font-family: var(--tek-font, 'Segoe UI', 'Arial', sans-serif);
 }
 
-/* ── TekOS main content wrapper ── */
-#appMainContent {
-    padding: 0;
-    max-width: 100%;
-}
+/* appMainContent layout is handled by tekos.css */
 
 /* ── Override old header (hidden in TekOS) ── */
 .header { display: none !important; }

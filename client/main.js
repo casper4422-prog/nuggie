@@ -6069,7 +6069,7 @@ async function loadSpeciesPage() {
                         </div>
                     </div>
                     <div class="template-type">${primaryUse}</div>
-                    <div class="template-description">${species.description ? (species.description.length > 100 ? species.description.substring(0, 100) + '...' : species.description) : 'A fascinating creature with unique abilities and characteristics.'}</div>
+                    <div class="template-description">${species.dossierText ? species.dossierText.slice(0, 110) + (species.dossierText.length > 110 ? '…' : '') : (species.primaryRole ? species.primaryRole : '')}</div>
                     
                     <div class="species-highlights">
                         ${topRatings.length > 0 ? `
